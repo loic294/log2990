@@ -1,5 +1,5 @@
-import { MIN_TO_SEC } from "../constants";
-import { InvalidArgumentError } from "../invalidArgumentError";
+import { MIN_TO_SEC } from "../../constants";
+import { InvalidArgumentError } from "../../invalidArgumentError";
 
 export const DEFAULT_DRIVE_RATIO: number = 3.27;
 export const DEFAULT_DOWNSHIFT_RPM: number = 2500;

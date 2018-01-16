@@ -1,6 +1,6 @@
 import { Vector3, Matrix4, Object3D, ObjectLoader, Euler, Quaternion } from "three";
 import { Engine } from "./engine";
-import { MS_TO_SECONDS, GRAVITY, PI_OVER_2, RAD_TO_DEG } from "../constants";
+import { MS_TO_SECONDS, GRAVITY, PI_OVER_2, RAD_TO_DEG } from "../../constants";
 import { Wheel } from "./wheel";
 
 export const DEFAULT_WHEELBASE: number = 2.78;
