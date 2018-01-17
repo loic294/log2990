@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-difficulty',
@@ -6,6 +6,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./difficulty.component.css']
 })
 export class DifficultyComponent implements OnInit {
+
+  selectedDifficulty: String
+
+  difficulties = ['Easy','Normal','Hard']
+
+  onSelect(diff: String): void {
+    this.selectedDifficulty = diff;
+  }
 
   constructor() { }
 
