@@ -32,7 +32,6 @@ describe('DifficultyComponent', () => {
   it('Should display Easy', () => {
     
     component.onSelect(component.difficulties[0]);
-    fixture.detectChanges();
     expect(component.selectedDifficulty).toBe('Easy');
   })
 

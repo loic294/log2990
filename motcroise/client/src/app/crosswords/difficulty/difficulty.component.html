@@ -1,10 +1,11 @@
-
+<div align="center">
   <h1>Difficulty</h1>
   <ul class="difficulties">
     <li *ngFor="let difficulty of difficulties" (click)="onSelect(difficulty)">
-     <span class="badge">{{difficulty}}</span>
+      <span class="badge">{{difficulty}}</span>
     </li>
   </ul>
+</div>
 
 <div *ngIf="selectedDifficulty">
 
