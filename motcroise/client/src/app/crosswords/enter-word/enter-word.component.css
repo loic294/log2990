@@ -1,0 +1,12 @@
+/* 
+https://docs.angularjs.org/api/ng/directive/ngModel#binding-to-a-getter-setter
+*/
+
+.letter-input {
+    transition:all linear 0.5s;
+    background: transparent;
+}
+.letter-input.ng-invalid {
+    color:white;
+    background: red;
+}

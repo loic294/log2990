@@ -8,5 +8,9 @@ export class Case {
 	getChar() {
 		return this.char;
 	}
+	
+	setChar(c: String) {
+            this.char = c;
+        }
 
 }

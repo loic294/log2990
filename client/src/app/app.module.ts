@@ -1,6 +1,7 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { HttpClientModule } from "@angular/common/http";
+import { FormsModule } from '@angular/forms'
 
 import { AppComponent } from "./app.component";
 import { GameComponent } from "./race/game-component/game.component";
@@ -11,6 +12,7 @@ import { DifficultyComponent } from './crosswords/difficulty/difficulty.componen
 import { GridComponent } from './crosswords/grid/grid.component';
 import { SquareComponent } from './crosswords/square/square.component';
 import { CrosswordComponent } from './crosswords/crossword/crossword.component';
+import { EnterWordComponent } from './crosswords/enter-word/enter-word.component';
 
 @NgModule({
     declarations: [
@@ -20,10 +22,12 @@ import { CrosswordComponent } from './crosswords/crossword/crossword.component';
         GridComponent,
         SquareComponent,
         CrosswordComponent,
+        EnterWordComponent,
     ],
     imports: [
         BrowserModule,
-        HttpClientModule
+        HttpClientModule,
+        FormsModule
     ],
     providers: [
         RenderService,
