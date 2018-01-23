@@ -1,26 +1,26 @@
 
 export class Case {
 
-	private isSelected: boolean = false
+	private _isSelected: boolean = false
 
-	constructor(private char: String = "-") {
+	constructor(private _char: String = "-") {
 
 	}
 
 	public getChar() {
-		return this.char;
+		return this._char;
 	}
 
 	public select() {
-		this.isSelected = true;
+		this._isSelected = true;
 	}
 
 	public unselect() {
-		this.isSelected = false;
+		this._isSelected = false;
 	}
 
 	public selected() {
-		return this.isSelected;
+		return this._isSelected;
 	}
 
 }
