@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Case } from '../../../case'
+import { Case } from '../../../../../common/crossword/case'
 
 /** TEMPORARY MOCKED CONTENT 
    * Example table
