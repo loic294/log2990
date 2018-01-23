@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { Case } from '../../../case'
+import { Case } from '../../../../../common/crossword/case'
 
 @Component({
   selector: 'app-square',
