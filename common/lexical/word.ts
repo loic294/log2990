@@ -1,35 +1,43 @@
+export enum Orientation {
+    horizontal = 0,
+    vertical = 1,
+}
+
 export default class Word {
   
     constructor(
-        private name : string,
-        private desc : string,
-        private col : number,
-        private row : number,
-        private direction : string,
+        private _name : string,
+        private _desc : string,
+        private _postiion : Array<number>,
+        private _orientation : Orientation,
     ) {}
 
     public getName() {
-        return this.name
+        return this._name
     }
 
     public getDesc() {
-        return this.desc
+        return this._desc
     }
 
-    public getCol() {
-        return this.col
+    public getPosition() {
+        return this._postiion
     }
 
-    public getRow() {
-        return this.row
+    public getCol () {
+        return this._postiion[0]
+    }
+
+    public getRow () {
+        return this._postiion[1]
     }
 
     public getDirection() {
-        return this.direction
+        return this._orientation
     }
 
     public getLength() {
-        return this.name.length
+        return this._name.length
     }
 
 }
