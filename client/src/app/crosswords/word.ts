@@ -1,7 +1,7 @@
 export class Word {
-    size: number;
-    position: [number,number];
-    orientation: string;
-    clue: string
-    name: string
+    private size: number;
+    private position: [number, number];
+    private orientation: string;
+    private clue: string;
+    private name: string;
 }
