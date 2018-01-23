@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import Word from '../../../../../common/lexical/word'
+import Word, { Orientation  } from '../../../../../common/lexical/word'
 
 /** TEMPORARY MOCKED CONTENT 
  * 
@@ -19,17 +19,17 @@ import Word from '../../../../../common/lexical/word'
  * **/
 
 const CLUES: Array<Word>  = [
-  new Word('Clue', 'Definition of word clue', 1, 6, 'horizontal'),
-  new Word('Wound', 'Definition of word wound', 2, 0, 'horizontal'),
-  new Word('Finish', 'Definition of word finish', 5, 2, 'horizontal'),
-  new Word('Menu', 'Definition of word menu', 7, 1, 'horizontal'),
-  new Word('Grave', 'Definition of word grave', 9, 0, 'horizontal'),
-  new Word('Dock', 'Definition of word dock', 9, 6, 'horizontal'),
-  new Word('Worry', 'Definition of word worry', 2, 0, 'vertical'),
-  new Word('Adventure', 'Definition of word adventure', 1, 4, 'vertical'),
-  new Word('Crossword', 'Definition of word crossword', 1, 6, 'vertical'),
-  new Word('Push', 'Definition of word push', 0, 8, 'vertical'),
-  new Word('Crack', 'Definition of word crack', 5, 9, 'vertical'),
+  new Word('Clue', 'Definition of word clue', [1, 6], Orientation.horizontal),
+  new Word('Wound', 'Definition of word wound', [2, 0], Orientation.horizontal),
+  new Word('Finish', 'Definition of word finish', [5, 2], Orientation.horizontal),
+  new Word('Menu', 'Definition of word menu', [7, 1], Orientation.horizontal),
+  new Word('Grave', 'Definition of word grave', [9, 0], Orientation.horizontal),
+  new Word('Dock', 'Definition of word dock', [9, 6], Orientation.horizontal),
+  new Word('Worry', 'Definition of word worry', [2, 0], Orientation.vertical),
+  new Word('Adventure', 'Definition of word adventure', [1, 4], Orientation.vertical),
+  new Word('Crossword', 'Definition of word crossword', [1, 6], Orientation.vertical),
+  new Word('Push', 'Definition of word push', [0, 8], Orientation.vertical),
+  new Word('Crack', 'Definition of word crack', [5, 9], Orientation.vertical),
 ] 
 
 /** END OF MOCKED CONTENT **/
@@ -41,7 +41,7 @@ const CLUES: Array<Word>  = [
 })
 export class CluesComponent implements OnInit {
 
-  private clues: Array<Word> = CLUES
+  clues: Array<Word> = CLUES
 
   constructor() { }
 
