@@ -1,12 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 
-export enum Difficulty {
-    Easy = 0,
-    Normal = 1,
-    Hard = 2
-}
-
-
 @Component({
     selector: "app-difficulty",
     templateUrl: "./difficulty.component.html",
