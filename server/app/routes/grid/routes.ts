@@ -1,14 +1,14 @@
-import * as test from './middleware'
+import * as grid from './middleware'
 
 // Use these routes to test services that are normally only accessible via another service/route
 
 export default {
-	base: '/test',
+	base: '/grid',
 	routes: [{
 		method: 'GET',
-		path: '/lexical/:word',
+		path: '/',
 		middleware: [
-			test.lexical
+			grid.generate
 		]
 	}]
 }

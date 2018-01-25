@@ -7,12 +7,18 @@ export default class LexicalService {
 
 	constructor() {}
 
-	async method1 () {
+	async method1 (word: string = 'hello') {
 		// Cette méthode est asynchrone
 
-		// ... do some asynchronous work such as requesting data from the server
+		try { // To be safe, we detect errors with try/catch
 
-		return 'hello'
+			// ... do some asynchronous work such as requesting data from the server
+
+			return word
+
+		} catch(err) {
+			throw err
+		}
 
 	}
 

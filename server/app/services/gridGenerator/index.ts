@@ -13,6 +13,16 @@ export default class GridGeneratorService {
 
 		console.log('Result', result)
 
+		return result
+
+	}
+
+	async generate() {
+
+		// Let says this returns a word...
+
+		return this.getWord()
+
 	}
 
 }
