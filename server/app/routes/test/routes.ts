@@ -6,7 +6,7 @@ export default {
 	base: '/test',
 	routes: [{
 		method: 'GET',
-		path: '/lexical/:word',
+		path: '/lexical/:word/',
 		middleware: [
 			test.lexical
 		]
