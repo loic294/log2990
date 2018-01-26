@@ -12,7 +12,11 @@ import { DifficultyComponent } from './crosswords/difficulty/difficulty.componen
 import { GridComponent } from './crosswords/grid/grid.component';
 import { SquareComponent } from './crosswords/square/square.component';
 import { CrosswordComponent } from './crosswords/crossword/crossword.component';
+<<<<<<< HEAD
 import { CluesComponent } from './crosswords/clues/clues.component';
+=======
+import { EnterWordComponent } from './crosswords/enter-word/enter-word.component';
+>>>>>>> dcbef734cc15c14e1c66b626e4f208559045faf5
 
 @NgModule({
     declarations: [
@@ -22,12 +26,20 @@ import { CluesComponent } from './crosswords/clues/clues.component';
         GridComponent,
         SquareComponent,
         CrosswordComponent,
+<<<<<<< HEAD
         CluesComponent,
+=======
+        EnterWordComponent,
+>>>>>>> dcbef734cc15c14e1c66b626e4f208559045faf5
     ],
     imports: [
         BrowserModule,
         HttpClientModule,
+<<<<<<< HEAD
         FormsModule,
+=======
+        FormsModule
+>>>>>>> dcbef734cc15c14e1c66b626e4f208559045faf5
     ],
     providers: [
         RenderService,
