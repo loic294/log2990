@@ -41,10 +41,6 @@ const CLUES: Array<Word> = [
 })
 export class CluesComponent implements OnInit {
 
-    private _clues: Array<Word> = CLUES;
-
-    private _selectedClue: Word;
-
     public onSelect(clue: Word): void {
         this._selectedClue = clue;
     }
@@ -57,7 +53,7 @@ export class CluesComponent implements OnInit {
         return this._clues;
     }
 
-    public constructor() { }
+    public constructor(private _clues: Array<Word> = CLUES, private _selectedClue: Word) { }
 
     public ngOnInit(): void {
     }
