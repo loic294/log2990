@@ -12,31 +12,31 @@ export default class Word {
         private _orientation : Orientation,
     ) {}
 
-    public getName() {
+    public get name() {
         return this._name
     }
 
-    public getDesc() {
+    public get desc() {
         return this._desc
     }
 
-    public getPosition() {
+    public get position() {
         return this._postiion
     }
 
-    public getCol () {
+    public get col () {
         return this._postiion[0]
     }
 
-    public getRow () {
+    public get row () {
         return this._postiion[1]
     }
 
-    public getDirection() {
+    public get direction() {
         return this._orientation
     }
 
-    public getLength() {
+    public get length() {
         return this._name.length
     }
 
