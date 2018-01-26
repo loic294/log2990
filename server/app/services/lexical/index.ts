@@ -36,7 +36,7 @@ export default class LexicalService {
 	}
 	
 	private async baseWordSearch(requirements: string){
-		const DATAMUSE_URL = `https://api.datamuse.com/words?sp=${requirements}&md=f`;
+		const DATAMUSE_URL = `https://api.datamuse.com/words?sp=${requirements}&md=f&max=1500`;
 		
 		try {
 			const response = await axios.get(DATAMUSE_URL);
@@ -52,6 +52,7 @@ export default class LexicalService {
 		let test: any = await this.baseWordSearch(request.repeat(length));
 
 		return test[Math.floor(Math.random() * test.length) + 1].word; 
+		// return test;
 	}
 
 	public async positionSearch(researchCriteria: string, common: boolean){
@@ -67,5 +68,5 @@ export default class LexicalService {
 		let test: any = await this.baseWordSearch(str);
 
 		return test[Math.floor(Math.random() * test.length)].word;
-	}
+	} 
 }
