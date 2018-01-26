@@ -25,60 +25,50 @@ const grid: Array<String> = [
 })
 export class GridComponent implements OnInit {
 
-  grid: Array<Array<Case>> = grid.map((row: string) => {
+  private _grid: Array<Array<Case>> = grid.map((row: string) => {
     const strings: Array<string> = row.split(' ')
     return strings.map((c: string) => new Case(c))
   })
 
   private _selectedCase: Case;
-  private _input : string = null;
   private _x : number;
   private _y : number;
 
 
 
-  enterInput(input: string) : void {
-    this._input = input;
+  isLetter(letter: string) : boolean {
+    return (/[A-Za-z]/.test(letter) && letter.length == 1);
   }
 
-
-
   selectCase(c : Case) : void {
+    if (this._selectedCase != null)
+      this._selectedCase.unselect();
+    c.select();
     this._selectedCase = c;
     this._x = c.getX();
     this._y = c.getY();
   }
 
 
-
-  enterWord() : void {
-
-    while (true) {
-
-      while (this._input == null);
-
-      this._selectedCase.setChar(this._input);
-      this._input = null;
-
-      this._selectedCase.unselect();
-      
-      if (this._x + 1 == this.grid.length) 
-        break;
-
-      this.selectCase(this.grid[this._x+1][this._y]);
+  nextCase() : void {
+    if (this.isLetter(this._selectedCase.getChar())) {
+      if (this._x + 1 < this._grid.length) {
+       this._x++;
+       this.selectCase(this._grid[this._x][this._y]);
+      }
+      else
+       this._selectedCase.unselect();
     }
-
   }
 
 
-  
   constructor() {}
 
   ngOnInit() {
-    for (let i = 0; i < this.grid.length; i++) {
-      for (let j = 0; j < this.grid[i].length; j++) {
-        this.grid[i][j].setX(i);
-        this.grid[i][j].setY(j);
+    for (let i = 0; i < this._grid.length; i++) {
+      for (let j = 0; j < this._grid[i].length; j++) {
+        this._grid[i][j].setX(i);
+        this._grid[i][j].setY(j);
       }
     }
 
