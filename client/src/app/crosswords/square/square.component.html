@@ -1,4 +1,5 @@
 
-<div class="square">
-	{{case.getChar()}}
-</div>
+<input class="square" [(ngModel)]="case._char" 
+[class.selected]="this.case.selected() == true"
+(click)="this.case.select()">
+

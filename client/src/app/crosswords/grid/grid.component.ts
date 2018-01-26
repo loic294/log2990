@@ -30,8 +30,58 @@ export class GridComponent implements OnInit {
     return strings.map((c: string) => new Case(c))
   })
 
+  private _selectedCase: Case;
+  private _input : string = null;
+  private _x : number;
+  private _y : number;
+
+
+
+  enterInput(input: string) : void {
+    this._input = input;
+  }
+
+
+
+  selectCase(c : Case) : void {
+    this._selectedCase = c;
+    this._x = c.getX();
+    this._y = c.getY();
+  }
+
+
+
+  enterWord() : void {
+
+    while (true) {
+
+      while (this._input == null);
+
+      this._selectedCase.setChar(this._input);
+      this._input = null;
+
+      this._selectedCase.unselect();
+      
+      if (this._x + 1 == this.grid.length) 
+        break;
+
+      this.selectCase(this.grid[this._x+1][this._y]);
+    }
+
+  }
+
+
+  
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    for (let i = 0; i < this.grid.length; i++) {
+      for (let j = 0; j < this.grid[i].length; j++) {
+        this.grid[i][j].setX(i);
+        this.grid[i][j].setY(j);
+      }
+    }
+
+  }
 
 }
