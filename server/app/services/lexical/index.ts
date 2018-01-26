@@ -53,4 +53,19 @@ export default class LexicalService {
 
 		return test[Math.floor(Math.random() * test.length) + 1].word; 
 	}
+
+	public async positionSearch(researchCriteria: string, common: boolean){
+		var str: string = "";
+		var request: string = "?";
+		
+		for(var i = 0; i < researchCriteria.length; i++){
+			if(researchCriteria[i].match(/[a-z]/i))
+				str += researchCriteria[i];
+			else
+				str += request.repeat(+researchCriteria[i]);
+		}
+		let test: any = await this.baseWordSearch(str);
+
+		return test[Math.floor(Math.random() * test.length)].word;
+	}
 }
