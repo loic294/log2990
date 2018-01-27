@@ -1,6 +1,7 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { HttpClientModule } from "@angular/common/http";
+import { FormsModule } from '@angular/forms'
 
 import { AppComponent } from "./app.component";
 import { GameComponent } from "./race/game-component/game.component";
@@ -9,7 +10,6 @@ import { RenderService } from "./race/render-service/render.service";
 import { BasicService } from "./basic.service";
 import { DifficultyComponent } from './crosswords/difficulty/difficulty.component';
 import { GridComponent } from './crosswords/grid/grid.component';
-import { SquareComponent } from './crosswords/square/square.component';
 import { CrosswordComponent } from './crosswords/crossword/crossword.component';
 import { CluesComponent } from './crosswords/clues/clues.component';
 
@@ -19,13 +19,13 @@ import { CluesComponent } from './crosswords/clues/clues.component';
         GameComponent,
         DifficultyComponent,
         GridComponent,
-        SquareComponent,
         CrosswordComponent,
         CluesComponent,
     ],
     imports: [
         BrowserModule,
-        HttpClientModule
+        HttpClientModule,
+        FormsModule
     ],
     providers: [
         RenderService,

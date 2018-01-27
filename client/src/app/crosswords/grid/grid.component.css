@@ -7,3 +7,17 @@
 .row {
 	display: flex;
 }
+
+.square {
+	height: 20px;
+	width: 20px;
+	border: 1px solid #333;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: uppercase;
+}
+.selected{
+	background-color: green;
+	color: white;
+}
