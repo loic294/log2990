@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import Word, { Orientation  } from '../../../../../common/lexical/word'
+import { Component, OnInit } from "@angular/core";
+import Word, { Orientation } from "../../../../../common/lexical/word";
 
-/** TEMPORARY MOCKED CONTENT 
- * 
+/** TEMPORARY MOCKED CONTENT
+ *
  * Example table
- * 
+ *
  *   0 1 2 3 4 5 6 7 8 9
  * 0 - - - - - - - - P -
  * 1 - - - - A - C L U E
@@ -18,34 +18,44 @@ import Word, { Orientation  } from '../../../../../common/lexical/word'
  * 9 G R A V E - D O C K
  * **/
 
-const CLUES: Array<Word>  = [
-  new Word('Clue', 'Definition of word clue', [1, 6], Orientation.horizontal),
-  new Word('Wound', 'Definition of word wound', [2, 0], Orientation.horizontal),
-  new Word('Finish', 'Definition of word finish', [5, 2], Orientation.horizontal),
-  new Word('Menu', 'Definition of word menu', [7, 1], Orientation.horizontal),
-  new Word('Grave', 'Definition of word grave', [9, 0], Orientation.horizontal),
-  new Word('Dock', 'Definition of word dock', [9, 6], Orientation.horizontal),
-  new Word('Worry', 'Definition of word worry', [2, 0], Orientation.vertical),
-  new Word('Adventure', 'Definition of word adventure', [1, 4], Orientation.vertical),
-  new Word('Crossword', 'Definition of word crossword', [1, 6], Orientation.vertical),
-  new Word('Push', 'Definition of word push', [0, 8], Orientation.vertical),
-  new Word('Crack', 'Definition of word crack', [5, 9], Orientation.vertical),
-] 
+const CLUES: Array<Word> = [
+    new Word("Clue", "Definition of word clue", [1, 6], Orientation.horizontal),
+    new Word("Wound", "Definition of word wound", [2, 0], Orientation.horizontal),
+    new Word("Finish", "Definition of word finish", [5, 2], Orientation.horizontal),
+    new Word("Menu", "Definition of word menu", [7, 1], Orientation.horizontal),
+    new Word("Grave", "Definition of word grave", [9, 0], Orientation.horizontal),
+    new Word("Dock", "Definition of word dock", [9, 6], Orientation.horizontal),
+    new Word("Worry", "Definition of word worry", [2, 0], Orientation.vertical),
+    new Word("Adventure", "Definition of word adventure", [1, 4], Orientation.vertical),
+    new Word("Crossword", "Definition of word crossword", [1, 6], Orientation.vertical),
+    new Word("Push", "Definition of word push", [0, 8], Orientation.vertical),
+    new Word("Crack", "Definition of word crack", [5, 9], Orientation.vertical),
+];
 
 /** END OF MOCKED CONTENT **/
 
 @Component({
-  selector: 'app-clues',
-  templateUrl: './clues.component.html',
-  styleUrls: ['./clues.component.css']
+    selector: "app-clues",
+    templateUrl: "./clues.component.html",
+    styleUrls: ["./clues.component.css"]
 })
 export class CluesComponent implements OnInit {
 
-  clues: Array<Word> = CLUES
+    public onSelect(clue: Word): void {
+        this._selectedClue = clue;
+    }
 
-  constructor() { }
+    public get selectedClue(): Word {
+        return this._selectedClue;
+    }
 
-  ngOnInit() {
-  }
+    public get clues(): Array<Word> {
+        return this._clues;
+    }
+
+    public constructor(private _clues: Array<Word> = CLUES, private _selectedClue: Word) { }
+
+    public ngOnInit(): void {
+    }
 
 }

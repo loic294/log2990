@@ -1,5 +1,9 @@
 <div class="grid">
-  <div class="row" *ngFor="let clue of clues">
+  <div class="row" *ngFor="let clue of clues" (click)="onSelect(clue)" >
     {{ clue.getDesc() }}
   </div>
+</div>
+
+<div *ngIf="selectedClue">
+  <h2>{{selectedClue.getDesc()}}</h2>
 </div>
