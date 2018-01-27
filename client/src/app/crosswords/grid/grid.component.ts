@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Case } from '../../../case'
+import { Case } from '../case'
 
 /** TEMPORARY MOCKED CONTENT 
    * Example table
@@ -37,7 +37,7 @@ export class GridComponent implements OnInit {
 
 
   isLetter(letter: string) : boolean {
-    return (/[A-Za-z]/.test(letter) && letter.length == 1);
+    return (/[a-z]/i.test(letter) && letter.length == 1);
   }
 
   selectCase(c : Case) : void {
