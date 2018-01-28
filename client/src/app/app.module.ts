@@ -10,7 +10,6 @@ import { RenderService } from "./race/render-service/render.service";
 import { BasicService } from "./basic.service";
 import { DifficultyComponent } from './crosswords/difficulty/difficulty.component';
 import { GridComponent } from './crosswords/grid/grid.component';
-import { SquareComponent } from './crosswords/square/square.component';
 import { CrosswordComponent } from './crosswords/crossword/crossword.component';
 import { CluesComponent } from './crosswords/clues/clues.component';
 import { EnterWordComponent } from './crosswords/enter-word/enter-word.component';
@@ -21,7 +20,6 @@ import { EnterWordComponent } from './crosswords/enter-word/enter-word.component
         GameComponent,
         DifficultyComponent,
         GridComponent,
-        SquareComponent,
         CrosswordComponent,
         CluesComponent,
         EnterWordComponent,
