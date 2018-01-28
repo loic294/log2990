@@ -1,5 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit/*, Input,*/ } from '@angular/core';
+
 import { Case } from '../case'
+import  Word  from "../../../../../common/lexical/word";
+
+import { WordService } from '../../word.service'
 
 /** TEMPORARY MOCKED CONTENT 
    * Example table
@@ -30,7 +34,9 @@ export class GridComponent implements OnInit {
     return strings.map((c: string) => new Case(c))
   })
 
+  //@Input() public word: Word;
   private _selectedCase: Case;
+  private _word: Word;
   private _x : number;
   private _y : number;
 
@@ -61,8 +67,14 @@ export class GridComponent implements OnInit {
     }
   }
 
+  enterWord(): void {
+    this._wordService.getWord()
+    .subscribe(_word => this._word = _word);
+    this.selectCase(this._grid[this._word.col][this._word.row]);
+  }
 
-  constructor() {}
+
+  constructor(private _wordService: WordService) {}
 
   ngOnInit() {
     for (let i = 0; i < this._grid.length; i++) {
@@ -72,6 +84,9 @@ export class GridComponent implements OnInit {
       }
     }
 
+    this.enterWord();
   }
+
+
 
 }

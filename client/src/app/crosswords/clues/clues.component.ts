@@ -1,5 +1,7 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit/*, Output, EventEmitter*/ } from "@angular/core";
 import Word, { Orientation } from "../../../../../common/lexical/word";
+
+import { WordService } from '../../word.service'
 
 /** TEMPORARY MOCKED CONTENT
  *
@@ -43,9 +45,11 @@ export class CluesComponent implements OnInit {
 
     private _clues: Array<Word> = CLUES;
     private _selectedClue: Word;
+  //  @Output() word: EventEmitter<Word> = new EventEmitter<Word>();
 
     public onSelect(clue: Word): void {
         this._selectedClue = clue;
+        this._wordService.selectWord(this._selectedClue);
     }
 
     public get selectedClue(): Word {
@@ -56,7 +60,7 @@ export class CluesComponent implements OnInit {
         return this._clues;
     }
 
-    public constructor() { }
+    public constructor(public _wordService: WordService) { }
 
     public ngOnInit(): void {
     }
