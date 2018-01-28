@@ -17,7 +17,7 @@ pipelines:
           - cd ..
           - cd client
           - npm install
-          - ng test
+          - npm test
 definitions:
   caches:
     node: node_modules
