@@ -14,10 +14,6 @@ pipelines:
           - cd server
           - npm install
           - npm test
-          - cd ..
-          - cd client
-          - npm install
-          - npm test
 definitions:
   caches:
     node: node_modules
