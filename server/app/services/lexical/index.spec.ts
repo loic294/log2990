@@ -20,7 +20,7 @@ describe("baseDefinition('apple')", () => {
             assert.deepEqual(firstDefinition, expected); 
         });    
      }); 
-}); 
+});
 
 describe("lengthSearch('4', 'true')", () => {
     it("should return a 4 letter common word", () => {
@@ -35,8 +35,21 @@ describe("positionSearch('2a3', 'true')", () => {
     it("should return a 6 letter common word with an a at the 3 position", () => {
 
         return service.positionSearch("2a3", false).then((data: any)=> {
+            
             assert.equal(6, data.length);
             assert.equal("a", data[2]);
         });
     });
 });
+
+describe("Function wordDefinition", () => {   
+    it("should return defintions without the word in it", () => {   
+        
+        return service.wordDefinition("hard","apple").then((definitions: any)=>{  
+             for (let definition in definitions){
+                 assert.notInclude(definition, "apple", "Should not include the word apple");
+             }
+        });  
+          
+     });   
+}); 
