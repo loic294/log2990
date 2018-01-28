@@ -1,0 +1,17 @@
+<div class="letters">
+    <div class="case" *ngFor="let case of letters">
+        <app-square [case]="case" ></app-square>
+    </div>
+</div>
+
+<div>
+    <label>Letter:
+        <input [(ngModel)] = "this.letter" placeholder="Letter">
+    </label>
+</div>
+
+<div>
+  <button (click)="setLetter(this.letter)">Save Letter</button>
+  <span>{{this.letter}}</span>
+  <button onClick="undoLast()">Undo</button>
+</div>

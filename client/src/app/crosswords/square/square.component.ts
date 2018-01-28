@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { Case } from '../../../../../common/crossword/case'
 
@@ -11,7 +11,19 @@ export class SquareComponent implements OnInit {
 
   @Input() case: Case;
 
-  constructor() { }
+ @Output() charChange = new EventEmitter(); 
+
+  getLetter(): String {
+    return this.case.getChar();
+  }
+
+  setLetter(c: String): void {
+    this.case.setChar(c);
+    this.charChange.emit(c);
+  }
+
+  constructor() {
+  }
 
   ngOnInit() {
   }
