@@ -10,21 +10,6 @@ export default class LexicalService {
 
 	// private usedWords: Array<String> = null;
 
-	async method1 (word: string = 'hello') {
-		// Cette méthode est asynchrone
-
-		try { // To be safe, we detect errors with try/catch
-
-			// ... do some asynchronous work such as requesting data from the server
-
-			return word
-
-		} catch(err) {
-			throw err
-		}
-
-	}
-
 	async baseDefinition(word: string) {  
         const WORDNIK_URL = `http://api.wordnik.com:80/v4/word.json/${word}/definitions?limit=200&${API_KEY}`; 
 		try {
@@ -49,17 +34,33 @@ export default class LexicalService {
 	public async wordDefinition(level: string, word: string){   
 		let definitions: any[] = [];  
 		try {   
-		  let data: any = await this.baseDefinition(word);  
-		  
-		  for(let def in data){  
-			if (!data[def].text.includes(`${word}`)){  
-				definitions.push(data[def].text);
+			let data: any = await this.baseDefinition(word);  
+			
+			for(let def in data){  
+				if (!data[def].text.includes(` ${word} `|| ` ${word}`)){  
+					definitions.push(data[def].text);
+				}  
 			}  
-		  }  
+			// Remove examples from definitions
+			for (let def in definitions){
+				let definition = definitions[def];
+				if(definition.includes(":")){
+					definitions[def] = definition.substring(0, definition.indexOf(":"));
+				}
+			}
+			// Remove unecessary details from definitions
+			for (let def in definitions){
+				let definition = definitions[def];
+				if(definition.includes(";")){
+					definitions[def] = definition.substring(0, definition.indexOf(";"));
+				}
+			}
+			
+		  
 		} catch(err){  
 		  throw err;  
 		}  
-		return definitions; 
+		return definitions[0];
 	} 
 
 	public async lengthSearch(length: number, common: boolean){
