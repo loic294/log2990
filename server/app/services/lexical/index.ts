@@ -26,9 +26,9 @@ export default class LexicalService {
 	}
 
 	async baseDefinition(word: string) {  
-        const url = `http://api.wordnik.com:80/v4/word.json/${word}/definitions?limit=200&${API_KEY}`; 
+        const WORDNIK_URL = `http://api.wordnik.com:80/v4/word.json/${word}/definitions?limit=200&${API_KEY}`; 
 		try {
-			const response = await axios.get(url);
+			const response = await axios.get(WORDNIK_URL);
 			return response.data;
 		} catch(err){
 			throw err;
@@ -45,6 +45,22 @@ export default class LexicalService {
 			throw err;
 		}
 	}
+
+	public async wordDefinition(level: string, word: string){   
+		let definitions: any[] = [];  
+		try {   
+		  let data: any = await this.baseDefinition(word);  
+		  
+		  for(let def in data){  
+			if (!data[def].text.includes(`${word}`)){  
+				definitions.push(data[def].text);
+			}  
+		  }  
+		} catch(err){  
+		  throw err;  
+		}  
+		return definitions; 
+	} 
 
 	public async lengthSearch(length: number, common: boolean){
 		var request: string = "?";
