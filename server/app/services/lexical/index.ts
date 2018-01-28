@@ -55,12 +55,26 @@ export default class LexicalService {
 					definitions[def] = definition.substring(0, definition.indexOf(";"));
 				}
 			}
-			
-		  
+
+			switch (level) { 
+				case 'easy': {
+					return definitions[0];
+				} 
+				case 'hard': { 
+					if(definitions.length > 1){
+						let min = Math.ceil(1) ;
+						let max = Math.floor(definitions.length);
+						return definitions[Math.floor((Math.random()*(max-min)+min))];
+					}
+					else{
+						return definitions[0];
+					}
+				} 
+			 } 
+			 
 		} catch(err){  
 		  throw err;  
 		}  
-		return definitions[0];
 	} 
 
 	public async lengthSearch(length: number, common: boolean){

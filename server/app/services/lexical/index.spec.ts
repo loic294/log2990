@@ -42,14 +42,20 @@ describe("positionSearch('2a3', 'true')", () => {
     });
 });
 
-describe("Function wordDefinition", () => {   
-    it("should return defintions without the word in it", () => {   
-        
-        return service.wordDefinition("hard","apple").then((definitions: any)=>{  
-             for (let definition in definitions){
-                 assert.notInclude(definition, "apple", "Should not include the word apple");
-             }
-        });  
-          
+describe("wordDefinition('easy','train')", () => {   
+    it("should return the first provided definition of the word", () => {   
+        return service.wordDefinition("easy","train").then((definition: any)=>{  
+            assert.notInclude(definition, "train", "Should not include the word train in the definition");
+            assert.equal(definition, "A series of connected railroad cars pulled or pushed by one or more locomotives.");
+        });   
+     });   
+}); 
+
+describe("wordDefinition('hard','train')", () => {   
+    it("should return an alternative definition of the word", () => {   
+        return service.wordDefinition("hard","train").then((definition: any)=>{  
+            assert.notInclude(definition, "train", "Should not include the word train in the definition");
+            assert.notEqual(definition, "A series of connected railroad cars pulled or pushed by one or more locomotives.");
+        });    
      });   
 }); 
