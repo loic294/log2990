@@ -14,7 +14,7 @@ import { DifficultyComponent } from './crosswords/difficulty/difficulty.componen
 import { GridComponent } from './crosswords/grid/grid.component';
 import { CrosswordComponent } from './crosswords/crossword/crossword.component';
 import { CluesComponent } from './crosswords/clues/clues.component';
-import { EnterWordComponent } from './crosswords/enter-word/enter-word.component';
+
 
 @NgModule({
     declarations: [
@@ -24,7 +24,6 @@ import { EnterWordComponent } from './crosswords/enter-word/enter-word.component
         GridComponent,
         CrosswordComponent,
         CluesComponent,
-        EnterWordComponent,
     ],
     imports: [
         BrowserModule,
