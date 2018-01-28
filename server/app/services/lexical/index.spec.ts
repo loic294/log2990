@@ -25,7 +25,16 @@ describe("baseDefinition('apple')", () => {
 describe("lengthSearch('4', 'true')", () => {
     it("should return a 4 letter common word", () => {
         
-        return service.lengthSearch(4, true).then((data: any)=> {
+        return service.wordSearch("4", true).then((data: any)=> {
+            assert.equal(4, data.length);
+        });
+    });
+});
+
+describe("lengthSearch('4', 'false')", () => {
+    it("should return a 4 letter common word", () => {
+        
+        return service.wordSearch("4", true).then((data: any)=> {
             assert.equal(4, data.length);
         });
     });
@@ -34,7 +43,7 @@ describe("lengthSearch('4', 'true')", () => {
 describe("positionSearch('2a3', 'true')", () => {
     it("should return a 6 letter common word with an a at the 3 position", () => {
 
-        return service.positionSearch("2a3", false).then((data: any)=> {
+        return service.wordSearch("2a3", false).then((data: any)=> {
             
             assert.equal(6, data.length);
             assert.equal("a", data[2]);
