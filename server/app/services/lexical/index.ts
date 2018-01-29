@@ -36,7 +36,7 @@ export default class LexicalService {
 			let data: any = await this.baseDefinition(word);
 
 			for (let def in data) {
-				if (!data[def].text.includes(` ${word} ` || ` ${word}`)) {
+				if (!data[def].text.includes(`${word}`)) {
 					definitions.push(data[def].text);
 				}
 			}
