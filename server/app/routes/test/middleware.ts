@@ -9,7 +9,7 @@ export async function lexical(req: Request, res: Response, next: NextFunction) {
 
 	const lexicalService = new LexicalService()
 
-	const testResult = await lexicalService.positionSearch(word, true)
+	const testResult = await lexicalService.wordSearch(word, true)
 
 	res.json({ lexicalResult: testResult })
 }
