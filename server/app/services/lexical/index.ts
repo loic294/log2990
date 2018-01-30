@@ -9,7 +9,7 @@ export default class LexicalService {
 
 	constructor() {}
 
-	async baseDefinition(word: string) {
+	private async baseDefinition(word: string) {
 		const WORDNIK_URL = `http://api.wordnik.com:80/v4/word.json/${word}/definitions?limit=200&${API_KEY}`;
 		try {
 			const response = await axios.get(WORDNIK_URL);
@@ -36,7 +36,7 @@ export default class LexicalService {
 			let data: any = await this.baseDefinition(word);
 
 			for (let def in data) {
-				if (!data[def].text.includes(` ${word} ` || ` ${word}`)) {
+				if (!data[def].text.includes(`${word}`)) {
 					definitions.push(data[def].text);
 				}
 			}
