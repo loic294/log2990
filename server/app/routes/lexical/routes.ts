@@ -6,11 +6,6 @@ export default {
 	base: '/lexical',
 	routes: [{
 		method: 'GET',
-		path: '/:word/',
-		middleware: [
-			lexical.lexical
-		]
-	}, {method: 'GET',
 		path: '/wordsearch/:common/:word',
 		middleware: [
 			lexical.wordSearch
