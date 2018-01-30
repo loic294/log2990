@@ -71,8 +71,8 @@ export default class LexicalService {
 				case 'hard':
 					{
 						if (filteredDefinitions.length > 1) {
-							let min = Math.ceil(1);
-							let max = Math.floor(filteredDefinitions.length);
+							let min = 1;
+							let max = filteredDefinitions.length;
 							return filteredDefinitions[Math.floor((Math.random() * (max - min) + min))];
 						} else {
 							return filteredDefinitions[0];
