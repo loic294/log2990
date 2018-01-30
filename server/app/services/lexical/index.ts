@@ -78,7 +78,11 @@ export default class LexicalService {
 							return filteredDefinitions[0];
 						}
 					}
+				default: {
+					return filteredDefinitions[0];
+				}
 			}
+			
 		} catch (err) {
 			throw err;
 		}
