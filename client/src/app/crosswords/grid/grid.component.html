@@ -13,6 +13,14 @@
 <div *ngIf="_word">
 
   <h2>{{_word.name}}</h2>
+  <h2>{{_word.col}}</h2>
+  <h2>{{_word.row}}</h2>
+  <h2>{{_grid[_word.col][_word.row]._char}}</h2>
+
+</div>
+<div *ngIf="_selectedCase">
+
+  <h2>{{_selectedCase._char}}</h2>
 
 
 </div>

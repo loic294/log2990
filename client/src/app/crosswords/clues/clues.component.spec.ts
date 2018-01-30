@@ -2,13 +2,16 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CluesComponent } from './clues.component';
 
+import { WordService } from '../../word.service'
+
 describe('CluesComponent', () => {
   let component: CluesComponent;
   let fixture: ComponentFixture<CluesComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CluesComponent ]
+      declarations: [ CluesComponent ],
+      providers: [ WordService ]
     })
     .compileComponents();
   }));

@@ -6,6 +6,7 @@ import { CluesComponent } from '../clues/clues.component';
 import { DifficultyComponent } from '../difficulty/difficulty.component';
 import { GridComponent } from '../grid/grid.component';
 
+import { WordService } from '../../word.service'
 
 describe('CrosswordComponent', () => {
   let component: CrosswordComponent;
@@ -19,7 +20,8 @@ describe('CrosswordComponent', () => {
         CluesComponent,
         DifficultyComponent,
         GridComponent,
-       ]
+       ],
+       providers: [ WordService ]
     })
     .compileComponents();
   }));

@@ -1,9 +1,10 @@
+
 export class Case {
 
-	private _isSelected: boolean = false
+    private _isSelected: boolean = false
 
 	constructor(private _char: string = "-", 
-	private _x = 0, private _y = 0) {}
+    private _x = 0, private _y = 0) {}
 	
 	public setChar(c: string) {
         this._char = c;

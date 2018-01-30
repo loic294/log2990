@@ -1,7 +1,7 @@
 import { Component, OnInit/*, Input,*/ } from '@angular/core';
 
 import { Case } from '../case'
-import  Word  from "../../../../../common/lexical/word";
+import  Word, { Orientation }  from "../../../../../common/lexical/word";
 
 import { WordService } from '../../word.service'
 
@@ -46,7 +46,53 @@ export class GridComponent implements OnInit {
     return (/[a-z]/i.test(letter) && letter.length == 1);
   }
 
+
+  findWordStart(): Word {
+        let tempIndex: Array<number> = [this._x,this._y];
+        let tempOrientation: Orientation;
+
+        /* If letter */
+        if (this.isLetter(this._grid[tempIndex[0]][tempIndex[1]].getChar())) {
+            /* Go back by col indexes if possible */
+            if (tempIndex[1]-1 >= 0 && 
+                this.isLetter(this._grid[tempIndex[0]][tempIndex[1]-1].getChar())) {
+                    tempOrientation = Orientation.horizontal;
+                     while (tempIndex[1]-1 >= 0 &&
+                        this.isLetter(this._grid[tempIndex[0]][tempIndex[1]-1].getChar())) {
+                        tempIndex[1]--;
+                    }
+            }
+            /* else go back by row indexes if possible */
+            else if (tempIndex[0]-1 >= 0 &&
+                this.isLetter(this._grid[tempIndex[0]-1][tempIndex[1]].getChar())) {
+                    tempOrientation = Orientation.vertical;
+                    while (tempIndex[0]-1 >= 0 &&
+                    this.isLetter(this._grid[tempIndex[0]-1][tempIndex[1]].getChar())) {
+                        tempIndex[0]--;
+                    }
+            }
+            /* else already (or is now) at word start. return as is */
+        }
+
+        return new Word("","",tempIndex,tempOrientation);       
+  }
+
   selectCase(c : Case) : void {
+    this._x = c.getX();
+    this._y = c.getY();
+
+    let tempWord: Word = this.findWordStart();    
+    this._wordService.selectPosition(tempWord);
+
+    if (this._selectedCase != null)
+      this._selectedCase.unselect();
+    this._grid[tempWord.col][tempWord.row].select();
+    this._selectedCase = this._grid[tempWord.col][tempWord.row];
+    this._x = this._grid[tempWord.col][tempWord.row].getX();
+    this._y = this._grid[tempWord.col][tempWord.row].getY();
+  }
+
+  selectCaseService(c: Case): void {
     if (this._selectedCase != null)
       this._selectedCase.unselect();
     c.select();
@@ -67,14 +113,7 @@ export class GridComponent implements OnInit {
     }
   }
 
-  enterWord(): void {
-    this._wordService.getWord()
-    .subscribe(_word => this._word = _word);
-    this.selectCase(this._grid[this._word.col][this._word.row]);
-  }
-
-
-  constructor(private _wordService: WordService) {}
+  constructor(private _wordService: WordService)  {}
 
   ngOnInit() {
     for (let i = 0; i < this._grid.length; i++) {
@@ -84,7 +123,11 @@ export class GridComponent implements OnInit {
       }
     }
 
-    this.enterWord();
+    this._wordService.getWord()
+    .subscribe(
+    (_word) => {this._word = _word,
+    this.selectCaseService(this._grid[_word.col][_word.row])}
+    );
   }
 
 
