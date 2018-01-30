@@ -42,8 +42,9 @@ export class GridComponent implements OnInit {
     private _y: number;
 
 	
-    public validateChar(element: HTMLInputElement): void {
-		element.value = element.value.replace(/[^a-z]/ig, "")
+    public validateChar(event: any): void {
+		event.preventDefault()
+		event.target.value = event.target.value.replace(/[^a-z]/ig, "")
     }
 
     public isLetter(letter: string): boolean {
