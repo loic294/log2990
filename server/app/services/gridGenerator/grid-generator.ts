@@ -1,6 +1,6 @@
 import {Case} from './case'
 
-export class GridGenerator {
+export default class GridGenerator {
 
   private grille : Case[][];
   private readonly TAILLE_GRILLE : number = 10;

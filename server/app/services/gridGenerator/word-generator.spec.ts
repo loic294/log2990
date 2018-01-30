@@ -1,7 +1,7 @@
-import { WordGenerator } from './word-generator';
+import WordGenerator from './word-generator';
 import {Case} from './case'
 import {expect} from 'chai'
-import { GridGenerator } from './grid-generator';
+import GridGenerator from './grid-generator';
 
 const assert = require('assert');
 

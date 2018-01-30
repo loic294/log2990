@@ -1,6 +1,6 @@
 import { Case } from './case'
-import { GridGenerator } from "./grid-generator";
-import { CaseWithPos } from './case-with-pos'
+import GridGenerator from "./grid-generator";
+import Word from "../../../../common/lexical/word"
 
 enum Difficulte {
     facile,
@@ -8,15 +8,16 @@ enum Difficulte {
     difficile,
 }
 
-export class WordGenerator extends GridGenerator{
+export default class WordGenerator extends GridGenerator{
 
     private horizontalWordLength : number[] = [];
     private verticalWordLength : number[] = [];
+    private _wordArray : Word[] = [];
 
     constructor(){
         super();
-        //this.findHorizontalWordLength();
-        //this.findVerticalWordLength();
+        this.findHorizontalWordLength();
+        this.findVerticalWordLength();
     }
 
     public findWordLength(grille : Case[][]) : void{
@@ -86,17 +87,10 @@ export class WordGenerator extends GridGenerator{
             }
         }
     }
-    /*
-    if (this.getGrille()[rows][col].isBlack() || rows ==  this.getGrille().length -1){
-        if(!blackOnLine && rows ==  this.getGrille().length -1)
-            this.verticalWordLength[wordIndex] = rows + 1;
-        else
-            this.verticalWordLength[wordIndex] = rows - latestBlackPosition;
-        latestBlackPosition = rows;
-        wordIndex++;
-        blackOnLine = true;
+
+    public generateWords() {
+        
     }
-    */
 
     public getVerticalWordLength() : number[] {
         return this.verticalWordLength;

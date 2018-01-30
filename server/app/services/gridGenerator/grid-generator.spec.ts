@@ -1,4 +1,4 @@
-import { GridGenerator } from './grid-generator';
+import GridGenerator from './grid-generator';
 import {Case} from './case'
 import {expect} from 'chai'
 
