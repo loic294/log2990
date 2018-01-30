@@ -1,49 +1,48 @@
-import { Component, OnInit/*, Input,*/ } from '@angular/core';
+import { Component, OnInit/*, Input,*/ } from "@angular/core";
 
 import { Case } from '../case'
 import  Word, { Orientation }  from "../../../../../common/lexical/word";
 
-import { WordService } from '../../word.service'
+import { WordService } from "../../word.service";
 
-/** TEMPORARY MOCKED CONTENT 
+/** TEMPORARY MOCKED CONTENT
    * Example table
    * **/
 
 const grid: Array<String> = [
-  '- - - - - - - - P -',
-  '- - - - A - C L U E',
-  'W O U N D - R - S -',
-  'O - - - V - O - H -',
-  'R - - - E - S - - -',
-  'R - F I N I S H - C',
-  'Y - - - T - W - - R',
-  '- M E N U - O - - A',
-  '- - - - R - E - - C',
-  'G R A V E - D O C K',
-]
+  "- - - - - - - - P -",
+  "- - - - A - C L U E",
+  "W O U N D - R - S -",
+  "O - - - V - O - H -",
+  "R - - - E - S - - -",
+  "R - F I N I S H - C",
+  "Y - - - T - W - - R",
+  "- M E N U - O - - A",
+  "- - - - R - E - - C",
+  "G R A V E - D O C K",
+];
 
 @Component({
-  selector: 'app-grid',
-  templateUrl: './grid.component.html',
-  styleUrls: ['./grid.component.css']
+  selector: "app-grid",
+  templateUrl: "./grid.component.html",
+  styleUrls: ["./grid.component.css"]
 })
 export class GridComponent implements OnInit {
 
   private _grid: Array<Array<Case>> = grid.map((row: string) => {
-    const strings: Array<string> = row.split(' ')
-    return strings.map((c: string) => new Case(c))
-  })
+    const strings: Array<string> = row.split(" ");
 
-  //@Input() public word: Word;
+    return strings.map((c: string) => new Case(c));
+  });
+
+  // @Input() public word: Word;
   private _selectedCase: Case;
   private _word: Word;
-  private _x : number;
-  private _y : number;
+  private _x: number;
+  private _y: number;
 
-
-
-  isLetter(letter: string) : boolean {
-    return (/[a-z]/i.test(letter) && letter.length == 1);
+  public isLetter(letter: string): boolean {
+    return (/[a-z]/i.test(letter) && letter.length === 1);
   }
 
 
@@ -93,23 +92,23 @@ export class GridComponent implements OnInit {
   }
 
   selectCaseService(c: Case): void {
-    if (this._selectedCase != null)
+    if (this._selectedCase != null) {
       this._selectedCase.unselect();
+    }
     c.select();
     this._selectedCase = c;
     this._x = c.getX();
     this._y = c.getY();
   }
 
-
-  nextCase() : void {
+  public nextCase(): void {
     if (this.isLetter(this._selectedCase.getChar())) {
       if (this._x + 1 < this._grid.length) {
-       this._x++;
-       this.selectCase(this._grid[this._x][this._y]);
+        this._x++;
+        this.selectCase(this._grid[this._x][this._y]);
+      } else {
+        this._selectedCase.unselect();
       }
-      else
-       this._selectedCase.unselect();
     }
   }
 
@@ -129,7 +128,5 @@ export class GridComponent implements OnInit {
     this.selectCaseService(this._grid[_word.col][_word.row])}
     );
   }
-
-
 
 }
