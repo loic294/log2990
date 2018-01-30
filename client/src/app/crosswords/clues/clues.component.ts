@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import Word, { Orientation } from "../../../../../common/lexical/word";
 
-import { WordService } from '../../word.service/word.service'
+import { WordService } from "../../word.service";
 
 /** TEMPORARY MOCKED CONTENT
  *
