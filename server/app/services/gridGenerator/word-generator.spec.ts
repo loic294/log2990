@@ -21,6 +21,7 @@ describe('Words', () => {
           ];
 
         testArray[0][2].setBlack(true);
+        testArray[1][1].setBlack(true);
 
         testWords.findWordLength(testArray);
 

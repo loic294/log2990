@@ -15,7 +15,7 @@ export class WordGenerator extends GridGenerator{
 
     constructor(){
         super();
-        //this.findHorizontalWordLengtGh();
+        //this.findHorizontalWordLength();
         //this.findVerticalWordLength();
     }
 
