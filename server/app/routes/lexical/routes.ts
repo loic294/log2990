@@ -15,5 +15,10 @@ export default {
 		middleware: [
 			lexical.wordSearch
 		]
+	}, {method: 'GET',
+		path: '/wordDefinition/:level/:word',
+		middleware: [
+			lexical.wordDefintion
+		]
 	}]
 }
