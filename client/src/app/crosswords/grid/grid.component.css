@@ -1,7 +1,7 @@
 .grid {
 	display: inline-block;
 	position: relative;
-	border: 1px solid #333;
+    border: 1px solid #333;
 }
 
 .row {
@@ -20,4 +20,8 @@
 .selected{
 	background-color: green;
 	color: white;
+}
+
+.col input {
+    text-align: center;
 }

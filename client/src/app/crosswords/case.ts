@@ -1,43 +1,45 @@
 export class Case {
 
-	private _isSelected: boolean = false
+    private _isSelected: boolean = false;
 
-	constructor(private _char: string = "-", 
-	private _x = 0, private _y = 0) {}
-	
-	public setChar(c: string) {
+    public constructor(
+        private _char: string = "-",
+        private _x: number = 0,
+        private _y: number = 0) { }
+
+    public set char(c: string) {
         this._char = c;
     }
 
-	public getChar() {
-		return this._char;
-	}
+    public get char(): string {
+        return this._char;
+    }
 
-	public select() {
-		this._isSelected = true;
-	}
+    public select(): void {
+        this._isSelected = true;
+    }
 
-	public unselect() {
-		this._isSelected = false;
-	}
+    public unselect(): void {
+        this._isSelected = false;
+    }
 
-	public selected() {
-		return this._isSelected;
-	}
-	
-	public getX() {
+    public selected(): boolean {
+        return this._isSelected;
+    }
+
+    public get x(): number {
         return this._x;
     }
-        
-    public getY() {
+
+    public set x(x: number) {
+        this._x = x;
+    }
+
+    public get y(): number {
         return this._y;
     }
-        
-    public setX(x: number) {
-       this._x = x;
-    }
-        
-    public setY(y: number) {
+
+    public set y(y: number) {
         this._y = y;
     }
 
