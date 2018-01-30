@@ -1,14 +1,14 @@
 /*
 	This service will be responsible of requesting and creating lexical content.
 */
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 const API_KEY = "api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5";
 
 export default class LexicalService {
 
 	constructor() { }
 
-	private async baseDefinition(word: string) {
+	private async baseDefinition(word: string):Promise<AxiosResponse> {
 		const WORDNIK_URL = `http://api.wordnik.com:80/v4/word.json/${word}/definitions?limit=200&${API_KEY}`;
 		try {
 			const response = await axios.get(WORDNIK_URL);
@@ -18,7 +18,7 @@ export default class LexicalService {
 		}
 	}
 
-	private async baseWordSearch(requirements: string) {
+	private async baseWordSearch(requirements: string): Promise<AxiosResponse>{
 		const DATAMUSE_URL = `https://api.datamuse.com/words?sp=${requirements}&md=f&max=1500`;
 
 		try {
@@ -29,10 +29,10 @@ export default class LexicalService {
 		}
 	}
 
-	public async wordDefinition(level: string, word: string) {
-		let definitions: any[] = [];
+	private async filterDefinitions(word: string): Promise<Array<string>>{
+		let definitions: string [] = [];
 		try {
-			let data: any = await this.baseDefinition(word);
+			let data = await this.baseDefinition(word);
 
 			for (let def in data) {
 				if (!data[def].text.includes(`${word}`)) {
@@ -53,22 +53,32 @@ export default class LexicalService {
 					definitions[def] = definition.substring(0, definition.indexOf(";"));
 				}
 			}
+		} catch (err) {
+			throw err;
+		}
+		return definitions;
+	}
 
+	public async wordDefinition(level: string, word: string): Promise<string>{
+		let filteredDefinitions: string[] = await this.filterDefinitions(word);
+
+		try{
 			switch (level) {
-				case 'easy': {
-						return definitions[0];
+				case 'easy':
+					{
+						return filteredDefinitions[0];
 					}
-				case 'hard': {
-						if (definitions.length > 1) {
+				case 'hard':
+					{
+						if (filteredDefinitions.length > 1) {
 							let min = Math.ceil(1);
-							let max = Math.floor(definitions.length);
-							return definitions[Math.floor((Math.random() * (max - min) + min))];
+							let max = Math.floor(filteredDefinitions.length);
+							return filteredDefinitions[Math.floor((Math.random() * (max - min) + min))];
 						} else {
-							return definitions[0];
+							return filteredDefinitions[0];
 						}
 					}
 			}
-
 		} catch (err) {
 			throw err;
 		}
