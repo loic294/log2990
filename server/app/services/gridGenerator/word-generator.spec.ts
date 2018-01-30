@@ -35,7 +35,9 @@ describe('Words', () => {
 
     });
 
-    it('should know the size of all the different words required.');
+    it("should have some pretty as shit code for the word length function")
+
+    it('should know the initial positions of all the words.');
     
     it('should be able to find a word of the correct size from an outside lexical.');
     
