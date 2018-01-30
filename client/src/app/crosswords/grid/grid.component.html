@@ -1,8 +1,8 @@
 <div>
   <div class="_grid">
-    <div class="row" *ngFor="let row of _grid; #i = i">
-      <div class="col" *ngFor="let case of row; #i = j">
-        <input class="square" (input)="validateChar($event.target.value, i, j)" maxlength="1"   />
+    <div class="row" *ngFor="let row of _grid;">
+      <div class="col" *ngFor="let case of row;">
+        <input class="square" [ngModel]="case.char" (blur)="validateChar($event.target)" maxlength="1"   />
       </div>
     </div>
   </div>

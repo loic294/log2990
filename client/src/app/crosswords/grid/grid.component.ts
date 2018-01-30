@@ -1,4 +1,4 @@
-import { Component, OnInit/*, Input,*/ } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 
 import { Case } from "../case";
 import Word from "../../../../../common/lexical/word";
@@ -35,14 +35,15 @@ export class GridComponent implements OnInit {
         return strings.map((c: string) => new Case(c));
     });
 
-    // @Input() public word: Word;
+    //  public word: Word;
     private _selectedCase: Case;
     private _word: Word;
     private _x: number;
     private _y: number;
 
-    public validateChar(input: string, i: number, j: number): void {
-        this._grid[i][j].char = input.replace(/[^a-z]/ig, "");
+	
+    public validateChar(element: HTMLInputElement): void {
+		element.value = element.value.replace(/[^a-z]/ig, "")
     }
 
     public isLetter(letter: string): boolean {
