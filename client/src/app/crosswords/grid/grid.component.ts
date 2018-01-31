@@ -5,6 +5,7 @@ import Word from "../../../../../common/lexical/word";
 
 import { WordService } from "../../word.service/word.service";
 
+
 /** TEMPORARY MOCKED CONTENT
    * Example table
    * **/
@@ -41,10 +42,11 @@ export class GridComponent implements OnInit {
     private _x: number;
     private _y: number;
 
-	
-    public validateChar(event: any): void {
-		event.preventDefault()
-		event.target.value = event.target.value.replace(/[^a-z]/ig, "")
+    public validateChar(event: KeyboardEvent): void {
+        const constraint: RegExp = /^[a-z]+$/i;
+        if (!constraint.test(String.fromCharCode(event.charCode))) {
+            event.preventDefault();
+        }
     }
 
     public isLetter(letter: string): boolean {
