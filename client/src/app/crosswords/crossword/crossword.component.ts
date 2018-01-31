@@ -1,18 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 import Word from "../../../../../common/lexical/word";
 
 @Component({
-  selector: 'app-crossword',
-  templateUrl: './crossword.component.html',
-  styleUrls: ['./crossword.component.css']
+  selector: "app-crossword",
+  templateUrl: "./crossword.component.html",
+  styleUrls: ["./crossword.component.css"]
 })
 export class CrosswordComponent implements OnInit {
 
   public _word: Word;
 
-  constructor() { }
+  public constructor() { }
 
-  ngOnInit() {
+  public ngOnInit(): void {
   }
 
 }

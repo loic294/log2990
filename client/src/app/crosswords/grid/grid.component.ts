@@ -1,132 +1,140 @@
-import { Component, OnInit/*, Input,*/ } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 
-import { Case } from '../case'
-import  Word, { Orientation }  from "../../../../../common/lexical/word";
+import { Case } from "../case";
+import Word, {Orientation} from "../../../../../common/lexical/word";
 
-import { WordService } from "../../word.service";
+import { WordService } from "../../word.service/word.service";
 
 /** TEMPORARY MOCKED CONTENT
    * Example table
    * **/
 
 const grid: Array<String> = [
-  "- - - - - - - - P -",
-  "- - - - A - C L U E",
-  "W O U N D - R - S -",
-  "O - - - V - O - H -",
-  "R - - - E - S - - -",
-  "R - F I N I S H - C",
-  "Y - - - T - W - - R",
-  "- M E N U - O - - A",
-  "- - - - R - E - - C",
-  "G R A V E - D O C K",
+    "- - - - - - - - P -",
+    "- - - - A - C L U E",
+    "W O U N D - R - S -",
+    "O - - - V - O - H -",
+    "R - - - E - S - - -",
+    "R - F I N I S H - C",
+    "Y - - - T - W - - R",
+    "- M E N U - O - - A",
+    "- - - - R - E - - C",
+    "G R A V E - D O C K",
 ];
 
 @Component({
-  selector: "app-grid",
-  templateUrl: "./grid.component.html",
-  styleUrls: ["./grid.component.css"]
+    selector: "app-grid",
+    templateUrl: "./grid.component.html",
+    styleUrls: ["./grid.component.css"]
 })
 export class GridComponent implements OnInit {
 
-  private _grid: Array<Array<Case>> = grid.map((row: string) => {
-    const strings: Array<string> = row.split(" ");
+    private _grid: Array<Array<Case>> = grid.map((row: string) => {
+        const strings: Array<string> = row.split(" ");
 
-    return strings.map((c: string) => new Case(c));
-  });
+        return strings.map((c: string) => new Case(c));
+    });
 
-  // @Input() public word: Word;
-  private _selectedCase: Case;
-  private _word: Word;
-  private _x: number;
-  private _y: number;
+    //  public word: Word;
+    private _selectedCase: Case;
+    private _word: Word;
+    private _x: number;
+    private _y: number;
 
-  public isLetter(letter: string): boolean {
-    return (/[a-z]/i.test(letter) && letter.length === 1);
-  }
-
-
-  findWordStart(): Word {
-        let tempIndex: Array<number> = [this._x,this._y];
+    public findWordStart(): Word {
+        const tempIndex: Array<number> = [this._x, this._y];
         let tempOrientation: Orientation;
 
         /* If letter */
-        if (this.isLetter(this._grid[tempIndex[0]][tempIndex[1]].getChar())) {
+        if (this.isLetter(this._grid[tempIndex[0]][tempIndex[1]].char)) {
             /* Go back by col indexes if possible */
-            if (tempIndex[1]-1 >= 0 && 
-                this.isLetter(this._grid[tempIndex[0]][tempIndex[1]-1].getChar())) {
-                    tempOrientation = Orientation.horizontal;
-                     while (tempIndex[1]-1 >= 0 &&
-                        this.isLetter(this._grid[tempIndex[0]][tempIndex[1]-1].getChar())) {
-                        tempIndex[1]--;
-                    }
-            }
+            if (tempIndex[1] - 1 >= 0 &&
+                this.isLetter(this._grid[tempIndex[0]][tempIndex[1] - 1].char)) {
+                tempOrientation = Orientation.horizontal;
+                while (tempIndex[1] - 1 >= 0 &&
+                    this.isLetter(this._grid[tempIndex[0]][tempIndex[1] - 1].char)) {
+                    tempIndex[1]--;
+                }
             /* else go back by row indexes if possible */
-            else if (tempIndex[0]-1 >= 0 &&
-                this.isLetter(this._grid[tempIndex[0]-1][tempIndex[1]].getChar())) {
-                    tempOrientation = Orientation.vertical;
-                    while (tempIndex[0]-1 >= 0 &&
-                    this.isLetter(this._grid[tempIndex[0]-1][tempIndex[1]].getChar())) {
-                        tempIndex[0]--;
-                    }
+            } else if (tempIndex[0] - 1 >= 0 &&
+                this.isLetter(this._grid[tempIndex[0] - 1][tempIndex[1]].char)) {
+                tempOrientation = Orientation.vertical;
+                while (tempIndex[0] - 1 >= 0 &&
+                    this.isLetter(this._grid[tempIndex[0] - 1][tempIndex[1]].char)) {
+                    tempIndex[0]--;
+                }
             }
             /* else already (or is now) at word start. return as is */
         }
 
-        return new Word("","",tempIndex,tempOrientation);       
-  }
-
-  selectCase(c : Case) : void {
-    this._x = c.getX();
-    this._y = c.getY();
-
-    let tempWord: Word = this.findWordStart();    
-    this._wordService.selectPosition(tempWord);
-
-    if (this._selectedCase != null)
-      this._selectedCase.unselect();
-    this._grid[tempWord.col][tempWord.row].select();
-    this._selectedCase = this._grid[tempWord.col][tempWord.row];
-    this._x = this._grid[tempWord.col][tempWord.row].getX();
-    this._y = this._grid[tempWord.col][tempWord.row].getY();
-  }
-
-  selectCaseService(c: Case): void {
-    if (this._selectedCase != null) {
-      this._selectedCase.unselect();
-    }
-    c.select();
-    this._selectedCase = c;
-    this._x = c.getX();
-    this._y = c.getY();
-  }
-
-  public nextCase(): void {
-    if (this.isLetter(this._selectedCase.getChar())) {
-      if (this._x + 1 < this._grid.length) {
-        this._x++;
-        this.selectCase(this._grid[this._x][this._y]);
-      } else {
-        this._selectedCase.unselect();
-      }
-    }
-  }
-
-  constructor(private _wordService: WordService)  {}
-
-  ngOnInit() {
-    for (let i = 0; i < this._grid.length; i++) {
-      for (let j = 0; j < this._grid[i].length; j++) {
-        this._grid[i][j].setX(i);
-        this._grid[i][j].setY(j);
-      }
+        return new Word("", "", tempIndex, tempOrientation);
     }
 
-    this._wordService.getWord()
-    .subscribe(
-    (_word) => {this._word = _word,
-    this.selectCaseService(this._grid[_word.col][_word.row])}
-    );
-  }
+    // Select from case to clue (call word.service)
+    public selectCase(c: Case): void {
+        this._x = c.x;
+        this._y = c.y;
+
+        const tempWord: Word = this.findWordStart();
+        this._wordService.selectPosition(tempWord);
+
+        if (this._selectedCase != null) {
+            this._selectedCase.unselect();
+        }
+        this._grid[tempWord.col][tempWord.row].select();
+        this._selectedCase = this._grid[tempWord.col][tempWord.row];
+        this._x = this._grid[tempWord.col][tempWord.row].x;
+        this._y = this._grid[tempWord.col][tempWord.row].y;
+    }
+
+    // Select from clue to case (called by work.service)
+    public selectCaseService(c: Case): void {
+        if (this._selectedCase != null) {
+            this._selectedCase.unselect();
+        }
+        c.select();
+        this._selectedCase = c;
+        this._x = c.x;
+        this._y = c.y;
+    }
+
+    public validateChar(event: KeyboardEvent): void {
+        const constraint: RegExp = /^[a-z]+$/i;
+        if (!constraint.test(String.fromCharCode(event.charCode))) {
+            event.preventDefault();
+        }
+    }
+
+    public isLetter(letter: string): boolean {
+        return (/[a-z]/i.test(letter) && letter.length === 1);
+    }
+
+    public constructor(private _wordService: WordService) { }
+
+    public ngOnInit(): void {
+        for (let i: number = 0; i < this._grid.length; i++) {
+            for (let j: number = 0; j < this._grid[i].length; j++) {
+                this._grid[i][j].x = i;
+                this._grid[i][j].y = j;
+            }
+        }
+
+        this._wordService.word.subscribe(
+            (_word) => {this._word = _word,
+                this.selectCaseService(this._grid[_word.col][_word.row]);
+            }
+        );
+    }
+
+    public nextCase(): void {
+        if (this.isLetter(this._selectedCase.char)) {
+            if (this._x + 1 < this._grid.length) {
+                this._x++;
+                this.selectCase(this._grid[this._x][this._y]);
+            } else {
+                this._selectedCase.unselect();
+            }
+        }
+    }
 
 }

@@ -1,10 +1,10 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { CluesComponent } from './clues.component';
+import { CluesComponent } from "./clues.component";
 
-import { WordService } from '../../word.service'
+import { WordService } from "../../word.service/word.service";
 
-describe('CluesComponent', () => {
+describe("CluesComponent", () => {
   let component: CluesComponent;
   let fixture: ComponentFixture<CluesComponent>;
 
@@ -22,7 +22,7 @@ describe('CluesComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

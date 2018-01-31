@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import Word, { Orientation } from "../../../../../common/lexical/word";
 
-import { WordService } from "../../word.service";
+import { WordService } from "../../word.service/word.service";
 
 /** TEMPORARY MOCKED CONTENT
  *
@@ -60,11 +60,11 @@ export class CluesComponent implements OnInit {
     }
 
     public selectWord(position: Word): void {
-        for (let i: number = 0; i < this._clues.length; i++) {
-            if (this._clues[i].col === position.col &&
-                this._clues[i].row === position.row &&
-                this._clues[i].direction === position.direction) {
-                    this._selectedClue = this._clues[i];
+        for ( const item of this._clues) {
+            if (item.col === position.col &&
+                item.row === position.row &&
+                item.direction === position.direction) {
+                    this._selectedClue = item;
                 }
         }
     }
@@ -75,6 +75,5 @@ export class CluesComponent implements OnInit {
         this._wordService.getPosition()
     .subscribe((_position) => this.selectWord(_position));
     }
-    
 
 }
