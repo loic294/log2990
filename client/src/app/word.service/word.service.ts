@@ -5,32 +5,32 @@ import Word from "../../../../common/lexical/word";
 
 @Injectable()
 export class WordService {
-  private _word: Observable<Word>;
-  private _wordSubject: Subject<Word> = new Subject<Word>();
+  private _wordFromClue: Observable<Word>;
+  private _wordFromClueSubject: Subject<Word> = new Subject<Word>();
 
-  private _position: Observable<Word>;
-  private _positionSubject: Subject<Word>= new Subject<Word>();
+  private _wordFromGrid: Observable<Word>;
+  private _wordFromGridSubject: Subject<Word>= new Subject<Word>();
 
-  public get word(): Observable<Word> {
-    return this._word;
+  public get wordFromClue(): Observable<Word> {
+    return this._wordFromClue;
   }
 
-  public selectWord(word: Word): void {
-    this._wordSubject.next(word);
+  public selectWordFromClue(word: Word): void {
+    this._wordFromClueSubject.next(word);
   }
 
   // Nom de fonction et d'attribut à modifier
-  getPosition(): Observable<Word> {
-      return this._position;
+  public get wordFromGrid(): Observable<Word> {
+      return this._wordFromGrid;
   }
 
-  selectPosition(position: Word) {
-      this._positionSubject.next(position);
+  public selectWordFromGrid(position: Word): void {
+      this._wordFromGridSubject.next(position);
   }
 
-  constructor() {
-    this._word = this._wordSubject.asObservable();
-    this._position = this._positionSubject.asObservable();
+  public constructor() {
+    this._wordFromClue = this._wordFromClueSubject.asObservable();
+    this._wordFromGrid = this._wordFromGridSubject.asObservable();
    }
 
 }

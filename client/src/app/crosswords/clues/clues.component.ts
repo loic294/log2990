@@ -48,7 +48,7 @@ export class CluesComponent implements OnInit {
 
     public onSelect(clue: Word): void {
         this._selectedClue = clue;
-        this._wordService.selectWord(this._selectedClue);
+        this._wordService.selectWordFromClue(this._selectedClue);
     }
 
     public get selectedClue(): Word {
@@ -72,8 +72,8 @@ export class CluesComponent implements OnInit {
     public constructor(public _wordService: WordService) { }
 
     public ngOnInit(): void {
-        this._wordService.getPosition()
-    .subscribe((_position) => this.selectWord(_position));
+        this._wordService.wordFromGrid
+    .subscribe((_wordFromGrid) => this.selectWord(_wordFromGrid));
     }
 
 }

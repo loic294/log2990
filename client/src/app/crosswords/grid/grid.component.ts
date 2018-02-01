@@ -71,12 +71,12 @@ export class GridComponent implements OnInit {
     }
 
     // Select from case to clue (call word.service)
-    public selectCase(c: Case): void {
+    public selectCaseFromUser(c: Case): void {
         this._x = c.x;
         this._y = c.y;
 
         const tempWord: Word = this.findWordStart();
-        this._wordService.selectPosition(tempWord);
+        this._wordService.selectWordFromGrid(tempWord);
 
         if (this._selectedCase != null) {
             this._selectedCase.unselect();
@@ -88,7 +88,7 @@ export class GridComponent implements OnInit {
     }
 
     // Select from clue to case (called by work.service)
-    public selectCaseService(c: Case): void {
+    private selectCaseFromService(c: Case): void {
         if (this._selectedCase != null) {
             this._selectedCase.unselect();
         }
@@ -119,9 +119,9 @@ export class GridComponent implements OnInit {
             }
         }
 
-        this._wordService.word.subscribe(
-            (_word) => {this._word = _word,
-                this.selectCaseService(this._grid[_word.col][_word.row]);
+        this._wordService.wordFromClue.subscribe(
+            (_wordFromClue) => {this._word = _wordFromClue,
+                this.selectCaseFromService(this._grid[_wordFromClue.col][_wordFromClue.row]);
             }
         );
     }
@@ -130,7 +130,7 @@ export class GridComponent implements OnInit {
         if (this.isLetter(this._selectedCase.char)) {
             if (this._x + 1 < this._grid.length) {
                 this._x++;
-                this.selectCase(this._grid[this._x][this._y]);
+                this.selectCaseFromUser(this._grid[this._x][this._y]);
             } else {
                 this._selectedCase.unselect();
             }

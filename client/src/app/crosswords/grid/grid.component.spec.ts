@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { FormsModule } from "@angular/forms"
+import { FormsModule } from "@angular/forms";
 
 import { GridComponent } from "./grid.component";
-import { WordService } from "../../word.service"
+import { WordService } from "../../word.service/word.service";
 
 describe("GridComponent", () => {
   let component: GridComponent;
