@@ -1,0 +1,14 @@
+{
+    "editor.detectIndentation": false,
+    "git.autofetch": true,
+    "[typescript]": {
+        "editor.tabSize": 4
+    },
+    "[css]": {
+        "editor.tabSize": 4
+    },
+    "[html]": {
+        "editor.tabSize": 2
+    }
+
+}

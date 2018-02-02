@@ -12,9 +12,6 @@ enum Difficulty {
 describe("DifficultyComponent", () => {
     let component: DifficultyComponent;
     let fixture: ComponentFixture<DifficultyComponent>;
-    let debugElement: DebugElement;
-    // let htmlElement: HTMLElement;
-
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [DifficultyComponent]
@@ -24,14 +21,13 @@ describe("DifficultyComponent", () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(DifficultyComponent);
         component = fixture.componentInstance;
-        debugElement = fixture.debugElement; // .query(By.css("h2"));
-        // htmlElement = debugElement.nativeElement;
 
         fixture.detectChanges();
     });
 
     it("Should create DifficultyComponent", () => {
         expect(component).toBeTruthy();
+        expect(component.selectedDifficulty).toBe("Easy");
     });
 
     it("Should display Easy", () => {
