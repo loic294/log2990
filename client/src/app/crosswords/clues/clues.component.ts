@@ -62,12 +62,16 @@ export class CluesComponent implements OnInit {
     }
 
     private selectWord(position: Word): void {
-        for ( const item of this._clues) {
-            if (item.col === position.col &&
-                item.row === position.row &&
-                item.direction === position.direction) {
-                    this._selectedClue = item;
+        if (position != null) {
+            for ( const item of this._clues) {
+                if (item.col === position.col &&
+                    item.row === position.row &&
+                    item.direction === position.direction) {
+                        this._selectedClue = item;
                 }
+            }
+        } else {
+            this._selectedClue = null;
         }
     }
 

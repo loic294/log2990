@@ -1,5 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 
+import { WordService } from "../../word.service/word.service";
+
 @Component({
   selector: "app-crossword",
   templateUrl: "./crossword.component.html",
@@ -7,7 +9,12 @@ import { Component, OnInit } from "@angular/core";
 })
 export class CrosswordComponent implements OnInit {
 
-  public constructor() { }
+  public constructor(public _wordService: WordService) { }
+
+  public unselect(): void {
+      this._wordService.selectWordFromClue(null);
+      this._wordService.selectWordFromGrid(null);
+  }
 
   public ngOnInit(): void {
   }

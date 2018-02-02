@@ -102,16 +102,18 @@ export class GridComponent implements OnInit {
         this._y = this._grid[tempWord.col][tempWord.row].y;
     }
 
-    private selectCaseFromService(c: Case): void {
+    private selectCaseFromService(w: Word): void {
 
         if (this._selectedCase != null) {
             this._selectedCase.unselect();
         }
 
-        c.select();
-        this._selectedCase = c;
-        this._x = c.x;
-        this._y = c.y;
+        if (w != null) {
+            this._grid[w.col][w.row].select();
+            this._selectedCase = this._grid[w.col][w.row];
+            this._x = w.col;
+            this._y = w.row;
+        }
     }
 
     public validateChar(event: KeyboardEvent): void {
@@ -135,7 +137,7 @@ export class GridComponent implements OnInit {
         }
         this._wordService.wordFromClue.subscribe(
             (_wordFromClue) => {this._word = _wordFromClue,
-                this.selectCaseFromService(this._grid[_wordFromClue.col][_wordFromClue.row]);
+                this.selectCaseFromService(_wordFromClue);
             });
     }
 
