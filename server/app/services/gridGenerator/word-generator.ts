@@ -115,7 +115,7 @@ export default class WordGenerator extends GridGenerator{
                     if (this.horizontalWordLength[horizontalWordIndex] === 1) {
                         this.horizontalWordLength.splice(horizontalWordIndex, 1);
                     } else {
-                        this._wordArray.push(new Word("", "", [firstIndex, secondIndex - this.horizontalWordLength[horizontalWordIndex]], Orientation.horizontal, horizontalWordIndex));
+                        this._wordArray.push(new Word("", "", [firstIndex, secondIndex], Orientation.horizontal, horizontalWordIndex));
                         horizontalWordIndex++;
                     }
                 }
@@ -124,7 +124,7 @@ export default class WordGenerator extends GridGenerator{
                     if (this.verticalWordLength[verticalWordIndex] === 1) {
                         this.verticalWordLength.splice(verticalWordIndex, 1);
                     } else {
-                        this._wordArray.push(new Word("", "", [secondIndex - this.verticalWordLength[verticalWordIndex], firstIndex], Orientation.vertical, verticalWordIndex));
+                        this._wordArray.push(new Word("", "", [secondIndex , firstIndex], Orientation.vertical, verticalWordIndex));
 
                         verticalWordIndex++
                     }
