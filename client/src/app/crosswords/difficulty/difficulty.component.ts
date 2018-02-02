@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 <<<<<<< 10b8482b07a4e3f861d998db93acc32e0788f148
 =======
 
+<<<<<<< e1548b60969e52ebd42a490f036a4d9d20204eb3
 export enum Difficulty {
     Easy = 0,
     Normal = 1,
@@ -10,6 +11,8 @@ export enum Difficulty {
 
 >>>>>>> Ajout des boutons et correction du code en fonction des normes
 
+=======
+>>>>>>> Ajout d'enum dans les test pour enlever les nombre magique
 @Component({
     selector: "app-difficulty",
     templateUrl: "./difficulty.component.html",
