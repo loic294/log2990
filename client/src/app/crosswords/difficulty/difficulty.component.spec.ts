@@ -1,5 +1,11 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+<<<<<<< 10b8482b07a4e3f861d998db93acc32e0788f148
 import { DifficultyComponent } from "./difficulty.component";
+=======
+import { DebugElement } from "@angular/core";
+import { DifficultyComponent } from "./difficulty.component";
+// import { By } from "@angular/platform-browser";
+>>>>>>> Ajout des boutons et correction du code en fonction des normes
 
 enum Difficulty {
     Easy = 0,
