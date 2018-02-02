@@ -19,7 +19,6 @@ export class WordService {
     this._wordFromClueSubject.next(word);
   }
 
-  // Nom de fonction et d'attribut à modifier
   public get wordFromGrid(): Observable<Word> {
       return this._wordFromGrid;
   }

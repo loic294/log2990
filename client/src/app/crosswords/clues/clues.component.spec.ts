@@ -25,4 +25,19 @@ describe("CluesComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  it("should select clue", () => {
+    component.onSelect(component.clues[0]);
+    expect(component.selectedClue.name).toBe("Clue");
+  });
+
+  it("should select Worry", () => {
+    component.onSelect(component.clues[6]);
+    expect(component.selectedClue.name).toBe("Worry");
+  });
+
+  it("should select Crack", () => {
+    component.onSelect(component.clues[10]);
+    expect(component.selectedClue.name).toBe("Crack");
+  });
 });
