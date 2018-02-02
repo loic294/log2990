@@ -8,15 +8,15 @@ import { Component, OnInit } from "@angular/core";
 
 export class DifficultyComponent implements OnInit {
 
-    private _selectedDifficulty: string;
+    private _selectedDifficulty: string = "Easy";
     private _difficulties: string[];
-
-    public onSelect(diff: string): void {
-        this._selectedDifficulty = diff;
-    }
 
     public constructor() {
         this._difficulties = ["Easy", "Normal", "Hard"];
+    }
+
+    public onSelect(diff: string): void {
+        this._selectedDifficulty = diff;
     }
 
     public ngOnInit(): void {
