@@ -1,7 +1,5 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { DebugElement } from "@angular/core";
 import { DifficultyComponent } from "./difficulty.component";
-// import { By } from "@angular/platform-browser";
 
 enum Difficulty {
     Easy = 0,
@@ -21,7 +19,6 @@ describe("DifficultyComponent", () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(DifficultyComponent);
         component = fixture.componentInstance;
-
         fixture.detectChanges();
     });
 

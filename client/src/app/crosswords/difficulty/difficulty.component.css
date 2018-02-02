@@ -11,15 +11,14 @@
     margin-left: 10px;
     border-radius: 4px;
     box-shadow: 0 0 8px -2px #ddd
- }
- 
- .button:hover {
-    background-color:  rgb(148, 148, 148);
-    color: white;
- }
- 
- .button:active{
-    background-color: #0A2463;
+}
+
+.button:hover {
+    background-color:  rgb(148, 148, 148); 
     color: white;
  }
 
+.button:active{
+    background-color: #0A2463; 
+    color: white;
+}
