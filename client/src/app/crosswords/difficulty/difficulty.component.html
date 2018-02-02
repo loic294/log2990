@@ -3,17 +3,10 @@
 </head>
 
 <div align="center">
-<<<<<<< 10b8482b07a4e3f861d998db93acc32e0788f148
   <h1>Crossword Difficulty</h1>
   <button class ="button" *ngFor="let difficulty of difficulties" (click)="onSelect(difficulty)">
     <span class="badge">{{difficulty}}</span>
   </button>
-=======
-    <h1>Crossword Difficulty</h1>
-    <button *ngFor="let difficulty of difficulties" (click)="onSelect(difficulty)">
-        <span class="badge">{{difficulty}}</span>
-    </button>
->>>>>>> Ajout des boutons et correction du code en fonction des normes
 </div>
 
 <div *ngIf="selectedDifficulty">
