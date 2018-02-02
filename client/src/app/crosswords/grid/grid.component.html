@@ -1,13 +1,26 @@
-
-<div class="_grid">
-  <div class="row" *ngFor="let row of _grid">
-    <div class="col" *ngFor="let case of row">
-      <input class="square" [(ngModel)]="case._char" 
-      [class.selected]="this.case.selected() == true"
-      (click)="this.selectCase(case)"
-      (ngModelChange)="nextCase()"> 
+<div>
+  <div class="_grid">
+    <div class="row" *ngFor="let row of _grid;">
+      <div class="col" *ngFor="let case of row;">
+        <input class="square" [ngModel]="case.char" (keypress)="validateChar($event)" maxlength="1" 
+        [class.selected]="case.selected() === true"
+        (click)=selectCaseFromUser(case)  />
+      </div>
     </div>
   </div>
 </div>
 
+<div *ngIf="_word">
 
+  <h2>{{_word.name}}</h2>
+  <h2>{{_word.col}}</h2>
+  <h2>{{_word.row}}</h2>
+  <h2>{{_grid[_word.col][_word.row]._char}}</h2>
+
+</div>
+<div *ngIf="_selectedCase">
+
+  <h2>{{_selectedCase._char}}</h2>
+
+
+</div>

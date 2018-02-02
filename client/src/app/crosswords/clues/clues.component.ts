@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import Word, { Orientation } from "../../../../../common/lexical/word";
 
+import { WordService } from "../../word.service/word.service";
+
 /** TEMPORARY MOCKED CONTENT
  *
  * Example table
@@ -44,8 +46,11 @@ export class CluesComponent implements OnInit {
     private _clues: Array<Word> = CLUES;
     private _selectedClue: Word;
 
+    public constructor(public _wordService: WordService) { }
+
     public onSelect(clue: Word): void {
         this._selectedClue = clue;
+        this._wordService.selectWordFromClue(this._selectedClue);
     }
 
     public get selectedClue(): Word {
@@ -56,9 +61,19 @@ export class CluesComponent implements OnInit {
         return this._clues;
     }
 
-    public constructor() { }
+    private selectWord(position: Word): void {
+        for ( const item of this._clues) {
+            if (item.col === position.col &&
+                item.row === position.row &&
+                item.direction === position.direction) {
+                    this._selectedClue = item;
+                }
+        }
+    }
 
     public ngOnInit(): void {
+        this._wordService.wordFromGrid
+    .subscribe((_wordFromGrid) => this.selectWord(_wordFromGrid));
     }
 
 }
