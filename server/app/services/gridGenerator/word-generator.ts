@@ -1,6 +1,6 @@
 import { Case } from './case'
 import GridGenerator from "./grid-generator";
-import Word from "../../../../common/lexical/word"
+import Word, { Orientation } from "../../../../common/lexical/word"
 
 enum Difficulte {
     facile,
@@ -23,35 +23,52 @@ export default class WordGenerator extends GridGenerator{
     public findWordLength(grille : Case[][]) : void{
         let temp : Case[][] = this.getGrille();
         this.setGrille(grille);
-
+        
+        
         this.findVerticalWordLength();
         this.findHorizontalWordLength();
 
         this.setGrille(temp);
     }
 
+    private initialiseWordArray() : void{
+        let horizontalWordIndex : number = 0;
+        let verticalWordIndex : number = 0;
+
+        for (let firstIndex : number = 0; firstIndex < this.getGrille().length; firstIndex++){
+            for (let secondIndex : number = 0; secondIndex < this.getGrille().length; secondIndex++){
+                if (this.getGrille()[firstIndex][secondIndex].isBlack() || secondIndex === this.getGrille().length - 1){
+                    this._wordArray[verticalWordIndex + horizontalWordIndex] =  new Word("", "", [0, 0], Orientation.horizontal, horizontalWordIndex);
+                    horizontalWordIndex++;
+                }
+
+                if (this.getGrille()[secondIndex][firstIndex].isBlack() || secondIndex === this.getGrille().length - 1) {
+                    this._wordArray[verticalWordIndex + horizontalWordIndex] = new Word("", "", [0, 0], Orientation.vertical, verticalWordIndex);
+                    verticalWordIndex++
+                }
+        }
+    }
+
     private findHorizontalWordLength() : void{
         this.horizontalWordLength = [];
-        let latestBlackPosition : number = 0;
         let wordIndex : number = 0;
         let blackOnLine : boolean = false;
         for (let rows : number  = 0; rows < this.getGrille().length ; rows++){
-            latestBlackPosition = 0;
+            this._wordArray[wordIndex].position = [rows, 0];
             blackOnLine = false;
             for (let col: number = 0; col < this.getGrille().length ;  col++) {
                 if (col ===  this.getGrille().length - 1) {
                     if (this.getGrille()[rows][col].isBlack()) {
-                        this.horizontalWordLength[wordIndex] = col - latestBlackPosition;
+                        this.horizontalWordLength[wordIndex] = col - this._wordArray[wordIndex].col;
                     } else {
-                        this.horizontalWordLength[wordIndex] = (blackOnLine ? col - latestBlackPosition : col + 1);
+                        this.horizontalWordLength[wordIndex] = (blackOnLine ? col - this._wordArray[wordIndex].col : col + 1);
                     }
 
-                    latestBlackPosition = col;
                     wordIndex++;
                 } else if (this.getGrille()[rows][col].isBlack()) {
-                    this.horizontalWordLength[wordIndex] = col - latestBlackPosition;
+                    this.horizontalWordLength[wordIndex] = col - this._wordArray[wordIndex].col;
 
-                    latestBlackPosition = col;
+                    this._wordArray[wordIndex].position = [rows, col+1];
                     wordIndex++;
                     blackOnLine = true;
                 }
