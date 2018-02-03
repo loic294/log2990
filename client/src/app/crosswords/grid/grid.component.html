@@ -2,9 +2,10 @@
   <div class="_grid">
     <div class="row" *ngFor="let row of _grid;">
       <div class="col" *ngFor="let case of row;">
-        <input class="square" [ngModel]="case.char" (keypress)="validateChar($event)" maxlength="1" 
+        <input class="square" [ngModel]="case.char" (keypress)="validateChar($event, case)" maxlength="1" 
         [class.selected]="case.selected() === true"
-        (click)=selectCaseFromUser(case)  />
+        (click)=selectCaseFromUser(case)
+        id={{case.id}}  />
       </div>
     </div>
   </div>

@@ -25,11 +25,11 @@ export default class Word {
     }
 
     public get col () {
-        return this._postiion[0]
+        return this._postiion[1]
     }
 
     public get row () {
-        return this._postiion[1]
+        return this._postiion[0]
     }
 
     public get direction() {

@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 
 import { Case } from "../case";
-import Word, {Orientation} from "../../../../../common/lexical/word";
+import Word, { Orientation } from "../../../../../common/lexical/word";
 import { WordService } from "../../word.service/word.service";
 
 /** TEMPORARY MOCKED CONTENT
@@ -58,8 +58,12 @@ export class GridComponent implements OnInit {
         return this._word;
     }
 
+    private nextIsNotBlack(): boolean {
+        return (this._y - 1 >= 0 && this.isLetter(this._grid[this._x][this._y - 1].char));
+    }
+
     private findHorizontalWordStart(): void {
-        while (this._y - 1 >= 0 && this.isLetter(this._grid[this._x][this._y - 1].char)) {
+        while (this.nextIsNotBlack()) {
             this._y--;
         }
     }
@@ -74,7 +78,7 @@ export class GridComponent implements OnInit {
         let tempOrientation: Orientation;
 
         if (this.isLetter(this._grid[this._x][this._y].char)) {
-            if (this._y - 1 >= 0 && this.isLetter(this._grid[this._x][this._y - 1].char)) {
+            if (this.nextIsNotBlack()) {
                 this.findHorizontalWordStart();
                 tempOrientation = Orientation.horizontal;
             } else {
@@ -96,10 +100,11 @@ export class GridComponent implements OnInit {
             this._selectedCase.unselect();
         }
 
-        this._grid[tempWord.col][tempWord.row].select();
-        this._selectedCase = this._grid[tempWord.col][tempWord.row];
-        this._x = this._grid[tempWord.col][tempWord.row].x;
-        this._y = this._grid[tempWord.col][tempWord.row].y;
+        this._grid[tempWord.row][tempWord.col].select();
+        this._selectedCase = this._grid[tempWord.row][tempWord.col];
+        console.log(this._selectedCase.id);
+        this._x = this._grid[tempWord.row][tempWord.col].x;
+        this._y = this._grid[tempWord.row][tempWord.col].y;
     }
 
     private selectCaseFromService(c: Case): void {
@@ -114,11 +119,47 @@ export class GridComponent implements OnInit {
         this._y = c.y;
     }
 
-    public validateChar(event: KeyboardEvent): void {
+    private isHorizontal(): boolean {
+        console.log(this._word.name + ", HORIZONTAL" );
+
+        return this._word.direction === Orientation.horizontal;
+    }
+
+    private isVertical(): boolean {
+        console.log(this._word.name + ", VERTICAL" );
+
+        return this._word.direction === Orientation.vertical;
+    }
+
+    private isEndOfWord(c: Case): boolean {
+        if (this.isHorizontal()) {
+            return (c.y === this._word.col + this._word.row);
+        } else if (this.isVertical()) {
+            return (c.y === this._word.col + this._word.row);
+        } else {
+            return false;
+        }
+    }
+
+    private moveCase(c: Case): void {
+        if (this.isHorizontal() && !this.isEndOfWord(c)) {
+            const elem: HTMLElement = document.getElementById(c.x.toString() + (c.y + 1).toString());
+            elem.focus();
+        } else if (this.isVertical() && !this.isEndOfWord(c)) {
+            const elem: HTMLElement = document.getElementById((c.x + 1).toString() + (c.y).toString());
+            elem.focus();
+        }
+
+    }
+
+    public validateChar(event: KeyboardEvent, c: Case): void {
         const constraint: RegExp = /^[a-z]+$/i;
 
         if (!constraint.test(String.fromCharCode(event.charCode))) {
             event.preventDefault();
+        } else {
+            //console.log(c.x + "," + c.y);
+            //this.moveCase(c);
         }
     }
 
@@ -134,8 +175,9 @@ export class GridComponent implements OnInit {
             }
         }
         this._wordService.wordFromClue.subscribe(
-            (_wordFromClue) => {this._word = _wordFromClue,
-                this.selectCaseFromService(this._grid[_wordFromClue.col][_wordFromClue.row]);
+            (_wordFromClue) => {
+            this._word = _wordFromClue,
+                this.selectCaseFromService(this._grid[_wordFromClue.row][_wordFromClue.col]);
             });
     }
 

@@ -44,4 +44,8 @@ export class Case {
         this._y = y;
     }
 
+    public get id(): string {
+        return this.x.toString() + this.y.toString();
+    }
+
 }
