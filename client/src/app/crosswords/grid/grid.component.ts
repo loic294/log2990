@@ -58,18 +58,22 @@ export class GridComponent implements OnInit {
         return this._word;
     }
 
-    private nextIsNotBlack(): boolean {
+    private previousHorizontalIsNotBlack(): boolean {
         return (this._y - 1 >= 0 && this.isLetter(this._grid[this._x][this._y - 1].char));
     }
 
+    private previousVerticalIsNotBlack(): boolean {
+        return (this._x - 1 >= 0 && this.isLetter(this._grid[this._x - 1][this._y].char));
+    }
+
     private findHorizontalWordStart(): void {
-        while (this.nextIsNotBlack()) {
+        while (this.previousHorizontalIsNotBlack()) {
             this._y--;
         }
     }
 
     private findVerticalWordStart(): void {
-        while (this._x - 1 >= 0 && this.isLetter(this._grid[this._x - 1][this._y].char)) {
+        while (this.previousVerticalIsNotBlack()) {
             this._x--;
         }
     }
@@ -78,12 +82,14 @@ export class GridComponent implements OnInit {
         let tempOrientation: Orientation;
 
         if (this.isLetter(this._grid[this._x][this._y].char)) {
-            if (this.nextIsNotBlack()) {
+            if (this.previousHorizontalIsNotBlack()) {
                 this.findHorizontalWordStart();
                 tempOrientation = Orientation.horizontal;
-            } else {
+            } else if (this.previousVerticalIsNotBlack()) {
                 this.findVerticalWordStart();
                 tempOrientation = Orientation.vertical;
+            } else {
+                tempOrientation = Orientation.horizontal;
             }
         }
 
@@ -150,7 +156,6 @@ export class GridComponent implements OnInit {
             const elem: HTMLElement = document.getElementById((c.x + 1).toString() + (c.y).toString());
             elem.focus();
         }
-
     }
 
     public validateChar(event: KeyboardEvent, c: Case): void {
@@ -159,8 +164,8 @@ export class GridComponent implements OnInit {
         if (!constraint.test(String.fromCharCode(event.charCode))) {
             event.preventDefault();
         } else {
-            //console.log(c.x + "," + c.y);
-            //this.moveCase(c);
+            // console.log(c.x + "," + c.y);
+            this.moveCase(c);
         }
     }
 

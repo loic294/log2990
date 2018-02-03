@@ -13,31 +13,31 @@ export default class Word {
     ) {}
 
     public get name() {
-        return this._name
+        return this._name;
     }
 
     public get desc() {
-        return this._desc
+        return this._desc;
     }
 
     public get position() {
-        return this._postiion
+        return this._postiion;
     }
 
     public get col () {
-        return this._postiion[1]
+        return this._postiion[1];
     }
 
     public get row () {
-        return this._postiion[0]
+        return this._postiion[0];
     }
 
     public get direction() {
-        return this._orientation
+        return this._orientation;
     }
 
     public get length() {
-        return this._name.length
+        return this._name.length;
     }
 
 }

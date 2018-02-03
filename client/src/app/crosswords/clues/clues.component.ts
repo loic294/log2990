@@ -67,6 +67,7 @@ export class CluesComponent implements OnInit {
                 item.row === position.row &&
                 item.direction === position.direction) {
                     this._selectedClue = item;
+                    this._wordService.selectWordFromClue(this._selectedClue);
                 }
         }
     }
