@@ -90,6 +90,7 @@ export class GridComponent implements OnInit {
         return new Word("", "", [this._x, this._y], tempOrientation);
     }
 
+    // selectCaseOnGrid
     public selectCaseFromUser(c: Case): void {
         this._x = c.x;
         this._y = c.y;
