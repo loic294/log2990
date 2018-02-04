@@ -112,6 +112,7 @@ export class GridComponent implements OnInit {
         console.log(this._selectedCase.id);
         this._x = this._grid[tempWord.row][tempWord.col].x;
         this._y = this._grid[tempWord.row][tempWord.col].y;
+        this.findEndWrittenWord();
     }
 
     private selectCaseFromService(c: Case): void {
@@ -124,30 +125,33 @@ export class GridComponent implements OnInit {
         this._selectedCase = c;
         this._x = c.x;
         this._y = c.y;
+        this.findEndWrittenWord();
+
     }
 
     private isHorizontal(): boolean {
-        console.log(this._word.name + ", HORIZONTAL" );
-
         return this._word.direction === Orientation.horizontal;
     }
 
-    private isVertical(): boolean {
-        console.log(this._word.name + ", VERTICAL" );
+    private findEndWrittenWord(): void {
+        console.log("findEndWrittenWord");
+        let wordStart: number = 0;
+        let caseTemp: Case;
+        this.isHorizontal() ? wordStart = this._word.col : wordStart = this._word.row;
+        for (let cell: number = wordStart; cell < wordStart + this._word.length; cell++) {
 
-        return this._word.direction === Orientation.vertical;
-    }
-
-    private isEndOfWord(c: Case): boolean {
-        if (this.isHorizontal()) {
-            return (c.y === this._word.col + this._word.row);
-        } else if (this.isVertical()) {
-            return (c.y === this._word.col + this._word.row);
-        } else {
-            return false;
+            this.isHorizontal() ? caseTemp = this._grid[this._word.row][cell] : caseTemp = this._grid[cell][this._word.col];
+            console.log(caseTemp.char);
+            if (caseTemp.char === "" || cell === wordStart + this._word.length - 1) {
+                const elem: HTMLElement = document.getElementById(caseTemp.x.toString() + (caseTemp.y).toString());
+                elem.focus();
+                console.log("focus" + "" + elem.id);
+                break;
+            }
         }
     }
 
+    /*
     private moveCase(c: Case): void {
         if (this.isHorizontal() && !this.isEndOfWord(c)) {
             const elem: HTMLElement = document.getElementById(c.x.toString() + (c.y + 1).toString());
@@ -157,15 +161,36 @@ export class GridComponent implements OnInit {
             elem.focus();
         }
     }
+    */
 
+    private erasePrevious(c: Case): void {
+
+        if (this.isHorizontal()) {
+            this._grid[c.x][c.y - 1].char = "";
+        } else {
+            this._grid[c.x - 1][c.y].char = "";
+        }
+    }
     public validateChar(event: KeyboardEvent, c: Case): void {
         const constraint: RegExp = /^[a-z]+$/i;
-
         if (!constraint.test(String.fromCharCode(event.charCode))) {
+            console.log("preventDefault");
             event.preventDefault();
         } else {
-            // console.log(c.x + "," + c.y);
-            this.moveCase(c);
+            console.log("test");
+            c.char = (String.fromCharCode(event.charCode));
+            this.findEndWrittenWord();
+        }
+    }
+
+    public eraseLetter(event: KeyboardEvent, c: Case): void {
+        const backspaceKeyCode: number = 8;
+        if (event.keyCode === backspaceKeyCode) {
+            if (c.char === "") {
+                this.erasePrevious(c);
+            }
+            c.char = "";
+            this.findEndWrittenWord();
         }
     }
 
@@ -182,8 +207,8 @@ export class GridComponent implements OnInit {
         }
         this._wordService.wordFromClue.subscribe(
             (_wordFromClue) => {
-            this._word = _wordFromClue,
-                this.selectCaseFromService(this._grid[_wordFromClue.row][_wordFromClue.col]);
+                this._word = _wordFromClue,
+                    this.selectCaseFromService(this._grid[_wordFromClue.row][_wordFromClue.col]);
             });
     }
 
