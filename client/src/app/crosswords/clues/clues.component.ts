@@ -49,8 +49,10 @@ export class CluesComponent implements OnInit {
     public constructor(public _wordService: WordService) { }
 
     public onSelect(clue: Word): void {
-        this._selectedClue = clue;
-        this._wordService.selectWordFromClue(this._selectedClue);
+        if (!clue.validated) {
+            this._selectedClue = clue;
+            this._wordService.selectWordFromClue(this._selectedClue);
+        }
     }
 
     public get selectedClue(): Word {
@@ -65,7 +67,8 @@ export class CluesComponent implements OnInit {
         for ( const item of this._clues) {
             if (item.col === position.col &&
                 item.row === position.row &&
-                item.direction === position.direction) {
+                item.direction === position.direction &&
+                !item.validated) {
                     this._selectedClue = item;
                     this._wordService.selectWordFromClue(this._selectedClue);
                 }

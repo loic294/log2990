@@ -1,12 +1,12 @@
 
 export class Case {
 
-    private _isSelected: boolean = false;
-
     public constructor(
         private _char: string = "-",
         private _x: number = 0,
-        private _y: number = 0) { }
+        private _y: number = 0,
+        private _isSelected: boolean = false,
+        private _isValidated: boolean = false) { }
 
     public set char(c: string) {
         this._char = c;
@@ -42,6 +42,14 @@ export class Case {
 
     public set y(y: number) {
         this._y = y;
+    }
+
+    public get validated(): boolean {
+        return this._isValidated;
+    }
+
+    public validate(): void {
+        this._isValidated = true;
     }
 
     public get id(): string {
