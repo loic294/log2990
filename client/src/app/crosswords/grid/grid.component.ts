@@ -109,7 +109,6 @@ export class GridComponent implements OnInit {
 
         this._grid[tempWord.row][tempWord.col].select();
         this._selectedCase = this._grid[tempWord.row][tempWord.col];
-        console.log(this._selectedCase.id);
         this._x = this._grid[tempWord.row][tempWord.col].x;
         this._y = this._grid[tempWord.row][tempWord.col].y;
         this.findEndWrittenWord();
@@ -134,34 +133,19 @@ export class GridComponent implements OnInit {
     }
 
     private findEndWrittenWord(): void {
-        console.log("findEndWrittenWord");
         let wordStart: number = 0;
         let caseTemp: Case;
         this.isHorizontal() ? wordStart = this._word.col : wordStart = this._word.row;
         for (let cell: number = wordStart; cell < wordStart + this._word.length; cell++) {
 
             this.isHorizontal() ? caseTemp = this._grid[this._word.row][cell] : caseTemp = this._grid[cell][this._word.col];
-            console.log(caseTemp.char);
             if (caseTemp.char === "" || cell === wordStart + this._word.length - 1) {
                 const elem: HTMLElement = document.getElementById(caseTemp.x.toString() + (caseTemp.y).toString());
                 elem.focus();
-                console.log("focus" + "" + elem.id);
                 break;
             }
         }
     }
-
-    /*
-    private moveCase(c: Case): void {
-        if (this.isHorizontal() && !this.isEndOfWord(c)) {
-            const elem: HTMLElement = document.getElementById(c.x.toString() + (c.y + 1).toString());
-            elem.focus();
-        } else if (this.isVertical() && !this.isEndOfWord(c)) {
-            const elem: HTMLElement = document.getElementById((c.x + 1).toString() + (c.y).toString());
-            elem.focus();
-        }
-    }
-    */
 
     private erasePrevious(c: Case): void {
 
@@ -174,10 +158,8 @@ export class GridComponent implements OnInit {
     public validateChar(event: KeyboardEvent, c: Case): void {
         const constraint: RegExp = /^[a-z]+$/i;
         if (!constraint.test(String.fromCharCode(event.charCode))) {
-            console.log("preventDefault");
             event.preventDefault();
         } else {
-            console.log("test");
             c.char = (String.fromCharCode(event.charCode));
             this.findEndWrittenWord();
         }
