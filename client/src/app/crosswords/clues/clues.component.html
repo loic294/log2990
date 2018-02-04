@@ -2,7 +2,7 @@
   <h2>Vertical</h2>
   <div class="row" *ngFor="let clue of clues" 
   (click)="onSelect(clue)" >
-    <div [class.selected]="this._selectedClue == clue">
+    <div class="clue" [class.selected]="this._selectedClue == clue">
       {{ clue.desc }}
     </div>
   </div>
