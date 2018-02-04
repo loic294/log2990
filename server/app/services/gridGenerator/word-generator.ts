@@ -145,7 +145,28 @@ export default class WordGenerator extends GridGenerator{
     }
 
     private generateWords() {
+        
+    }
 
+    private constructConstraintFor(word : Word) {
+        let constraints = "";
+        let wordLength = (word.direction ? this.horizontalWordLength[word.index] : this.verticalWordLength[word.index])
+        for (let wordPosition  = 0; wordPosition < wordLength; wordPosition++ ){
+            for (let constraintIndex = 0; constraintIndex < this._constraintsArray.length; constraintIndex ++){
+                if (this.checkConstraints(word, constraintIndex, wordPosition)){
+                    
+                        constraints += this._constraintsArray[constraintIndex];
+                } else {
+                        constraints += "?";
+                }
+            }
+        }
+        return constraints;
+    }
+
+    private checkConstraints(word : Word, constraintIndex : number, wordPosition : number) {
+        
+        return (word.direction ? this._constraintsArray[constraintIndex].position === [word.row + wordPosition, word.col] : this._constraintsArray[constraintIndex].position === [word.row, word.col + wordPosition]);
     }
 
     public getVerticalWordLength() : number[] {
