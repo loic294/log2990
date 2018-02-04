@@ -1,5 +1,30 @@
-<app-difficulty></app-difficulty>
-<div (clickOutside)="unselect()">
-  <app-clues></app-clues>
-  <app-grid></app-grid>
-</div>
+<main>
+
+  <header class="header">
+    <div class="header-background">
+      <span class="stripe-1"></span>
+      <span class="stripe-2"></span>
+      <span class="stripe-3"></span>
+      <span class="stripe-4"></span>
+    </div>
+  </header>
+
+  <ui-container>
+
+    <ui-shadow-box>
+      <app-difficulty></app-difficulty>
+    </ui-shadow-box>
+
+    <ui-shadow-box>
+      <app-clues></app-clues>
+    </ui-shadow-box>
+
+    <ui-shadow-box>
+      <div (clickOutside)="unselect()">
+        <app-grid></app-grid>
+      </div>
+    </ui-shadow-box>
+
+  </ui-container>
+
+</main>
