@@ -1,12 +1,10 @@
-<div class="clues" >
+<div class="clues">
+  <h2>Vertical</h2>
   <div class="row" *ngFor="let clue of clues" 
   (click)="onSelect(clue)" >
     <div [class.selected]="this._selectedClue == clue">
       {{ clue.desc }}
     </div>
   </div>
-</div>
-
-<div *ngIf="selectedClue">
-  <h2>{{selectedClue.desc}}</h2>
+  <h2>Horizontal</h2>
 </div>
