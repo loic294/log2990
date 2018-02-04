@@ -1,15 +1,17 @@
+<head>
+  <link href="difficulty.component.css">
+</head>
+
 <div align="center">
-  <h1>Difficulty</h1>
-  <ul class="difficulties">
-    <li *ngFor="let difficulty of difficulties" (click)="onSelect(difficulty)">
-      <span class="badge">{{difficulty}}</span>
-    </li>
-  </ul>
+  <h1>Crossword Difficulty</h1>
+  <button class ="button" *ngFor="let difficulty of difficulties" (click)="onSelect(difficulty)">
+    <span class="badge">{{difficulty}}</span>
+  </button>
 </div>
 
 <div *ngIf="selectedDifficulty">
 
-  <h2>{{selectedDifficulty}}</h2>
+    <h2>{{selectedDifficulty}}</h2>
 
 
 </div>

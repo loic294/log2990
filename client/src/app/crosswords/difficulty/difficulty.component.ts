@@ -1,23 +1,39 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit } from "@angular/core";
+
+export enum Difficulty {
+    Easy = 0,
+    Normal = 1,
+    Hard = 2
+}
 
 @Component({
-  selector: 'app-difficulty',
-  templateUrl: './difficulty.component.html',
-  styleUrls: ['./difficulty.component.css']
+    selector: "app-difficulty",
+    templateUrl: "./difficulty.component.html",
+    styleUrls: ["./difficulty.component.css"]
 })
+
 export class DifficultyComponent implements OnInit {
 
-  selectedDifficulty: String
+    private _selectedDifficulty: string = "Easy";
+    private _difficulties: string[];
 
-  difficulties = ['Easy','Normal','Hard']
+    public constructor() {
+        this._difficulties = ["Easy", "Normal", "Hard"];
+    }
 
-  onSelect(diff: String): void {
-    this.selectedDifficulty = diff;
-  }
+    public onSelect(diff: string): void {
+        this._selectedDifficulty = diff;
+    }
 
-  constructor() { }
+    public ngOnInit(): void {
+    }
 
-  ngOnInit() {
-  }
+    public get difficulties(): string[] {
+        return this._difficulties;
+    }
+
+    public get selectedDifficulty(): string {
+        return this._selectedDifficulty;
+    }
 
 }
