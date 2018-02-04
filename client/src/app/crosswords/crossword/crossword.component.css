@@ -2,7 +2,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 120px 0;
+    margin: 30px 0 40px;
+}
+
+.big-title {
+    font-size: 72px;
+    color: #fff;
 }
 
 .header-background {
