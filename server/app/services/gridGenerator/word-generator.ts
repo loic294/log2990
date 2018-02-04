@@ -1,13 +1,8 @@
 import { Case } from './case'
 import GridGenerator from "./grid-generator";
 import Word, { Orientation } from "../../../../common/lexical/word";
+import Constraint from "./constraint"
 import LexicalService from ".././lexical";
-
-enum Difficulte {
-    facile,
-    normal,
-    difficile,
-}
 
 export default class WordGenerator extends GridGenerator{
 
@@ -15,6 +10,7 @@ export default class WordGenerator extends GridGenerator{
     private verticalWordLength : number[] = [];
     private _horizontalWordArray : Word[] = [];
     private _verticalWordArray : Word[] = [];
+    private _constraintsArray : Constraint[] = [];
     private _lexicalService = new LexicalService();
 
     constructor(){
