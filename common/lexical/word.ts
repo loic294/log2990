@@ -8,36 +8,45 @@ export default class Word {
     constructor(
         private _name : string,
         private _desc : string,
-        private _postiion : Array<number>,
+        private _position : Array<number>,
         private _orientation : Orientation,
+        private _isValidated: boolean = false,
     ) {}
 
     public get name() {
-        return this._name
+        return this._name;
     }
 
     public get desc() {
-        return this._desc
+        return this._desc;
     }
 
     public get position() {
-        return this._postiion
+        return this._position
     }
 
     public get col () {
-        return this._postiion[0]
+        return this._position[1]
     }
 
     public get row () {
-        return this._postiion[1]
+        return this._position[0]
     }
 
     public get direction() {
-        return this._orientation
+        return this._orientation;
     }
 
     public get length() {
-        return this._name.length
+        return this._name.length;
+    }
+    
+    public get validated() {
+        return this._isValidated
+    }
+    
+    public validate() {
+        this._isValidated = true
     }
 
 }
