@@ -1,3 +1,8 @@
+.clues {
+    position: relative;
+    width: 100%;
+}
+
 .selected{
 	background-color: green;
 	color: white;
