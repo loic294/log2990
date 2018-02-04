@@ -3,6 +3,7 @@ import GridGenerator from "./grid-generator";
 import Word, { Orientation } from "../../../../common/lexical/word";
 import Constraint from "./constraint"
 import LexicalService from ".././lexical";
+import index from 'axios';
 
 export default class WordGenerator extends GridGenerator{
 
@@ -21,6 +22,8 @@ export default class WordGenerator extends GridGenerator{
 
         this.initialiseHorizontalWordArray();
         this.initialiseVerticalWordArray();
+
+        this.generateWords();
     }
 
     public testWordLength(grid : Case[][]) : void{
@@ -145,23 +148,25 @@ export default class WordGenerator extends GridGenerator{
     }
 
     private generateWords() {
-        
+        console.log(this._lexicalService.wordSearch(this.constructConstraintFor(this._horizontalWordArray[0]), true));
     }
 
     private constructConstraintFor(word : Word) {
-        let constraints = "";
+        let nonConstraints = 0;
+        let constraintWord = "";
         let wordLength = (word.direction ? this.horizontalWordLength[word.index] : this.verticalWordLength[word.index])
         for (let wordPosition  = 0; wordPosition < wordLength; wordPosition++ ){
             for (let constraintIndex = 0; constraintIndex < this._constraintsArray.length; constraintIndex ++){
                 if (this.checkConstraints(word, constraintIndex, wordPosition)){
-                    
-                        constraints += this._constraintsArray[constraintIndex];
+                        constraintWord += nonConstraints;
+                        nonConstraints = 0;
+                        constraintWord += this._constraintsArray[constraintIndex];
                 } else {
-                        constraints += "?";
+                        nonConstraints ++;
                 }
             }
         }
-        return constraints;
+        return constraintWord;
     }
 
     private checkConstraints(word : Word, constraintIndex : number, wordPosition : number) {
