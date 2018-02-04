@@ -1,3 +1,9 @@
+#header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 120px 0;
+}
 
 .header-background {
     position: absolute;
