@@ -102,13 +102,6 @@ export default class WordGenerator extends GridGenerator{
         this.initialiseHorizontalWordArray();
         this.initialiseVerticalWordArray();
 
-        this._horizontalWordArray.forEach(word => {
-            console.log(word.position + " ok the fuck is happening at this direction "+ word.direction)
-        });
-        this._verticalWordArray.forEach(word => {
-            console.log(word.position + " ok the fuck is happening at this direction "+ word.direction)
-        });
-
         this.setGrille(temp);
     }
 
@@ -156,7 +149,7 @@ export default class WordGenerator extends GridGenerator{
     }
 
     private generateWords() {
-        
+
     }
 
     public getVerticalWordLength() : number[] {
