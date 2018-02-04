@@ -7,7 +7,7 @@ const service = new LexicalService;
 describe("wordSearch('4', 'true')", () => {
     it("should return a 4 letter common word", () => {
         
-        return service.wordSearch("4", true).then((data: any)=> {
+        return service.wordSearch("4", "coomon").then((data: any)=> {
             assert.equal(4, data.length);
         });
     });
@@ -16,7 +16,7 @@ describe("wordSearch('4', 'true')", () => {
 describe("wordSearch('4', 'false')", () => {
     it("should return a 4 letter common word", () => {
         
-        return service.wordSearch("4", true).then((data: any)=> {
+        return service.wordSearch("4", "common").then((data: any)=> {
             assert.equal(4, data.length);
         });
     });
@@ -25,7 +25,7 @@ describe("wordSearch('4', 'false')", () => {
 describe("wordSearch('2a3', 'true')", () => {
     it("should return a 6 letter common word with an a at the 3 position", () => {
 
-        return service.wordSearch("2a3", false).then((data: any)=> {
+        return service.wordSearch("2a3", "uncommon").then((data: any)=> {
             
             assert.equal(6, data.length);
             assert.equal("a", data[2]);
