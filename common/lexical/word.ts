@@ -11,38 +11,43 @@ export default class Word {
         private _position : Array<number>,
         private _orientation : Orientation,
         private _index : number
+        private _isValidated: boolean = false,
     ) {}
 
     public get name() {
-        return this._name
+        return this._name;
     }
 
     public get desc() {
-        return this._desc
+        return this._desc;
     }
 
     public get position() {
         return this._position
     }
 
-    public set position( position : Array<number> ) {
-        this._position = position;
-    }
-
     public get col () {
-        return this._position[0]
-    }
-
-    public get row () {
         return this._position[1]
     }
 
+    public get row () {
+        return this._position[0]
+    }
+
     public get direction() {
-        return this._orientation
+        return this._orientation;
     }
 
     public get length() {
-        return this._name.length
+        return this._name.length;
+    }
+    
+    public get validated() {
+        return this._isValidated
+    }
+    
+    public validate() {
+        this._isValidated = true
     }
 
     public get index() {
