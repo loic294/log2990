@@ -3,7 +3,7 @@ import GridGenerator from "./grid-generator";
 import Word, { Orientation } from "../../../../common/lexical/word";
 import Constraint from "./constraint"
 import LexicalService from ".././lexical";
-import index from 'axios';
+import axios, { AxiosResponse , AxiosWords } from 'axios';
 
 export default class WordGenerator extends GridGenerator{
 
@@ -147,8 +147,19 @@ export default class WordGenerator extends GridGenerator{
         return (direction ? (positionToValidate === -1 || this.getGrille()[positionToValidate][stablePosition].isBlack() ? positionToValidate + 1 : positionToValidate) : (positionToValidate === -1 || this.getGrille()[stablePosition][positionToValidate].isBlack() ? positionToValidate + 1 : positionToValidate));
     }
 
-    private generateWords() {
-        console.log(this._lexicalService.wordSearch(this.constructConstraintFor(this._horizontalWordArray[0]), true));
+    private async generateWords() {
+        let { data }: { data: Array<AxiosWords> } = await this.getWord();
+    }
+
+
+    private async getWord() {
+        const FETCH_URL = `http://localhost:3000/lexical/wordsearch/common/${this.constructConstraintFor(this._horizontalWordArray[0])}`;
+        try {
+            const response = await axios.get(FETCH_URL);
+            return response.data;
+        } catch (err) {
+            throw err;
+        }
     }
 
     private constructConstraintFor(word : Word) {

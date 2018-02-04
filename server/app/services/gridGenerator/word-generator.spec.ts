@@ -3,8 +3,6 @@ import {Case} from './case'
 import Word, { Orientation } from "../../../../common/lexical/word";
 import {expect} from 'chai'
 
-const assert = require('assert');
-
 
 describe('Words', () => {
     let testWords: WordGenerator;
