@@ -6,11 +6,16 @@ export default class GridGenerator {
   private readonly TAILLE_GRILLE : number = 10;
   private readonly PERCENT_BLACK_CASES : number = 10;
   private readonly BASE_AMOUNT_BLACK_CASES : number = 10;
-  private amountBlackCases : number = Math.floor(Math.random() * this.PERCENT_BLACK_CASES + this.BASE_AMOUNT_BLACK_CASES);
+  private amountBlackCases : number = 0;
 
   constructor() {
+      this.assignAmountOfBlackCases();
       this.grille = this.createEmptyGrille();
       this.assignBlackCases();
+  }
+
+  private assignAmountOfBlackCases(){
+      this.amountBlackCases = Math.floor(Math.random() * this.PERCENT_BLACK_CASES + this.BASE_AMOUNT_BLACK_CASES);
   }
 
   public createEmptyGrille() : Array<Array<Case>> {
@@ -38,9 +43,7 @@ export default class GridGenerator {
       }
     }
 
-    currentAmountBlackCases = this.setBlackCases(currentAmountBlackCases);
-
-    currentAmountBlackCases = this.checkGrilleValidity(currentAmountBlackCases);
+    currentAmountBlackCases = this.setBlackCases(this.checkGrilleValidity(currentAmountBlackCases));
 
     if(currentAmountBlackCases != this.amountBlackCases){
       this.assignBlackCases();

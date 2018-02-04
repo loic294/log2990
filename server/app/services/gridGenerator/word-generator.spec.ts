@@ -71,8 +71,6 @@ describe('Words', () => {
         
     });
     
-    it('should be able to find a word of the correct size from an outside lexical.');
-    
     it('should find all the correct words from a lexical.');
 
 });

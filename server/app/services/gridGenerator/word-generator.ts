@@ -1,6 +1,7 @@
 import { Case } from './case'
 import GridGenerator from "./grid-generator";
 import Word, { Orientation } from "../../../../common/lexical/word";
+import LexicalService from ".././lexical";
 
 enum Difficulte {
     facile,
@@ -14,6 +15,7 @@ export default class WordGenerator extends GridGenerator{
     private verticalWordLength : number[] = [];
     private _horizontalWordArray : Word[] = [];
     private _verticalWordArray : Word[] = [];
+    private _lexicalService = new LexicalService();
 
     constructor(){
         super();
@@ -153,7 +155,7 @@ export default class WordGenerator extends GridGenerator{
         return (direction ? (positionToValidate === -1 || this.getGrille()[positionToValidate][stablePosition].isBlack() ? positionToValidate + 1 : positionToValidate) : (positionToValidate === -1 || this.getGrille()[stablePosition][positionToValidate].isBlack() ? positionToValidate + 1 : positionToValidate));
     }
 
-    public generateWords() {
+    private generateWords() {
         
     }
 
