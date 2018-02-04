@@ -12,7 +12,8 @@ export default class WordGenerator extends GridGenerator{
 
     private horizontalWordLength : number[] = [];
     private verticalWordLength : number[] = [];
-    private _wordArray : Word[] = [];
+    private _horizontalWordArray : Word[] = [];
+    private _verticalWordArray : Word[] = [];
 
     constructor(){
         super();
@@ -20,7 +21,8 @@ export default class WordGenerator extends GridGenerator{
         this.findHorizontalWordLength();
         this.findVerticalWordLength();
 
-        this.initialiseWordArray();
+        this.initialiseHorizontalWordArray();
+        this.initialiseVerticalWordArray();
     }
 
     public testWordLength(grid : Case[][]) : void{
@@ -95,42 +97,60 @@ export default class WordGenerator extends GridGenerator{
         let temp : Case[][] = this.getGrille();
         this.setGrille(grid);
         
-        this.initialiseWordArray();
+        this.initialiseHorizontalWordArray();
+        this.initialiseVerticalWordArray();
 
-        this._wordArray.forEach(word => {
+        this._horizontalWordArray.forEach(word => {
+            console.log(word.position + " ok the fuck is happening at this direction "+ word.direction)
+        });
+        this._verticalWordArray.forEach(word => {
             console.log(word.position + " ok the fuck is happening at this direction "+ word.direction)
         });
 
         this.setGrille(temp);
     }
 
-    private initialiseWordArray() : void{
-        this._wordArray = [];
+    private initialiseHorizontalWordArray() : void{
+        this._horizontalWordArray = [];
         let horizontalWordIndex : number = 0;
-        let verticalWordIndex : number = 0;
 
-        for (let firstIndex : number = 0; firstIndex < this.getGrille().length; firstIndex++){
-            for (let secondIndex : number = 0; secondIndex < this.getGrille().length; secondIndex++){
-                if (this.getGrille()[firstIndex][secondIndex].isBlack() || secondIndex === this.getGrille().length - 1){
-                    if (this.horizontalWordLength[horizontalWordIndex] === 1) {
+        for (let rows : number = 0; rows < this.getGrille().length; rows++){
+            for (let col : number = 0; col < this.getGrille().length; col++){
+                if (this.getGrille()[rows][col].isBlack() || col === this.getGrille().length - 1){
+                    if (this.horizontalWordLength[horizontalWordIndex] === 1 || this.horizontalWordLength[horizontalWordIndex] === 0) {
                         this.horizontalWordLength.splice(horizontalWordIndex, 1);
                     } else {
-                        this._wordArray.push(new Word("", "", [firstIndex, secondIndex], Orientation.horizontal, horizontalWordIndex));
+                        let initialPosition = this.checkValidPosition(col - this.horizontalWordLength[horizontalWordIndex], rows, Orientation.horizontal);
+                        this._horizontalWordArray.push(new Word("", "", [initialPosition, rows], Orientation.horizontal, horizontalWordIndex));
                         horizontalWordIndex++;
-                    }
-                }
-
-                if (this.getGrille()[secondIndex][firstIndex].isBlack() || secondIndex === this.getGrille().length - 1) {
-                    if (this.verticalWordLength[verticalWordIndex] === 1) {
-                        this.verticalWordLength.splice(verticalWordIndex, 1);
-                    } else {
-                        this._wordArray.push(new Word("", "", [secondIndex , firstIndex], Orientation.vertical, verticalWordIndex));
-
-                        verticalWordIndex++
                     }
                 }
             }
         }
+    }
+
+    private initialiseVerticalWordArray() : void {
+        this._verticalWordArray = [];
+        let verticalWordIndex : number = 0;
+
+        for (let col : number = 0; col < this.getGrille().length; col++){
+            for (let rows : number = 0; rows < this.getGrille().length; rows++){
+                if (this.getGrille()[rows][col].isBlack() || rows === this.getGrille().length - 1){
+                    if (this.verticalWordLength[verticalWordIndex] === 1 || this.verticalWordLength[verticalWordIndex] === 0) {
+                        this.verticalWordLength.splice(verticalWordIndex, 1);
+                    } else {
+                        
+                        let initialPosition = this.checkValidPosition(rows - this.verticalWordLength[verticalWordIndex], col, Orientation.vertical);
+                        this._verticalWordArray.push(new Word("", "", [initialPosition, col], Orientation.vertical, verticalWordIndex));
+                        verticalWordIndex++;
+                    }
+                }
+            }
+        }
+    }
+
+    private checkValidPosition( positionToValidate : number, stablePosition : number, direction : Orientation){
+        return (direction ? (positionToValidate === -1 || this.getGrille()[positionToValidate][stablePosition].isBlack() ? positionToValidate + 1 : positionToValidate) : (positionToValidate === -1 || this.getGrille()[stablePosition][positionToValidate].isBlack() ? positionToValidate + 1 : positionToValidate));
     }
 
     public generateWords() {
@@ -145,7 +165,11 @@ export default class WordGenerator extends GridGenerator{
         return this.horizontalWordLength;
     }
 
-    public get wordArray() : Word[] {
-        return this._wordArray;
+    public get horizontalWordArray() : Word[] {
+        return this._horizontalWordArray;
+    }
+    
+    public get verticalWordArray() : Word[] {
+        return this._verticalWordArray;
     }
 }

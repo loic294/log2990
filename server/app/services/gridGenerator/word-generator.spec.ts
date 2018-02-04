@@ -53,13 +53,20 @@ describe('Words', () => {
 
         expectedWordArray = [
             new Word("", "", [0, 0], Orientation.horizontal, 0),
-            new Word("", "", [0, 0], Orientation.vertical, 0),
             new Word("", "", [0, 2], Orientation.horizontal, 0),
-            new Word("", "", [2, 1], Orientation.vertical, 0),
         ];
 
-        for(let index = 0; index < testArray.length; index++){
-            expect(testWords.wordArray[index].position, "This is the actual direction "+testWords.wordArray[index].direction + " and this is the expected direction "+expectedWordArray[index].direction).to.be.eql(expectedWordArray[index].position);
+        for(let index = 0; index < expectedWordArray.length; index++){
+            expect(testWords.horizontalWordArray[index].position).to.be.eql(expectedWordArray[index].position);
+        }
+
+        expectedWordArray = [
+            new Word("", "", [0, 0], Orientation.vertical, 0),
+            new Word("", "", [1, 2], Orientation.vertical, 0)
+        ]
+
+        for(let index = 0; index < expectedWordArray.length; index++){
+            expect(testWords.verticalWordArray[index].position).to.be.eql(expectedWordArray[index].position);
         }
         
     });
