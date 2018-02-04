@@ -6,7 +6,7 @@ const API_KEY = "api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5";
 
 interface AxiosWords {
     word: string,
-    tags: Array<number>
+    tags: Array<string>
 }
 
 export default class LexicalService {
@@ -92,7 +92,7 @@ export default class LexicalService {
         }
     }
 
-    public async wordSearch(researchCriteria: string, common: boolean): Promise<String> {
+    public async wordSearch(researchCriteria: string, common: string): Promise<String> {
         let request: string = "";
 
         for (let i = 0; i < researchCriteria.length; i++) {
@@ -108,7 +108,7 @@ export default class LexicalService {
     }
 
 
-    private commonFinder(common: boolean, rawResponse: Array<AxiosWords>, requestString: string): string {
+    private commonFinder(common: string, rawResponse: Array<AxiosWords>, requestString: string): string {
 
         let responseLength = rawResponse.length;
 
@@ -116,14 +116,14 @@ export default class LexicalService {
 
             let randomInt = Math.floor(Math.random() * rawResponse.length);
             let word: string = rawResponse[randomInt].word;
-            let freq: number = rawResponse[randomInt].tags[0].substring(2);
+            let freq: number = +rawResponse[randomInt].tags[0].substring(2);
 
             if (word.length === requestString.length) {
 
-                if (common && freq > 8)
+                if (common === "common" && freq as number > 8)
                     return word;
 
-                if (!common && freq < 8)
+                if (common === "uncommon" && freq < 8)
                     return word;
 
             }
