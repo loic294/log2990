@@ -59,13 +59,13 @@ export class GridComponent implements OnInit {
     }
 
     private findHorizontalWordStart(): void {
-        while (this._y - 1 >= 0 && this.isLetter(this._grid[this._x][this._y - 1].char)) {
+        while (this._y - 1 >= 0 && !this.isBlack(this._grid[this._x][this._y - 1].char)) {
             this._y--;
         }
     }
 
     private findVerticalWordStart(): void {
-        while (this._x - 1 >= 0 && this.isLetter(this._grid[this._x - 1][this._y].char)) {
+        while (this._x - 1 >= 0 && !this.isBlack(this._grid[this._x - 1][this._y].char)) {
             this._x--;
         }
     }
@@ -73,8 +73,8 @@ export class GridComponent implements OnInit {
     private findWordStart(): Word {
         let tempOrientation: Orientation;
 
-        if (this.isLetter(this._grid[this._x][this._y].char)) {
-            if (this._y - 1 >= 0 && this.isLetter(this._grid[this._x][this._y - 1].char)) {
+        if (!this.isBlack(this._grid[this._x][this._y].char)) {
+            if (this._y - 1 >= 0 && !this.isBlack(this._grid[this._x][this._y - 1].char)) {
                 this.findHorizontalWordStart();
                 tempOrientation = Orientation.horizontal;
             } else {
@@ -87,31 +87,33 @@ export class GridComponent implements OnInit {
     }
 
     public selectCaseFromUser(c: Case): void {
-        this._x = c.x;
-        this._y = c.y;
-        const tempWord: Word = this.findWordStart();
-        this._wordService.selectWordFromGrid(tempWord);
+        if (!c.validated) {
+            this._x = c.x;
+            this._y = c.y;
+            const tempWord: Word = this.findWordStart();
+            this._wordService.selectWordFromGrid(tempWord);
 
-        if (this._selectedCase != null) {
-            this._selectedCase.unselect();
+            if (this._selectedCase != null) {
+                this._selectedCase.unselect();
+            }
+
+            this._grid[tempWord.col][tempWord.row].select();
+            this._selectedCase = this._grid[tempWord.col][tempWord.row];
+            this._x = this._grid[tempWord.col][tempWord.row].x;
+            this._y = this._grid[tempWord.col][tempWord.row].y;
         }
-
-        this._grid[tempWord.col][tempWord.row].select();
-        this._selectedCase = this._grid[tempWord.col][tempWord.row];
-        this._x = this._grid[tempWord.col][tempWord.row].x;
-        this._y = this._grid[tempWord.col][tempWord.row].y;
     }
 
     private selectCaseFromService(c: Case): void {
-
-        if (this._selectedCase != null) {
-            this._selectedCase.unselect();
+        if (!c.validated) {
+            if (this._selectedCase != null) {
+                this._selectedCase.unselect();
+            }
+            c.select();
+            this._selectedCase = c;
+            this._x = c.x;
+            this._y = c.y;
         }
-
-        c.select();
-        this._selectedCase = c;
-        this._x = c.x;
-        this._y = c.y;
     }
 
     public validateChar(event: KeyboardEvent): void {
@@ -122,8 +124,8 @@ export class GridComponent implements OnInit {
         }
     }
 
-    public isLetter(letter: string): boolean {
-        return (/[a-z]/i.test(letter) && letter.length === 1);
+    public isBlack(letter: string): boolean {
+        return (/\-/.test(letter) && letter.length === 1);
     }
 
     public ngOnInit(): void {
