@@ -154,8 +154,9 @@ export default class WordGenerator extends GridGenerator{
         while(horizontalWordIndex < this._horizontalWordArray.length && verticalWordIndex < this._verticalWordArray.length){
             try{
                 let word = (horizontalWordIndex < verticalWordIndex ? this._horizontalWordArray[horizontalWordIndex] : this._verticalWordArray[verticalWordIndex]);
+                let appropriateIndex = (horizontalWordIndex < verticalWordIndex ? horizontalWordIndex : verticalWordIndex);
                 let { data }: { data: Array<AxiosWords> } = await this.getWord(word);
-                this.setWord(data, word);
+                appropriateIndex = this.setWord(data, word, appropriateIndex);
             }catch(err) {
 
             }
@@ -176,8 +177,10 @@ export default class WordGenerator extends GridGenerator{
         }
     }
 
-    private setWord(rawResponse: Array<AxiosWords>, word : Word){
+    private setWord(rawResponse: Array<AxiosWords>, word : Word, index : number){
         word.name = rawResponse[0].word;
+        this.addConstraintsToArray(word);
+        return index++;
     }
 
     private addConstraintsToArray(word : Word){
