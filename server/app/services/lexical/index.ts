@@ -65,8 +65,10 @@ export default class LexicalService {
 
     public async wordDefinition(level: string, word: string): Promise<string> {
         const filteredDefinitions: string[] = await this.filterDefinitions(word);
-
         try {
+            if (filteredDefinitions.length === 0) {
+                return "No definitions";
+            }
             switch (level) {
                 case "easy":
                     {
@@ -75,12 +77,7 @@ export default class LexicalService {
                 case "hard":
                     {
                         if (filteredDefinitions.length > 1) {
-                            let min: number;
-                            let max: number;
-                            min = 1;
-                            max = filteredDefinitions.length;
-
-                            return filteredDefinitions[Math.floor((Math.random() * (max - min) + min))];
+                            return filteredDefinitions[Math.floor((Math.random() * (filteredDefinitions.length - 1) + 1))];
                         } else {
                             return filteredDefinitions[0];
                         }
@@ -89,7 +86,6 @@ export default class LexicalService {
                     return filteredDefinitions[0];
                 }
             }
-
         } catch (err) {
             throw err;
         }
@@ -107,6 +103,10 @@ export default class LexicalService {
         }
 
         const { data }: { data: Array<AxiosWords> } = await this.baseWordSearch(request);
+
+        if (data === undefined || data.length === 0) {
+            return "undefined";
+        }
 
         return this.commonFinder(common, data, request);
     }
