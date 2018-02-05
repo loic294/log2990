@@ -95,19 +95,19 @@ export class GridComponent implements OnInit {
             }
         }
 
-        return new Word("", "", [this._x, this._y], tempOrientation);
+        return new Word("", "", [this._x, this._y], tempOrientation, 0);
     }
 
     public selectCaseFromGrid(c: Case): void {
+        if (this._selectedCase != null) {
+                this._selectedCase.unselect();
+            }
+
         if (!c.validated) {
             this._x = c.x;
             this._y = c.y;
             const tempWord: Word = this.findWordStart();
             this._wordService.selectWordFromGrid(tempWord);
-
-            if (this._selectedCase != null) {
-                this._selectedCase.unselect();
-            }
 
             this._grid[tempWord.row][tempWord.col].select();
             this._selectedCase = this._grid[tempWord.row][tempWord.col];
@@ -124,12 +124,17 @@ export class GridComponent implements OnInit {
             this._selectedCase.unselect();
         }
 
-        if (w != null) {
-            this._grid[w.col][w.row].select();
-            this._selectedCase = this._grid[w.col][w.row];
-            this._x = w.col;
-            this._y = w.row;
+        if (w != null && !this._grid[w.row][w.col].validated) {
+            this._grid[w.row][w.col].select();
+            this._selectedCase = this._grid[w.row][w.col];
+            this._x = w.row;
+            this._y = w.col;
+            this.findEndWrittenWord();
         }
+    }
+
+    private isHorizontal(): boolean {
+        return this._word.direction === Orientation.horizontal;
     }
 
     private findEndWrittenWord(): void {
@@ -144,7 +149,7 @@ export class GridComponent implements OnInit {
                 elem.focus();
                 if (cell === wordStart + this._word.length - 1) {
                     wordEntered += caseTemp.char;
-                    this.validateWord(wordEntered);
+                    //this.validateWord(wordEntered);
                 }
                 break;
             } else {

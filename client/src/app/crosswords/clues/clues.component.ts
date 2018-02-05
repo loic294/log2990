@@ -21,17 +21,17 @@ import { WordService } from "../../word.service/word.service";
  * **/
 
 const CLUES: Array<Word> = [
-    new Word("Clue", "Definition of word clue", [1, 6], Orientation.horizontal),
-    new Word("Wound", "Definition of word wound", [2, 0], Orientation.horizontal),
-    new Word("Finish", "Definition of word finish", [5, 2], Orientation.horizontal),
-    new Word("Menu", "Definition of word menu", [7, 1], Orientation.horizontal),
-    new Word("Grave", "Definition of word grave", [9, 0], Orientation.horizontal),
-    new Word("Dock", "Definition of word dock", [9, 6], Orientation.horizontal),
-    new Word("Worry", "Definition of word worry", [2, 0], Orientation.vertical),
-    new Word("Adventure", "Definition of word adventure", [1, 4], Orientation.vertical),
-    new Word("Crossword", "Definition of word crossword", [1, 6], Orientation.vertical),
-    new Word("Push", "Definition of word push", [0, 8], Orientation.vertical),
-    new Word("Crack", "Definition of word crack", [5, 9], Orientation.vertical),
+    new Word("Clue", "Definition of word clue", [1, 6], Orientation.horizontal, 0),
+    new Word("Wound", "Definition of word wound", [2, 0], Orientation.horizontal, 1),
+    new Word("Finish", "Definition of word finish", [5, 2], Orientation.horizontal, 2),
+    new Word("Menu", "Definition of word menu", [7, 1], Orientation.horizontal, 3),
+    new Word("Grave", "Definition of word grave", [9, 0], Orientation.horizontal, 4),
+    new Word("Dock", "Definition of word dock", [9, 6], Orientation.horizontal, 5),
+    new Word("Worry", "Definition of word worry", [2, 0], Orientation.vertical, 6),
+    new Word("Adventure", "Definition of word adventure", [1, 4], Orientation.vertical, 7),
+    new Word("Crossword", "Definition of word crossword", [1, 6], Orientation.vertical, 8),
+    new Word("Push", "Definition of word push", [0, 8], Orientation.vertical, 9),
+    new Word("Crack", "Definition of word crack", [5, 9], Orientation.vertical, 10),
 ];
 
 /** END OF MOCKED CONTENT **/
@@ -73,9 +73,7 @@ export class CluesComponent implements OnInit {
     private selectWord(position: Word): void {
         if (position != null) {
             for ( const item of this._clues) {
-                if (item.col === position.col &&
-                    item.row === position.row &&
-                    item.direction === position.direction) {
+                if (this.foundWord(item, position)) {
                         this._selectedClue = item;
                 }
             }
