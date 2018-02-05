@@ -26,13 +26,10 @@ export default class Word {
         return this._position
     }
 
-<<<<<<< HEAD
     public set position( position : Array<number> ) {
         this._position = position;
     }
 
-=======
->>>>>>> f130fa0e70e2d90fd5ba410331585784e6fb783a
     public get col () {
         return this._position[1]
     }
