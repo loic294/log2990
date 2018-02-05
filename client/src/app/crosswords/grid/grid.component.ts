@@ -99,7 +99,7 @@ export class GridComponent implements OnInit {
     }
 
     public selectCaseFromGrid(c: Case): void {
-        if (!c.validated) {
+
             this._x = c.x;
             this._y = c.y;
             const tempWord: Word = this.findWordStart();
@@ -114,7 +114,6 @@ export class GridComponent implements OnInit {
             this._x = this._grid[tempWord.row][tempWord.col].x;
             this._y = this._grid[tempWord.row][tempWord.col].y;
             this.findEndWrittenWord();
-        }
 
     }
 
@@ -124,7 +123,7 @@ export class GridComponent implements OnInit {
             this._selectedCase.unselect();
         }
 
-        if (w != null && !this._grid[w.row][w.col].validated) {
+        if (w != null) {
             this._grid[w.row][w.col].select();
             this._selectedCase = this._grid[w.row][w.col];
             this._x = w.row;
