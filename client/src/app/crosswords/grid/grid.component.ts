@@ -9,16 +9,16 @@ import { WordService } from "../../word.service/word.service";
    * **/
 
 const grid: Array<String> = [
-    "- - - - - - - - P -",
-    "- - - - A - C L U E",
-    "W O U N D - R - S -",
-    "O - - - V - O - H -",
-    "R - - - E - S - - -",
-    "R - F I N I S H - C",
-    "Y - - - T - W - - R",
-    "- M E N U - O - - A",
-    "- - - - R - E - - C",
-    "G R A V E - D O C K",
+    "- - - - - - - - _ -",
+    "- - - - _ - _ _ _ _",
+    "_ _ _ _ _ - _ - _ -",
+    "_ - - - _ - _ - _ -",
+    "_ - - - _ - _ - - -",
+    "_ - _ _ _ _ _ _ - _",
+    "_ - - - _ - _ - - _",
+    "- _ _ _ _ - _ - - _",
+    "- - - - _ - _ - - _",
+    "_ _ _ _ _ - _ _ _ _",
 ];
 
 @Component({
@@ -109,11 +109,16 @@ export class GridComponent implements OnInit {
                 this._selectedCase.unselect();
             }
 
-            this._grid[tempWord.row][tempWord.col].select();
-            this._selectedCase = this._grid[tempWord.row][tempWord.col];
-            this._x = this._grid[tempWord.row][tempWord.col].x;
-            this._y = this._grid[tempWord.row][tempWord.col].y;
-            this.findEndWrittenWord();
+            if (this._word != null) {
+                this._grid[tempWord.row][tempWord.col].select();
+                this._selectedCase = this._grid[tempWord.row][tempWord.col];
+                this._x = this._grid[tempWord.row][tempWord.col].x;
+                this._y = this._grid[tempWord.row][tempWord.col].y;
+                this.findEndWrittenWord();
+            } else {
+                const elem: HTMLElement = document.getElementById(c.x.toString() + (c.y).toString());
+                elem.blur();
+            }
 
     }
 
@@ -149,7 +154,7 @@ export class GridComponent implements OnInit {
                 const elem: HTMLElement = document.getElementById(caseTemp.x.toString() + (caseTemp.y).toString());
                 elem.focus();
                 if (cell === wordStart + this._word.length - 1) {
-                    this.validateWord(wordEntered);
+                    this.validateWord(wordEntered, elem);
                 }
                 break;
             } else {
@@ -191,9 +196,10 @@ export class GridComponent implements OnInit {
         return (/\-/.test(letter) && letter.length === 1);
     }
 
-    public validateWord(enteredWord: string): void {
+    public validateWord(enteredWord: string, elem: HTMLElement): void {
         if (this._word.name.toUpperCase() === enteredWord.toUpperCase()) {
             this._word.validate();
+            elem.blur();
         }
     }
 
@@ -202,6 +208,9 @@ export class GridComponent implements OnInit {
             for (let j: number = 0; j < this._grid[i].length; j++) {
                 this._grid[i][j].x = i;
                 this._grid[i][j].y = j;
+                if (this._grid[i][j].char === "_") {
+                    this._grid[i][j].char = "";
+                }
             }
         }
         this._wordService.wordFromClue.subscribe(
