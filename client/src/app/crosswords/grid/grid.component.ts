@@ -123,7 +123,6 @@ export class GridComponent implements OnInit {
                 const elem: HTMLElement = document.getElementById(c.x.toString() + (c.y).toString());
                 elem.blur();
             }
-
     }
 
     private selectCaseFromService(w: Word): void {
