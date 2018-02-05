@@ -95,8 +95,9 @@ export class GridComponent implements OnInit {
             }
         }
 
-        return new Word("", "", [this._x, this._y], tempOrientation, 0);
+        return new Word("", "", [this._x, this._y], tempOrientation, 0, false);
     }
+
     public selectCaseFromGrid(c: Case): void {
         if (!c.validated) {
             this._x = c.x;

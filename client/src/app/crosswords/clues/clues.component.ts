@@ -64,6 +64,7 @@ export class CluesComponent implements OnInit {
     }
 
     private foundWord(item: Word, position: Word): boolean {
+
         return (item.col === position.col &&
             item.row === position.row &&
             item.direction === position.direction &&
@@ -74,7 +75,8 @@ export class CluesComponent implements OnInit {
         if (position != null) {
             for ( const item of this._clues) {
                 if (this.foundWord(item, position)) {
-                        this._selectedClue = item;
+                    this._selectedClue = item;
+                    this._wordService.selectWordFromClue(this._selectedClue);
                 }
             }
         } else {
