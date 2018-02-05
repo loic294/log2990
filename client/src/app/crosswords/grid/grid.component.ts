@@ -140,16 +140,17 @@ export class GridComponent implements OnInit {
     private findEndWrittenWord(): void {
         let wordStart: number = 0;
         let caseTemp: Case;
-        let wordEntered: string;
+        let wordEntered: string = "";
         this.isHorizontal() ? wordStart = this._word.col : wordStart = this._word.row;
         for (let cell: number = wordStart; cell < wordStart + this._word.length; cell++) {
             this.isHorizontal() ? caseTemp = this._grid[this._word.row][cell] : caseTemp = this._grid[cell][this._word.col];
+
             if (caseTemp.char === "" || cell === wordStart + this._word.length - 1) {
+                wordEntered += caseTemp.char;
                 const elem: HTMLElement = document.getElementById(caseTemp.x.toString() + (caseTemp.y).toString());
                 elem.focus();
                 if (cell === wordStart + this._word.length - 1) {
-                    wordEntered += caseTemp.char;
-                    //this.validateWord(wordEntered);
+                    this.validateWord(wordEntered);
                 }
                 break;
             } else {
