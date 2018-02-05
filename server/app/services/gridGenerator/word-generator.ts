@@ -148,9 +148,21 @@ export default class WordGenerator extends GridGenerator{
     }
 
     private async generateWords() {
-        //let { data }: { data: Array<AxiosWords> } = await this.getWord();
-    }
+        let horizontalWordIndex = 0;
+        let verticalWordIndex = 0;
 
+        while(horizontalWordIndex < this._horizontalWordArray.length && verticalWordIndex < this._verticalWordArray.length){
+            if (horizontalWordIndex < verticalWordIndex) {
+                let { data }: { data: Array<AxiosWords> } = await this.getWord(this._horizontalWordArray[horizontalWordIndex]);
+            } else {
+                let { data }: { data: Array<AxiosWords> } = await this.getWord(this._verticalWordArray[verticalWordIndex]);
+            }
+
+            //this is going to call a function which checks if a word was sent. If one was sent, then addConstraintsToArray and increment the appropriate index.
+            //Otherwise, remove the word and its constraints. You can remove a constraint if there are 0 words which have the constraint.
+        }
+        
+    }
 
     private async getWord(word : Word) {
         const FETCH_URL = `http://localhost:3000/lexical/wordsearch/common/${this.constructConstraintFor(word)}`;
