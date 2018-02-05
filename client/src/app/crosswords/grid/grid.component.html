@@ -1,5 +1,5 @@
 <div>
-  <div class="_grid">
+  <div class="grid">
     <div class="row" *ngFor="let row of _grid;">
       <div class="col" *ngFor="let case of row;">
           <input [disabled]="case.validated" class="square" [ngModel]="case.char" (keypress)="validateChar($event, case)" (keyup)="eraseLetter($event, case)" maxlength="1" 
