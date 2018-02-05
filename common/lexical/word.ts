@@ -18,12 +18,20 @@ export default class Word {
         return this._name;
     }
 
+    public set name(name : string) {
+        this._name = name;
+    }
+
     public get desc() {
         return this._desc;
     }
 
     public get position() {
         return this._position
+    }
+
+    public set position( position : Array<number> ) {
+        this._position = position;
     }
 
     public get col () {
