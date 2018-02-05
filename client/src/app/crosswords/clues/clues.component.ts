@@ -49,12 +49,10 @@ export class CluesComponent implements OnInit {
     public constructor(public _wordService: WordService) { }
 
     public onSelect(clue: Word): void {
-        console.log("onselect");
         if (!clue.validated) {
             this._selectedClue = clue;
             this._wordService.selectWordFromClue(this._selectedClue);
         } else {
-            console.log("onselect else");
             this._selectedClue = null;
             this._wordService.selectWordFromClue(null);
         }
