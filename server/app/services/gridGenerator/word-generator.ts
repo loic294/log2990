@@ -190,10 +190,8 @@ export default class WordGenerator extends GridGenerator{
     }
 
     private removeWord(index : number, word : Word) {
-        if (word.direction === Orientation.horizontal) {
-
-        }
-
+        this.removeConstraintsFromArray(word);
+        word.name = "";
         return index --;
     }
 
