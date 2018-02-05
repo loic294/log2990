@@ -26,13 +26,13 @@ export default class WordGenerator extends GridGenerator{
     }
 
     public testWordLength(grid: Case[][]): void {
-        const temp: Case[][] = this.getGrille();
-        this.setGrille(grid);
+        const temp: Case[][] = this.getGrid();
+        this.setGrid(grid);
 
         this.findVerticalWordLength();
         this.findHorizontalWordLength();
 
-        this.setGrille(temp);
+        this.setGrid(temp);
     }
 
     private findHorizontalWordLength(): void {
@@ -40,19 +40,19 @@ export default class WordGenerator extends GridGenerator{
         let latestBlackPosition: number = 0;
         let wordIndex: number = 0;
         let blackOnLine: boolean = false;
-        for (let rows : number  = 0; rows < this.getGrille().length ; rows++){
+        for (let rows : number  = 0; rows < this.getGrid().length ; rows++){
             latestBlackPosition =  0;
             blackOnLine = false;
-            for (let col: number = 0; col < this.getGrille().length ;  col++) {
-                if (col ===  this.getGrille().length - 1) {
-                    if (this.getGrille()[rows][col].isBlack()) {
+            for (let col: number = 0; col < this.getGrid().length ;  col++) {
+                if (col ===  this.getGrid().length - 1) {
+                    if (this.getGrid()[rows][col].isBlack()) {
                         this.horizontalWordLength[wordIndex] = col - latestBlackPosition;
                     } else {
                         this.horizontalWordLength[wordIndex] = (blackOnLine ? col - latestBlackPosition : col + 1);
                     }
 
                     wordIndex++;
-                } else if (this.getGrille()[rows][col].isBlack()) {
+                } else if (this.getGrid()[rows][col].isBlack()) {
                     this.horizontalWordLength[wordIndex] = col - latestBlackPosition;
 
                     latestBlackPosition =  col;
@@ -68,12 +68,12 @@ export default class WordGenerator extends GridGenerator{
         let latestBlackPosition: number = 0;
         let wordIndex: number = 0;
         let blackOnLine: boolean = false;
-        for (let col: number  = 0; col < this.getGrille().length ; col++){
+        for (let col: number  = 0; col < this.getGrid().length ; col++){
             latestBlackPosition = 0;
             blackOnLine = false;
-            for (let rows: number = 0; rows < this.getGrille().length ;  rows++){
-                if (rows ===  this.getGrille().length - 1) {
-                    if (this.getGrille()[rows][col].isBlack()) {
+            for (let rows: number = 0; rows < this.getGrid().length ;  rows++){
+                if (rows ===  this.getGrid().length - 1) {
+                    if (this.getGrid()[rows][col].isBlack()) {
                         this.verticalWordLength[wordIndex] = rows - latestBlackPosition;
                     } else {
                         this.verticalWordLength[wordIndex] = (blackOnLine ? rows - latestBlackPosition : rows + 1);
@@ -81,7 +81,7 @@ export default class WordGenerator extends GridGenerator{
 
                     latestBlackPosition = rows;
                     wordIndex++;
-                } else if (this.getGrille()[rows][col].isBlack()) {
+                } else if (this.getGrid()[rows][col].isBlack()) {
                     this.verticalWordLength[wordIndex] = rows - latestBlackPosition;
 
                     latestBlackPosition = rows;
@@ -93,22 +93,22 @@ export default class WordGenerator extends GridGenerator{
     }
 
     public testWordPosition(grid: Case[][]): void {
-        const temp: Case[][] = this.getGrille();
-        this.setGrille(grid);
+        const temp: Case[][] = this.getGrid();
+        this.setGrid(grid);
 
         this.initialiseHorizontalWordArray();
         this.initialiseVerticalWordArray();
 
-        this.setGrille(temp);
+        this.setGrid(temp);
     }
 
     private initialiseHorizontalWordArray(): void{
         this._horizontalWordArray = [];
         let horizontalWordIndex: number = 0;
 
-        for (let rows: number = 0; rows < this.getGrille().length; rows++) {
-            for (let col: number = 0; col < this.getGrille().length; col++) {
-                if (this.getGrille()[rows][col].isBlack() || col === this.getGrille().length - 1){
+        for (let rows: number = 0; rows < this.getGrid().length; rows++) {
+            for (let col: number = 0; col < this.getGrid().length; col++) {
+                if (this.getGrid()[rows][col].isBlack() || col === this.getGrid().length - 1){
                     if (this.horizontalWordLength[horizontalWordIndex] === 1 || this.horizontalWordLength[horizontalWordIndex] === 0) {
                         this.horizontalWordLength.splice(horizontalWordIndex, 1);
                     } else {
@@ -125,9 +125,9 @@ export default class WordGenerator extends GridGenerator{
         this._verticalWordArray = [];
         let verticalWordIndex: number = 0;
 
-        for (let col: number = 0; col < this.getGrille().length; col++) {
-            for (let rows: number = 0; rows < this.getGrille().length; rows++) {
-                if (this.getGrille()[rows][col].isBlack() || rows === this.getGrille().length - 1) {
+        for (let col: number = 0; col < this.getGrid().length; col++) {
+            for (let rows: number = 0; rows < this.getGrid().length; rows++) {
+                if (this.getGrid()[rows][col].isBlack() || rows === this.getGrid().length - 1) {
                     if (this.verticalWordLength[verticalWordIndex] === 1 || this.verticalWordLength[verticalWordIndex] === 0) {
                         this.verticalWordLength.splice(verticalWordIndex, 1);
                     } else {
@@ -142,10 +142,10 @@ export default class WordGenerator extends GridGenerator{
 
     private checkValidPosition( positionToValidate: number, stablePosition: number, direction: Orientation): number {
         return (direction ?
-            (positionToValidate === -1 || this.getGrille()[positionToValidate][stablePosition].isBlack() ?
+            (positionToValidate === -1 || this.getGrid()[positionToValidate][stablePosition].isBlack() ?
                 positionToValidate + 1 :
                 positionToValidate) :
-            (positionToValidate === -1 || this.getGrille()[stablePosition][positionToValidate].isBlack() ?
+            (positionToValidate === -1 || this.getGrid()[stablePosition][positionToValidate].isBlack() ?
                 positionToValidate + 1 :
                 positionToValidate));
     }

@@ -31,9 +31,9 @@ describe("GridGenerator", () => {
 
   it("should have " + gridGenerator.getAmntBlckCases() + " black cases", () => {
 
-    for(let rows: number = 0; rows < gridGenerator.getGrille().length; rows ++) {
-      for (let col: number = 0; col < gridGenerator.getGrille().length; col ++) {
-        if (gridGenerator.getGrille()[rows][col].isBlack()) {
+    for(let rows: number = 0; rows < gridGenerator.getGrid().length; rows ++) {
+      for (let col: number = 0; col < gridGenerator.getGrid().length; col ++) {
+        if (gridGenerator.getGrid()[rows][col].isBlack()) {
           testAmntOfBlacks++;
         }
       }

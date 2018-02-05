@@ -115,12 +115,12 @@ export default class GridGenerator {
     return this._grid[rows][col - 2].isBlack() && this._grid[rows - 1][col - 1].isBlack() && this._grid[rows + 1][col - 1].isBlack();
   }
 
-  public getGrille(): Array<Array<Case>> {
+  public getGrid(): Array<Array<Case>> {
     return this._grid;
   }
 
-  public setGrille(grille: Case[][]): void {
-    this._grid = grille;
+  public setGrid(grid: Case[][]): void {
+    this._grid = grid;
   }
 
   public getPercentBlackCases(): number {
