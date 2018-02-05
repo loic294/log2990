@@ -171,9 +171,15 @@ export class GridComponent implements OnInit {
             this._grid[c.x - 1][c.y].char = "";
         }
     }
-    public validateChar(event: KeyboardEvent, c: Case): void {
+
+    public isLetter(element: string): boolean {
         const constraint: RegExp = /^[a-z]+$/i;
-        if (!constraint.test(String.fromCharCode(event.charCode))) {
+
+        return constraint.test(element);
+    }
+
+    public validateChar(event: KeyboardEvent, c: Case): void {
+        if (!this.isLetter(String.fromCharCode(event.charCode))) {
             event.preventDefault();
         } else {
             c.char = (String.fromCharCode(event.charCode));
