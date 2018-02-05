@@ -12,7 +12,6 @@ export default class WordGenerator extends GridGenerator{
     private _horizontalWordArray : Word[] = [];
     private _verticalWordArray : Word[] = [];
     private _constraintsArray : Constraint[] = [];
-    private _lexicalService = new LexicalService();
 
     constructor(){
         super();
@@ -152,15 +151,23 @@ export default class WordGenerator extends GridGenerator{
         let verticalWordIndex = 0;
 
         while(horizontalWordIndex < this._horizontalWordArray.length && verticalWordIndex < this._verticalWordArray.length){
+            let word = (horizontalWordIndex < verticalWordIndex ? this._horizontalWordArray[horizontalWordIndex] : this._verticalWordArray[verticalWordIndex]);
             try{
-                let word = (horizontalWordIndex < verticalWordIndex ? this._horizontalWordArray[horizontalWordIndex] : this._verticalWordArray[verticalWordIndex]);
-                let appropriateIndex = (horizontalWordIndex < verticalWordIndex ? horizontalWordIndex : verticalWordIndex);
                 let { data }: { data: Array<AxiosWords> } = await this.getWord(word);
-                appropriateIndex = this.setWord(data, word, appropriateIndex);
+
+                if (horizontalWordIndex < verticalWordIndex){
+                    horizontalWordIndex = this.setWord(data, word, horizontalWordIndex);
+                } else {
+                    verticalWordIndex = this.setWord(data, word, verticalWordIndex);
+                }
             }catch(err) {
-
+                if (horizontalWordIndex < verticalWordIndex){
+                    horizontalWordIndex = this.removeWord(horizontalWordIndex);
+                } else {
+                    verticalWordIndex = this.removeWord(verticalWordIndex);
+                }
             }
-
+            
             //this is going to call a function which checks if a word was sent. If one was sent, then addConstraintsToArray and increment the appropriate index.
             //Otherwise, remove the word and its constraints. You can remove a constraint if there are 0 words which have the constraint.
         }
@@ -177,7 +184,13 @@ export default class WordGenerator extends GridGenerator{
         }
     }
 
-    private setWord(rawResponse: Array<AxiosWords>, word : Word, index : number){
+    private removeWord(index : number) {
+
+
+        return index --;
+    }
+
+    private setWord(rawResponse: Array<AxiosWords>, word : Word, index : number) {
         word.name = rawResponse[0].word;
         this.addConstraintsToArray(word);
         return index++;
