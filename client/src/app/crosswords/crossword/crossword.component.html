@@ -17,15 +17,18 @@
   
     <ui-container>
   
-      <ui-shadow-box>
+      <div (clickOutside)="unselect()">
+        <ui-shadow-box>
         <app-clues></app-clues>
       </ui-shadow-box>
   
       <ui-shadow-box>
-        <div (clickOutside)="unselect()">
+        <div >
           <app-grid></app-grid>
         </div>
       </ui-shadow-box>
+      </div>
+      
   
     </ui-container>
   
