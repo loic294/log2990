@@ -1,28 +1,12 @@
 <div>
-  <div class="_grid">
+  <div class="grid">
     <div class="row" *ngFor="let row of _grid;">
       <div class="col" *ngFor="let case of row;">
-        <input class="square" [ngModel]="case.char" (keypress)="validateChar($event, case)" (keyup)="eraseLetter($event, case)" maxlength="1" 
-        [class.selected]="case.selected() === true"
-        (click)=selectCaseFromGrid(case)
-        id={{case.id}}  />
+          <input [disabled]="case.validated" class="square" [ngModel]="case.char" (keypress)="validateChar($event, case)" (keyup)="eraseLetter($event, case)" maxlength="1" 
+          [class.selected]="case.selected() === true"
+          (click)=selectCaseFromGrid(case)
+          id={{case.id}}  />
       </div>
     </div>
   </div>
-</div>
-
-<div *ngIf="_word">
-
-  <h2>{{_word.name}}</h2>
-  <h2>{{_word.col}}</h2>
-  <h2>{{_word.row}}</h2>
-  <h2>{{_grid[_word.row][_word.col]._char}}</h2>
-  <h2>{{_word.validated}}</h2>
-
-</div>
-<div *ngIf="_selectedCase">
-
-  <h2>{{_selectedCase._char}}</h2>
-
-
 </div>
