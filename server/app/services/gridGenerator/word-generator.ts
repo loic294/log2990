@@ -35,11 +35,11 @@ export default class WordGenerator extends GridGenerator{
         this.setGrille(temp);
     }
 
-    private findHorizontalWordLength() : void{
+    private findHorizontalWordLength(): void {
         this.horizontalWordLength = [];
-        let latestBlackPosition : number = 0;
-        let wordIndex : number = 0;
-        let blackOnLine : boolean = false;
+        let latestBlackPosition: number = 0;
+        let wordIndex: number = 0;
+        let blackOnLine: boolean = false;
         for (let rows : number  = 0; rows < this.getGrille().length ; rows++){
             latestBlackPosition =  0;
             blackOnLine = false;
@@ -63,15 +63,15 @@ export default class WordGenerator extends GridGenerator{
         }
     }
 
-    private findVerticalWordLength() : void{
+    private findVerticalWordLength(): void {
         this.verticalWordLength = [];
-        let latestBlackPosition : number = 0;
-        let wordIndex : number = 0;
-        let blackOnLine : boolean = false;
-        for (let col : number  = 0; col < this.getGrille().length ; col++){
+        let latestBlackPosition: number = 0;
+        let wordIndex: number = 0;
+        let blackOnLine: boolean = false;
+        for (let col: number  = 0; col < this.getGrille().length ; col++){
             latestBlackPosition = 0;
             blackOnLine = false;
-            for (let rows : number = 0; rows < this.getGrille().length ;  rows++){
+            for (let rows: number = 0; rows < this.getGrille().length ;  rows++){
                 if (rows ===  this.getGrille().length - 1) {
                     if (this.getGrille()[rows][col].isBlack()) {
                         this.verticalWordLength[wordIndex] = rows - latestBlackPosition;
@@ -92,7 +92,7 @@ export default class WordGenerator extends GridGenerator{
         }
     }
 
-    public testWordPosition(grid : Case[][]) : void {
+    public testWordPosition(grid: Case[][]): void {
         const temp: Case[][] = this.getGrille();
         this.setGrille(grid);
 
@@ -102,12 +102,12 @@ export default class WordGenerator extends GridGenerator{
         this.setGrille(temp);
     }
 
-    private initialiseHorizontalWordArray() : void{
+    private initialiseHorizontalWordArray(): void{
         this._horizontalWordArray = [];
-        let horizontalWordIndex : number = 0;
+        let horizontalWordIndex: number = 0;
 
-        for (let rows : number = 0; rows < this.getGrille().length; rows++){
-            for (let col : number = 0; col < this.getGrille().length; col++){
+        for (let rows: number = 0; rows < this.getGrille().length; rows++) {
+            for (let col: number = 0; col < this.getGrille().length; col++) {
                 if (this.getGrille()[rows][col].isBlack() || col === this.getGrille().length - 1){
                     if (this.horizontalWordLength[horizontalWordIndex] === 1 || this.horizontalWordLength[horizontalWordIndex] === 0) {
                         this.horizontalWordLength.splice(horizontalWordIndex, 1);
@@ -121,13 +121,13 @@ export default class WordGenerator extends GridGenerator{
         }
     }
 
-    private initialiseVerticalWordArray() : void {
+    private initialiseVerticalWordArray(): void {
         this._verticalWordArray = [];
-        let verticalWordIndex : number = 0;
+        let verticalWordIndex: number = 0;
 
-        for (let col : number = 0; col < this.getGrille().length; col++){
-            for (let rows : number = 0; rows < this.getGrille().length; rows++){
-                if (this.getGrille()[rows][col].isBlack() || rows === this.getGrille().length - 1){
+        for (let col: number = 0; col < this.getGrille().length; col++) {
+            for (let rows: number = 0; rows < this.getGrille().length; rows++) {
+                if (this.getGrille()[rows][col].isBlack() || rows === this.getGrille().length - 1) {
                     if (this.verticalWordLength[verticalWordIndex] === 1 || this.verticalWordLength[verticalWordIndex] === 0) {
                         this.verticalWordLength.splice(verticalWordIndex, 1);
                     } else {
@@ -140,8 +140,14 @@ export default class WordGenerator extends GridGenerator{
         }
     }
 
-    private checkValidPosition( positionToValidate : number, stablePosition : number, direction : Orientation){
-        return (direction ? (positionToValidate === -1 || this.getGrille()[positionToValidate][stablePosition].isBlack() ? positionToValidate + 1 : positionToValidate) : (positionToValidate === -1 || this.getGrille()[stablePosition][positionToValidate].isBlack() ? positionToValidate + 1 : positionToValidate));
+    private checkValidPosition( positionToValidate: number, stablePosition: number, direction: Orientation): number {
+        return (direction ?
+            (positionToValidate === -1 || this.getGrille()[positionToValidate][stablePosition].isBlack() ?
+                positionToValidate + 1 :
+                positionToValidate) :
+            (positionToValidate === -1 || this.getGrille()[stablePosition][positionToValidate].isBlack() ?
+                positionToValidate + 1 :
+                positionToValidate));
     }
 
     private async generateWords() {

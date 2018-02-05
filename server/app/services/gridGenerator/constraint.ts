@@ -1,33 +1,33 @@
 export default class Constraint {
 
-    constructor( 
-        private _constraint : string,
-        private _row : number,
-        private _col : number,
-        private _wordsWithConstraint : number
+    constructor(
+        private _constraint: string,
+        private _row: number,
+        private _col: number,
+        private _wordsWithConstraint: number
     ) {}
-    
-    public get constraint() {
+
+    public get constraint(): string {
         return this._constraint;
     }
 
-    public get row() {
+    public get row(): number {
         return this._row;
     }
 
-    public get col() {
+    public get col(): number {
         return this._col;
     }
 
-    public get position() {
+    public get position(): number[] {
         return [this._row, this._col];
     }
 
-    public get amountOfWordsWithConstraint(){
+    public get amountOfWordsWithConstraint(): number {
         return this._wordsWithConstraint;
     }
-    
-    public set amountOfWordsWithConstraint( amount : number) {
+
+    public set amountOfWordsWithConstraint( amount: number) {
         this._wordsWithConstraint = amount;
     }
 }

@@ -33,7 +33,7 @@ describe("Words", () => {
 
     });
 
-    it("should know the initial positions of all the words.", () =>{
+    it("should know the initial positions of all the words.", () => {
         testWords =  new WordGenerator();
         testArray = [
             [new Case(), new Case(), new Case()],
