@@ -166,9 +166,6 @@ export default class WordGenerator extends GridGenerator{
                     horizontalWordIndex = this.removeWord(horizontalWordIndex, word);
                 }
             }
-            
-            //this is going to call a function which checks if a word was sent. If one was sent, then addConstraintsToArray and increment the appropriate index.
-            //Otherwise, remove the word and its constraints. You can remove a constraint if there are 0 words which have the constraint.
         }
         
     }
@@ -195,6 +192,12 @@ export default class WordGenerator extends GridGenerator{
         return index --;
     }
 
+    private setWord(rawResponse: Array<AxiosWords>, word : Word, index : number) {
+        word.name = rawResponse[0].word;
+        this.addConstraintsToArray(word);
+        return index++;
+    }
+
     private removeConstraintsFromArray(word : Word){
         let wordLength = (word.direction ? this.horizontalWordLength[word.index] : this.verticalWordLength[word.index])
         for (let wordPosition  = 0; wordPosition < wordLength; wordPosition++ ){
@@ -207,12 +210,6 @@ export default class WordGenerator extends GridGenerator{
                 }
             }
         }
-    }
-
-    private setWord(rawResponse: Array<AxiosWords>, word : Word, index : number) {
-        word.name = rawResponse[0].word;
-        this.addConstraintsToArray(word);
-        return index++;
     }
 
     private addConstraintsToArray(word : Word){
