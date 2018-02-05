@@ -202,10 +202,30 @@ export default class WordGenerator extends GridGenerator{
     }
 
     private setWord(rawResponse: Array<AxiosWords>, word: Word, index: number): number {
-        word.name = rawResponse[0].word;
-        this.addConstraintsToArray(word);
+        if (!this.checkWordExists(rawResponse[0].word)) {
+            word.name = rawResponse[0].word;
+            this.addConstraintsToArray(word);
 
-        return index++;
+            return index++;
+        } else {
+            return index;
+        }
+
+    }
+
+    private checkWordExists(name: string): boolean {
+        for (const word of this._horizontalWordArray) {
+            if (word.name === name) {
+                return true;
+            }
+        }
+        for (const word of this._verticalWordArray) {
+            if (word.name === name) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private removeConstraintsFromArray(word: Word): void {
