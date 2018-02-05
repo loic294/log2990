@@ -130,4 +130,8 @@ export default class GridGenerator {
   public getAmntBlckCases(): number {
     return this._amountBlackCases;
   }
+
+  public get randomGeneration(): number {
+      return this._randomGeneration;
+  }
 }

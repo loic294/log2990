@@ -150,7 +150,7 @@ export default class WordGenerator extends GridGenerator{
                 positionToValidate));
     }
 
-    private async generateWords() {
+    private async generateWords(difficulty: string) {
         let horizontalWordIndex: number = 0;
         let verticalWordIndex: number = 0;
 
@@ -159,7 +159,8 @@ export default class WordGenerator extends GridGenerator{
                 this._horizontalWordArray[horizontalWordIndex] :
                 this._verticalWordArray[verticalWordIndex]);
             try {
-                const { data }: { data: Array<AxiosWords> } = await this.getWord(word);
+
+                const { data }: { data: Array<AxiosWords> } = await this.getWord(word, difficulty);
 
                 if (horizontalWordIndex < verticalWordIndex) {
                     horizontalWordIndex = this.setWord(data, word, horizontalWordIndex);
@@ -176,21 +177,24 @@ export default class WordGenerator extends GridGenerator{
         }
     }
 
-    private async getWord(word: Word): Promise<any> {
-        let FETCH_URL: string = `http://localhost:3000/lexical/wordsearch/common/${this.constructConstraintFor(word)}`;
+    private async getWord(word: Word, difficulty: string): Promise<any> {
+
+        let commonality: string = "";
+
+        switch (difficulty) {
+            case "easy": commonality = "common"; break;
+            case "hard": commonality = "uncommon"; break;
+            case "normal": commonality = (Math.random() > this.randomGeneration ? "common" : "uncommon"); break;
+            default: commonality = "InvalidEntry";
+        }
+
+        const FETCH_URL: string = `http://localhost:3000/lexical/wordsearch/${commonality}/${this.constructConstraintFor(word)}`;
         try {
             const response: AxiosResponse<any> = await axios.get(FETCH_URL);
 
             return response.data;
         } catch (err) {
-            FETCH_URL = `http://localhost:3000/lexical/wordsearch/uncommon/${this.constructConstraintFor(word)}`;
-            try {
-                const result: AxiosResponse<any> = await axios.get(FETCH_URL);
-
-                return result.data;
-            } catch (err) {
-                throw(err);
-            }
+            throw(err);
         }
     }
 
