@@ -1,7 +1,6 @@
 import { TestBed, inject } from "@angular/core/testing";
 
 import { WordService } from "./word.service";
-import Word, { Orientation } from "../../../../common/lexical/word";
 
 describe("WordService", () => {
   beforeEach(() => {
