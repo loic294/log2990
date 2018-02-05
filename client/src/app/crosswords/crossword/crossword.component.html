@@ -1,5 +1,33 @@
-<app-difficulty></app-difficulty>
-<div (clickOutside)="unselect()">
-  <app-clues></app-clues>
-  <app-grid></app-grid>
-</div>
+<main>
+
+    <header class="header">
+      <div class="header-background">
+        <span class="stripe-1"></span>
+        <span class="stripe-2"></span>
+        <span class="stripe-3"></span>
+        <span class="stripe-4"></span>
+      </div>
+      <ui-container>
+        <div id="header-content">
+          <h1 class="big-title">Crossword</h1>
+          <app-difficulty></app-difficulty>
+        </div>
+      </ui-container>
+    </header>
+  
+    <ui-container>
+  
+      <ui-shadow-box>
+        <app-clues></app-clues>
+      </ui-shadow-box>
+  
+      <ui-shadow-box>
+        <div (clickOutside)="unselect()">
+          <app-grid></app-grid>
+        </div>
+      </ui-shadow-box>
+  
+    </ui-container>
+  
+  </main>
+  
