@@ -41,20 +41,6 @@ describe("GridGenerator", () => {
     expect(testAmntOfBlacks).to.equal(gridGenerator.getAmntBlckCases());
   });
 
-  it("should have only words of at least 2 in length(rechecking the validity)", () => {
-    for(let rows: number = 1; rows < gridGenerator.getGrille().length - 1; rows ++) {
-      for (let col: number = 2; col < gridGenerator.getGrille().length; col ++) {
-         if (gridGenerator.getGrille()[rows][col].isBlack()) {
-           if (gridGenerator.getGrille()[rows][col - 2].isBlack() &&
-           gridGenerator.getGrille()[rows - 1][col - 1].isBlack() &&
-           gridGenerator.getGrille()[rows + 1][col - 1].isBlack()) {
-             assert.ok(false, "Has an invalid location.");
-           }
-        }
-      }
-    }
-  });
-
   it("should have no invalid locations. (a white case surrounded by black cases)", () => {
     actualTestArray = [
       [new Case(),new Case(),new Case()],
