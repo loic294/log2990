@@ -5,7 +5,8 @@ export class Case {
         private _char: string = "-",
         private _x: number = 0,
         private _y: number = 0,
-        private _isSelected: boolean = false) { }
+        private _isSelected: boolean = false,
+        private _isValidated: boolean = false) { }
 
     public set char(c: string) {
         this._char = c;
@@ -45,6 +46,14 @@ export class Case {
 
     public get id(): string {
         return this.x.toString() + this.y.toString();
+    }
+
+    public get validated(): boolean {
+        return this._isValidated;
+    }
+
+    public validate(): void {
+        this._isValidated = true;
     }
 
 }

@@ -4,6 +4,8 @@ import { FormsModule } from "@angular/forms";
 import { GridComponent } from "./grid.component";
 import { WordService } from "../../word.service/word.service";
 
+import Word, { Orientation } from "../../../../../common/lexical/word";
+
 describe("GridComponent", () => {
   let component: GridComponent;
   let fixture: ComponentFixture<GridComponent>;
@@ -65,6 +67,15 @@ describe("GridComponent", () => {
 
     letter = "#";
     expect(component.isLetter(letter)).toBe(false);
+  });
+
+  it("Word shoud be validated", () => {
+      const word: string = "clue";
+      component.word = new Word("clue", "", [0, 0], Orientation.vertical, 0);
+      expect(component.word.validated).toBe(false);
+      const elem: HTMLElement = document.getElementById("16");
+      component.validateWord(word, elem);
+      expect(component.word.validated).toBe(true);
   });
 
 });
