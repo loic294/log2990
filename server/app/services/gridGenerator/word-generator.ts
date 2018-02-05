@@ -148,17 +148,35 @@ export default class WordGenerator extends GridGenerator{
     }
 
     private async generateWords() {
-        let { data }: { data: Array<AxiosWords> } = await this.getWord();
+        //let { data }: { data: Array<AxiosWords> } = await this.getWord();
     }
 
 
-    private async getWord() {
-        const FETCH_URL = `http://localhost:3000/lexical/wordsearch/common/${this.constructConstraintFor(this._horizontalWordArray[0])}`;
+    private async getWord(word : Word) {
+        const FETCH_URL = `http://localhost:3000/lexical/wordsearch/common/${this.constructConstraintFor(word)}`;
         try {
             const response = await axios.get(FETCH_URL);
             return response.data;
         } catch (err) {
             throw err;
+        }
+    }
+
+    private addConstraintsToArray(word : Word){
+        let wordLength = (word.direction ? this.horizontalWordLength[word.index] : this.verticalWordLength[word.index])
+        let wordPosition = 0;
+        if (this.isEmpty(this._constraintsArray)) {
+            this.addConstraint(word, wordPosition);
+            wordPosition = 1;
+        }
+        for (; wordPosition < wordLength; wordPosition++ ){
+            for (let constraintIndex = 0; constraintIndex < this._constraintsArray.length; constraintIndex ++){
+                if (this.checkConstraints(word, constraintIndex, wordPosition)){
+                    this._constraintsArray[constraintIndex].amountOfWordsWithConstraint++;
+                } else {
+                    this.addConstraint(word, wordPosition);
+                }
+            }
         }
     }
 
@@ -180,9 +198,17 @@ export default class WordGenerator extends GridGenerator{
         return constraintWord;
     }
 
+    private addConstraint(word : Word, wordPosition : number) {
+        (word.direction ? this._constraintsArray.push(new Constraint(word.name[wordPosition], word.row + wordPosition, word.col, 1)) :  this._constraintsArray.push(new Constraint(word.name[wordPosition], word.row, word.col + wordPosition, 1)));  
+    }
+
     private checkConstraints(word : Word, constraintIndex : number, wordPosition : number) {
         
         return (word.direction ? this._constraintsArray[constraintIndex].position === [word.row + wordPosition, word.col] : this._constraintsArray[constraintIndex].position === [word.row, word.col + wordPosition]);
+    }
+
+    private isEmpty(array : any[]) {
+        return array.length === 0;
     }
 
     public getVerticalWordLength() : number[] {
