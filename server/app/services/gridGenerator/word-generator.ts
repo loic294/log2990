@@ -1,19 +1,19 @@
-import { Case } from './case'
+import { Case } from "../../../../common/grid/case";
 import GridGenerator from "./grid-generator";
 import Word, { Orientation } from "../../../../common/lexical/word";
-import Constraint from "./constraint"
+import Constraint from "./constraint";
 import LexicalService from ".././lexical";
-import axios, { AxiosResponse , AxiosWords } from 'axios';
+import axios, { AxiosResponse , AxiosWords } from "axios";
 
 export default class WordGenerator extends GridGenerator{
 
-    private horizontalWordLength : number[] = [];
-    private verticalWordLength : number[] = [];
-    private _horizontalWordArray : Word[] = [];
-    private _verticalWordArray : Word[] = [];
-    private _constraintsArray : Constraint[] = [];
+    private horizontalWordLength: number[] = [];
+    private verticalWordLength: number[] = [];
+    private _horizontalWordArray: Word[] = [];
+    private _verticalWordArray: Word[] = [];
+    private _constraintsArray: Constraint[] = [];
 
-    constructor(){
+    constructor() {
         super();
 
         this.findHorizontalWordLength();
@@ -25,11 +25,10 @@ export default class WordGenerator extends GridGenerator{
         //this.generateWords();
     }
 
-    public testWordLength(grid : Case[][]) : void{
-        let temp : Case[][] = this.getGrille();
+    public testWordLength(grid: Case[][]): void {
+        const temp: Case[][] = this.getGrille();
         this.setGrille(grid);
-        
-        
+
         this.findVerticalWordLength();
         this.findHorizontalWordLength();
 

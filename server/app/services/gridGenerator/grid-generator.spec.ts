@@ -1,5 +1,5 @@
 import GridGenerator from './grid-generator';
-import {Case} from './case'
+import { Case } from "../../../../common/grid/case";
 import {expect} from 'chai'
 
 const assert = require('assert');
