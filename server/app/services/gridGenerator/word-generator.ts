@@ -22,7 +22,7 @@ export default class WordGenerator extends GridGenerator{
         this.initialiseHorizontalWordArray();
         this.initialiseVerticalWordArray();
 
-        this.generateWords();
+        //this.generateWords();
     }
 
     public testWordLength(grid : Case[][]) : void{
