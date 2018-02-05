@@ -9,7 +9,7 @@ describe("Words", () => {
     let expectedLengthArray: number[];
     let expectedWordArray: Word[];
 
-    it("should know the size of all the different words required.", () =>{
+    it("should know the size of all the different words required.", () => {
         testWords = new WordGenerator();
 
         testArray = [
@@ -49,19 +49,19 @@ describe("Words", () => {
             new Word("", "", [0, 2], Orientation.horizontal, 0),
         ];
 
-        for(let index = 0; index < expectedWordArray.length; index++){
+        for (let index = 0; index < expectedWordArray.length; index++) {
             expect(testWords.horizontalWordArray[index].position).to.be.eql(expectedWordArray[index].position);
         }
 
         expectedWordArray = [
             new Word("", "", [0, 0], Orientation.vertical, 0),
             new Word("", "", [1, 2], Orientation.vertical, 0)
-        ]
+        ];
 
-        for(let index = 0; index < expectedWordArray.length; index++){
+        for (let index = 0; index < expectedWordArray.length; index++) {
             expect(testWords.verticalWordArray[index].position).to.be.eql(expectedWordArray[index].position);
         }
     });
-    it('should find all the correct words from a lexical.');
+    it("should find all the correct words from a lexical.");
 
 });

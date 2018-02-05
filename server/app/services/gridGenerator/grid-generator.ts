@@ -3,9 +3,9 @@ import { Case } from "../../../../common/grid/case";
 export default class GridGenerator {
 
   private _grid: Case[][];
-  private readonly TAILLE_GRILLE: number = 10;
-  private readonly PERCENT_BLACK_CASES: number = 10;
-  private readonly BASE_AMOUNT_BLACK_CASES: number = 10;
+  private readonly TAILLE_GRILLE: number = 5;
+  private readonly PERCENT_BLACK_CASES: number = 6;
+  private readonly BASE_AMOUNT_BLACK_CASES: number = 1;
   private readonly _randomGeneration: number = 0.7;
   private _amountBlackCases: number = 0;
 
@@ -22,9 +22,9 @@ export default class GridGenerator {
   public createEmptyGrille(): Array<Array<Case>> {
     let temp: Case[][];
     temp = [];
-    for (let rows: number = 0; rows < this.TAILLE_GRILLE; rows++) {
+    for (let rows = 0; rows < this.TAILLE_GRILLE; rows++) {
       temp[rows] = [];
-      for (let col: number = 0; col < this.TAILLE_GRILLE; col++) {
+      for (let col = 0; col < this.TAILLE_GRILLE; col++) {
         temp[rows][col] = new Case();
       }
     }
@@ -36,9 +36,9 @@ export default class GridGenerator {
    * Starts at 1, because, traditionally, a grid in Quebec doesn't have anything on its first row or column.
    */
   private assignBlackCases(): void {
-    let currentAmountBlackCases: number = 0;
-    for (let rows: number = 1; rows < this.TAILLE_GRILLE; rows++) {
-      for (let col: number = 1; col < this.TAILLE_GRILLE; col++) {
+    let currentAmountBlackCases = 0;
+    for (let rows = 1; rows < this.TAILLE_GRILLE; rows++) {
+      for (let col = 1; col < this.TAILLE_GRILLE; col++) {
         if (this._grid[rows][col].isBlack()) {
           currentAmountBlackCases++;
         }
@@ -54,8 +54,8 @@ export default class GridGenerator {
   }
 
   private setBlackCases(currentAmountBlackCases: number): number {
-    for (let rows: number = 1; rows < this.TAILLE_GRILLE; rows++) {
-      for (let col: number = 1; col < this.TAILLE_GRILLE; col++) {
+    for (let rows = 1; rows < this.TAILLE_GRILLE; rows++) {
+      for (let col = 1; col < this.TAILLE_GRILLE; col++) {
         if (currentAmountBlackCases === this._amountBlackCases) {
           break;
         }
@@ -83,9 +83,9 @@ export default class GridGenerator {
   }
 
   private checkGrilleValidity(currentAmountBlackCases: number): number {
-    for (let rows: number = 1; rows < this._grid.length; rows++) {
-      for (let col: number = 2; col < this._grid.length; col++) {
-        if(this._grid[rows][col].isBlack()) {
+    for (let rows = 1; rows < this._grid.length; rows++) {
+      for (let col = 2; col < this._grid.length; col++) {
+        if (this._grid[rows][col].isBlack()) {
           if (this.ifSurroundedOnRight(rows, col)) {
             this._grid[rows][col].setBlack(false);
             currentAmountBlackCases--;

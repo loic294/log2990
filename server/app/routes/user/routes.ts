@@ -1,12 +1,12 @@
-import * as user from './middleware'
+import * as user from "./middleware";
 
 export default {
-	base: '/user',
+	base: "/user",
 	routes: [{
-		method: 'GET',
-		path: '/',
+		method: "GET",
+		path: "/",
 		middleware: [
 			user.me
 		]
 	}]
-}
+};
