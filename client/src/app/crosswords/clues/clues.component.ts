@@ -52,6 +52,9 @@ export class CluesComponent implements OnInit {
         if (!clue.validated) {
             this._selectedClue = clue;
             this._wordService.selectWordFromClue(this._selectedClue);
+        } else {
+            this._selectedClue = null;
+            this._wordService.selectWordFromClue(null);
         }
     }
 
