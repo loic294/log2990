@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 
-import { Case } from "../case";
+import { Case } from "../../../../../common/grid/case";
 import Word, { Orientation } from "../../../../../common/lexical/word";
 import { WordService } from "../../word.service/word.service";
 
@@ -218,9 +218,11 @@ export class GridComponent implements OnInit {
         if (this._word.name.toUpperCase() === enteredWord.toUpperCase()) {
             let tempX: number = this._word.row;
             let tempY: number = this._word.col;
-            for (let i: number = 0; i < this._word.length; i++) {
+            let i: number = 0;
+            while (i < this._word.length ) {
                 this._grid[tempX][tempY].validate();
                 this.isHorizontal() ? tempY++ : tempX++;
+                i++;
             }
             this._word.validate();
             elem.blur();

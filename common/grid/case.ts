@@ -6,7 +6,8 @@ export class Case {
         private _x: number = 0,
         private _y: number = 0,
         private _isSelected: boolean = false,
-        private _isValidated: boolean = false) { }
+        private _isValidated: boolean = false,
+        private _black: boolean = false) { }
 
     public set char(c: string) {
         this._char = c;
@@ -54,6 +55,10 @@ export class Case {
 
     public validate(): void {
         this._isValidated = true;
+    }
+
+    public isBlack() : boolean {
+        return this.black;
     }
 
 }
