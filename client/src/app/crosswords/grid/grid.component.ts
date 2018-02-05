@@ -97,17 +97,16 @@ export class GridComponent implements OnInit {
 
         return new Word("", "", [this._x, this._y], tempOrientation, 0);
     }
-
     public selectCaseFromGrid(c: Case): void {
-        if (this._selectedCase != null) {
-                this._selectedCase.unselect();
-            }
-
         if (!c.validated) {
             this._x = c.x;
             this._y = c.y;
             const tempWord: Word = this.findWordStart();
             this._wordService.selectWordFromGrid(tempWord);
+
+            if (this._selectedCase != null) {
+                this._selectedCase.unselect();
+            }
 
             this._grid[tempWord.row][tempWord.col].select();
             this._selectedCase = this._grid[tempWord.row][tempWord.col];
