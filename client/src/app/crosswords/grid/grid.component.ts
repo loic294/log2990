@@ -166,11 +166,20 @@ export class GridComponent implements OnInit {
     private erasePrevious(c: Case): void {
 
         if (this.isHorizontal() && (c.y !== this._word.col)) {
-            this._grid[c.x][c.y - 1].char = "";
+            if (this._grid[c.x][c.y - 1].validated) {
+                this.erasePrevious(this._grid[c.x][c.y - 1]);
+            } else {
+                this._grid[c.x][c.y - 1].char = "";
+            }
         } else if (c.x !== this._word.row) {
-            this._grid[c.x - 1][c.y].char = "";
+            if (this._grid[c.x - 1][c.y].validated) {
+                this.erasePrevious(this._grid[c.x - 1][c.y]);
+            } else {
+                this._grid[c.x - 1][c.y].char = "";
+            }
         }
     }
+
     public validateChar(event: KeyboardEvent, c: Case): void {
         const constraint: RegExp = /^[a-z]+$/i;
         if (!constraint.test(String.fromCharCode(event.charCode))) {
@@ -198,6 +207,12 @@ export class GridComponent implements OnInit {
 
     public validateWord(enteredWord: string, elem: HTMLElement): void {
         if (this._word.name.toUpperCase() === enteredWord.toUpperCase()) {
+            let tempX: number = this._word.row;
+            let tempY: number = this._word.col;
+            for (let i: number = 0; i < this._word.length; i++) {
+                this._grid[tempX][tempY].validate();
+                this.isHorizontal() ? tempY++ : tempX++;
+            }
             this._word.validate();
             elem.blur();
         }
