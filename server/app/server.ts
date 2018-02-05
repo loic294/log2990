@@ -1,17 +1,13 @@
-import { Request, Response } from "express";
+ /* tslint:disable */ 
 import * as express from "express";
 import * as compression from "compression";  // compresses requests
 import * as session from "express-session";
 import * as bodyParser from "body-parser";
 import * as logger from "morgan";
 import * as errorHandler from "errorhandler";
-import routes from './routes/index'
-// import * as dotenv from 'dotenv';
-// dotenv.config({ path: './env'})
+import routes from "./routes/index";
 
-console.log('ENV', process.env.SESSION_SECRET)
-
-let app = express()
+let app = express();
 
 // Config
 app.use(compression());
@@ -26,8 +22,6 @@ app.use(session({
 
 app.use(errorHandler());
 
-app.get('/', (req: Request, res: Response) => res.send('Hello World!'))
-
 app = routes(app)
 
-app.listen(3000, () => console.log('Example app listening on port 3000!'))
+app.listen(3000, () => console.log("Listening on port 3000"))
