@@ -1,3 +1,5 @@
 <app-difficulty></app-difficulty>
-<app-clues></app-clues>
-<app-grid></app-grid>
+<div (clickOutside)="unselect()">
+  <app-clues></app-clues>
+  <app-grid></app-grid>
+</div>

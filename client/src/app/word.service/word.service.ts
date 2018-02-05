@@ -11,6 +11,11 @@ export class WordService {
   private _wordFromGrid: Observable<Word>;
   private _wordFromGridSubject: Subject<Word>= new Subject<Word>();
 
+  public constructor() {
+    this._wordFromClue = this._wordFromClueSubject.asObservable();
+    this._wordFromGrid = this._wordFromGridSubject.asObservable();
+   }
+
   public get wordFromClue(): Observable<Word> {
     return this._wordFromClue;
   }
@@ -26,10 +31,5 @@ export class WordService {
   public selectWordFromGrid(position: Word): void {
       this._wordFromGridSubject.next(position);
   }
-
-  public constructor() {
-    this._wordFromClue = this._wordFromClueSubject.asObservable();
-    this._wordFromGrid = this._wordFromGridSubject.asObservable();
-   }
 
 }

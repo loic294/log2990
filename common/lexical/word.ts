@@ -10,8 +10,8 @@ export default class Word {
         private _desc : string,
         private _position : Array<number>,
         private _orientation : Orientation,
-        private _index : number
-        private _isValidated: boolean = false,
+        private _index : number,
+        private _isValidated: boolean = false
     ) {}
 
     public get name() {

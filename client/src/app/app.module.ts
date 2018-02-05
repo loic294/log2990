@@ -2,6 +2,8 @@ import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { HttpClientModule } from "@angular/common/http";
 import { FormsModule } from "@angular/forms";
+import { ClickOutsideModule } from "ng-click-outside";
+
 import { AppComponent } from "./app.component";
 import { GameComponent } from "./race/game-component/game.component";
 
@@ -26,7 +28,8 @@ import { CluesComponent } from "./crosswords/clues/clues.component";
     imports: [
         BrowserModule,
         HttpClientModule,
-        FormsModule
+        FormsModule,
+        ClickOutsideModule
     ],
     providers: [
         RenderService,
