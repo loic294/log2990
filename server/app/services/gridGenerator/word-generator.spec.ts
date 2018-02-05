@@ -1,7 +1,7 @@
-import WordGenerator from './word-generator';
+import WordGenerator from "./word-generator";
 import { Case } from "../../../../common/grid/case";
 import Word, { Orientation } from "../../../../common/lexical/word";
-import {expect} from 'chai'
+import {expect} from "chai";
 
 describe("Words", () => {
     let testWords: WordGenerator;
@@ -39,7 +39,7 @@ describe("Words", () => {
             [new Case(), new Case(), new Case()],
             [new Case(), new Case(), new Case()],
             [new Case(), new Case(), new Case()],
-          ];s
+          ];
         testArray[0][2].setBlack(true);
         testArray[1][1].setBlack(true);
         testWords.testWordLength(testArray);
