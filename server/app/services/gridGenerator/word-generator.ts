@@ -132,7 +132,6 @@ export default class WordGenerator extends GridGenerator{
                     if (this.verticalWordLength[verticalWordIndex] === 1 || this.verticalWordLength[verticalWordIndex] === 0) {
                         this.verticalWordLength.splice(verticalWordIndex, 1);
                     } else {
-                        
                         let initialPosition = this.checkValidPosition(rows - this.verticalWordLength[verticalWordIndex], col, Orientation.vertical);
                         this._verticalWordArray.push(new Word("", "", [initialPosition, col], Orientation.vertical, verticalWordIndex));
                         verticalWordIndex++;
@@ -162,9 +161,9 @@ export default class WordGenerator extends GridGenerator{
                 }
             }catch(err) {
                 if (horizontalWordIndex < verticalWordIndex){
-                    horizontalWordIndex = this.removeWord(horizontalWordIndex);
+                    verticalWordIndex = this.removeWord(verticalWordIndex, word);
                 } else {
-                    verticalWordIndex = this.removeWord(verticalWordIndex);
+                    horizontalWordIndex = this.removeWord(horizontalWordIndex, word);
                 }
             }
             
@@ -190,10 +189,26 @@ export default class WordGenerator extends GridGenerator{
         }
     }
 
-    private removeWord(index : number) {
+    private removeWord(index : number, word : Word) {
+        if (word.direction === Orientation.horizontal) {
 
+        }
 
         return index --;
+    }
+
+    private removeConstraintsFromArray(word : Word){
+        let wordLength = (word.direction ? this.horizontalWordLength[word.index] : this.verticalWordLength[word.index])
+        for (let wordPosition  = 0; wordPosition < wordLength; wordPosition++ ){
+            for (let constraintIndex = 0; constraintIndex < this._constraintsArray.length; constraintIndex ++){
+                if (this.checkConstraints(word, constraintIndex, wordPosition)){
+                    this._constraintsArray[constraintIndex].amountOfWordsWithConstraint--;
+                    if (this._constraintsArray[constraintIndex].amountOfWordsWithConstraint === 0){
+                        this._constraintsArray.splice(constraintIndex, 1);
+                    }
+                }
+            }
+        }
     }
 
     private setWord(rawResponse: Array<AxiosWords>, word : Word, index : number) {
