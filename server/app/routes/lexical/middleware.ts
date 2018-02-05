@@ -9,9 +9,12 @@ export async function wordSearch(req: Request, res: Response, next: NextFunction
 
     const lexicalService: LexicalService = new LexicalService();
 
-    const testResult: String = await lexicalService.wordSearch(word, common);
-
-    res.json({ lexicalResult: testResult });
+    try {
+        const result: String = await lexicalService.wordSearch(word, common);
+        res.json({ lexicalResult: result });
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
 }
 
 export async function wordDefintion(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -20,7 +23,10 @@ export async function wordDefintion(req: Request, res: Response, next: NextFunct
 
     const lexicalService: LexicalService = new LexicalService();
 
-    const testResult: string = await lexicalService.wordDefinition(level, word);
-
-    res.json({ lexicalResult: testResult });
+    try {
+        const result: string = await lexicalService.wordDefinition(level, word);
+        res.json({ lexicalResult: result });
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
 }
