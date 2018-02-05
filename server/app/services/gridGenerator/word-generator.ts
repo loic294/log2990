@@ -163,9 +163,9 @@ export default class WordGenerator extends GridGenerator{
                 const { data }: { data: Array<AxiosWords> } = await this.getWord(word, difficulty);
 
                 if (horizontalWordIndex < verticalWordIndex) {
-                    horizontalWordIndex = this.setWord(data, word, horizontalWordIndex);
+                    horizontalWordIndex = this.setWord(data, word, horizontalWordIndex, difficulty);
                 } else {
-                    verticalWordIndex = this.setWord(data, word, verticalWordIndex);
+                    verticalWordIndex = this.setWord(data, word, verticalWordIndex, difficulty);
                 }
             } catch (err) {
                 if (horizontalWordIndex < verticalWordIndex) {
@@ -205,8 +205,8 @@ export default class WordGenerator extends GridGenerator{
         return index --;
     }
 
-    private setWord(rawResponse: Array<AxiosWords>, word: Word, index: number): number {
-        if (!this.checkWordExists(rawResponse[0].word)) {
+    private setWord(rawResponse: Array<AxiosWords>, word: Word, index: number, difficulty: string): number {
+        if (!this.checkWordExists(rawResponse[0].word) && this.checkDefinitionExists(rawResponse[0].word, word, difficulty)) {
             word.name = rawResponse[0].word;
             this.addConstraintsToArray(word);
 
@@ -297,6 +297,28 @@ export default class WordGenerator extends GridGenerator{
 
     private isEmpty(array: any[]): boolean {
         return array.length === 0;
+    }
+
+    private async checkDefinitionExists(wordName: string, word: Word, difficulty: string): boolean{
+        let level: string = "";
+
+        switch (difficulty) {
+            case "easy": level = "easy"; break;
+            case "hard": level = "hard"; break;
+            case "normal": level = (Math.random() > this.randomGeneration ? "easy" : "hard"); break;
+            default: level = "InvalidEntry";
+        }
+
+        const FETCH_URL: string = `http://localhost:3000//lexical/wordDefinition/${level}/${wordName}`;
+        try {
+            const response: AxiosResponse<any> = await axios.get(FETCH_URL);
+
+            word.desc = response.data;
+
+            return true;
+        } catch (err) {
+            return false;
+        }
     }
 
     public getVerticalWordLength(): number[] {
