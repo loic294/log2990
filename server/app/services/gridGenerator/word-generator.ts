@@ -180,7 +180,13 @@ export default class WordGenerator extends GridGenerator{
             const response = await axios.get(FETCH_URL);
             return response.data;
         } catch (err) {
-            throw err;
+            const FETCH_URL = `http://localhost:3000/lexical/wordsearch/uncommon/${this.constructConstraintFor(word)}`;
+            try {
+                const response = await axios.get(FETCH_URL);
+                return response.data;
+            } catch (err) {
+                throw(err);
+            }
         }
     }
 
