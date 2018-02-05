@@ -1,4 +1,3 @@
-
 export class Case {
 
     public constructor(
@@ -58,7 +57,11 @@ export class Case {
     }
 
     public isBlack() : boolean {
-        return this.black;
+        return this._black;
+    }
+
+    public setBlack(black : boolean) : void{
+        this._black = black;
     }
 
 }

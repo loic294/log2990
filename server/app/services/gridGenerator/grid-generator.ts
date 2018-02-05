@@ -1,4 +1,4 @@
-import {Case} from './case'
+import { Case } from "../../../../common/grid/case";
 
 export default class GridGenerator {
 
@@ -14,7 +14,7 @@ export default class GridGenerator {
       this.assignBlackCases();
   }
 
-  private assignAmountOfBlackCases(){
+  private assignAmountOfBlackCases(): void {
       this.amountBlackCases = Math.floor(Math.random() * this.PERCENT_BLACK_CASES + this.BASE_AMOUNT_BLACK_CASES);
   }
 
@@ -27,6 +27,7 @@ export default class GridGenerator {
         temp[rows][col] = new Case();
       }
     }
+
     return temp;
   }
 

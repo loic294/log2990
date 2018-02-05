@@ -1,10 +1,9 @@
-import WordGenerator from './word-generator';
-import {Case} from './case'
+import WordGenerator from "./word-generator";
+import { Case } from "../../../../common/grid/case";
 import Word, { Orientation } from "../../../../common/lexical/word";
-import {expect} from 'chai'
+import {expect} from "chai";
 
-
-describe('Words', () => {
+describe("Words", () => {
     let testWords: WordGenerator;
     let testArray: Case[][];
     let expectedLengthArray: number[];
@@ -36,19 +35,15 @@ describe('Words', () => {
 
     it("should know the initial positions of all the words.", () =>{
         testWords =  new WordGenerator();
-
         testArray = [
             [new Case(), new Case(), new Case()],
             [new Case(), new Case(), new Case()],
             [new Case(), new Case(), new Case()],
           ];
-
         testArray[0][2].setBlack(true);
         testArray[1][1].setBlack(true);
-
         testWords.testWordLength(testArray);
         testWords.testWordPosition(testArray);
-
         expectedWordArray = [
             new Word("", "", [0, 0], Orientation.horizontal, 0),
             new Word("", "", [0, 2], Orientation.horizontal, 0),
@@ -66,9 +61,7 @@ describe('Words', () => {
         for(let index = 0; index < expectedWordArray.length; index++){
             expect(testWords.verticalWordArray[index].position).to.be.eql(expectedWordArray[index].position);
         }
-        
     });
-    
     it('should find all the correct words from a lexical.');
 
 });
