@@ -152,10 +152,12 @@ export default class WordGenerator extends GridGenerator{
         let verticalWordIndex = 0;
 
         while(horizontalWordIndex < this._horizontalWordArray.length && verticalWordIndex < this._verticalWordArray.length){
-            if (horizontalWordIndex < verticalWordIndex) {
-                let { data }: { data: Array<AxiosWords> } = await this.getWord(this._horizontalWordArray[horizontalWordIndex]);
-            } else {
-                let { data }: { data: Array<AxiosWords> } = await this.getWord(this._verticalWordArray[verticalWordIndex]);
+            try{
+                let word = (horizontalWordIndex < verticalWordIndex ? this._horizontalWordArray[horizontalWordIndex] : this._verticalWordArray[verticalWordIndex]);
+                let { data }: { data: Array<AxiosWords> } = await this.getWord(word);
+                this.setWord(data, word);
+            }catch(err) {
+
             }
 
             //this is going to call a function which checks if a word was sent. If one was sent, then addConstraintsToArray and increment the appropriate index.
@@ -172,6 +174,10 @@ export default class WordGenerator extends GridGenerator{
         } catch (err) {
             throw err;
         }
+    }
+
+    private setWord(rawResponse: Array<AxiosWords>, word : Word){
+        word.name = rawResponse[0].word;
     }
 
     private addConstraintsToArray(word : Word){

@@ -18,6 +18,10 @@ export default class Word {
         return this._name;
     }
 
+    public set name(name : string) {
+        this._name = name;
+    }
+
     public get desc() {
         return this._desc;
     }
