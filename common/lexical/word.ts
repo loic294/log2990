@@ -26,6 +26,10 @@ export default class Word {
         return this._desc;
     }
 
+    public set desc(desc: string) {
+        this._desc = desc;
+    }
+
     public get position() {
         return this._position
     }

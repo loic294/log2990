@@ -2,28 +2,29 @@ import { Case } from "../../../../common/grid/case";
 
 export default class GridGenerator {
 
-  private grille : Case[][];
-  private readonly TAILLE_GRILLE : number = 10;
-  private readonly PERCENT_BLACK_CASES : number = 10;
-  private readonly BASE_AMOUNT_BLACK_CASES : number = 10;
-  private amountBlackCases : number = 0;
+  private _grid: Case[][];
+  private readonly TAILLE_GRILLE: number = 10;
+  private readonly PERCENT_BLACK_CASES: number = 10;
+  private readonly BASE_AMOUNT_BLACK_CASES: number = 10;
+  private readonly _randomGeneration: number = 0.7;
+  private _amountBlackCases: number = 0;
 
   constructor() {
       this.assignAmountOfBlackCases();
-      this.grille = this.createEmptyGrille();
+      this._grid = this.createEmptyGrille();
       this.assignBlackCases();
   }
 
   private assignAmountOfBlackCases(): void {
-      this.amountBlackCases = Math.floor(Math.random() * this.PERCENT_BLACK_CASES + this.BASE_AMOUNT_BLACK_CASES);
+      this._amountBlackCases = Math.floor(Math.random() * this.PERCENT_BLACK_CASES + this.BASE_AMOUNT_BLACK_CASES);
   }
 
-  public createEmptyGrille() : Array<Array<Case>> {
-    let temp : Case[][];
+  public createEmptyGrille(): Array<Array<Case>> {
+    let temp: Case[][];
     temp = [];
-    for (let rows : number = 0; rows < this.TAILLE_GRILLE; rows++) {
+    for (let rows: number = 0; rows < this.TAILLE_GRILLE; rows++) {
       temp[rows] = [];
-      for (let col : number = 0; col < this.TAILLE_GRILLE; col++) {
+      for (let col: number = 0; col < this.TAILLE_GRILLE; col++) {
         temp[rows][col] = new Case();
       }
     }
@@ -32,13 +33,13 @@ export default class GridGenerator {
   }
 
   /**
-   * Starts at 1, because, traditionally, a grille in Quebec doesn't have anything on its first row or column.
+   * Starts at 1, because, traditionally, a grid in Quebec doesn't have anything on its first row or column.
    */
-  private assignBlackCases() : void {
-    let currentAmountBlackCases : number = 0;
-    for (let rows : number = 1; rows < this.TAILLE_GRILLE; rows++) {
-      for (let col : number = 1; col < this.TAILLE_GRILLE; col++) {
-        if (this.grille[rows][col].isBlack()){
+  private assignBlackCases(): void {
+    let currentAmountBlackCases: number = 0;
+    for (let rows: number = 1; rows < this.TAILLE_GRILLE; rows++) {
+      for (let col: number = 1; col < this.TAILLE_GRILLE; col++) {
+        if (this._grid[rows][col].isBlack()) {
           currentAmountBlackCases++;
         }
       }
@@ -46,86 +47,91 @@ export default class GridGenerator {
 
     currentAmountBlackCases = this.setBlackCases(this.checkGrilleValidity(currentAmountBlackCases));
 
-    if(currentAmountBlackCases != this.amountBlackCases){
+    if (currentAmountBlackCases !== this._amountBlackCases) {
       this.assignBlackCases();
     }
 
   }
 
-  private setBlackCases(currentAmountBlackCases : number) : number {
-    for (let rows : number = 1; rows < this.TAILLE_GRILLE; rows++) {
-      for (let col : number = 1; col < this.TAILLE_GRILLE; col++) {
-        if (currentAmountBlackCases == this.amountBlackCases){
+  private setBlackCases(currentAmountBlackCases: number): number {
+    for (let rows: number = 1; rows < this.TAILLE_GRILLE; rows++) {
+      for (let col: number = 1; col < this.TAILLE_GRILLE; col++) {
+        if (currentAmountBlackCases === this._amountBlackCases) {
           break;
         }
 
-        if(!this.grille[rows][col].isBlack() && Math.random() > 0.7){
-          this.grille[rows][col].setBlack(true);
+        if (!this._grid[rows][col].isBlack() && Math.random() > this._randomGeneration) {
+          this._grid[rows][col].setBlack(true);
           currentAmountBlackCases++;
         }
-        
       }
     }
+
     return currentAmountBlackCases;
   }
 
-  public testCheckGrilleValidity(currentAmountBlackCases : number, grille : Array<Array<Case>>) : number{
-    let temp : Case[][] = this.grille;
-    this.grille = grille;
+  public testCheckGrilleValidity(currentAmountBlackCases: number, grille: Array<Array<Case>>): number {
+    const temp: Case[][] = this._grid;
+    this._grid = grille;
 
     currentAmountBlackCases = this.checkGrilleValidity(currentAmountBlackCases);
 
-    this.grille = temp;
+    this._grid = temp;
+
     return currentAmountBlackCases;
 
   }
 
-  private checkGrilleValidity(currentAmountBlackCases : number) : number{
-    for (let rows : number = 1; rows < this.grille.length; rows++) {
-      for (let col : number = 2; col < this.grille.length; col++) {
-        if(this.grille[rows][col].isBlack()){
-          if (this.ifSurroundedOnRight(rows, col)){
-            this.grille[rows][col].setBlack(false);
+  private checkGrilleValidity(currentAmountBlackCases: number): number {
+    for (let rows: number = 1; rows < this._grid.length; rows++) {
+      for (let col: number = 2; col < this._grid.length; col++) {
+        if(this._grid[rows][col].isBlack()) {
+          if (this.ifSurroundedOnRight(rows, col)) {
+            this._grid[rows][col].setBlack(false);
             currentAmountBlackCases--;
-          }else if (this.ifSurroundedOnBottom(rows, col)){
-            this.grille[rows][col].setBlack(false);
+          } else if (this.ifSurroundedOnBottom(rows, col)) {
+            this._grid[rows][col].setBlack(false);
             currentAmountBlackCases--;
-          }else if(this.ifSurrounded(rows, col)){
-            this.grille[rows][col].setBlack(false);
+          } else if (this.ifSurrounded(rows, col)) {
+            this._grid[rows][col].setBlack(false);
             currentAmountBlackCases--;
           }
         }
       }
     }
+
     return currentAmountBlackCases;
   }
 
-  private ifSurroundedOnRight(rows : number, col : number) : boolean{
-    return rows == this.grille.length -1 && this.grille[rows-1][col-1].isBlack() && this.grille[rows-2][col].isBlack();
+  private ifSurroundedOnRight(rows: number, col: number): boolean {
+    return rows === this._grid.length - 1 && this._grid[rows - 1][col - 1].isBlack() && this._grid[rows - 2][col].isBlack();
   }
 
-  private ifSurroundedOnBottom(rows : number, col : number) : boolean{
-    return col == this.grille.length -1 && this.grille[rows-1][col-1].isBlack() && this.grille[rows][col-2].isBlack();
+  private ifSurroundedOnBottom(rows: number, col: number): boolean {
+    return col === this._grid.length - 1 && this._grid[rows - 1][col - 1].isBlack() && this._grid[rows][col - 2].isBlack();
   }
 
-  private ifSurrounded(rows : number, col :number) : boolean{
-    return this.grille[rows][col-2].isBlack() && this.grille[rows-1][col-1].isBlack() && this.grille[rows+1][col-1].isBlack();
+  private ifSurrounded(rows: number, col: number): boolean {
+    return this._grid[rows][col - 2].isBlack() && this._grid[rows - 1][col - 1].isBlack() && this._grid[rows + 1][col - 1].isBlack();
   }
 
-  public getGrille() : Array<Array<Case>> {
-    return this.grille;
+  public getGrid(): Array<Array<Case>> {
+    return this._grid;
   }
 
-  public setGrille(grille : Case[][]) : void{
-    this.grille = grille;
+  public setGrid(grid: Case[][]): void {
+    this._grid = grid;
   }
 
-  public getPercentBlackCases() : number {
+  public getPercentBlackCases(): number {
     return this.PERCENT_BLACK_CASES;
   }
 
-  public getAmntBlckCases() : number {
-    return this.amountBlackCases;
+  public getAmntBlckCases(): number {
+    return this._amountBlackCases;
   }
 
+  public get randomGeneration(): number {
+      return this._randomGeneration;
+  }
 }
