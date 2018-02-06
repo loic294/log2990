@@ -2,60 +2,67 @@ import { Case } from "../../../../common/grid/case";
 import GridGenerator from "./grid-generator";
 import Word, { Orientation } from "../../../../common/lexical/word";
 import Constraint from "./constraint";
-import LexicalService from ".././lexical";
-import axios, { AxiosResponse , AxiosWords } from "axios";
+import axios, { AxiosResponse } from "axios";
 
-export default class WordGenerator extends GridGenerator{
+interface LexicalWord {
+    lexicalResult: string;
+}
+
+export default class WordGenerator extends GridGenerator {
 
     private horizontalWordLength: number[] = [];
     private verticalWordLength: number[] = [];
     private _horizontalWordArray: Word[] = [];
     private _verticalWordArray: Word[] = [];
     private _constraintsArray: Constraint[] = [];
+    private _wordArray: Word[] = [];
 
     constructor() {
         super();
-
+        this.addPositionToGrid();
         this.findHorizontalWordLength();
         this.findVerticalWordLength();
-
         this.initialiseHorizontalWordArray();
         this.initialiseVerticalWordArray();
+    }
 
-        //this.generateWords();
+    private addPositionToGrid(): void {
+        for (let rows = 0; rows < this.getGrid().length; rows++) {
+            for (let col = 0; col < this.getGrid().length; col++) {
+                this.getGrid()[rows][col].x = rows;
+                this.getGrid()[rows][col].y = col;
+            }
+        }
     }
 
     public testWordLength(grid: Case[][]): void {
         const temp: Case[][] = this.getGrid();
         this.setGrid(grid);
-
         this.findVerticalWordLength();
         this.findHorizontalWordLength();
-
         this.setGrid(temp);
     }
 
     private findHorizontalWordLength(): void {
         this.horizontalWordLength = [];
-        let latestBlackPosition: number = 0;
-        let wordIndex: number = 0;
-        let blackOnLine: boolean = false;
-        for (let rows : number  = 0; rows < this.getGrid().length ; rows++){
-            latestBlackPosition =  0;
+        let latestBlackPosition = 0;
+        let wordIndex = 0;
+        let blackOnLine = false;
+
+        for (let rows = 0; rows < this.getGrid().length; rows++) {
+            latestBlackPosition = 0;
             blackOnLine = false;
-            for (let col: number = 0; col < this.getGrid().length ;  col++) {
-                if (col ===  this.getGrid().length - 1) {
+            for (let col = 0; col < this.getGrid().length; col++) {
+                if (col === this.getGrid().length - 1) {
                     if (this.getGrid()[rows][col].isBlack()) {
                         this.horizontalWordLength[wordIndex] = col - latestBlackPosition;
                     } else {
                         this.horizontalWordLength[wordIndex] = (blackOnLine ? col - latestBlackPosition : col + 1);
                     }
-
                     wordIndex++;
                 } else if (this.getGrid()[rows][col].isBlack()) {
                     this.horizontalWordLength[wordIndex] = col - latestBlackPosition;
-
-                    latestBlackPosition =  col;
+                    latestBlackPosition = col;
                     wordIndex++;
                     blackOnLine = true;
                 }
@@ -65,25 +72,23 @@ export default class WordGenerator extends GridGenerator{
 
     private findVerticalWordLength(): void {
         this.verticalWordLength = [];
-        let latestBlackPosition: number = 0;
-        let wordIndex: number = 0;
-        let blackOnLine: boolean = false;
-        for (let col: number  = 0; col < this.getGrid().length ; col++){
+        let latestBlackPosition = 0;
+        let wordIndex = 0;
+        let blackOnLine = false;
+        for (let col = 0; col < this.getGrid().length; col++) {
             latestBlackPosition = 0;
             blackOnLine = false;
-            for (let rows: number = 0; rows < this.getGrid().length ;  rows++){
-                if (rows ===  this.getGrid().length - 1) {
+            for (let rows = 0; rows < this.getGrid().length; rows++) {
+                if (rows === this.getGrid().length - 1) {
                     if (this.getGrid()[rows][col].isBlack()) {
                         this.verticalWordLength[wordIndex] = rows - latestBlackPosition;
                     } else {
                         this.verticalWordLength[wordIndex] = (blackOnLine ? rows - latestBlackPosition : rows + 1);
                     }
-
                     latestBlackPosition = rows;
                     wordIndex++;
                 } else if (this.getGrid()[rows][col].isBlack()) {
                     this.verticalWordLength[wordIndex] = rows - latestBlackPosition;
-
                     latestBlackPosition = rows;
                     wordIndex++;
                     blackOnLine = true;
@@ -95,25 +100,34 @@ export default class WordGenerator extends GridGenerator{
     public testWordPosition(grid: Case[][]): void {
         const temp: Case[][] = this.getGrid();
         this.setGrid(grid);
-
         this.initialiseHorizontalWordArray();
         this.initialiseVerticalWordArray();
-
         this.setGrid(temp);
     }
 
-    private initialiseHorizontalWordArray(): void{
+    private initialiseHorizontalWordArray(): void {
         this._horizontalWordArray = [];
-        let horizontalWordIndex: number = 0;
+        let horizontalWordIndex = 0;
 
-        for (let rows: number = 0; rows < this.getGrid().length; rows++) {
-            for (let col: number = 0; col < this.getGrid().length; col++) {
-                if (this.getGrid()[rows][col].isBlack() || col === this.getGrid().length - 1){
+        for (let rows = 0; rows < this.getGrid().length; rows++) {
+            for (let col = 0; col < this.getGrid().length; col++) {
+                if (this.getGrid()[rows][col].isBlack() || col === this.getGrid().length - 1) {
                     if (this.horizontalWordLength[horizontalWordIndex] === 1 || this.horizontalWordLength[horizontalWordIndex] === 0) {
                         this.horizontalWordLength.splice(horizontalWordIndex, 1);
                     } else {
-                        let initialPosition = this.checkValidPosition(col - this.horizontalWordLength[horizontalWordIndex], rows, Orientation.horizontal);
-                        this._horizontalWordArray.push(new Word("", "", [initialPosition, rows], Orientation.horizontal, horizontalWordIndex));
+                        const initialPosition: number =
+                            this.checkValidPosition(col - this.horizontalWordLength[horizontalWordIndex], rows, Orientation.horizontal);
+                        this._horizontalWordArray.push(
+                            new Word(
+                                "",
+                                "",
+                                [rows, initialPosition],
+                                Orientation.horizontal,
+                                horizontalWordIndex,
+                                false,
+                                this.horizontalWordLength[horizontalWordIndex]
+                            )
+                        );
                         horizontalWordIndex++;
                     }
                 }
@@ -123,16 +137,27 @@ export default class WordGenerator extends GridGenerator{
 
     private initialiseVerticalWordArray(): void {
         this._verticalWordArray = [];
-        let verticalWordIndex: number = 0;
+        let verticalWordIndex = 0;
 
-        for (let col: number = 0; col < this.getGrid().length; col++) {
-            for (let rows: number = 0; rows < this.getGrid().length; rows++) {
+        for (let col = 0; col < this.getGrid().length; col++) {
+            for (let rows = 0; rows < this.getGrid().length; rows++) {
                 if (this.getGrid()[rows][col].isBlack() || rows === this.getGrid().length - 1) {
                     if (this.verticalWordLength[verticalWordIndex] === 1 || this.verticalWordLength[verticalWordIndex] === 0) {
                         this.verticalWordLength.splice(verticalWordIndex, 1);
                     } else {
-                        let initialPosition = this.checkValidPosition(rows - this.verticalWordLength[verticalWordIndex], col, Orientation.vertical);
-                        this._verticalWordArray.push(new Word("", "", [initialPosition, col], Orientation.vertical, verticalWordIndex));
+                        const initialPosition: number =
+                            this.checkValidPosition(rows - this.verticalWordLength[verticalWordIndex], col, Orientation.vertical);
+                        this._verticalWordArray.push(
+                            new Word(
+                                "",
+                                "",
+                                [initialPosition, col],
+                                Orientation.vertical,
+                                verticalWordIndex,
+                                false,
+                                this.verticalWordLength[verticalWordIndex]
+                            )
+                        );
                         verticalWordIndex++;
                     }
                 }
@@ -140,7 +165,7 @@ export default class WordGenerator extends GridGenerator{
         }
     }
 
-    private checkValidPosition( positionToValidate: number, stablePosition: number, direction: Orientation): number {
+    private checkValidPosition(positionToValidate: number, stablePosition: number, direction: Orientation): number {
         return (direction ?
             (positionToValidate === -1 || this.getGrid()[positionToValidate][stablePosition].isBlack() ?
                 positionToValidate + 1 :
@@ -150,22 +175,22 @@ export default class WordGenerator extends GridGenerator{
                 positionToValidate));
     }
 
-    private async generateWords(difficulty: string) {
-        let horizontalWordIndex: number = 0;
-        let verticalWordIndex: number = 0;
+    public async generateWords(difficulty: string): Promise < any > {
+        let horizontalWordIndex = 0;
+        let verticalWordIndex = 0;
 
-        while (horizontalWordIndex < this._horizontalWordArray.length && verticalWordIndex < this._verticalWordArray.length){
-            let word = (horizontalWordIndex < verticalWordIndex ?
+        while (horizontalWordIndex < this._horizontalWordArray.length && verticalWordIndex < this._verticalWordArray.length) {
+            const word: Word = horizontalWordIndex < verticalWordIndex ?
                 this._horizontalWordArray[horizontalWordIndex] :
-                this._verticalWordArray[verticalWordIndex]);
-            try {
+                this._verticalWordArray[verticalWordIndex];
 
-                const { data }: { data: Array<AxiosWords> } = await this.getWord(word, difficulty);
+            try {
+                const { lexicalResult }: { lexicalResult: string } = await this.getWord(word, difficulty);
 
                 if (horizontalWordIndex < verticalWordIndex) {
-                    horizontalWordIndex = this.setWord(data, word, horizontalWordIndex, difficulty);
+                    horizontalWordIndex = this.setWord(lexicalResult, word, horizontalWordIndex, verticalWordIndex, difficulty);
                 } else {
-                    verticalWordIndex = this.setWord(data, word, verticalWordIndex, difficulty);
+                    verticalWordIndex = this.setWord(lexicalResult, word, verticalWordIndex, horizontalWordIndex, difficulty);
                 }
             } catch (err) {
                 if (horizontalWordIndex < verticalWordIndex) {
@@ -177,24 +202,27 @@ export default class WordGenerator extends GridGenerator{
         }
     }
 
-    private async getWord(word: Word, difficulty: string): Promise<any> {
-
-        let commonality: string = "";
+    private async getWord(word: Word, difficulty: string): Promise < LexicalWord > {
+        let commonality = "";
 
         switch (difficulty) {
-            case "easy": commonality = "common"; break;
-            case "hard": commonality = "uncommon"; break;
-            case "normal": commonality = (Math.random() > this.randomGeneration ? "common" : "uncommon"); break;
-            default: commonality = "InvalidEntry";
+            case "easy":
+                commonality = "common"; break;
+            case "hard":
+                commonality = "uncommon"; break;
+            case "normal":
+                commonality = (Math.random() > this.randomGeneration ? "common" : "uncommon"); break;
+            default:
+                commonality = "InvalidEntry";
         }
 
-        const FETCH_URL: string = `http://localhost:3000/lexical/wordsearch/${commonality}/${this.constructConstraintFor(word)}`;
+        const FETCH_URL = `http://localhost:3000/lexical/wordsearch/${commonality}/${this.constructConstraintFor(word)}`;
         try {
-            const response: AxiosResponse<any> = await axios.get(FETCH_URL);
+            const response: AxiosResponse < any > = await axios.get(FETCH_URL);
 
             return response.data;
         } catch (err) {
-            throw(err);
+            throw (err);
         }
     }
 
@@ -202,40 +230,30 @@ export default class WordGenerator extends GridGenerator{
         this.removeConstraintsFromArray(word);
         word.name = "";
 
-        return index --;
+        return index - 1;
     }
 
-    private setWord(rawResponse: Array<AxiosWords>, word: Word, index: number, difficulty: string): number {
-        if (!this.checkWordExists(rawResponse[0].word) && this.checkDefinitionExists(rawResponse[0].word, word, difficulty)) {
-            word.name = rawResponse[0].word;
+    private setWord(rawResponse: string, word: Word, index: number, removedIndex: number, difficulty: string): number {
+        if (!this.checkWordExists(rawResponse)) {
+            word.name = rawResponse;
             this.addConstraintsToArray(word);
+            this._wordArray.push(word);
 
-            return index++;
+            return index + 1;
         } else {
-            return index;
+            return this.removeWord(index, word);
         }
-
     }
 
     private checkWordExists(name: string): boolean {
-        for (const word of this._horizontalWordArray) {
-            if (word.name === name) {
-                return true;
-            }
-        }
-        for (const word of this._verticalWordArray) {
-            if (word.name === name) {
-                return true;
-            }
-        }
-
-        return false;
+        return !!this._horizontalWordArray.find((word: Word) => word.name === name) ||
+            !!this._verticalWordArray.find((word: Word) => word.name === name);
     }
 
     private removeConstraintsFromArray(word: Word): void {
-        const wordLength: number = (word.direction ? this.horizontalWordLength[word.index] : this.verticalWordLength[word.index]);
-        for (let wordPosition: number  = 0; wordPosition < wordLength; wordPosition++ ) {
-            for (let constraintIndex: number = 0; constraintIndex < this._constraintsArray.length; constraintIndex ++) {
+        const wordLength: number = word.length;
+        for (let wordPosition = 0; wordPosition < wordLength; wordPosition++) {
+            for (let constraintIndex = 0; constraintIndex < this._constraintsArray.length; constraintIndex++) {
                 if (this.checkConstraints(word, constraintIndex, wordPosition)) {
                     this._constraintsArray[constraintIndex].amountOfWordsWithConstraint--;
                     if (this._constraintsArray[constraintIndex].amountOfWordsWithConstraint === 0) {
@@ -247,38 +265,49 @@ export default class WordGenerator extends GridGenerator{
     }
 
     private addConstraintsToArray(word: Word): void {
-        const wordLength: number = (word.direction ? this.horizontalWordLength[word.index] : this.verticalWordLength[word.index]);
-        let wordPosition: number = 0;
+        const wordLength: number = word.length;
+        let wordPosition = 0;
         if (this.isEmpty(this._constraintsArray)) {
             this.addConstraint(word, wordPosition);
             wordPosition = 1;
         }
-        for (; wordPosition < wordLength; wordPosition++ ) {
-            for (let constraintIndex: number = 0; constraintIndex < this._constraintsArray.length; constraintIndex ++) {
+        for (; wordPosition < wordLength; wordPosition++) {
+            let checkConstraint = false;
+            for (let constraintIndex = 0; constraintIndex < this._constraintsArray.length; constraintIndex++) {
                 if (this.checkConstraints(word, constraintIndex, wordPosition)) {
                     this._constraintsArray[constraintIndex].amountOfWordsWithConstraint++;
-                } else {
-                    this.addConstraint(word, wordPosition);
+                    checkConstraint = true;
                 }
+            }
+            if (!checkConstraint) {
+                this.addConstraint(word, wordPosition);
             }
         }
     }
 
     private constructConstraintFor(word: Word): string {
-        let nonConstraints: number = 0;
-        let constraintWord: string = "";
-        const wordLength: number = (word.direction ? this.horizontalWordLength[word.index] : this.verticalWordLength[word.index]);
-        for (let wordPosition: number  = 0; wordPosition < wordLength; wordPosition++ ) {
-            for (let constraintIndex: number = 0; constraintIndex < this._constraintsArray.length; constraintIndex ++) {
+        let nonConstraints = 0;
+        let constraintWord = "";
+        const wordLength: number = word.length;
+        for (let wordPosition = 0; wordPosition < wordLength; wordPosition++) {
+            let checkConstraint = false;
+            for (let constraintIndex = 0; constraintIndex < this._constraintsArray.length; constraintIndex++) {
                 if (this.checkConstraints(word, constraintIndex, wordPosition)) {
+                    if (nonConstraints !== 0) {
                         constraintWord += nonConstraints;
                         nonConstraints = 0;
-                        constraintWord += this._constraintsArray[constraintIndex];
-                } else {
-                        nonConstraints ++;
+                    }
+                    constraintWord += this._constraintsArray[constraintIndex].constraint;
+                    checkConstraint = true;
+                    break;
                 }
             }
+            if (!checkConstraint) { nonConstraints++; }
         }
+        if (nonConstraints === parseInt("10", 10)) {
+            nonConstraints = parseInt("91", 10);
+        }
+        constraintWord += nonConstraints;
 
         return constraintWord;
     }
@@ -291,34 +320,14 @@ export default class WordGenerator extends GridGenerator{
 
     private checkConstraints(word: Word, constraintIndex: number, wordPosition: number): boolean {
         return (word.direction ?
-            this._constraintsArray[constraintIndex].position === [word.row + wordPosition, word.col] :
-            this._constraintsArray[constraintIndex].position === [word.row, word.col + wordPosition]);
+            this._constraintsArray[constraintIndex].row === word.row + wordPosition &&
+                this._constraintsArray[constraintIndex].col === word.col :
+            this._constraintsArray[constraintIndex].row === word.row &&
+                this._constraintsArray[constraintIndex].col === word.col + wordPosition);
     }
 
     private isEmpty(array: any[]): boolean {
         return array.length === 0;
-    }
-
-    private async checkDefinitionExists(wordName: string, word: Word, difficulty: string): boolean{
-        let level: string = "";
-
-        switch (difficulty) {
-            case "easy": level = "easy"; break;
-            case "hard": level = "hard"; break;
-            case "normal": level = (Math.random() > this.randomGeneration ? "easy" : "hard"); break;
-            default: level = "InvalidEntry";
-        }
-
-        const FETCH_URL: string = `http://localhost:3000//lexical/wordDefinition/${level}/${wordName}`;
-        try {
-            const response: AxiosResponse<any> = await axios.get(FETCH_URL);
-
-            word.desc = response.data;
-
-            return true;
-        } catch (err) {
-            return false;
-        }
     }
 
     public getVerticalWordLength(): number[] {
