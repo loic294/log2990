@@ -40,7 +40,7 @@ export default class LexicalService {
             const data: AxiosResponse = await this.baseDefinition(word);
 
             for (const def in data) {
-                if (!data[def].text.includes(`${word}`)) {
+                if (!(data[def].text).toLowerCase().includes(word.toLowerCase())) {
                     definitions.push(data[def].text);
                 }
             }
@@ -124,13 +124,14 @@ export default class LexicalService {
             const word: string = rawResponse[randomInt].word;
             const freq: number = +rawResponse[randomInt].tags[0].substring(NON_NUMBERS_INDEX);
 
-            if (word.length === requestString.length) {
+            if (word.length === requestString.length && word.match(/^[a-z]+$/i) ) {
 
                 if (common === "common" && freq as number > FREQ_CUTOFF) {
                     return word;
                 }
 
                 if (common === "uncommon" && freq as number < FREQ_CUTOFF) {
+
                     return word;
                 }
 
