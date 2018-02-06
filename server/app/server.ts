@@ -4,7 +4,6 @@ import * as compression from "compression";  // compresses requests
 import * as session from "express-session";
 import * as bodyParser from "body-parser";
 import * as logger from "morgan";
-import * as errorHandler from "errorhandler";
 import routes from "./routes/index";
 
 let app = express();
@@ -20,8 +19,8 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
 }));
 
-app.use(errorHandler());
 
 app = routes(app)
+
 
 app.listen(3000, () => console.log("Listening on port 3000"))
