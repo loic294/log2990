@@ -1,3 +1,5 @@
+/* tslint:disable */
+
 import { Case } from "../../../../common/grid/case";
 import GridGenerator from "./grid-generator";
 import Word, { Orientation } from "../../../../common/lexical/word";
@@ -115,7 +117,7 @@ export default class WordGenerator extends GridGenerator {
                         this.horizontalWordLength.splice(horizontalWordIndex, 1);
                     } else {
                         const initialPosition = this.checkValidPosition(col - this.horizontalWordLength[horizontalWordIndex], rows, Orientation.horizontal);
-                        this._horizontalWordArray.push(new Word("", "", [initialPosition, rows], Orientation.horizontal, horizontalWordIndex));
+                        this._horizontalWordArray.push(new Word("", "", [rows, initialPosition], Orientation.horizontal, horizontalWordIndex, false, this.horizontalWordLength[horizontalWordIndex]));
                         horizontalWordIndex++;
                     }
                 }
@@ -134,7 +136,7 @@ export default class WordGenerator extends GridGenerator {
                         this.verticalWordLength.splice(verticalWordIndex, 1);
                     } else {
                         const initialPosition = this.checkValidPosition(rows - this.verticalWordLength[verticalWordIndex], col, Orientation.vertical);
-                        this._verticalWordArray.push(new Word("", "", [initialPosition, col], Orientation.vertical, verticalWordIndex));
+                        this._verticalWordArray.push(new Word("", "", [initialPosition, col], Orientation.vertical, verticalWordIndex, false, this.verticalWordLength[verticalWordIndex]));
                         verticalWordIndex++;
                     }
                 }
@@ -160,10 +162,12 @@ export default class WordGenerator extends GridGenerator {
 
         while (horizontalWordIndex < this._horizontalWordArray.length && verticalWordIndex < this._verticalWordArray.length) {
 
-            console.log('IN WHILE')
+            console.log('IN WHILE', horizontalWordIndex, verticalWordIndex, this._horizontalWordArray.length, this._verticalWordArray.length)
             const word: Word = horizontalWordIndex < verticalWordIndex ?
                 this._horizontalWordArray[horizontalWordIndex] :
                 this._verticalWordArray[verticalWordIndex];
+
+            console.log('WORD IN WHILE', word)
 
             try {
 
@@ -182,6 +186,8 @@ export default class WordGenerator extends GridGenerator {
                     console.log("INDEX AFTER setWORD vertical", horizontalWordIndex)
                 }
             } catch (err) {
+
+                console.error(err)
 
                 if (horizontalWordIndex < verticalWordIndex) {
                     verticalWordIndex = this.removeWord(verticalWordIndex, word);
@@ -217,7 +223,7 @@ export default class WordGenerator extends GridGenerator {
     }
 
     private removeWord(index: number, word: Word): number {
-        console.log("REMOVE WORD")
+        console.log("REMOVE WORD", word)
         this.removeConstraintsFromArray(word);
         word.name = "";
 
@@ -243,13 +249,19 @@ export default class WordGenerator extends GridGenerator {
     }
 
     private removeConstraintsFromArray(word: Word): void {
-        const wordLength: number = (word.direction ? this.horizontalWordLength[word.index] : this.verticalWordLength[word.index]);
+        console.log('WORD REMOVE', word)
+        // const wordLength: number = (word.direction ? this.horizontalWordLength[word.index] : this.verticalWordLength[word.index]);
+        const wordLength = word.length;
+        console.log('WORD', wordLength)
         for (let wordPosition  = 0; wordPosition < wordLength; wordPosition++ ) {
             for (let constraintIndex = 0; constraintIndex < this._constraintsArray.length; constraintIndex ++) {
                 if (this.checkConstraints(word, constraintIndex, wordPosition)) {
                     this._constraintsArray[constraintIndex].amountOfWordsWithConstraint--;
+                    console.log('CONSTRAINT', this._constraintsArray[constraintIndex].amountOfWordsWithConstraint)
                     if (this._constraintsArray[constraintIndex].amountOfWordsWithConstraint === 0) {
+                        console.log('SHOULD REMOVE', this._constraintsArray.length)
                         this._constraintsArray.splice(constraintIndex, 1);
+                        console.log('REMOVED', this._constraintsArray.length)
                     }
                 }
             }
@@ -257,7 +269,8 @@ export default class WordGenerator extends GridGenerator {
     }
 
     private addConstraintsToArray(word: Word): void {
-        const wordLength: number = (word.direction ? this.horizontalWordLength[word.index] : this.verticalWordLength[word.index]);
+        // const wordLength: number = (word.direction ? this.horizontalWordLength[word.index] : this.verticalWordLength[word.index]);
+        const wordLength = word.length
         let wordPosition = 0;
         if (this.isEmpty(this._constraintsArray)) {
             this.addConstraint(word, wordPosition);
@@ -280,15 +293,22 @@ export default class WordGenerator extends GridGenerator {
     }
 
     private constructConstraintFor(word: Word): string {
+        debugger
         let nonConstraints: number = 0;
         console.log('NC INIT', nonConstraints)
         let constraintWord: string = "";
         let wordPosition: number = 0;
-        const wordLength: number = (word.direction ? this.horizontalWordLength[word.index] : this.verticalWordLength[word.index]);
-        if (this.isEmpty(this._constraintsArray)) {
-            this.addConstraint(word, wordPosition);
-            wordPosition = 1;
-        }
+        const wordLength = word.length;
+        // const wordLength: number = (word.direction ? this.horizontalWordLength[word.index] : this.verticalWordLength[word.index]);
+        console.log('WORD LENTH', wordLength)
+        debugger
+        console.log('IS EMPTY', this.isEmpty(this._constraintsArray))
+        // if (this._constraintsArray.length !== 0) {
+        //     this.addConstraint(word, wordPosition);
+        //     wordPosition = 1;
+        // }
+
+
         for (; wordPosition < wordLength; wordPosition++ ) {
             let checkConstraint = false;
             for (let constraintIndex: number = 0; constraintIndex < this._constraintsArray.length; constraintIndex ++) {
@@ -300,6 +320,7 @@ export default class WordGenerator extends GridGenerator {
                         nonConstraints = 0;
                     }
                     constraintWord += this._constraintsArray[constraintIndex].constraint;
+                    console.log("MOTHERFUCKING CONSTRAINTS", constraintWord);
                     checkConstraint = true;
                     break;
                 }
@@ -314,6 +335,7 @@ export default class WordGenerator extends GridGenerator {
         if (nonConstraints === 10) {
             nonConstraints = 91;
         }
+        debugger
         constraintWord += nonConstraints;
         return constraintWord;
     }
@@ -326,8 +348,8 @@ export default class WordGenerator extends GridGenerator {
 
     private checkConstraints(word: Word, constraintIndex: number, wordPosition: number): boolean {
         return (word.direction ?
-            this._constraintsArray[constraintIndex].position === [word.row + wordPosition, word.col] :
-            this._constraintsArray[constraintIndex].position === [word.row, word.col + wordPosition]);
+            this._constraintsArray[constraintIndex].row === word.row + wordPosition && this._constraintsArray[constraintIndex].col === word.col :
+            this._constraintsArray[constraintIndex].row === word.row && this._constraintsArray[constraintIndex].col === word.col + wordPosition);
     }
 
     private isEmpty(array: any[]): boolean {

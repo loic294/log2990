@@ -12,7 +12,7 @@ export async function generate(req: Request, res: Response, next: NextFunction) 
 	await gridGeneratorService.generateWords("easy");
 	console.log();
     const grid: Case[][] = gridGeneratorService.getGrid();
-    console.log("GRID", grid);
+    // console.log("GRID", grid);
 
     res.json({ 
 		grid,
