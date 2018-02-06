@@ -15,9 +15,9 @@ import { DifficultyComponent } from "./crosswords/difficulty/difficulty.componen
 import { GridComponent } from "./crosswords/grid/grid.component";
 import { CrosswordComponent } from "./crosswords/crossword/crossword.component";
 import { CluesComponent } from "./crosswords/clues/clues.component";
-import { ShadowBoxComponent } from './crosswords/shadow-box/shadow-box.component';
-import { ContainerComponent } from './crosswords/container/container.component';
-import { ButtonComponent } from './crosswords/button/button.component';
+import { ShadowBoxComponent } from "./crosswords/shadow-box/shadow-box.component";
+import { ContainerComponent } from "./crosswords/container/container.component";
+import { ButtonComponent } from "./crosswords/button/button.component";
 
 @NgModule({
     declarations: [
