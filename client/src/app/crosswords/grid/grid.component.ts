@@ -1,3 +1,4 @@
+/* tslint:disable:no-shadowed-variable */
 import { Component, OnInit } from "@angular/core";
 
 import { Case } from "../../../../../common/grid/case";
@@ -172,9 +173,9 @@ export class GridComponent implements OnInit {
     }
 
     private wordHigligth(): void {
-        const caseTemp: Case = null;
+        const currentCase: Case = null;
 
-        this.iterateGrid(caseTemp, (x: number, y: number, caseTemp: Case, cell: number) => {
+        this.iterateGrid(currentCase, (x: number, y: number, caseTemp: Case, cell: number) => {
             this._grid[caseTemp.x][caseTemp.y].select();
             if (caseTemp.char === "-") {
 
@@ -186,7 +187,7 @@ export class GridComponent implements OnInit {
     }
     private findEndWrittenWord(): void {
         let wordStart: number = 0;
-        let caseTemp: Case;
+        const caseTemp: Case = null;
         let wordEntered: string = "";
         this._selWord = this._word;
         this.isHorizontal() ? wordStart = this._word.col : wordStart = this._word.row;
