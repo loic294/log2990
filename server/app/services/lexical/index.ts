@@ -40,7 +40,7 @@ export default class LexicalService {
             const data: AxiosResponse = await this.baseDefinition(word);
 
             for (const def in data) {
-                if (!data[def].text.includes(`${word}`)) {
+                if (!(data[def].text).toLowerCase().includes(word.toLowerCase())) {
                     definitions.push(data[def].text);
                 }
             }
