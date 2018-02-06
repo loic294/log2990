@@ -11,17 +11,27 @@
 .square {
 	height: 50px;
 	width: 50px;
-	border: 1px solid #333;
+	border: 1px solid black;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	text-transform: uppercase;
 }
-.selected{
-	background-color: green;
-	color: white;
+.square.selected{
+    background-color: #ddd;
+    
+}
+
+.square.is-black {
+    background-color: #000;
+    color: #000;
 }
 
 .col input {
     text-align: center;
+}
+
+.col input:focus{
+    outline: none;
+    border: 3px solid black;
 }
