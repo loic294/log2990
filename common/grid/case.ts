@@ -1,12 +1,12 @@
 export class Case {
 
     public constructor(
-        private _char: string = "-",
-        private _x: number = 0,
-        private _y: number = 0,
-        private _isSelected: boolean = false,
-        private _isValidated: boolean = false,
-        private _black: boolean = false) { }
+        private _char: string,
+        private _x: number,
+        private _y: number,
+        private _isSelected: boolean,
+        private _isValidated: boolean,
+        private _black: boolean) { }
 
     public set char(c: string) {
         this._char = c;
