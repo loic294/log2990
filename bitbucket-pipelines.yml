@@ -13,9 +13,7 @@ pipelines:
         script: # Modify the commands below to build your repository.
           - cd server
           - npm install
-          - tsc
           - npm test
-          - npm run lint
 definitions:
   caches:
     node: server/node_modules
