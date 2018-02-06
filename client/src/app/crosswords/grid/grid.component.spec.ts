@@ -76,6 +76,34 @@ describe("GridComponent", () => {
       const elem: HTMLElement = document.getElementById("16");
       component.validateWord(word, elem);
       expect(component.word.validated).toBe(true);
+      expect(component.grid[0][0].validated).toBe(true);
+      expect(component.grid[1][0].validated).toBe(true);
+      expect(component.grid[2][0].validated).toBe(true);
+      expect(component.grid[3][0].validated).toBe(true);
   });
+
+  it("Word shoud not be validated", () => {
+        let word: string = "oops";
+        component.word = new Word("clue", "", [0, 0], Orientation.vertical, 0);
+        expect(component.word.validated).toBe(false);
+        const elem: HTMLElement = document.getElementById("16");
+
+        component.validateWord(word, elem);
+        expect(component.word.validated).toBe(false);
+        expect(component.grid[0][0].validated).toBe(false);
+        expect(component.grid[1][0].validated).toBe(false);
+        expect(component.grid[2][0].validated).toBe(false);
+        expect(component.grid[3][0].validated).toBe(false);
+
+        word = "cluue";
+        component.validateWord(word, elem);
+        expect(component.word.validated).toBe(false);
+        expect(component.grid[0][0].validated).toBe(false);
+        expect(component.grid[1][0].validated).toBe(false);
+        expect(component.grid[2][0].validated).toBe(false);
+        expect(component.grid[3][0].validated).toBe(false);
+    });
+
+
 
 });

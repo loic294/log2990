@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 
 @Component({
-  selector: 'ui-shadow-box',
-  templateUrl: './shadow-box.component.html',
-  styleUrls: ['./shadow-box.component.css']
+  selector: "ui-shadow-box",
+  templateUrl: "./shadow-box.component.html",
+  styleUrls: ["./shadow-box.component.css"]
 })
 export class ShadowBoxComponent implements OnInit {
 
-  constructor() { }
+  public constructor() { }
 
-  ngOnInit() {
+  public ngOnInit(): void {
   }
 
 }

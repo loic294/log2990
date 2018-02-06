@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { DifficultyComponent } from "./difficulty.component";
+import { ButtonComponent } from "../button/button.component";
 
 enum Difficulty {
     Easy = 0,
@@ -12,7 +13,7 @@ describe("DifficultyComponent", () => {
     let fixture: ComponentFixture<DifficultyComponent>;
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [DifficultyComponent]
+            declarations: [DifficultyComponent, ButtonComponent]
         }).compileComponents();
     }));
 
