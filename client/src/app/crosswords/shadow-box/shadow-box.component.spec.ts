@@ -1,8 +1,8 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ShadowBoxComponent } from './shadow-box.component';
+import { ShadowBoxComponent } from "./shadow-box.component";
 
-describe('ShadowBoxComponent', () => {
+describe("ShadowBoxComponent", () => {
   let component: ShadowBoxComponent;
   let fixture: ComponentFixture<ShadowBoxComponent>;
 
@@ -19,7 +19,7 @@ describe('ShadowBoxComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });
