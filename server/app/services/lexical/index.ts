@@ -124,13 +124,14 @@ export default class LexicalService {
             const word: string = rawResponse[randomInt].word;
             const freq: number = +rawResponse[randomInt].tags[0].substring(NON_NUMBERS_INDEX);
 
-            if (word.length === requestString.length) {
+            if (word.length === requestString.length && word.match(/^[a-z]+$/i) ) {
 
                 if (common === "common" && freq as number > FREQ_CUTOFF) {
                     return word;
                 }
 
                 if (common === "uncommon" && freq as number < FREQ_CUTOFF) {
+
                     return word;
                 }
 
