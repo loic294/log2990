@@ -1,7 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import LexicalService from "../../services/lexical";
 
-export async function wordSearch(req: Request, res: Response, next: NextFunction): Promise<void> {
+// tslint:disable-next-line:no-inferrable-types
+const ERR_500: number = 500;
+
+export const wordSearch =  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
     const { word } = req.params;
     const { common } = req.params;
@@ -15,11 +18,11 @@ export async function wordSearch(req: Request, res: Response, next: NextFunction
         }
         res.json({ lexicalResult: result });
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(ERR_500).send(err.message);
     }
-}
+};
 
-export async function wordDefintion(req: Request, res: Response, next: NextFunction): Promise<void> {
+export const wordDefintion = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { level } = req.params;
     const { word } = req.params;
 
@@ -32,6 +35,6 @@ export async function wordDefintion(req: Request, res: Response, next: NextFunct
         }
         res.json({ lexicalResult: result });
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(ERR_500).send(err.message);
     }
-}
+};
