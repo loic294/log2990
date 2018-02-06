@@ -1,26 +1,40 @@
 import { Request, Response, NextFunction } from "express";
-
 import LexicalService from "../../services/lexical";
 
-export async function wordSearch(req: Request, res: Response, next: NextFunction): Promise<void> {
+// tslint:disable-next-line:no-inferrable-types
+const ERR_500: number = 500;
+
+export const wordSearch =  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
     const { word } = req.params;
     const { common } = req.params;
 
     const lexicalService: LexicalService = new LexicalService();
 
-    const testResult: String = await lexicalService.wordSearch(word, common);
+    try {
+        const result: String = await lexicalService.wordSearch(word, common);
+        if (result === "undefined") {
+            throw new Error("No word found");
+        }
+        res.json({ lexicalResult: result });
+    } catch (err) {
+        res.status(ERR_500).send(err.message);
+    }
+};
 
-    res.json({ lexicalResult: testResult });
-}
-
-export async function wordDefintion(req: Request, res: Response, next: NextFunction): Promise<void> {
+export const wordDefintion = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { level } = req.params;
     const { word } = req.params;
 
     const lexicalService: LexicalService = new LexicalService();
 
-    const testResult: string = await lexicalService.wordDefinition(level, word);
-
-    res.json({ lexicalResult: testResult });
-}
+    try {
+        const result: string = await lexicalService.wordDefinition(level, word);
+        if (result === "No definitions") {
+            throw new Error("No definitions found");
+        }
+        res.json({ lexicalResult: result });
+    } catch (err) {
+        res.status(ERR_500).send(err.message);
+    }
+};
