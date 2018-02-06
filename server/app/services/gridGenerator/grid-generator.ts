@@ -3,9 +3,9 @@ import { Case } from "../../../../common/grid/case";
 export default class GridGenerator {
 
   private _grid: Case[][];
-  private readonly TAILLE_GRILLE: number = 5;
-  private readonly PERCENT_BLACK_CASES: number = 6;
-  private readonly BASE_AMOUNT_BLACK_CASES: number = 1;
+  private readonly TAILLE_GRILLE: number = 10;
+  private readonly PERCENT_BLACK_CASES: number = 10;
+  private readonly BASE_AMOUNT_BLACK_CASES: number = 30;
   private readonly _randomGeneration: number = 0.7;
   private _amountBlackCases: number = 0;
 
