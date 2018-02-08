@@ -46,7 +46,7 @@ describe("Words", () => {
         testWords.testWordPosition(testArray);
         expectedWordArray = [
             new Word("", "", [0, 0], Orientation.horizontal, 0),
-            new Word("", "", [2, 0], Orientation.horizontal, 0),
+            new Word("", "", [0, 2], Orientation.horizontal, 0),
         ];
 
         for (let index = 0; index < expectedWordArray.length; index++) {
