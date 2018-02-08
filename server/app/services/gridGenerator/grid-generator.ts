@@ -85,7 +85,7 @@ export default class GridGenerator {
   private checkGrilleValidity(currentAmountBlackCases: number): number {
     for (let rows: number = 1; rows < this._grid.length; rows++) {
       for (let col: number = 2; col < this._grid.length; col++) {
-        if(this._grid[rows][col].isBlack()) {
+        if (this._grid[rows][col].isBlack()) {
           if (this.ifSurroundedOnRight(rows, col)) {
             this._grid[rows][col].setBlack(false);
             currentAmountBlackCases--;

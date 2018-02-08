@@ -2,10 +2,10 @@ import { Case } from "../../../../common/grid/case";
 import GridGenerator from "./grid-generator";
 import Word, { Orientation } from "../../../../common/lexical/word";
 import Constraint from "./constraint";
-import LexicalService from ".././lexical";
+// import LexicalService from ".././lexical";
 import axios, { AxiosResponse , AxiosWords } from "axios";
 
-export default class WordGenerator extends GridGenerator{
+export default class WordGenerator extends GridGenerator {
 
     private horizontalWordLength: number[] = [];
     private verticalWordLength: number[] = [];
@@ -22,7 +22,7 @@ export default class WordGenerator extends GridGenerator{
         this.initialiseHorizontalWordArray();
         this.initialiseVerticalWordArray();
 
-        //this.generateWords();
+        // this.generateWords();
     }
 
     public testWordLength(grid: Case[][]): void {
@@ -112,8 +112,10 @@ export default class WordGenerator extends GridGenerator{
                     if (this.horizontalWordLength[horizontalWordIndex] === 1 || this.horizontalWordLength[horizontalWordIndex] === 0) {
                         this.horizontalWordLength.splice(horizontalWordIndex, 1);
                     } else {
-                        let initialPosition = this.checkValidPosition(col - this.horizontalWordLength[horizontalWordIndex], rows, Orientation.horizontal);
-                        this._horizontalWordArray.push(new Word("", "", [initialPosition, rows], Orientation.horizontal, horizontalWordIndex));
+                        const initialPosition: number = this.checkValidPosition(col - this.horizontalWordLength[horizontalWordIndex],
+                                                                                rows, Orientation.horizontal);
+                        this._horizontalWordArray.push(
+                            new Word("", "", [initialPosition, rows], Orientation.horizontal, horizontalWordIndex));
                         horizontalWordIndex++;
                     }
                 }
@@ -131,7 +133,8 @@ export default class WordGenerator extends GridGenerator{
                     if (this.verticalWordLength[verticalWordIndex] === 1 || this.verticalWordLength[verticalWordIndex] === 0) {
                         this.verticalWordLength.splice(verticalWordIndex, 1);
                     } else {
-                        let initialPosition = this.checkValidPosition(rows - this.verticalWordLength[verticalWordIndex], col, Orientation.vertical);
+                        const initialPosition: number = this.checkValidPosition(rows - this.verticalWordLength[verticalWordIndex],
+                                                                                col, Orientation.vertical);
                         this._verticalWordArray.push(new Word("", "", [initialPosition, col], Orientation.vertical, verticalWordIndex));
                         verticalWordIndex++;
                     }
@@ -150,12 +153,12 @@ export default class WordGenerator extends GridGenerator{
                 positionToValidate));
     }
 
-    private async generateWords(difficulty: string) {
+    private async generateWords(difficulty: string): Promise<void> {
         let horizontalWordIndex: number = 0;
         let verticalWordIndex: number = 0;
 
         while (horizontalWordIndex < this._horizontalWordArray.length && verticalWordIndex < this._verticalWordArray.length){
-            let word = (horizontalWordIndex < verticalWordIndex ?
+            const word: Word = (horizontalWordIndex < verticalWordIndex ?
                 this._horizontalWordArray[horizontalWordIndex] :
                 this._verticalWordArray[verticalWordIndex]);
             try {
@@ -299,7 +302,7 @@ export default class WordGenerator extends GridGenerator{
         return array.length === 0;
     }
 
-    private async checkDefinitionExists(wordName: string, word: Word, difficulty: string): boolean{
+    private async checkDefinitionExists(wordName: string, word: Word, difficulty: string): boolean {
         let level: string = "";
 
         switch (difficulty) {

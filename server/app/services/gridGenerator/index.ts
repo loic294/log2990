@@ -1,28 +1,26 @@
-import LexicalService from '../lexical' // USES LEXICAL SERVICE
+import LexicalService from "../lexical"; // USES LEXICAL SERVICE
 
 export default class GridGeneratorService {
-	
-	private lexicalService: LexicalService = new LexicalService()
 
-	constructor () {
-		
-	}
+    private lexicalService: LexicalService = new LexicalService()
 
-	async getWord() { // This is an asynchronos function
-		const result = await this.lexicalService.wordDefinition("hard", "test") // This line will wait for method1 to complete before procceding
+    public constructor () {}
 
-		console.log('Result', result)
+    public async getWord() { // This is an asynchronos function
+        const result = await this.lexicalService.wordDefinition("hard", "test");
+        // This line will wait for method1 to complete before procceding
 
-		return result
+		console.log('Result', result);
 
-	}
+        return result;
+    }
 
-	async generate() {
+    async generate() {
 
-		// Let says this returns a word...
+    // Let says this returns a word...
 
-		return this.getWord()
+        return this.getWord();
 
-	}
+    }
 
 }
