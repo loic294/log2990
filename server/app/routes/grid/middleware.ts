@@ -1,17 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 
-import GridGeneratorService from "../../services/gridGenerator/word-generator";
-import { Case } from "../../../../common/grid/case";
+import GridGeneratorService from '../../services/gridGenerator'
 
-export async function generate(req: Request, res: Response, next: NextFunction): Promise<void> {
+// Test lexical service
+export async function generate(req: Request, res: Response, next: NextFunction) {
 
-    const gridGeneratorService: GridGeneratorService = new GridGeneratorService();
-    await gridGeneratorService.generateWords("easy");
-    const grid: Case[][] = gridGeneratorService.getGrid();
+	const gridGeneratorService = new GridGeneratorService()
 
-    res.json({
-        grid,
-        horizontalWords: gridGeneratorService.horizontalWordArray,
-        verticalWords: gridGeneratorService.verticalWordArray,
-    });
+	const grid = await gridGeneratorService.generate()
+
+	res.json({ grid })
 }

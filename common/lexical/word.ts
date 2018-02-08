@@ -11,8 +11,7 @@ export default class Word {
         private _position : Array<number>,
         private _orientation : Orientation,
         private _index : number,
-		private _isValidated: boolean = false,
-		private _length: number = 0
+        private _isValidated: boolean = false
     ) {}
 
     public get name() {
@@ -50,6 +49,10 @@ export default class Word {
     public get direction() {
         return this._orientation;
     }
+
+    public get length() {
+        return this._name.length;
+    }
     
     public get validated() {
         return this._isValidated
@@ -65,14 +68,6 @@ export default class Word {
 
     public set index( index : number ) {
         this._index = index;
-	}
-	
-	public get length() {
-		return this._length;
-	}
-
-	public set length(length: number) {
-		this._length = length
-	}
+    }
 
 }
