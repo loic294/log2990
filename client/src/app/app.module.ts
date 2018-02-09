@@ -18,6 +18,7 @@ import { CluesComponent } from "./crosswords/clues/clues.component";
 import { ShadowBoxComponent } from "./crosswords/shadow-box/shadow-box.component";
 import { ContainerComponent } from "./crosswords/container/container.component";
 import { ButtonComponent } from "./crosswords/button/button.component";
+import { TrackCreationComponent } from './race/track-creation/track-creation.component';
 
 @NgModule({
     declarations: [
@@ -30,6 +31,7 @@ import { ButtonComponent } from "./crosswords/button/button.component";
         ShadowBoxComponent,
         ContainerComponent,
         ButtonComponent,
+        TrackCreationComponent,
     ],
     imports: [
         BrowserModule,
