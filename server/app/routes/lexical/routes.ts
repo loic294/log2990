@@ -18,7 +18,7 @@ export default {
         ]
     },       {
         method: "GET",
-        path: "/wordAndDef/:criteria/:common/:level",
+        path: "/wordAndDefinition/:criteria/:common/:level",
         middleware: [
             lexical.wordAndDefinition
         ]
