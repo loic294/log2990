@@ -7,7 +7,7 @@ import { Component, OnInit } from "@angular/core";
 })
 export class TrackCreationComponent implements OnInit {
 
-  public constructor() { }
+  public constructor(/*private _container: HTMLDivElement*/) { }
 
   public ngOnInit(): void {
   }
