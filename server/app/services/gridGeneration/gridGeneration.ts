@@ -1,11 +1,14 @@
 import { Case } from "../../../../common/grid/case";
+import Word from "../../../../common/lexical/word";
 import Constraint from "./constraint";
 
 export default class GridGeneration {
     private _grid: Array<Array<Case>>;
+    private _constraintsArray: Array<Constraint>;
+    private _wordStack: Array<Word>;
     private _DEFAULT_SIZE: number = 10;
 
-    constructor() {}
+    public constructor() {}
 
     public fillGridWithCases(size: number): Array<Array<Case>> {
         size  = size > 0 ? size : this._DEFAULT_SIZE;
@@ -21,7 +24,31 @@ export default class GridGeneration {
         return this._grid;
     }
 
-    private placeFirstWords
+    public placeFirstWords(): void { }
+
+    private async getWord(word: Word, difficulty: string) {
+        let commonality: string = "";
+
+        switch (difficulty) {
+            case "easy":
+                commonality = "common"; break;
+            case "hard":
+                commonality = "uncommon"; break;
+            case "normal":
+                commonality = (Math.random() > 0.7 ? "common" : "uncommon"); break;
+            default:
+                commonality = "InvalidEntry";
+        }
+
+        const FETCH_URL: string = `http://localhost:3000/lexical/wordsearch/${commonality}/${}`;
+        try {
+            const response: AxiosResponse < any > = await axios.get(FETCH_URL);
+
+            return response.data;
+        } catch (err) {
+            throw (err);
+        }
+    }
 
     public get grid(): Case[][] {
         return this._grid;

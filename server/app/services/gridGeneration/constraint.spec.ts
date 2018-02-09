@@ -4,7 +4,6 @@ import Word, { Orientation } from "../../../../common/lexical/word";
 import {expect} from "chai";
 
 describe("Constraint", () => {
-    let expectedTestArray: Array<Array<Case>>;
     let testWord: Word;
     let constraint: Constraint;
 

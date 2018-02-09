@@ -1,7 +1,7 @@
 import Word from "../../../../common/lexical/word";
 export default class Constraint {
 
-    constructor(
+    public constructor(
         private _constraint: string,
         private _row: number,
         private _col: number,
