@@ -23,7 +23,7 @@ export const wordSearch: (req: Request, res: Response, next: NextFunction) => Pr
     }
 };
 
-export const wordDefintion: (req: Request, res: Response, next: NextFunction) => Promise<void> =
+export const wordDefinition: (req: Request, res: Response, next: NextFunction) => Promise<void> =
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
     const { level } = req.params;
@@ -40,4 +40,23 @@ export const wordDefintion: (req: Request, res: Response, next: NextFunction) =>
     } catch (err) {
         res.status(ERR_500).send(err.message);
     }
+};
+
+export const wordAndDef: (req: Request, res: Response, next: NextFunction) => Promise<void> =
+    async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+
+    const { criteria } = req.params;
+    const { common } = req.params;
+    const { level } = req.params;
+
+    const lexicalService: LexicalService = new LexicalService();
+
+    try {
+        const result: string[] = await lexicalService.wordAndDef(criteria, common, level);
+        res.json({ lexicalResult: result });
+
+    } catch (err) {
+        res.status(ERR_500).send(err.message);
+    }
+
 };
