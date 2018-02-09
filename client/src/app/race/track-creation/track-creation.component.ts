@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 
 @Component({
-  selector: 'app-track-creation',
-  templateUrl: './track-creation.component.html',
-  styleUrls: ['./track-creation.component.css']
+  selector: "app-track-creation",
+  templateUrl: "./track-creation.component.html",
+  styleUrls: ["./track-creation.component.css"]
 })
 export class TrackCreationComponent implements OnInit {
 
-  constructor() { }
+  public constructor() { }
 
-  ngOnInit() {
+  public ngOnInit(): void {
   }
 
 }

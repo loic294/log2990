@@ -21,8 +21,10 @@ import { SocketIoModule, SocketIoConfig } from "ng-socket-io";
 import { ModeComponent } from "./crosswords/mode/mode.component";
 import { SocketService } from "./socket.service/socket.service";
 import { AdminComponent } from "./race/admin-component/admin.component";
+import { TrackCreationComponent } from './race/track-creation/track-creation.component';
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
+
 
 @NgModule({
     declarations: [
@@ -34,6 +36,7 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         CluesComponent,
         ModeComponent,
         AdminComponent
+        TrackCreationComponent,
     ],
     imports: [
         BrowserModule,
