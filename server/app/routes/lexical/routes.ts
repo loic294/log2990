@@ -14,7 +14,13 @@ export default {
         method: "GET",
         path: "/wordDefinition/:level/:word",
         middleware: [
-            lexical.wordDefintion
+            lexical.wordDefinition
+        ]
+    },       {
+        method: "GET",
+        path: "/wordAndDef/:criteria/:common/:level",
+        middleware: [
+            lexical.wordAndDefinition
         ]
     }]
 };
