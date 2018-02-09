@@ -4,26 +4,14 @@ import {expect} from "chai";
 
 describe("GridGenerator", () => {
     let expectedTestArray: Array<Array<Case>>;
-    let actualTestArray: Array<Array<Case>>;
+    // let actualTestArray: Array<Array<Case>>;
     const gridGeneration: GridGeneration =  new GridGeneration();
     const TEN: number = 10;
 
     it("should create a 10x10 empty array of cases", () => {
-        actualTestArray = gridGeneration.fillGridWithCases(TEN);
-        expectedTestArray = [
-            [new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case()],
-            [new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case()],
-            [new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case()],
-            [new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case()],
-            [new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case()],
-            [new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case()],
-            [new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case()],
-            [new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case()],
-            [new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case()],
-            [new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case(), new Case()],
-        ];
+        expectedTestArray = gridGeneration.fillGridWithCases(TEN);
 
-        expect(expectedTestArray).to.eql(actualTestArray);
+        expect(expectedTestArray).to.eql(gridGeneration.grid);
 
     });
 });
