@@ -4,6 +4,7 @@ import * as compression from "compression";  // compresses requests
 import * as session from "express-session";
 import * as bodyParser from "body-parser";
 import * as logger from "morgan";
+import * as cors from "cors";
 import routes from "./routes/index";
 
 let app = express();
@@ -18,9 +19,32 @@ app.use(session({
   saveUninitialized: true,
   secret: process.env.SESSION_SECRET,
 }));
+app.use(cors());
 
 
-app = routes(app)
+app = routes(app);
 
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 
-app.listen(3000, () => console.log("Listening on port 3000"))
+io.on('connection', function (socket: any) {
+    console.log('Connected to socket');
+    // socket.emit('news', { hello: 'world' });
+
+    socket.on('test', function (data: any) {
+        console.log('New event', data);
+    });
+
+    socket.on('connet_to_room', function (room: string) {
+        socket.join(room, function() {
+            console.log('CONNECTED TO ROOM', room)
+
+            socket.in(room).emit("connected_to_room", `connected to ${room}`)
+
+        })
+    })
+
+});
+ 
+
+server.listen(3000, () => console.log("Listening on port 3000"))
