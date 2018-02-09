@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 
-export async function me(req: Request, res: Response, next: NextFunction) {
-	res.json({ succes: true })
-}
+export const me: (req: Request, res: Response, next: NextFunction) => void =
+    async (req: Request, res: Response, next: NextFunction) => {
+
+    res.json({ succes: true });
+};

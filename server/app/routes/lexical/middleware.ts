@@ -4,7 +4,8 @@ import LexicalService from "../../services/lexical";
 // tslint:disable-next-line:no-inferrable-types
 const ERR_500: number = 500;
 
-export const wordSearch =  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const wordSearch: (req: Request, res: Response, next: NextFunction) => Promise<void> =
+    async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
     const { word } = req.params;
     const { common } = req.params;
@@ -22,7 +23,9 @@ export const wordSearch =  async (req: Request, res: Response, next: NextFunctio
     }
 };
 
-export const wordDefintion = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const wordDefintion: (req: Request, res: Response, next: NextFunction) => Promise<void> =
+    async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+
     const { level } = req.params;
     const { word } = req.params;
 
