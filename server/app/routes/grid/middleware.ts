@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 
 // Test lexical service
-export async function generate(req: Request, res: Response, next: NextFunction) {
-	res.json({ success: true })
-}
+export const generate: (req: Request, res: Response, next: NextFunction) => Promise<void> =
+    async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+
+    res.json({ success: true });
+
+};

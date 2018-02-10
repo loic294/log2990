@@ -91,7 +91,7 @@ export default class LexicalService {
         }
     }
 
-    public async wordSearch(researchCriteria: string, common: string): Promise<String> {
+    public async wordSearch(researchCriteria: string, common: string): Promise<string> {
         let request: string;
         request = "";
 
@@ -109,6 +109,21 @@ export default class LexicalService {
         }
 
         return this.commonFinder(common, data, request);
+    }
+
+    public async wordAndDefinition(researchCriteria: string, common: string, level: string): Promise<string[]> {
+        const data: string[] = [];
+        let word: string;
+        let definition: string;
+        do {
+            word = await this.wordSearch(researchCriteria, common);
+            definition = await this.wordDefinition(level, word);
+        } while (definition === "No definitions");
+
+        data[0] = word;
+        data[1] = definition;
+
+        return data;
     }
 
     private commonFinder(common: string, rawResponse: Array<AxiosWords>, requestString: string): string {
