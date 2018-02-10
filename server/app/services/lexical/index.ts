@@ -113,12 +113,13 @@ export default class LexicalService {
 
     public async wordAndDefinition(researchCriteria: string, common: string, level: string): Promise<string[]> {
         const data: string[] = [];
-        let word: string = await this.wordSearch(researchCriteria, common);
-        let definition: string = await this.wordDefinition(level, word);
-        while (definition === "No definitions") {
+        let word: string;
+        let definition: string;
+        do {
             word = await this.wordSearch(researchCriteria, common);
             definition = await this.wordDefinition(level, word);
-        }
+        } while (definition === "No definitions");
+
         data[0] = word;
         data[1] = definition;
 
