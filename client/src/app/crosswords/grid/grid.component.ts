@@ -1,4 +1,4 @@
-/* tslint:disable:no-shadowed-variable */
+
 import { Component, OnInit } from "@angular/core";
 
 import { Case } from "../../../../../common/grid/case";
@@ -36,7 +36,6 @@ export class GridComponent implements OnInit {
         return strings.map((c: string) => new Case(c));
     });
 
-    private _selectedCase: Case;
     private _isHorizontal: boolean;
     private _selectedWord: Case;
     private _selWord: Word;
@@ -125,7 +124,6 @@ export class GridComponent implements OnInit {
 
             if (this._word != null) {
                 this._grid[tempWord.row][tempWord.col].select();
-                this._selectedCase = this._grid[tempWord.row][tempWord.col];
                 this._x = this._grid[tempWord.row][tempWord.col].x;
                 this._y = this._grid[tempWord.row][tempWord.col].y;
                 this.findEndWrittenWord();
@@ -138,9 +136,6 @@ export class GridComponent implements OnInit {
 
     private selectCaseFromService(w: Word): void {
 
-        if (this._selectedCase != null) {
-            this._selectedCase.unselect();
-        }
         if (this._selectedWord != null) {
             const caseTemp: Case = this._selectedWord;
 
@@ -152,16 +147,17 @@ export class GridComponent implements OnInit {
 
         if (w != null) {
             this._grid[w.row][w.col].select();
-            this._selectedCase = this._grid[w.row][w.col];
             this._x = w.row;
             this._y = w.col;
             this.findEndWrittenWord();
+            this.wordHigligth();
         }
     }
 
     private isHorizontal(): boolean {
         return this._word.direction === Orientation.horizontal;
     }
+
     private iterateGrid (caseTemp: Case, fct: Function): void {
         for (let cell: number = this._wordStart; cell < this._wordStart + this._selWord.length; cell++) {
             this._isHorizontal ? caseTemp = this._grid[this._selWord.row][cell] : caseTemp = this._grid[cell][this._selWord.col];
@@ -185,6 +181,7 @@ export class GridComponent implements OnInit {
             return false;
         });
     }
+
     private findEndWrittenWord(): void {
         let wordStart: number = 0;
         const caseTemp: Case = null;

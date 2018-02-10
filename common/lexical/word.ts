@@ -13,7 +13,11 @@ export default class Word {
         private _index : number,
 		private _isValidated: boolean = false,
 		private _length: number = 0
-    ) {}
+    ) {
+        if (!_length) {
+            this._length = this._name.length
+        }
+    }
 
     public get name() {
         return this._name;

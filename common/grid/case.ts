@@ -1,7 +1,7 @@
 export class Case {
 
     public constructor(
-        private _char: string = "",
+        private _char: string = "-",
         private _x: number = 0,
         private _y: number = 0,
         private _isSelected: boolean = false,
