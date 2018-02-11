@@ -19,6 +19,7 @@ import { ShadowBoxComponent } from "./crosswords/shadow-box/shadow-box.component
 import { ContainerComponent } from "./crosswords/container/container.component";
 import { ButtonComponent } from "./crosswords/button/button.component";
 import { SocketIoModule, SocketIoConfig } from "ng-socket-io";
+import { ModeComponent } from './crosswords/mode/mode.component';
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
@@ -33,6 +34,7 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         ShadowBoxComponent,
         ContainerComponent,
         ButtonComponent,
+        ModeComponent,
     ],
     imports: [
         BrowserModule,
