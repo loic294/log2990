@@ -46,14 +46,11 @@ export class TrackCreationComponent implements AfterViewInit {
         height.innerHTML = window.innerHeight.toString();
         // fin infos pour debugger
 
-        this.drawDot(event.clientX, event.clientY, event.offsetX, event.offsetY);
-    }
-
-    private drawDot(x: number, y: number, ox: number, oy: number): void {
-
         const dotGeo: THREE.Geometry = new Geometry();
-        const coordinates: Array<number> = this.findCoordonates(x, y, ox, oy);
-        dotGeo.vertices.push(new Vector3(coordinates[0], coordinates[1], 0));
+        this.findCoordinates(event.offsetX, event.offsetY);
+        dotGeo.vertices.push(new Vector3(this._dotMemory[this._dotMemory.length - 1].x,
+                                         this._dotMemory[this._dotMemory.length - 1].y,
+                                         this._dotMemory[this._dotMemory.length - 1].z));
         const dotMat: THREE.PointsMaterial = new PointsMaterial({color: 0xFFFFFF, size: 1});
         const dot: THREE.Points = new Points(dotGeo, dotMat);
         this._scene.add(dot);
@@ -63,31 +60,25 @@ export class TrackCreationComponent implements AfterViewInit {
         this.render();
     }
 
-
     /*
     A changer coordonner pas bonnes -- formule douteuse
     */
-    private findCoordonates(x: number, y: number, ox: number, oy: number): Array<number> {
-        const coordinates: Array<number> = new Array();
+    private findCoordinates(offsetX: number, offsetY: number): void {
 
-        const tempX: number = ox - (window.innerWidth / 2);
-        const tempY: number = oy - (window.innerHeight / 2);
+        const tempX: number = offsetX - (window.innerWidth / 2);
+        const tempY: number = offsetY - (window.innerHeight / 2);
 
-        coordinates.push( (tempX * 2) / (1288.194 / this._camera.position.z));
-        coordinates.push(-(tempY * 2) / (1292.105 / this._camera.position.z));
-
-        this._dotMemory.push(new Vector3((tempX * 2) / (1288.194 / this._camera.position.z),-(tempY * 2) / (1292.105 / this._camera.position.z),0));
-
-        return coordinates;
-
+        this._dotMemory.push( new Vector3((tempX * 2) / (1288.194 / this._camera.position.z),
+                                          -(tempY * 2) / (1292.105 / this._camera.position.z),
+                                          0));
     }
 
     private updateLines(): void {
         if (this._dotMemory.length > 1) {
             const lineMat: THREE.LineBasicMaterial = new LineBasicMaterial({color: 0xFFFFFF});
             const lineGeo: THREE.Geometry = new Geometry();
-            lineGeo.vertices.push(this._dotMemory[this._dotMemory.length-1]);
-            lineGeo.vertices.push(this._dotMemory[this._dotMemory.length-2]);
+            lineGeo.vertices.push(this._dotMemory[this._dotMemory.length - 1]);
+            lineGeo.vertices.push(this._dotMemory[this._dotMemory.length - 2]);
             const line: THREE.Line = new Line(lineGeo, lineMat);
             this._scene.add(line);
         }
