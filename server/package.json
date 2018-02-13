@@ -10,12 +10,7 @@
     "tsc": "tsc",
     "tsc:w": "tsc -w",
     "clean": "rimraf out node_modules",
-<<<<<<< HEAD
-    "postinstall": "rimraf false",
-    "node": "tsc && node --inspect --require dotenv/config ./out/server/app/server.js"
-=======
     "postinstall": "rimraf false"
->>>>>>> fe088a472f17aa082a2a5a0d9f2cc540e3c8ce09
   },
   "dependencies": {
     "@types/compression": "0.0.35",

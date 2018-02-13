@@ -24,8 +24,8 @@ export default class GridGeneration {
         return this._grid;
     }
 
-    public placeFirstWords(): void { }
-
+    //public placeFirstWords(): void { }
+/*
     private async getWord(word: Word, difficulty: string) {
         let commonality: string = "";
 
@@ -49,6 +49,7 @@ export default class GridGeneration {
             throw (err);
         }
     }
+    */
 
     public get grid(): Case[][] {
         return this._grid;
