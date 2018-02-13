@@ -1,12 +1,6 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { DifficultyComponent } from "./difficulty.component";
+import { DifficultyComponent, Difficulty } from "./difficulty.component";
 import { ButtonComponent } from "../button/button.component";
-
-enum Difficulty {
-    Easy = 0,
-    Normal = 1,
-    Hard = 2
-}
 
 describe("DifficultyComponent", () => {
     let component: DifficultyComponent;
@@ -25,24 +19,22 @@ describe("DifficultyComponent", () => {
 
     it("Should create DifficultyComponent", () => {
         expect(component).toBeTruthy();
-        expect(component.selectedDifficulty).toBe("Easy");
+        expect(component.selectedDifficulty).toBe(Difficulty.Easy);
     });
 
     it("Should display Easy", () => {
-        component.onSelect(component.difficulties[Difficulty.Easy]);
-        expect(component.selectedDifficulty).toBe("Easy");
+        component.onSelect(Difficulty.Easy);
+        expect(component.selectedDifficulty).toBe(Difficulty.Easy);
     });
 
     it("Should display Normal", () => {
-
-        component.onSelect(component.difficulties[Difficulty.Normal]);
-        expect(component.selectedDifficulty).toBe("Normal");
+        component.onSelect(Difficulty.Normal);
+        expect(component.selectedDifficulty).toBe(Difficulty.Normal);
     });
 
     it("Should display Hard", () => {
-
-        component.onSelect(component.difficulties[Difficulty.Hard]);
-        expect(component.selectedDifficulty).toBe("Hard");
+        component.onSelect(Difficulty.Hard);
+        expect(component.selectedDifficulty).toBe(Difficulty.Hard);
     });
 
 });
