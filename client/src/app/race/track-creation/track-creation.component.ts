@@ -5,6 +5,11 @@ import { Vector3, PerspectiveCamera,
 const FAR_CLIPPING_PLANE: number = 10000;
 const NEAR_CLIPPING_PLANE: number = 0.1;
 const FIELD_OF_VIEW: number = 75;
+const CAMERA_DISTANCE: number = 100;
+const TWO: number = 2;
+
+const magicNumberX: number = 1288.194; // a changer
+const magicNumberY: number = 1292.105; // a changer
 
 @Component({
     selector: "app-track-creation",
@@ -65,11 +70,11 @@ export class TrackCreationComponent implements AfterViewInit {
     */
     private findCoordinates(offsetX: number, offsetY: number): void {
 
-        const tempX: number = offsetX - (window.innerWidth / 2);
-        const tempY: number = offsetY - (window.innerHeight / 2);
+        const tempX: number = offsetX - (window.innerWidth / TWO);
+        const tempY: number = offsetY - (window.innerHeight / TWO);
 
-        this._dotMemory.push( new Vector3((tempX * 2) / (1288.194 / this._camera.position.z),
-                                          -(tempY * 2) / (1292.105 / this._camera.position.z),
+        this._dotMemory.push( new Vector3((tempX * TWO) / (magicNumberX / this._camera.position.z),
+                                          -(tempY * TWO) / (magicNumberY / this._camera.position.z),
                                           0));
     }
 
@@ -78,7 +83,7 @@ export class TrackCreationComponent implements AfterViewInit {
             const lineMat: THREE.LineBasicMaterial = new LineBasicMaterial({color: 0xFFFFFF});
             const lineGeo: THREE.Geometry = new Geometry();
             lineGeo.vertices.push(this._dotMemory[this._dotMemory.length - 1]);
-            lineGeo.vertices.push(this._dotMemory[this._dotMemory.length - 2]);
+            lineGeo.vertices.push(this._dotMemory[this._dotMemory.length - TWO]);
             const line: THREE.Line = new Line(lineGeo, lineMat);
             this._scene.add(line);
         }
@@ -91,7 +96,7 @@ export class TrackCreationComponent implements AfterViewInit {
     public ngAfterViewInit(): void {
         this._renderer.setSize(window.innerWidth, window.innerHeight);
         this.container.nativeElement.appendChild(this._renderer.domElement);
-        this._camera.position.set(0, 0, 100);
+        this._camera.position.set(0, 0, CAMERA_DISTANCE);
         this._scene.add(this._camera);
     }
 
