@@ -28,7 +28,7 @@ export class TrackCreationComponent implements AfterViewInit {
     @ViewChild("container")
     private container: ElementRef;
 
-    public constructor() { }
+    public constructor() {}
 
     @HostListener("window:click", ["$event"])
     public onKeyUp(event: MouseEvent): void {
@@ -40,15 +40,12 @@ export class TrackCreationComponent implements AfterViewInit {
     }
 
     private placeDot(event: MouseEvent): void {
-
         this._dotCommand.place(this._scene, event);
-
         this.render();
     }
 
     private undo(): void {
         this._dotCommand.undo(this._scene);
-
         this.render();
     }
 
