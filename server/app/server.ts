@@ -29,20 +29,21 @@ var io = require('socket.io')(server);
 
 io.on('connection', function (socket: any) {
     console.log('Connected to socket');
-    // socket.emit('news', { hello: 'world' });
 
-    socket.on('test', function (data: any) {
-        console.log('New event', data);
-    });
-
-    socket.on('connet_to_room', function (room: string) {
+    /*socket.on('connet_to_room', function (room: string) {
         socket.join(room, function() {
             console.log('CONNECTED TO ROOM', room)
 
             socket.in(room).emit("connected_to_room", `connected to ${room}`)
 
         })
-    })
+    });*/
+
+    socket.on("create_game", (room: string) => {
+        socket.join(room,()=>{
+            console.log("Connected to game: ", room);
+        })
+    });
 
 });
  

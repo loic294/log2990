@@ -1,5 +1,6 @@
 <ui-button *ngFor = "let mode of modes" (click)="onSelect(mode)" [active]="selectedMode == mode">
   {{mode}}
 </ui-button>
+<ui-button (click)="createGame(selectedMode)">Create Game</ui-button>
  
 
