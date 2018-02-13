@@ -1,6 +1,6 @@
 import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from "@angular/core";
 import { Vector3, PerspectiveCamera,
-     WebGLRenderer, Scene, PointsMaterial, Points, Geometry, /* BufferGeometry, MeshBasicMaterial, BoxGeometry*/ } from "three";
+     WebGLRenderer, Scene, PointsMaterial, Points, Geometry, LineBasicMaterial, Line } from "three";
 
 const FAR_CLIPPING_PLANE: number = 10000;
 const NEAR_CLIPPING_PLANE: number = 0.1;
@@ -18,6 +18,7 @@ export class TrackCreationComponent implements AfterViewInit {
         FIELD_OF_VIEW, window.innerWidth / window.innerHeight,
         NEAR_CLIPPING_PLANE, FAR_CLIPPING_PLANE);
     private _renderer: THREE.WebGLRenderer = new WebGLRenderer();
+    private _dotMemory: Array<Vector3> = new Array();
 
     @ViewChild("container")
     private container: ElementRef;
@@ -30,38 +31,66 @@ export class TrackCreationComponent implements AfterViewInit {
     }
 
     private placeDot(event: MouseEvent): void {
+        // infos pour debugger
         const x: Element = document.getElementById("x");
+        const ox: Element = document.getElementById("ox");
         const y: Element = document.getElementById("y");
+        const oy: Element = document.getElementById("oy");
         const width: Element = document.getElementById("width");
         const height: Element = document.getElementById("height");
         x.innerHTML = event.clientX.toString();
+        ox.innerHTML = event.offsetX.toString();
         y.innerHTML = event.clientY.toString();
+        oy.innerHTML = event.offsetY.toString();
         width.innerHTML = window.innerWidth.toString();
         height.innerHTML = window.innerHeight.toString();
-        this.drawDot(event.clientX, event.clientY);
+        // fin infos pour debugger
+
+        this.drawDot(event.clientX, event.clientY, event.offsetX, event.offsetY);
     }
 
-    private drawDot(x: number, y: number): void {
+    private drawDot(x: number, y: number, ox: number, oy: number): void {
 
         const dotGeo: THREE.Geometry = new Geometry();
-        const coordonates: Array<number> = this.findCoordonates(x, y);
-        dotGeo.vertices.push(new Vector3(coordonates[0], coordonates[1], 0));
+        const coordinates: Array<number> = this.findCoordonates(x, y, ox, oy);
+        dotGeo.vertices.push(new Vector3(coordinates[0], coordinates[1], 0));
         const dotMat: THREE.PointsMaterial = new PointsMaterial({color: 0xFFFFFF, size: 1});
         const dot: THREE.Points = new Points(dotGeo, dotMat);
         this._scene.add(dot);
-        dot.position.setX(0);
-        dot.position.setY(0);
+
+        this.updateLines();
 
         this.render();
     }
 
-    private findCoordonates(x: number, y: number): Array<number> {
-        const coordonates: Array<number> = new Array();
 
-        (x > window.innerWidth / 2) ? coordonates.push((x / window.innerWidth) * 100) : coordonates.push((x / window.innerWidth) * -100);
-        (y > window.innerHeight / 2) ? coordonates.push((y / window.innerHeight) * 100) : coordonates.push((y / window.innerHeight) * -100);
+    /*
+    A changer coordonner pas bonnes -- formule douteuse
+    */
+    private findCoordonates(x: number, y: number, ox: number, oy: number): Array<number> {
+        const coordinates: Array<number> = new Array();
 
-        return coordonates;
+        const tempX: number = ox - (window.innerWidth / 2);
+        const tempY: number = oy - (window.innerHeight / 2);
+
+        coordinates.push( (tempX * 2) / (1288.194 / this._camera.position.z));
+        coordinates.push(-(tempY * 2) / (1292.105 / this._camera.position.z));
+
+        this._dotMemory.push(new Vector3((tempX * 2) / (1288.194 / this._camera.position.z),-(tempY * 2) / (1292.105 / this._camera.position.z),0));
+
+        return coordinates;
+
+    }
+
+    private updateLines(): void {
+        if (this._dotMemory.length > 1) {
+            const lineMat: THREE.LineBasicMaterial = new LineBasicMaterial({color: 0xFFFFFF});
+            const lineGeo: THREE.Geometry = new Geometry();
+            lineGeo.vertices.push(this._dotMemory[this._dotMemory.length-1]);
+            lineGeo.vertices.push(this._dotMemory[this._dotMemory.length-2]);
+            const line: THREE.Line = new Line(lineGeo, lineMat);
+            this._scene.add(line);
+        }
     }
 
     private render(): void {
@@ -71,7 +100,7 @@ export class TrackCreationComponent implements AfterViewInit {
     public ngAfterViewInit(): void {
         this._renderer.setSize(window.innerWidth, window.innerHeight);
         this.container.nativeElement.appendChild(this._renderer.domElement);
-        this._camera.position.set(0, 0, 50);
+        this._camera.position.set(0, 0, 100);
         this._scene.add(this._camera);
     }
 
