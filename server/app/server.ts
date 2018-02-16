@@ -39,13 +39,13 @@ io.on('connection', function (socket: any) {
         })
     });*/
 
-    socket.on("create_game", (room: string) => {
+    socket.on("connect_to_game", (room: string) => {
         socket.join(room,()=>{
             console.log("Connected to game: ", room);
-        })
+            socket.emit("connected_to_game", io.sockets.adapter.rooms[room].length);
+        });
     });
-
 });
- 
+
 
 server.listen(3000, () => console.log("Listening on port 3000"))

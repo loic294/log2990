@@ -1,6 +1,7 @@
 import { Component, OnInit, Optional } from "@angular/core";
 import { Socket } from "ng-socket-io";
 
+
 @Component({
   selector: "app-mode",
   templateUrl: "./mode.component.html",
@@ -8,10 +9,14 @@ import { Socket } from "ng-socket-io";
 })
 export class ModeComponent implements OnInit {
 
-    public constructor(@Optional() private _modes: string [], @Optional() private _selectedMode: string, private _socket: Socket) {
+    public constructor(
+        @Optional() private _modes: string [],
+        @Optional() private _selectedMode: string,
+        private _socket: Socket,
+        ) {
+
         this._modes = ["Single Player", "Two Players"];
         this._selectedMode = "Single Player";
-        this._socket.connect();
     }
 
     public get modes(): string [] {
@@ -24,14 +29,26 @@ export class ModeComponent implements OnInit {
     public onSelect(mode: string): void {
         this._selectedMode = mode;
     }
+
     public createGame(mode: string): void {
+
         if (mode === "Two Players") {
-            this._socket.emit("create_game", "Game1");
+            const gameId: string = `test`;
+           // this._games.push(gameId);
+            this.joinGame(gameId);
         } else {
-            console.log("Single player");
+            console.log("single player");
         }
     }
 
+    public joinGame(gameId: string): void {
+        this._socket.connect();
+        this._socket.emit("connect_to_game", gameId);
+        this._socket.on("connected_to_game", (users: number): void => {
+            console.log("Users connected to game ", gameId, ": ", users);
+        });
+
+    }
     public ngOnInit(): void {
     }
 
