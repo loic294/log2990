@@ -12,7 +12,7 @@ describe("Constraint", () => {
 
         testWord = new Word("aerial", "", [1, 1], Orientation.horizontal, 0, false, "aerial".length);
 
-        expect(false).to.equal(constraint.addWordWithConstraint(testWord));
+        expect(false).to.equal(constraint.addConstrainedWord(testWord));
     });
 
     it("should add word if the word has the correct position.", () => {
@@ -20,7 +20,7 @@ describe("Constraint", () => {
 
         testWord = new Word("aerial", "", [0, 0], Orientation.horizontal, 0, false, "aerial".length);
 
-        expect(true).to.equal(constraint.addWordWithConstraint(testWord));
+        expect(true).to.equal(constraint.addConstrainedWord(testWord));
     });
 
     it("should not remove the word if it doesn't already have it.", () => {
@@ -28,7 +28,7 @@ describe("Constraint", () => {
 
         testWord = new Word("aerial", "", [0, 0], Orientation.horizontal, 0, false, "aerial".length);
 
-        expect(false).to.equal(constraint.removeWordWithConstraint(testWord));
+        expect(false).to.equal(constraint.removeConstrainedWord(testWord));
     });
 
     it("should not remove the word if it doesn't have the correct position.", () => {
@@ -36,7 +36,7 @@ describe("Constraint", () => {
 
         testWord = new Word("aerial", "", [1, 1], Orientation.horizontal, 0, false, "aerial".length);
 
-        expect(false).to.equal(constraint.removeWordWithConstraint(testWord));
+        expect(false).to.equal(constraint.removeConstrainedWord(testWord));
     });
 
     it("should remove the specified word if everything's good.", () => {
@@ -44,6 +44,6 @@ describe("Constraint", () => {
 
         testWord = new Word("aerial", "", [0, 0], Orientation.horizontal, 0, false, "aerial".length);
 
-        expect(true).to.equal(constraint.removeWordWithConstraint(testWord));
+        expect(true).to.equal(constraint.removeConstrainedWord(testWord));
     });
 });

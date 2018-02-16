@@ -8,10 +8,10 @@ export default class GridGeneration {
     private _wordStack: Array<Word>;
     private _DEFAULT_SIZE: number = 10;
 
-    public constructor() {}
+    public constructor() { }
 
     public fillGridWithCases(size: number): Array<Array<Case>> {
-        size  = size > 0 ? size : this._DEFAULT_SIZE;
+        size = size > 0 ? size : this._DEFAULT_SIZE;
         this._grid = [];
 
         for (let row: number = 0; row < size; row++) {
@@ -25,7 +25,7 @@ export default class GridGeneration {
     }
 
     //public placeFirstWords(): void { }
-/*
+
     private async getWord(word: Word, difficulty: string) {
         let commonality: string = "";
 
@@ -42,14 +42,13 @@ export default class GridGeneration {
 
         const FETCH_URL: string = `http://localhost:3000/lexical/wordsearch/${commonality}/${}`;
         try {
-            const response: AxiosResponse < any > = await axios.get(FETCH_URL);
+            const response: AxiosResponse<any> = await axios.get(FETCH_URL);
 
             return response.data;
         } catch (err) {
             throw (err);
         }
     }
-    */
 
     public get grid(): Case[][] {
         return this._grid;

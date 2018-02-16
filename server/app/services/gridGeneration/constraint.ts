@@ -5,7 +5,7 @@ export default class Constraint {
         private _constraint: string,
         private _row: number,
         private _col: number,
-        private _wordsWithConstraint: Array<string>
+        private _constrainedWords: Array<string>
     ) { }
 
     public get constraint(): string {
@@ -25,12 +25,12 @@ export default class Constraint {
     }
 
     public get words(): Array<string> {
-        return this._wordsWithConstraint;
+        return this._constrainedWords;
     }
 
-    public addWordWithConstraint(word: Word): boolean {
+    public addConstrainedWord(word: Word): boolean {
         if (this.checkWordHasConstraint(word)) {
-            this._wordsWithConstraint.push(word.name);
+            this._constrainedWords.push(word.name);
 
             return true;
         } else {
@@ -38,13 +38,13 @@ export default class Constraint {
         }
     }
 
-    public removeWordWithConstraint(word: Word): boolean {
-        const index: number = this._wordsWithConstraint.findIndex((wordWithConstraint: string) => word.name === wordWithConstraint);
+    public removeConstrainedWord(word: Word): boolean {
+        const index: number = this._constrainedWords.findIndex((constrainedWord: string) => word.name === constrainedWord);
 
         if (index === -1 || !this.checkWordHasConstraint(word)) {
             return false;
         } else {
-            this._wordsWithConstraint = this._wordsWithConstraint.splice(1, index);
+            this._constrainedWords = this._constrainedWords.splice(1, index);
 
             return true;
         }
