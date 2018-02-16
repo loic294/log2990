@@ -18,8 +18,6 @@ describe("GridGenerator", () => {
 
     });
 
-    it("should find two words of 10 in length which share their first letter.");
-
     it("should find the correct criteria for a word that is of maximum length.", () => {
         testWord = new Word("", "", [0, 0], Orientation.horizontal, 0, false, TEN);
 
@@ -32,6 +30,18 @@ describe("GridGenerator", () => {
         gridGeneration.constraintsArray.push(new Constraint("a", 0, 0, []));
         gridGeneration.constraintsArray.push(new Constraint("b", 0, 1, []));
 
-        expect("ab8").to.eql(gridGeneration.findCriteriaForWord(testWord));
+        expect("0a0b8").to.eql(gridGeneration.findCriteriaForWord(testWord));
     });
+
+    it("should not add a criteria for a word if the constraint is not at the correct position.", () => {
+        testWord = new Word("", "", [0, 0], Orientation.horizontal, 0, false, TEN);
+
+        gridGeneration.constraintsArray = [];
+
+        gridGeneration.constraintsArray.push(new Constraint("a", 1, 0, []));
+        gridGeneration.constraintsArray.push(new Constraint("b", 0, 1, []));
+
+        expect("1b8").to.eql(gridGeneration.findCriteriaForWord(testWord));
+    });
+
 });
