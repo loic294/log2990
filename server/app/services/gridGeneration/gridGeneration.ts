@@ -50,8 +50,36 @@ export default class GridGeneration {
         }
     }
 
+    public findCriteriaForWord(word: Word): string {
+        let criteria: string = "";
+        let nonCriteria: number  = 0;
+        this._constraintsArray.forEach( (constraint: Constraint) => {
+            if (constraint.checkWordHasConstraint(word)) {
+                criteria += nonCriteria + "";
+                nonCriteria = 0;
+                criteria += constraint.constraint;
+            } else {
+                nonCriteria ++;
+            }
+        });
+        criteria += nonCriteria + "";
+        if (criteria === "10") {
+            criteria = "91";
+        }
+
+        return criteria;
+    }
+
+    private iteratedPosition(word: Word): number {
+        return (word.direction ? word.col : word.row);
+    }
+
     public get grid(): Case[][] {
         return this._grid;
+    }
+
+    public set constraintsArray(constraintsArray: Array<Constraint>) {
+        this._constraintsArray = constraintsArray;
     }
 
     public get DEFAULT_SIZE(): number {
