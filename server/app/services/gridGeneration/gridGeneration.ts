@@ -2,6 +2,12 @@ import { Case } from "../../../../common/grid/case";
 import Word from "../../../../common/lexical/word";
 import Constraint from "./constraint";
 
+export enum Difficulty {
+        easy = 0,
+        medium = 1,
+        hard = 2
+}
+
 export default class GridGeneration {
     private _grid: Array<Array<Case>>;
     private _constraintsArray: Array<Constraint> = [];
@@ -25,9 +31,33 @@ export default class GridGeneration {
     }
 
     //public placeFirstWords(): void { }
+
+    private async getWord(word: Word, difficulty: Difficulty){
+
+        let commonality: string;
+        let level: string;
+        switch (difficulty){
+            case Difficulty.easy:
+                commonality = "common";
+                level = "easy"; break;
+            case Difficulty.hard:
+                commonality = "uncommon";
+                level = "hard"; break;
+            case Difficulty.medium:
+                commonality = (Math.random() > 0.7 ? "common" : "uncommon");
+                level = (Math.random() > 0.7 ? "easy" : "hard"); break;
+            default:
+                commonality = "InvalidEntry";
+        }
+
+        const FETCH_URL: string = `http://localhost:3000/lexical/wordAndDefinition/${this.findCriteriaForWord(word)}/${commonality}/${level}`;
+
+        //const response: AxiosResponse<any> = await axios.get(FETCH_URL);
+    }
+
     /*
     private async getWord(word: Word, difficulty: string) {
-        let commonality: string = "";
+        
 
         switch (difficulty) {
             case "easy":

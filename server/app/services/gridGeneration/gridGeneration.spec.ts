@@ -44,4 +44,5 @@ describe("GridGenerator", () => {
         expect("1b8").to.eql(gridGeneration.findCriteriaForWord(testWord));
     });
 
+    it("should find two words of 10 in length which share their first letter.");
 });
