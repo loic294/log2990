@@ -58,7 +58,7 @@ export default class GridGeneration {
         for (let wordIndex: number = 0; wordIndex < word.length; wordIndex++) {
             checkConstraint = false;
             this._constraintsArray.forEach((constraint: Constraint) => {
-                if (constraint.checkWordHasConstraint(word)) {
+                if (constraint.checkPositionOfWordHasConstraint(word, wordIndex)) {
                     checkConstraint = true;
                     criteria += nonCriteria + "";
                     nonCriteria = 0;

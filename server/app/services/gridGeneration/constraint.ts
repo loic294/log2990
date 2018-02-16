@@ -60,4 +60,13 @@ export default class Constraint {
 
         return false;
     }
+
+    public checkPositionOfWordHasConstraint(word: Word, wordIndex: number): boolean {
+        const posi: number[] = (word.direction ? [word.row + wordIndex, word.col] : [word.row, word.col + wordIndex]);
+        if (posi[0] === this._row && posi[1] === this._col) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
