@@ -23,15 +23,15 @@ describe("GridGenerator", () => {
     it("should find the correct criteria for a word that is of maximum length.", () => {
         testWord = new Word("", "", [0, 0], Orientation.horizontal, 0, false, TEN);
 
-        expect("91").to.eql(gridGeneration.findStringOfConstraintsForWord(testWord));
+        expect("91").to.eql(gridGeneration.findCriteriaForWord(testWord));
     });
 
-    it("should find the correct criteria for a word when there a few constraints.", () => {
+    it("should find the correct criteria for a word when there are a few constraints.", () => {
         testWord = new Word("", "", [0, 0], Orientation.horizontal, 0, false, TEN);
 
         gridGeneration.constraintsArray.push(new Constraint("a", 0, 0, []));
         gridGeneration.constraintsArray.push(new Constraint("b", 0, 1, []));
 
-        expect("ab8").to.eql(gridGeneration.findStringOfConstraintsForWord(testWord));
+        expect("ab8").to.eql(gridGeneration.findCriteriaForWord(testWord));
     });
 });

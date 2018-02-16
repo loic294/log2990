@@ -4,7 +4,7 @@ import Constraint from "./constraint";
 
 export default class GridGeneration {
     private _grid: Array<Array<Case>>;
-    private _constraintsArray: Array<Constraint>;
+    private _constraintsArray: Array<Constraint> = [];
     private _wordStack: Array<Word>;
     private _DEFAULT_SIZE: number = 10;
 
@@ -25,7 +25,7 @@ export default class GridGeneration {
     }
 
     //public placeFirstWords(): void { }
-
+    /*
     private async getWord(word: Word, difficulty: string) {
         let commonality: string = "";
 
@@ -49,19 +49,26 @@ export default class GridGeneration {
             throw (err);
         }
     }
+    */
 
     public findCriteriaForWord(word: Word): string {
         let criteria: string = "";
-        let nonCriteria: number  = 0;
-        this._constraintsArray.forEach( (constraint: Constraint) => {
-            if (constraint.checkWordHasConstraint(word)) {
-                criteria += nonCriteria + "";
-                nonCriteria = 0;
-                criteria += constraint.constraint;
-            } else {
-                nonCriteria ++;
+        let nonCriteria: number = 0;
+        let checkConstraint: boolean = true;
+        for (let wordIndex: number = 0; wordIndex < word.length; wordIndex++) {
+            checkConstraint = false;
+            this._constraintsArray.forEach((constraint: Constraint) => {
+                if (constraint.checkWordHasConstraint(word)) {
+                    checkConstraint = true;
+                    criteria += nonCriteria + "";
+                    nonCriteria = 0;
+                    criteria += constraint.constraint;
+                }
+            });
+            if (!checkConstraint) {
+                nonCriteria++;
             }
-        });
+        }
         criteria += nonCriteria + "";
         if (criteria === "10") {
             criteria = "91";
@@ -70,16 +77,12 @@ export default class GridGeneration {
         return criteria;
     }
 
-    private iteratedPosition(word: Word): number {
-        return (word.direction ? word.col : word.row);
-    }
-
     public get grid(): Case[][] {
         return this._grid;
     }
 
-    public set constraintsArray(constraintsArray: Array<Constraint>) {
-        this._constraintsArray = constraintsArray;
+    public get constraintsArray(): Array<Constraint> {
+        return this._constraintsArray;
     }
 
     public get DEFAULT_SIZE(): number {
