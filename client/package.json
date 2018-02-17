@@ -9,11 +9,12 @@
     "test": "ng test",
     "lint": "ng lint --type-check --format stylish",
     "precommit": "lint-staged",
-    "prettier": "prettier --write \"src/**/*.{ts,js,json,css,md}\""
+    "prettier": "prettier --write \"src/**/*.{ts,js,json,css,md}\" --fix"
   },
   "lint-staged": {
     "src/**/*.{ts,js,json,css,md}": [
-      "prettier --write",
+			"prettier --write",
+			"tslint --project tsconfig.json \"src/**/*.{ts,js,json,css,md}\" --format stylish --fix",
       "git add"
     ]
   },
