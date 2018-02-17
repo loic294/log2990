@@ -34,7 +34,7 @@ export default class GridGeneration {
         return this._grid;
     }
 
-    // Receives a word with length, position and direction.
+    // Receives a word with length, position, index and direction.
     public async createWord(difficulty: Difficulty, word: Word): Promise<void> {
 
         do {

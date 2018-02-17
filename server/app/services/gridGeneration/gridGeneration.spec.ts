@@ -1,4 +1,4 @@
-import GridGeneration from "./gridGeneration";
+import GridGeneration, { Difficulty } from "./gridGeneration";
 import { Case } from "../../../../common/grid/case";
 import Word, { Orientation } from "../../../../common/lexical/word";
 import {expect} from "chai";
@@ -99,5 +99,22 @@ describe("GridGenerator", () => {
         expect(gridGeneration.constraintsArray).to.eql(expectedConstraintArray);
     });
 
+    it("should create a word properly a vertical word of 10 in length and stash it.", () => {
+        gridGeneration.constraintsArray = [];
+
+        testWord = new Word("", "", [0, 0], Orientation.vertical, 0, false, TEN);
+
+        gridGeneration.createWord(Difficulty.easy, testWord);
+    });
+
     it("should find two words of 10 in length which share their first letter.");
+
+    it("should backtrack properly.");
+
+    it("should backtrack if a word cannot be found after a certain amount of times.");
+
+    it("should find two words of 10 in length which share their first letter.");
+
+    it("should find words of a random length at a random position and place them properly.");
+
 });
