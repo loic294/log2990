@@ -1,11 +1,12 @@
 import { Case } from "../../../../common/grid/case";
-import Word from "../../../../common/lexical/word";
+import Word, { Orientation } from "../../../../common/lexical/word";
 import Constraint from "./constraint";
+import axios, { AxiosResponse } from "axios";
 
 export enum Difficulty {
-        easy = 0,
-        medium = 1,
-        hard = 2
+    easy = 0,
+    medium = 1,
+    hard = 2
 }
 
 export default class GridGeneration {
@@ -30,13 +31,18 @@ export default class GridGeneration {
         return this._grid;
     }
 
-    //public placeFirstWords(): void { }
+    public async placeFirstWords(difficulty: Difficulty): void {
+        this._wordStack.push(new Word("", "", [0, 0], Orientation.horizontal, 0, false, this._grid.length));
+        const wordAndDescription: Array<string> = await this.getWordAndDefinition(this._wordStack[this._wordStack.length - 1], difficulty);
+        this._wordStack[this._wordStack.length - 1].name = wordAndDescription[0];
+        this._wordStack[this._wordStack.length - 1].desc = wordAndDescription[1];
 
-    private async getWord(word: Word, difficulty: Difficulty){
+    }
 
+    private async getWordAndDefinition(word: Word, difficulty: Difficulty): Promise<Array<string>> {
         let commonality: string;
         let level: string;
-        switch (difficulty){
+        switch (difficulty) {
             case Difficulty.easy:
                 commonality = "common";
                 level = "easy"; break;
@@ -50,36 +56,13 @@ export default class GridGeneration {
                 commonality = "InvalidEntry";
         }
 
-        const FETCH_URL: string = `http://localhost:3000/lexical/wordAndDefinition/${this.findCriteriaForWord(word)}/${commonality}/${level}`;
+        const FETCH_URL: string =
+            `http://localhost:3000/lexical/wordAndDefinition/${this.findCriteriaForWord(word)}/${commonality}/${level}`;
 
-        //const response: AxiosResponse<any> = await axios.get(FETCH_URL);
+        const { data }: { data: Array<string> } = await axios.get(FETCH_URL);
+
+        return data;
     }
-
-    /*
-    private async getWord(word: Word, difficulty: string) {
-        
-
-        switch (difficulty) {
-            case "easy":
-                commonality = "common"; break;
-            case "hard":
-                commonality = "uncommon"; break;
-            case "normal":
-                commonality = (Math.random() > 0.7 ? "common" : "uncommon"); break;
-            default:
-                commonality = "InvalidEntry";
-        }
-
-        const FETCH_URL: string = `http://localhost:3000/lexical/wordsearch/${commonality}/${}`;
-        try {
-            const response: AxiosResponse<any> = await axios.get(FETCH_URL);
-
-            return response.data;
-        } catch (err) {
-            throw (err);
-        }
-    }
-    */
 
     public findCriteriaForWord(word: Word): string {
         let criteria: string = "";
@@ -106,6 +89,22 @@ export default class GridGeneration {
         }
 
         return criteria;
+    }
+
+    public addConstraintForWord(word: Word) {
+        for (let wordIndex: number = 0; wordIndex < word.length; wordIndex++) {
+            let checkConstraint: boolean = false;
+            for (const constraint of this._constraintsArray) {
+                if (constraint.checkPositionOfWordHasConstraint(word, wordIndex)) {
+                    constraint.addConstrainedWord(word);
+                    checkConstraint = true;
+                }
+            }
+            if (!checkConstraint) {
+                const position: Array<number> = (word.direction ? [word.row + wordIndex, word.col] : [word.row, word.col + wordIndex]);
+                this.constraintsArray.push(new Constraint(word.name[wordIndex], position[0], position[1], [word.name]));
+            }
+        }
     }
 
     public get grid(): Case[][] {
