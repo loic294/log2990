@@ -11,7 +11,8 @@
     "tsc:w": "tsc -w",
     "clean": "rimraf out node_modules",
 		"postinstall": "rimraf false",
-		"precommit": "lint-staged"
+		"precommit": "lint-staged",
+		"prettier": "prettier --write \"app/*.{ts,js,json,css,md}\""
 	},
 	"lint-staged": {
     "app/*.{ts,js,json,css,md}": ["prettier --write", "git add"]
