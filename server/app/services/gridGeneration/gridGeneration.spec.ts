@@ -69,5 +69,35 @@ describe("GridGenerator", () => {
         expect(expectedConstraintArray).to.eql(gridGeneration.constraintsArray);
     });
 
+    it("should properly add constraints of a new word if the constraints array already has constraints.", () => {
+        testWord = new Word("macadamias", "the mast aft of a ship's mainmast.", [0, 0], Orientation.vertical, 0, false, TEN);
+
+        gridGeneration.addConstraintForWord(testWord);
+
+        const expectedConstraintArray: Constraint[] = [
+            new Constraint("m", 0, 0, ["mizzenmast", "macadamias"]),
+            new Constraint("i", 0, 1, ["mizzenmast"]),
+            new Constraint("z", 0, 2, ["mizzenmast"]),
+            new Constraint("z", 0, 3, ["mizzenmast"]),
+            new Constraint("e", 0, 4, ["mizzenmast"]),
+            new Constraint("n", 0, 5, ["mizzenmast"]),
+            new Constraint("m", 0, 6, ["mizzenmast"]),
+            new Constraint("a", 0, 7, ["mizzenmast"]),
+            new Constraint("s", 0, 8, ["mizzenmast"]),
+            new Constraint("t", 0, 9, ["mizzenmast"]),
+            new Constraint("a", 1, 0, ["macadamias"]),
+            new Constraint("c", 2, 0, ["macadamias"]),
+            new Constraint("a", 3, 0, ["macadamias"]),
+            new Constraint("d", 4, 0, ["macadamias"]),
+            new Constraint("a", 5, 0, ["macadamias"]),
+            new Constraint("m", 6, 0, ["macadamias"]),
+            new Constraint("i", 7, 0, ["macadamias"]),
+            new Constraint("a", 8, 0, ["macadamias"]),
+            new Constraint("s", 9, 0, ["macadamias"]),
+        ];
+
+        expect(gridGeneration.constraintsArray).to.eql(expectedConstraintArray);
+    });
+
     it("should find two words of 10 in length which share their first letter.");
 });
