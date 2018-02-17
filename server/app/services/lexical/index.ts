@@ -10,7 +10,6 @@ interface AxiosWords {
 }
 
 export default class LexicalService {
-
     private async baseDefinition(word: string): Promise<AxiosResponse> {
         let WORDNIK_URL: string;
         WORDNIK_URL = `http://api.wordnik.com:80/v4/word.json/${word}/definitions?limit=200&${API_KEY}`;
@@ -35,12 +34,12 @@ export default class LexicalService {
     }
 
     private async filterDefinitions(word: string): Promise<Array<string>> {
-        const definitions: string [] = [];
+        const definitions: string[] = [];
         try {
             const data: AxiosResponse = await this.baseDefinition(word);
 
             for (const def in data) {
-                if (!(data[def].text).toLowerCase().includes(word.toLowerCase())) {
+                if (!data[def].text.toLowerCase().includes(word.toLowerCase())) {
                     definitions.push(data[def].text);
                 }
             }
@@ -70,18 +69,16 @@ export default class LexicalService {
                 return "No definitions";
             }
             switch (level) {
-                case "easy":
-                    {
-                        		return filteredDefinitions[0];
+                case "easy": {
+                    return filteredDefinitions[0];
+                }
+                case "hard": {
+                    if (filteredDefinitions.length > 1) {
+                        return filteredDefinitions[Math.floor(Math.random() * (filteredDefinitions.length - 1) + 1)];
+                    } else {
+                        return filteredDefinitions[0];
                     }
-                case "hard":
-                    {
-                        if (filteredDefinitions.length > 1) {
-                            return filteredDefinitions[Math.floor((Math.random() * (filteredDefinitions.length - 1) + 1))];
-                        } else {
-                            return filteredDefinitions[0];
-                        }
-                    }
+                }
                 default: {
                     return filteredDefinitions[0];
                 }
@@ -127,29 +124,24 @@ export default class LexicalService {
     }
 
     private commonFinder(common: string, rawResponse: Array<AxiosWords>, requestString: string): string {
-
         let responseLength: number = rawResponse.length;
         // tslint:disable-next-line:no-inferrable-types
         const NON_NUMBERS_INDEX: number = 2;
         const FREQ_CUTOFF: Number = 8;
 
         while (responseLength) {
-
             const randomInt: number = Math.floor(Math.random() * rawResponse.length);
             const word: string = rawResponse[randomInt].word;
             const freq: number = +rawResponse[randomInt].tags[0].substring(NON_NUMBERS_INDEX);
 
-            if (word.length === requestString.length && word.match(/^[a-z]+$/i) ) {
-
-                if (common === "common" && freq as number > FREQ_CUTOFF) {
+            if (word.length === requestString.length && word.match(/^[a-z]+$/i)) {
+                if (common === "common" && (freq as number) > FREQ_CUTOFF) {
                     return word;
                 }
 
-                if (common === "uncommon" && freq as number < FREQ_CUTOFF) {
-
+                if (common === "uncommon" && (freq as number) < FREQ_CUTOFF) {
                     return word;
                 }
-
             }
             responseLength--;
         }

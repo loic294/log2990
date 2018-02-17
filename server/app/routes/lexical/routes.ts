@@ -4,23 +4,21 @@ import * as lexical from "./middleware";
 
 export default {
     base: "/lexical",
-    routes: [{
-        method: "GET",
-        path: "/wordsearch/:common/:word",
-        middleware: [
-            lexical.wordSearch
-        ]
-    },       {
-        method: "GET",
-        path: "/wordDefinition/:level/:word",
-        middleware: [
-            lexical.wordDefinition
-        ]
-    },       {
-        method: "GET",
-        path: "/wordAndDefinition/:criteria/:common/:level",
-        middleware: [
-            lexical.wordAndDefinition
-        ]
-    }]
+    routes: [
+        {
+            method: "GET",
+            path: "/wordsearch/:common/:word",
+            middleware: [lexical.wordSearch],
+        },
+        {
+            method: "GET",
+            path: "/wordDefinition/:level/:word",
+            middleware: [lexical.wordDefinition],
+        },
+        {
+            method: "GET",
+            path: "/wordAndDefinition/:criteria/:common/:level",
+            middleware: [lexical.wordAndDefinition],
+        },
+    ],
 };

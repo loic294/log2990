@@ -1,6 +1,7 @@
- /* tslint:disable */ 
+/* tslint:disable */
+
 import * as express from "express";
-import * as compression from "compression";  // compresses requests
+import * as compression from "compression"; // compresses requests
 import * as session from "express-session";
 import * as bodyParser from "body-parser";
 import * as logger from "morgan";
@@ -13,14 +14,14 @@ app.use(compression());
 app.use(logger("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(session({
-  resave: true,
-  saveUninitialized: true,
-  secret: process.env.SESSION_SECRET,
-}));
+app.use(
+    session({
+        resave: true,
+        saveUninitialized: true,
+        secret: process.env.SESSION_SECRET,
+    })
+);
 
+app = routes(app);
 
-app = routes(app)
-
-
-app.listen(3000, () => console.log("Listening on port 3000"))
+app.listen(3000, () => console.log("Listening on port 3000"));
