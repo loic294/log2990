@@ -46,7 +46,7 @@ describe("GridGenerator", () => {
         expect("1b8").to.eql(gridGeneration.findCriteriaForWord(testWord));
     });
 
-    it("should properly add constraints of a new word to the constraints array.", () =>{
+    it("should properly add constraints of a new word to the constraints array.", () => {
         testWord = new Word("mizzenmast", "the mast aft of a ship's mainmast.", [0, 0], Orientation.horizontal, 0, false, TEN);
 
         gridGeneration.constraintsArray = [];

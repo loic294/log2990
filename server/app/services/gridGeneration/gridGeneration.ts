@@ -14,8 +14,11 @@ export default class GridGeneration {
     private _constraintsArray: Array<Constraint> = [];
     private _wordStack: Array<Word>;
     private _DEFAULT_SIZE: number = 10;
+    private RANDOM_GENERATION: number = 0.7;
 
-    public constructor() { }
+    public constructor() {
+        this.fillGridWithCases(this._DEFAULT_SIZE);
+    }
 
     public fillGridWithCases(size: number): Array<Array<Case>> {
         size = size > 0 ? size : this._DEFAULT_SIZE;
@@ -31,7 +34,7 @@ export default class GridGeneration {
         return this._grid;
     }
 
-    public async placeFirstWords(difficulty: Difficulty): void {
+    public async placeFirstWords(difficulty: Difficulty): Promise<void> {
         this._wordStack.push(new Word("", "", [0, 0], Orientation.horizontal, 0, false, this._grid.length));
         const wordAndDescription: Array<string> = await this.getWordAndDefinition(this._wordStack[this._wordStack.length - 1], difficulty);
         this._wordStack[this._wordStack.length - 1].name = wordAndDescription[0];
@@ -50,8 +53,8 @@ export default class GridGeneration {
                 commonality = "uncommon";
                 level = "hard"; break;
             case Difficulty.medium:
-                commonality = (Math.random() > 0.7 ? "common" : "uncommon");
-                level = (Math.random() > 0.7 ? "easy" : "hard"); break;
+                commonality = (Math.random() > this.RANDOM_GENERATION ? "common" : "uncommon");
+                level = (Math.random() > this.RANDOM_GENERATION ? "easy" : "hard"); break;
             default:
                 commonality = "InvalidEntry";
         }
@@ -91,7 +94,7 @@ export default class GridGeneration {
         return criteria;
     }
 
-    public addConstraintForWord(word: Word) {
+    public addConstraintForWord(word: Word): void {
         for (let wordIndex: number = 0; wordIndex < word.length; wordIndex++) {
             let checkConstraint: boolean = false;
             for (const constraint of this._constraintsArray) {
