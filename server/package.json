@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "tsc && concurrently --kill-others \"tsc -w \" \"nodemon --require dotenv/config out/server.js\" ",
-    "lint": "tslint --project tsconfig.json \"./app/**/*.ts\" --format stylish --fix",
+    "lint": "tslint --project tsconfig.json \"app/**/*.ts\" --format stylish --fix",
     "test": "mocha -r ts-node/register app/**/*.spec.ts",
     "tsc": "tsc",
     "tsc:w": "tsc -w",
@@ -17,7 +17,7 @@
 	"lint-staged": {
     "app/*.{ts,js,json,css,md}": [
 			"prettier --write",
-			"tslint --project tsconfig.json \"./app/**/*.ts\" --format stylish --fix",
+			"tslint --project tsconfig.json \"app/**/*.ts\" --format stylish --fix",
 			"git add"
 		]
   },
