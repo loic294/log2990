@@ -74,7 +74,7 @@ describe("GridGenerator", () => {
 
         gridGeneration.addConstraintForWord(testWord);
 
-        const expectedConstraintArray: Constraint[] = [
+        const expectedConstraintArray: Array<Constraint> = [
             new Constraint("m", 0, 0, ["mizzenmast", "macadamias"]),
             new Constraint("i", 0, 1, ["mizzenmast"]),
             new Constraint("z", 0, 2, ["mizzenmast"]),
@@ -105,6 +105,11 @@ describe("GridGenerator", () => {
         testWord = new Word("", "", [0, 0], Orientation.vertical, 0, false, TEN);
 
         gridGeneration.createWord(Difficulty.easy, testWord);
+
+        return gridGeneration.createWord(Difficulty.easy, testWord).then((data: any) => {
+            expect(gridGeneration.wordStack).to.eql([]);
+        });
+
     });
 
     it("should find two words of 10 in length which share their first letter.");

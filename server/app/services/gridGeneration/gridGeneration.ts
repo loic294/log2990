@@ -11,13 +11,14 @@ export enum Difficulty {
 
 export default class GridGeneration {
     private _grid: Array<Array<Case>>;
-    private _constraintsArray: Array<Constraint> = [];
+    private _constraintsArray: Array<Constraint>;
     private _wordStack: Array<Word>;
     private _DEFAULT_SIZE: number = 10;
     private RANDOM_GENERATION: number = 0.7;
 
     public constructor() {
-        this.fillGridWithCases(this._DEFAULT_SIZE);
+        this._constraintsArray = [];
+        this._wordStack = [];
     }
 
     public fillGridWithCases(size: number): Array<Array<Case>> {
@@ -138,5 +139,9 @@ export default class GridGeneration {
 
     public get DEFAULT_SIZE(): number {
         return this._DEFAULT_SIZE;
+    }
+
+    public get wordStack(): Array<Word> {
+        return this._wordStack;
     }
 }
