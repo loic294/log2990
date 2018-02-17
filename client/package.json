@@ -7,7 +7,15 @@
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
-    "lint": "ng lint --type-check --format stylish"
+    "lint": "ng lint --type-check --format stylish",
+    "precommit": "lint-staged",
+    "prettier": "prettier --write \"app/*.{ts,js,json,css,md}\""
+  },
+  "lint-staged": {
+    "app/*.{ts,js,json,css,md}": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "private": true,
   "dependencies": {
@@ -42,6 +50,7 @@
     "@types/stats.js": "^0.16.1",
     "@types/three": "~0.84.20",
     "codelyzer": "^4.0.1",
+    "husky": "^0.14.3",
     "jasmine-core": "~2.6.2",
     "jasmine-spec-reporter": "~4.1.0",
     "karma": "~1.7.0",
@@ -50,6 +59,7 @@
     "karma-coverage-istanbul-reporter": "^1.4.1",
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
+    "lint-staged": "^6.1.1",
     "protractor": "~5.1.2",
     "ts-node": "~3.2.0",
     "tslint": "~5.8.0",
