@@ -34,12 +34,27 @@ export default class GridGeneration {
         return this._grid;
     }
 
-    public async placeFirstWords(difficulty: Difficulty): Promise<void> {
-        this._wordStack.push(new Word("", "", [0, 0], Orientation.horizontal, 0, false, this._grid.length));
-        const wordAndDescription: Array<string> = await this.getWordAndDefinition(this._wordStack[this._wordStack.length - 1], difficulty);
-        this._wordStack[this._wordStack.length - 1].name = wordAndDescription[0];
-        this._wordStack[this._wordStack.length - 1].desc = wordAndDescription[1];
+    // Receives a word with length, position and direction.
+    public async createWord(difficulty: Difficulty, word: Word): Promise<void> {
 
+        do {
+            const wordAndDescription: Array<string> = await this.getWordAndDefinition(word, difficulty);
+            word.name = wordAndDescription[0];
+            word.desc = wordAndDescription[1];
+        } while (this.wordExists(word));
+
+        this._wordStack.push(word);
+        this.addConstraintForWord(this._wordStack[this._wordStack.length - 1]);
+    }
+
+    private wordExists(word: Word): boolean {
+        this._wordStack.forEach((wordInStack: Word) => {
+            if (wordInStack.name === word.name) {
+                return true;
+            }
+        });
+
+        return false;
     }
 
     private async getWordAndDefinition(word: Word, difficulty: Difficulty): Promise<Array<string>> {
