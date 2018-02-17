@@ -10,7 +10,11 @@
     "tsc": "tsc",
     "tsc:w": "tsc -w",
     "clean": "rimraf out node_modules",
-    "postinstall": "rimraf false"
+		"postinstall": "rimraf false",
+		"precommit": "lint-staged"
+	},
+	"lint-staged": {
+    "app/*.{ts,js,json,css,md}": ["prettier --write", "git add"]
   },
   "dependencies": {
     "@types/compression": "0.0.35",
@@ -52,6 +56,8 @@
     "@types/socket.io": "1.4.30",
     "chai": "4.0.0",
     "concurrently": "^3.0.0",
+    "husky": "^0.14.3",
+    "lint-staged": "^6.1.1",
     "mocha": "3.5.0",
     "rimraf": "^2.5.4",
     "tslint": "^5.8.0",

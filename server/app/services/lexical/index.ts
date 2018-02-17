@@ -72,7 +72,7 @@ export default class LexicalService {
             switch (level) {
                 case "easy":
                     {
-                        return filteredDefinitions[0];
+                        		return filteredDefinitions[0];
                     }
                 case "hard":
                     {
