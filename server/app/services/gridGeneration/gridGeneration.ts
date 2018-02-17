@@ -48,11 +48,11 @@ export default class GridGeneration {
     }
 
     private wordExists(word: Word): boolean {
-        this._wordStack.forEach((wordInStack: Word) => {
+        for (const wordInStack of this._wordStack) {
             if (wordInStack.name === word.name) {
                 return true;
             }
-        });
+        }
 
         return false;
     }
