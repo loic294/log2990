@@ -1,17 +1,14 @@
 import { Component, OnInit, Input } from "@angular/core";
 
 @Component({
-  selector: "ui-button",
-  templateUrl: "./button.component.html",
-  styleUrls: ["./button.component.css"]
+    selector: "ui-button",
+    templateUrl: "./button.component.html",
+    styleUrls: ["./button.component.css"],
 })
 export class ButtonComponent implements OnInit {
+    @Input() active: boolean;
 
-  @Input() active: boolean;
+    public constructor() {}
 
-  public constructor() { }
-
-  public ngOnInit(): void {
-  }
-
+    public ngOnInit(): void {}
 }

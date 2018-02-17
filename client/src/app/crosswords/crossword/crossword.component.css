@@ -19,7 +19,7 @@
 
     height: 700px;
     width: 100%;
-    background-color: #FE4A49;
+    background-color: #fe4a49;
 
     transform: skewX(-6deg) rotate(-6deg);
     transform-origin: 0;
@@ -29,24 +29,23 @@
     display: grid;
     grid: repeat(2, 200px)/1fr minmax(0, 860px) 1fr;
     align-content: space-between;
-
 }
 
 .header-background .stripe-1 {
-   background-image: linear-gradient(90deg, #FE4A49, #F47E7D);
+    background-image: linear-gradient(90deg, #fe4a49, #f47e7d);
 }
 .header-background .stripe-2 {
-   background-image: linear-gradient(90deg, #FE4A49, #F7B436);
+    background-image: linear-gradient(90deg, #fe4a49, #f7b436);
 }
 .header-background .stripe-3 {
-   background-image: linear-gradient(90deg, #FE4A49, #E33736);
-   grid-row: 2;
-   grid-column: 2;
+    background-image: linear-gradient(90deg, #fe4a49, #e33736);
+    grid-row: 2;
+    grid-column: 2;
 }
 .header-background .stripe-4 {
-   background-image: linear-gradient(90deg, #FE4A49, #F8855A);
-   grid-row: 2;
-   grid-column: 3;
+    background-image: linear-gradient(90deg, #fe4a49, #f8855a);
+    grid-row: 2;
+    grid-column: 3;
 }
 
 .inline-boxes {

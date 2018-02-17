@@ -39,14 +39,13 @@ const CLUES: Array<Word> = [
 @Component({
     selector: "app-clues",
     templateUrl: "./clues.component.html",
-    styleUrls: ["./clues.component.css"]
+    styleUrls: ["./clues.component.css"],
 })
 export class CluesComponent implements OnInit {
-
     private _clues: Array<Word> = CLUES;
     private _selectedClue: Word;
 
-    public constructor(public _wordService: WordService) { }
+    public constructor(public _wordService: WordService) {}
 
     public onSelect(clue: Word): void {
         if (!clue.validated) {
@@ -67,16 +66,17 @@ export class CluesComponent implements OnInit {
     }
 
     private foundWord(item: Word, position: Word): boolean {
-
-        return (item.col === position.col &&
+        return (
+            item.col === position.col &&
             item.row === position.row &&
             item.direction === position.direction &&
-            !item.validated);
+            !item.validated
+        );
     }
 
     private selectWord(position: Word): void {
         if (position != null) {
-            for ( const item of this._clues) {
+            for (const item of this._clues) {
                 if (this.foundWord(item, position)) {
                     this._selectedClue = item;
                     this._wordService.selectWordFromClue(this._selectedClue);
@@ -88,8 +88,6 @@ export class CluesComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this._wordService.wordFromGrid
-    .subscribe((_wordFromGrid) => this.selectWord(_wordFromGrid));
+        this._wordService.wordFromGrid.subscribe((_wordFromGrid) => this.selectWord(_wordFromGrid));
     }
-
 }

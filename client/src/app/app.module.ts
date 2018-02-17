@@ -31,17 +31,8 @@ import { ButtonComponent } from "./crosswords/button/button.component";
         ContainerComponent,
         ButtonComponent,
     ],
-    imports: [
-        BrowserModule,
-        HttpClientModule,
-        FormsModule,
-        ClickOutsideModule
-    ],
-    providers: [
-        RenderService,
-        BasicService,
-        WordService,
-    ],
-    bootstrap: [AppComponent]
+    imports: [BrowserModule, HttpClientModule, FormsModule, ClickOutsideModule],
+    providers: [RenderService, BasicService, WordService],
+    bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

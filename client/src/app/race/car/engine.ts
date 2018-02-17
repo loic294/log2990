@@ -8,14 +8,7 @@ export const DEFAULT_SHIFT_RPM: number = 5500;
 export const DEFAULT_TRANSMISSION_EFFICIENCY: number = 0.7;
 export const DEFAULT_MAX_RPM: number = 7000;
 /* tslint:disable: no-magic-numbers */
-export const DEFAULT_GEAR_RATIOS: number[] = [
-    4.4,
-    2.59,
-    1.8,
-    1.34,
-    1,
-    0.75
-];
+export const DEFAULT_GEAR_RATIOS: number[] = [4.4, 2.59, 1.8, 1.34, 1, 0.75];
 /* tslint:enable: no-magic-numbers */
 
 export class Engine {
@@ -42,8 +35,8 @@ export class Engine {
         downshiftRPM: number = DEFAULT_DOWNSHIFT_RPM,
         minimumRpm: number = DEFAULT_MINIMUM_RPM,
         shiftRPM: number = DEFAULT_SHIFT_RPM,
-        transmissionEfficiency: number = DEFAULT_TRANSMISSION_EFFICIENCY) {
-
+        transmissionEfficiency: number = DEFAULT_TRANSMISSION_EFFICIENCY
+    ) {
         if (gearRatios === undefined || gearRatios.length === 0 || gearRatios.some((v) => v <= 0)) {
             gearRatios = DEFAULT_GEAR_RATIOS;
         }
@@ -105,23 +98,25 @@ export class Engine {
 
         const wheelAngularVelocity: number = speed / wheelRadius;
         // tslint:disable-next-line: no-magic-numbers
-        let rpm: number = (wheelAngularVelocity / (Math.PI * 2)) * MIN_TO_SEC * this.driveRatio * this.gearRatios[this._currentGear];
+        let rpm: number =
+            wheelAngularVelocity / (Math.PI * 2) * MIN_TO_SEC * this.driveRatio * this.gearRatios[this._currentGear];
         rpm = rpm < this.minimumRPM ? this.minimumRPM : rpm;
 
         return rpm > DEFAULT_MAX_RPM ? DEFAULT_MAX_RPM : rpm;
-
     }
 
     private getTorque(): number {
         // Polynomial function to approximage a torque curve from the rpm.
         /* tslint:disable: no-magic-numbers */
-        return -Math.pow(this._rpm, 6) * 0.0000000000000000001
-            + Math.pow(this._rpm, 5) * 0.000000000000003
-            - Math.pow(this._rpm, 4) * 0.00000000003
-            + Math.pow(this.rpm, 3) * 0.0000002
-            - Math.pow(this._rpm, 2) * 0.0006
-            + this._rpm * 0.9905
-            - 371.88;
+        return (
+            -Math.pow(this._rpm, 6) * 0.0000000000000000001 +
+            Math.pow(this._rpm, 5) * 0.000000000000003 -
+            Math.pow(this._rpm, 4) * 0.00000000003 +
+            Math.pow(this.rpm, 3) * 0.0000002 -
+            Math.pow(this._rpm, 2) * 0.0006 +
+            this._rpm * 0.9905 -
+            371.88
+        );
         /* tslint:enable: no-magic-numbers */
     }
 

@@ -3,17 +3,15 @@ import { Component, OnInit } from "@angular/core";
 export enum Difficulty {
     Easy = 0,
     Normal = 1,
-    Hard = 2
+    Hard = 2,
 }
 
 @Component({
     selector: "app-difficulty",
     templateUrl: "./difficulty.component.html",
-    styleUrls: ["./difficulty.component.css"]
+    styleUrls: ["./difficulty.component.css"],
 })
-
 export class DifficultyComponent implements OnInit {
-
     private _selectedDifficulty: string = "Easy";
     private _difficulties: string[];
 
@@ -25,8 +23,7 @@ export class DifficultyComponent implements OnInit {
         this._selectedDifficulty = diff;
     }
 
-    public ngOnInit(): void {
-    }
+    public ngOnInit(): void {}
 
     public get difficulties(): string[] {
         return this._difficulties;
@@ -35,5 +32,4 @@ export class DifficultyComponent implements OnInit {
     public get selectedDifficulty(): string {
         return this._selectedDifficulty;
     }
-
 }

@@ -36,7 +36,8 @@ export class Wheel {
     public constructor(
         mass: number = DEFAULT_WHEEL_MASS,
         radius: number = DEFAULT_WHEEL_RADIUS,
-        frictionCoefficient: number = DEFAULT_FRICTION_COEFFICIENT) {
+        frictionCoefficient: number = DEFAULT_FRICTION_COEFFICIENT
+    ) {
         if (mass <= 0) {
             console.error("Mass cannot be <= 0. Reverting to default value.");
             mass = DEFAULT_WHEEL_MASS;

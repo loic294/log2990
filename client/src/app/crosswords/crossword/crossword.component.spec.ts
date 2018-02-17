@@ -15,22 +15,23 @@ describe("CrosswordComponent", () => {
     let component: CrosswordComponent;
     let fixture: ComponentFixture<CrosswordComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [FormsModule, ClickOutsideModule ],
-            declarations: [
-                CrosswordComponent,
-                CluesComponent,
-                DifficultyComponent,
-                GridComponent,
-                ShadowBoxComponent,
-                ContainerComponent,
-                ButtonComponent
-            ],
-            providers: [WordService]
+    beforeEach(
+        async(() => {
+            TestBed.configureTestingModule({
+                imports: [FormsModule, ClickOutsideModule],
+                declarations: [
+                    CrosswordComponent,
+                    CluesComponent,
+                    DifficultyComponent,
+                    GridComponent,
+                    ShadowBoxComponent,
+                    ContainerComponent,
+                    ButtonComponent,
+                ],
+                providers: [WordService],
+            }).compileComponents();
         })
-            .compileComponents();
-    }));
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(CrosswordComponent);

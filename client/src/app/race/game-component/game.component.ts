@@ -6,15 +6,12 @@ import { Car } from "../car/car";
     moduleId: module.id,
     selector: "app-game-component",
     templateUrl: "./game.component.html",
-    styleUrls: ["./game.component.css"]
+    styleUrls: ["./game.component.css"],
 })
-
 export class GameComponent implements AfterViewInit {
+    @ViewChild("container") private containerRef: ElementRef;
 
-    @ViewChild("container")
-    private containerRef: ElementRef;
-
-    public constructor(private renderService: RenderService) { }
+    public constructor(private renderService: RenderService) {}
 
     @HostListener("window:resize", ["$event"])
     public onResize(): void {

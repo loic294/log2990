@@ -1,6 +1,12 @@
 import {
-    Engine, DEFAULT_GEAR_RATIOS, DEFAULT_DRIVE_RATIO, DEFAULT_DOWNSHIFT_RPM,
-    DEFAULT_MINIMUM_RPM, DEFAULT_SHIFT_RPM, DEFAULT_MAX_RPM, DEFAULT_TRANSMISSION_EFFICIENCY
+    Engine,
+    DEFAULT_GEAR_RATIOS,
+    DEFAULT_DRIVE_RATIO,
+    DEFAULT_DOWNSHIFT_RPM,
+    DEFAULT_MINIMUM_RPM,
+    DEFAULT_SHIFT_RPM,
+    DEFAULT_MAX_RPM,
+    DEFAULT_TRANSMISSION_EFFICIENCY,
 } from "./engine";
 
 /* tslint:disable: no-magic-numbers */
@@ -51,9 +57,7 @@ describe("Engine", () => {
         expect(engine["minimumRPM"]).toBe(DEFAULT_MINIMUM_RPM);
         expect(engine["shiftRPM"]).toBe(DEFAULT_SHIFT_RPM);
 
-        engine = new Engine(
-            DEFAULT_GEAR_RATIOS, DEFAULT_DRIVE_RATIO,
-            DEFAULT_DOWNSHIFT_RPM, DEFAULT_MINIMUM_RPM, -100);
+        engine = new Engine(DEFAULT_GEAR_RATIOS, DEFAULT_DRIVE_RATIO, DEFAULT_DOWNSHIFT_RPM, DEFAULT_MINIMUM_RPM, -100);
 
         expect(engine).toBeDefined();
         expect(engine["downshiftRPM"]).toBe(DEFAULT_DOWNSHIFT_RPM);
@@ -63,8 +67,12 @@ describe("Engine", () => {
 
     it("should use default rpm values when shiftRPM < downshiftRPM", () => {
         engine = new Engine(
-            DEFAULT_GEAR_RATIOS, DEFAULT_DRIVE_RATIO, DEFAULT_DOWNSHIFT_RPM,
-            DEFAULT_DOWNSHIFT_RPM, DEFAULT_DOWNSHIFT_RPM - 10);
+            DEFAULT_GEAR_RATIOS,
+            DEFAULT_DRIVE_RATIO,
+            DEFAULT_DOWNSHIFT_RPM,
+            DEFAULT_DOWNSHIFT_RPM,
+            DEFAULT_DOWNSHIFT_RPM - 10
+        );
 
         expect(engine).toBeDefined();
         expect(engine["downshiftRPM"]).toBe(DEFAULT_DOWNSHIFT_RPM);
@@ -74,8 +82,13 @@ describe("Engine", () => {
 
     it("should use default transmissionEfficiency when value is invalid", () => {
         engine = new Engine(
-            DEFAULT_GEAR_RATIOS, DEFAULT_DRIVE_RATIO, DEFAULT_DOWNSHIFT_RPM,
-            DEFAULT_DOWNSHIFT_RPM, DEFAULT_DOWNSHIFT_RPM, 0);
+            DEFAULT_GEAR_RATIOS,
+            DEFAULT_DRIVE_RATIO,
+            DEFAULT_DOWNSHIFT_RPM,
+            DEFAULT_DOWNSHIFT_RPM,
+            DEFAULT_DOWNSHIFT_RPM,
+            0
+        );
 
         expect(engine).toBeDefined();
         expect(engine["transmissionEfficiency"]).toBe(DEFAULT_TRANSMISSION_EFFICIENCY);
@@ -136,6 +149,8 @@ describe("Engine", () => {
 
     it("should throw an error when wheel radius is invalid.", () => {
         engine = new Engine();
-        expect(() => { engine.update(10, 0); }).toThrowError();
+        expect(() => {
+            engine.update(10, 0);
+        }).toThrowError();
     });
 });

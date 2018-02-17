@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from "@angular/core";
 
 import { Case } from "../../../../../common/grid/case";
@@ -6,8 +5,8 @@ import Word, { Orientation } from "../../../../../common/lexical/word";
 import { WordService } from "../../word.service/word.service";
 
 /** TEMPORARY MOCKED CONTENT
-   * Example table
-   * **/
+ * Example table
+ * **/
 
 const grid: Array<String> = [
     "- - - - - - - - _ -",
@@ -25,11 +24,9 @@ const grid: Array<String> = [
 @Component({
     selector: "app-grid",
     templateUrl: "./grid.component.html",
-    styleUrls: ["./grid.component.css"]
+    styleUrls: ["./grid.component.css"],
 })
-
 export class GridComponent implements OnInit {
-
     private _grid: Array<Array<Case>> = grid.map((row: string) => {
         const strings: Array<string> = row.split(" ");
 
@@ -44,7 +41,7 @@ export class GridComponent implements OnInit {
     private _x: number;
     private _y: number;
 
-    public constructor(private _wordService: WordService) { }
+    public constructor(private _wordService: WordService) {}
 
     public get grid(): Array<Array<Case>> {
         return this._grid;
@@ -67,15 +64,15 @@ export class GridComponent implements OnInit {
     }
 
     private previousHorizontalIsNotBlack(): boolean {
-        return (this._y - 1 >= 0 && !this.isBlack(this._grid[this._x][this._y - 1].char));
+        return this._y - 1 >= 0 && !this.isBlack(this._grid[this._x][this._y - 1].char);
     }
 
     private nextHorizontalIsNotBlack(): boolean {
-        return (this._y + 1 < this._grid[this._x].length && !this.isBlack(this._grid[this._x][this._y + 1].char));
+        return this._y + 1 < this._grid[this._x].length && !this.isBlack(this._grid[this._x][this._y + 1].char);
     }
 
     private previousVerticalIsNotBlack(): boolean {
-        return (this._x - 1 >= 0 && !this.isBlack(this._grid[this._x - 1][this._y].char));
+        return this._x - 1 >= 0 && !this.isBlack(this._grid[this._x - 1][this._y].char);
     }
 
     private findHorizontalWordStart(): void {
@@ -95,7 +92,6 @@ export class GridComponent implements OnInit {
 
         if (!this.isBlack(this._grid[this._x][this._y].char)) {
             if (this.previousHorizontalIsNotBlack() || this.nextHorizontalIsNotBlack()) {
-
                 this.findHorizontalWordStart();
                 tempOrientation = Orientation.horizontal;
             } else {
@@ -108,41 +104,38 @@ export class GridComponent implements OnInit {
     }
 
     public selectCaseFromGrid(c: Case): void {
+        this._x = c.x;
+        this._y = c.y;
+        const tempWord: Word = this.findWordStart();
+        this._wordService.selectWordFromGrid(tempWord);
 
-            this._x = c.x;
-            this._y = c.y;
-            const tempWord: Word = this.findWordStart();
-            this._wordService.selectWordFromGrid(tempWord);
+        if (this._selectedWord != null) {
+            const caseTemp: Case = this._selectedWord;
 
-            if (this._selectedWord != null) {
-                const caseTemp: Case = this._selectedWord;
+            this.iterateGrid(caseTemp, (x: number, y: number) => {
+                this._grid[x][y].unselect();
+            });
+        }
 
-                this.iterateGrid(caseTemp, (x: number, y: number) => {
-                    this._grid[x][y].unselect();
-                });
-            }
-
-            if (this._word != null) {
-                this._grid[tempWord.row][tempWord.col].select();
-                this._x = this._grid[tempWord.row][tempWord.col].x;
-                this._y = this._grid[tempWord.row][tempWord.col].y;
-                this.findEndWrittenWord();
-                this.wordHigligth();
-            } else {
-                const elem: HTMLElement = document.getElementById(c.x.toString() + (c.y).toString());
-                elem.blur();
-            }
+        if (this._word != null) {
+            this._grid[tempWord.row][tempWord.col].select();
+            this._x = this._grid[tempWord.row][tempWord.col].x;
+            this._y = this._grid[tempWord.row][tempWord.col].y;
+            this.findEndWrittenWord();
+            this.wordHigligth();
+        } else {
+            const elem: HTMLElement = document.getElementById(c.x.toString() + c.y.toString());
+            elem.blur();
+        }
     }
 
     private selectCaseFromService(w: Word): void {
-
         if (this._selectedWord != null) {
             const caseTemp: Case = this._selectedWord;
 
             this.iterateGrid(caseTemp, (x: number, y: number, caseTest: Case) => {
                 this._grid[x][y].unselect();
             });
-
         }
 
         if (w != null) {
@@ -158,9 +151,11 @@ export class GridComponent implements OnInit {
         return this._word.direction === Orientation.horizontal;
     }
 
-    private iterateGrid (caseTemp: Case, fct: Function): void {
+    private iterateGrid(caseTemp: Case, fct: Function): void {
         for (let cell: number = this._wordStart; cell < this._wordStart + this._selWord.length; cell++) {
-            this._isHorizontal ? caseTemp = this._grid[this._selWord.row][cell] : caseTemp = this._grid[cell][this._selWord.col];
+            this._isHorizontal
+                ? (caseTemp = this._grid[this._selWord.row][cell])
+                : (caseTemp = this._grid[cell][this._selWord.col]);
 
             if (fct(caseTemp.x, caseTemp.y, caseTemp, cell, stop)) {
                 break;
@@ -174,7 +169,6 @@ export class GridComponent implements OnInit {
         this.iterateGrid(currentCase, (x: number, y: number, caseTemp: Case, cell: number) => {
             this._grid[caseTemp.x][caseTemp.y].select();
             if (caseTemp.char === "-") {
-
                 return true;
             }
 
@@ -187,7 +181,7 @@ export class GridComponent implements OnInit {
         const caseTemp: Case = null;
         let wordEntered: string = "";
         this._selWord = this._word;
-        this.isHorizontal() ? wordStart = this._word.col : wordStart = this._word.row;
+        this.isHorizontal() ? (wordStart = this._word.col) : (wordStart = this._word.row);
         this._wordStart = wordStart;
         this._isHorizontal = this.isHorizontal();
 
@@ -199,7 +193,7 @@ export class GridComponent implements OnInit {
             this._grid[caseTemp.x][caseTemp.y].select();
             if (caseTemp.char === "" || cell === wordStart + this._word.length - 1) {
                 wordEntered += caseTemp.char;
-                const elem: HTMLElement = document.getElementById(caseTemp.x.toString() + (caseTemp.y).toString());
+                const elem: HTMLElement = document.getElementById(caseTemp.x.toString() + caseTemp.y.toString());
                 elem.focus();
                 if (cell === wordStart + this._word.length - 1) {
                     this.validateWord(wordEntered, elem);
@@ -215,8 +209,7 @@ export class GridComponent implements OnInit {
     }
 
     private erasePrevious(c: Case): void {
-
-        if (this.isHorizontal() && (c.y !== this._word.col)) {
+        if (this.isHorizontal() && c.y !== this._word.col) {
             if (this._grid[c.x][c.y - 1].validated) {
                 this.erasePrevious(this._grid[c.x][c.y - 1]);
             } else {
@@ -241,7 +234,7 @@ export class GridComponent implements OnInit {
         if (!this.isLetter(String.fromCharCode(event.charCode))) {
             event.preventDefault();
         } else {
-            c.char = (String.fromCharCode(event.charCode));
+            c.char = String.fromCharCode(event.charCode);
             this.findEndWrittenWord();
         }
     }
@@ -258,7 +251,7 @@ export class GridComponent implements OnInit {
     }
 
     public isBlack(letter: string): boolean {
-        return (/\-/.test(letter) && letter.length === 1);
+        return /\-/.test(letter) && letter.length === 1;
     }
 
     public validateWord(enteredWord: string, elem: HTMLElement): void {
@@ -266,7 +259,7 @@ export class GridComponent implements OnInit {
             let tempX: number = this._word.row;
             let tempY: number = this._word.col;
             let i: number = 0;
-            while (i < this._word.length ) {
+            while (i < this._word.length) {
                 this._grid[tempX][tempY].validate();
                 this.isHorizontal() ? tempY++ : tempX++;
                 i++;
@@ -286,9 +279,8 @@ export class GridComponent implements OnInit {
                 }
             }
         }
-        this._wordService.wordFromClue.subscribe(
-            (_wordFromClue) => {this._word = _wordFromClue,
-                this.selectCaseFromService(_wordFromClue);
-            });
+        this._wordService.wordFromClue.subscribe((_wordFromClue) => {
+            (this._word = _wordFromClue), this.selectCaseFromService(_wordFromClue);
+        });
     }
 }

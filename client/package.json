@@ -9,10 +9,10 @@
     "test": "ng test",
     "lint": "ng lint --type-check --format stylish",
     "precommit": "lint-staged",
-    "prettier": "prettier --write \"app/*.{ts,js,json,css,md}\""
+    "prettier": "prettier --write \"src/**/*.{ts,js,json,css,md}\""
   },
   "lint-staged": {
-    "app/*.{ts,js,json,css,md}": [
+    "src/**/*.{ts,js,json,css,md}": [
       "prettier --write",
       "git add"
     ]

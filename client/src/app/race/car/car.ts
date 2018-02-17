@@ -60,7 +60,8 @@ export class Car extends Object3D {
         rearWheel: Wheel = new Wheel(),
         wheelbase: number = DEFAULT_WHEELBASE,
         mass: number = DEFAULT_MASS,
-        dragCoefficient: number = DEFAULT_DRAG_COEFFICIENT) {
+        dragCoefficient: number = DEFAULT_DRAG_COEFFICIENT
+    ) {
         super();
 
         if (wheelbase <= 0) {
@@ -161,8 +162,7 @@ export class Car extends Object3D {
     private getWeightDistribution(): number {
         const acceleration: number = this.getAcceleration().length();
         /* tslint:disable:no-magic-numbers */
-        const distribution: number =
-            this.mass + (1 / this.wheelbase) * this.mass * acceleration / 2;
+        const distribution: number = this.mass + 1 / this.wheelbase * this.mass * acceleration / 2;
 
         return Math.min(Math.max(0.25, distribution), 0.75);
         /* tslint:enable:no-magic-numbers */
@@ -195,7 +195,8 @@ export class Car extends Object3D {
         // formula taken from: https://www.engineeringtoolbox.com/rolling-friction-resistance-d_1303.html
 
         // tslint:disable-next-line:no-magic-numbers
-        const rollingCoefficient: number = (1 / tirePressure) * (Math.pow(this.speed.length() * 3.6 / 100, 2) * 0.0095 + 0.01) + 0.005;
+        const rollingCoefficient: number =
+            1 / tirePressure * (Math.pow(this.speed.length() * 3.6 / 100, 2) * 0.0095 + 0.01) + 0.005;
 
         return this.direction.multiplyScalar(rollingCoefficient * this.mass * GRAVITY);
     }
@@ -204,7 +205,9 @@ export class Car extends Object3D {
         const carSurface: number = 3;
         const airDensity: number = 1.2;
         const resistance: Vector3 = this.direction;
-        resistance.multiplyScalar(airDensity * carSurface * -this.dragCoefficient * this.speed.length() * this.speed.length());
+        resistance.multiplyScalar(
+            airDensity * carSurface * -this.dragCoefficient * this.speed.length() * this.speed.length()
+        );
 
         return resistance;
     }
@@ -212,7 +215,12 @@ export class Car extends Object3D {
     private getTractionForce(): number {
         const force: number = this.getEngineForce();
         const maxForce: number =
-            this.rearWheel.frictionCoefficient * this.mass * GRAVITY * this.weightRear * NUMBER_REAR_WHEELS / NUMBER_WHEELS;
+            this.rearWheel.frictionCoefficient *
+            this.mass *
+            GRAVITY *
+            this.weightRear *
+            NUMBER_REAR_WHEELS /
+            NUMBER_WHEELS;
 
         return -Math.min(force, maxForce);
     }

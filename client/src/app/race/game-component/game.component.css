@@ -3,7 +3,8 @@ div {
     height: 800px;
 }
 
-ul, li {
+ul,
+li {
     position: relative;
     margin: 0;
     top: 40px;

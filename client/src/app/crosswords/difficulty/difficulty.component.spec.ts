@@ -5,17 +5,19 @@ import { ButtonComponent } from "../button/button.component";
 enum Difficulty {
     Easy = 0,
     Normal = 1,
-    Hard = 2
+    Hard = 2,
 }
 
 describe("DifficultyComponent", () => {
     let component: DifficultyComponent;
     let fixture: ComponentFixture<DifficultyComponent>;
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [DifficultyComponent, ButtonComponent]
-        }).compileComponents();
-    }));
+    beforeEach(
+        async(() => {
+            TestBed.configureTestingModule({
+                declarations: [DifficultyComponent, ButtonComponent],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(DifficultyComponent);
@@ -34,15 +36,12 @@ describe("DifficultyComponent", () => {
     });
 
     it("Should display Normal", () => {
-
         component.onSelect(component.difficulties[Difficulty.Normal]);
         expect(component.selectedDifficulty).toBe("Normal");
     });
 
     it("Should display Hard", () => {
-
         component.onSelect(component.difficulties[Difficulty.Hard]);
         expect(component.selectedDifficulty).toBe("Hard");
     });
-
 });

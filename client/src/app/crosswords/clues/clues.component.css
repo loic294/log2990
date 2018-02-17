@@ -11,6 +11,7 @@
     margin-bottom: 2px;
 }
 
-.clue:hover, .clue.selected {
-	background-color: #f1f1f1;
+.clue:hover,
+.clue.selected {
+    background-color: #f1f1f1;
 }
