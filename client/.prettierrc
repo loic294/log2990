@@ -6,5 +6,13 @@
 	"trailingComma": "es5",
 	"bracketSpacing": true,
 	"arrowParens": "avoid",
-	"printWidth": 120
+	"printWidth": 120,
+	"overrides": [
+    {
+      "files": "*.html",
+      "options": {
+        "tabWidth": 4
+      }
+    }
+  ]
 }
