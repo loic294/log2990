@@ -112,8 +112,6 @@ describe("GridGenerator", () => {
 
     });
 
-    it("should find two words of 10 in length which share their first letter.");
-
     it("should backtrack properly.");
 
     it("should backtrack if a word cannot be found after a certain amount of times.");
