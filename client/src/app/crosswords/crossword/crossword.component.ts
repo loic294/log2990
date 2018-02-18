@@ -2,7 +2,7 @@ import { Injectable, Component, OnInit } from "@angular/core";
 
 import { WordService } from "../../word.service/word.service";
 import { Socket } from "ng-socket-io";
-import { setTimeout } from "timers";
+// import { setTimeout } from "timers";
 
 @Injectable()
 @Component({
