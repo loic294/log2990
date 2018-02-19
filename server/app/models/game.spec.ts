@@ -33,7 +33,6 @@
 	 });
 
 	 it("should find a game by name", async () => {
-		 console.log('RENEWKJNGREJk')
 		const result:IGameModel = await Game.find().findOne({ players: {
 			$in: ["Loïc"]
 		} });
