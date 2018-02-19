@@ -76,7 +76,7 @@ export default class GridGeneration {
         }
 
         const FETCH_URL: string =
-            `http://localhost:3000/lexical/wordAndDefinition/${this.findCriteriaForWord(word)}/${commonality}/${level}`;
+            `http://localhost:4200/lexical/wordAndDefinition/${this.findCriteriaForWord(word)}/${commonality}/${level}`;
 
         const { data }: { data: Array<string> } = await axios.get(FETCH_URL);
 

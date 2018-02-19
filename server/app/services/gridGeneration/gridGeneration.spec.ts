@@ -104,8 +104,6 @@ describe("GridGenerator", () => {
 
         testWord = new Word("", "", [0, 0], Orientation.vertical, 0, false, TEN);
 
-        gridGeneration.createWord(Difficulty.easy, testWord);
-
         return gridGeneration.createWord(Difficulty.easy, testWord).then((data: any) => {
             expect(gridGeneration.wordStack).to.eql([]);
         });
