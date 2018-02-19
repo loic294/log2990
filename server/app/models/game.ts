@@ -1,4 +1,4 @@
-import { Document, Schema, model} from "mongoose";
+import { Document, Schema} from "mongoose";
 import mongoose from "../config/mongoose";
 
 export interface IGame {

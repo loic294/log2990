@@ -1,7 +1,6 @@
 import { Component, OnInit, Optional } from "@angular/core";
 import { Socket } from "ng-socket-io";
 
-
 @Component({
   selector: "app-mode",
   templateUrl: "./mode.component.html",

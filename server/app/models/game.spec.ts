@@ -1,5 +1,5 @@
  /* tslint:disable */ 
- import Game, { IGame, IGameModel } from "./game";
+ import Game, { IGameModel } from "./game";
  import { assert } from "chai";
 
  const date = new Date()
