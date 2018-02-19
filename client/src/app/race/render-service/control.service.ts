@@ -1,0 +1,7 @@
+import Serviceable from "./serviceable";
+
+export default class ControlService implements Serviceable {
+    public execute(): void {
+
+    }
+}
