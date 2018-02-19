@@ -13,7 +13,6 @@ export class ModeComponent implements OnInit {
         @Optional() private _selectedMode: string,
         private _socket: Socket,
         ) {
-
         this._modes = ["Single Player", "Two Players"];
         this._selectedMode = "Single Player";
     }
@@ -32,11 +31,12 @@ export class ModeComponent implements OnInit {
     public createGame(mode: string): void {
 
         if (mode === "Two Players") {
-            const gameId: string = `test`;
-           // this._games.push(gameId);
+            //const gameId: string = `game${Math.random().toString(36).substr(2, 9)}`;
+            const gameId: string = "test";
+            this._socket.emit("create_game", gameId);
             this.joinGame(gameId);
         } else {
-            console.log("single player");
+            console.log("single player"); 
         }
     }
 
