@@ -18,6 +18,7 @@ import { CluesComponent } from "./crosswords/clues/clues.component";
 import { ShadowBoxComponent } from "./crosswords/shadow-box/shadow-box.component";
 import { ContainerComponent } from "./crosswords/container/container.component";
 import { ButtonComponent } from "./crosswords/button/button.component";
+import { AppRoutingModule } from './/app-routing.module';
 
 @NgModule({
     declarations: [
@@ -35,7 +36,8 @@ import { ButtonComponent } from "./crosswords/button/button.component";
         BrowserModule,
         HttpClientModule,
         FormsModule,
-        ClickOutsideModule
+        ClickOutsideModule,
+        AppRoutingModule
     ],
     providers: [
         RenderService,
