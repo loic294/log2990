@@ -55,6 +55,10 @@ export class Car extends Object3D {
         return carDirection;
     }
 
+    public get meshPosition(): Vector3 {
+        return this.mesh.position;
+    }
+
     public constructor(
         engine: Engine = new Engine(),
         rearWheel: Wheel = new Wheel(),
