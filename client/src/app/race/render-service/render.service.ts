@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
-import { PerspectiveCamera, WebGLRenderer, Scene, AmbientLight } from "three";
+import { PerspectiveCamera, WebGLRenderer, Scene, AmbientLight,
+     MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, CubeGeometry } from "three";
 import { Car } from "../car/car";
 
 const FAR_CLIPPING_PLANE: number = 1000;
@@ -15,6 +16,8 @@ const RIGHT_KEYCODE: number = 68;       // d
 const INITIAL_CAMERA_POSITION_Y: number = 25;
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
+
+const SIZE_SKYBOX: number = 100000;
 
 @Injectable()
 export class RenderService {
@@ -52,6 +55,8 @@ export class RenderService {
 
     private update(): void {
         const timeSinceLastFrame: number = Date.now() - this.lastDate;
+        this.camera.position.x = this._car.meshPosition.x;
+        this.camera.position.z = this._car.meshPosition.z;
         this._car.update(timeSinceLastFrame);
         this.lastDate = Date.now();
     }
@@ -66,12 +71,16 @@ export class RenderService {
             FAR_CLIPPING_PLANE
         );
 
+        this.loadSkybox();
+
         await this._car.init();
         this.camera.position.set(0, INITIAL_CAMERA_POSITION_Y, 0);
         this.camera.lookAt(this._car.position);
         this.scene.add(this._car);
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
     }
+
+    // {map: new TextureLoader().load( imageFilePath ), side: BackSide }
 
     private getAspectRatio(): number {
         return this.container.clientWidth / this.container.clientHeight;
@@ -98,6 +107,27 @@ export class RenderService {
         this.camera.aspect = this.getAspectRatio();
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+    }
+
+    private loadSkybox(): void {
+        const sidesOfSkybox: MeshBasicMaterial[] = [];
+        const imageDirectory: string = "../../../assets/skybox/";
+        const imageName: string = "stormydays_";
+        const imageSuffix: string[] = ["ft", "bk", "up", "dn", "rt", "lf"];
+        const imageType: string = ".png";
+        let imageFilePath: string = "";
+
+        /* tslint:disable: prefer-for-of*/
+        for (let i: number = 0; i < 6; i++) {
+            imageFilePath = imageDirectory + imageName + imageSuffix + imageType;
+            sidesOfSkybox.push( new MeshBasicMaterial ( {map: new TextureLoader().load( imageFilePath ), side: DoubleSide } ));
+        }
+
+        const skyboxGeometry: CubeGeometry = new CubeGeometry(SIZE_SKYBOX, SIZE_SKYBOX, SIZE_SKYBOX);
+        const skyboxTexture: MultiMaterial = new MultiMaterial(sidesOfSkybox);
+        const skybox: Mesh = new Mesh(skyboxGeometry, skyboxTexture);
+
+        this.scene.add(skybox);
     }
 
     // TODO: Create an event handler service.
