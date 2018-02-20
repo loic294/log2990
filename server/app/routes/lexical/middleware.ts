@@ -51,8 +51,11 @@ export const wordAndDefinition: (req: Request, res: Response, next: NextFunction
 
     const lexicalService: LexicalService = new LexicalService();
 
+	console.log('GET WORD AND DEF')
+
     try {
-        const result: string[] = await lexicalService.wordAndDefinition(criteria, common, level);
+		const result: string[] = await lexicalService.wordAndDefinition(criteria, common, level);
+		console.log('RESULT', result)
         res.json({ lexicalResult: result });
 
     } catch (err) {

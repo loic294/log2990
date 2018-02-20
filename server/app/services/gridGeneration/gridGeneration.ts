@@ -1,7 +1,7 @@
 import { Case } from "../../../../common/grid/case";
 import Word, { Orientation } from "../../../../common/lexical/word";
 import Constraint from "./constraint";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 
 export enum Difficulty {
     easy = 0,
@@ -19,6 +19,7 @@ export interface RandomStart {
     position: Array<number>;
     length: number;
     orientation: number;
+    forced?: boolean;
 }
 
 export default class GridGeneration {
@@ -31,11 +32,26 @@ export default class GridGeneration {
         private RANDOM_GENERATION: number = 0.7) {
         this._constraintsArray = [];
         this._wordStack = [];
+        this.createGrid();
     }
 
-    public createGrid(): void {
-        this.fillGridWithCases(this._DEFAULT_SIZE);
-
+    public async createGrid(): Promise<void> {
+        try {
+            await this.addWordToGrid({
+                position: [0, 0],
+                length: this._DEFAULT_SIZE,
+                orientation: 0,
+                forced: true
+            });
+            await this.addWordToGrid({
+                position: [0, 0],
+                length: this._DEFAULT_SIZE,
+                orientation: 1,
+                forced: true
+            });
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     public getRandomStartPoint(): RandomStart {
@@ -48,11 +64,17 @@ export default class GridGeneration {
         };
     }
 
-    public addWordToGrid(start: RandomStart): boolean {
+    public async addWordToGrid(start: RandomStart): Promise<boolean> {
 
-        const NEW_WORD = new Word(null, null, start.position, start.orientation, 0, false, start.length);
+        console.log('ADD WORD TO GRID')
 
+        let word: Word = new Word(null, null, start.position, start.orientation, 0, false, start.length);
+        word = await this.createWord(Difficulty.easy, word);
 
+        this._wordStack.push({ word, tries: 0, childTries: 0 });
+        this.addConstraintForWord(this._wordStack[this._wordStack.length - 1]);
+
+        this.displayGrid();
 
         // 1. Generate a word at a given position
             // 1.1 Check that the word is valid in position
@@ -81,16 +103,16 @@ export default class GridGeneration {
     }
 
     // Receives a word with length, position, index and direction.
-    public async createWord(difficulty: Difficulty, word: Word): Promise<void> {
+    public async createWord(difficulty: Difficulty, word: Word): Promise<Word> {
 
         do {
             const wordAndDescription: Array<string> = await this.getWordAndDefinition(word, difficulty);
             word.name = wordAndDescription[0];
             word.desc = wordAndDescription[1];
+
+            return word;
         } while (!this.wordExists(word));
 
-        // this._wordStack.push({ word, tries: 0, childTries: 0 });
-        // this.addConstraintForWord(this._wordStack[this._wordStack.length - 1]);
     }
 
     private wordExists(word: Word): boolean {
@@ -120,12 +142,16 @@ export default class GridGeneration {
                 commonality = "InvalidEntry";
         }
 
+        console.log('CRITERIA', this.findCriteriaForWord(word));
+
         const FETCH_URL: string =
             `http://localhost:3000/lexical/wordAndDefinition/${this.findCriteriaForWord(word)}/${commonality}/${level}`;
 
-        const { data }: { data: Array<string> } = await axios.get(FETCH_URL);
+        const { data: { lexicalResult } }: { data: { lexicalResult: Array<string> }} = await axios.get(FETCH_URL);
 
-        return data;
+        console.log('SERVER DATA', lexicalResult);
+
+        return lexicalResult;
     }
 
     public findCriteriaForWord(word: Word): string {
@@ -192,10 +218,21 @@ export default class GridGeneration {
         return Math.random() * FACTOR % 1 ? Orientation.horizontal : Orientation.vertical;
     }
 
-    public traverseGrid(size: number, fct: Function): void {
+    public iterateGrid(size: number, fct: Function): void {
         for (let row: number = 0; row < size; row++) {
             for (let col: number = 0; col < size; col++) {
                 fct(row, col);
+            }
+        }
+    }
+
+    public putWordsInGrid(): void {
+        for (const word of this._wordStack) {
+            let row: number = word.word.position[0];
+            let col: number = word.word.position[1];
+            for (const char of word.word.name) {
+                this._grid[row][col].char = char;
+                word.word.direction ? row++ : col++;
             }
         }
     }
@@ -204,16 +241,19 @@ export default class GridGeneration {
         const FACTOR: number = 2;
         let gridString: string = "";
         const size: number = this._DEFAULT_SIZE * FACTOR;
-        this.traverseGrid(size, (row: number, col: number) => {
+        this.putWordsInGrid();
+        this.iterateGrid(size, (row: number, col: number) => {
             const rowOdd: number = row % 2;
             const colOdd: number = col % 2;
 
+            const char: Case = this._grid[Math.floor(row / FACTOR)][Math.floor(col / FACTOR)];
+
             if (rowOdd) {
-                gridString += "-";
+                gridString += "---";
             } else if (colOdd) {
-                gridString += "|";
+                gridString += " |";
             } else {
-                gridString += " ";
+                gridString += char.char.length ? ` ${char.char} ` : "   ";
             }
 
             if (col === size - 1) {

@@ -1,5 +1,4 @@
 import Constraint from "./Constraint";
-import { Case } from "../../../../common/grid/case";
 import Word, { Orientation } from "../../../../common/lexical/word";
 import {expect} from "chai";
 
