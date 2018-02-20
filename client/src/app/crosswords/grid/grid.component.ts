@@ -31,13 +31,7 @@ const grid: Array<String> = [
 })
 
 export class GridComponent implements OnInit {
-/*
-    private _grid: Array<Array<Case>> = grid.map((row: string) => {
-        const strings: Array<string> = row.split(" ");
 
-        return strings.map((c: string) => new Case(c));
-    });
-*/
     private _grid: Array<Array<Case>>;
     private _isHorizontal: boolean;
     private _selectedWord: Case;
@@ -47,11 +41,13 @@ export class GridComponent implements OnInit {
     private _x: number;
     private _y: number;
 
-    public constructor(
-        private _gridService: GridService,
-        private _wordService: WordService) {
-            this._grid = this._gridService.getGrid();
-        }
+    public constructor( private _gridService: GridService, private _wordService: WordService) {
+        this._grid = this._gridService.intializeGrid();
+    }
+
+    public updateGrid(event: KeyboardEvent, c: Case): void {
+        this._gridService.updateGrid(event, c).subscribe((_grid) => this._grid = _grid);
+    }
 
     public get grid(): Array<Array<Case>> {
         return this._grid;
@@ -134,7 +130,7 @@ export class GridComponent implements OnInit {
                 this._x = this._grid[tempWord.row][tempWord.col].x;
                 this._y = this._grid[tempWord.row][tempWord.col].y;
                 this.findEndWrittenWord();
-                this.wordHigligth();
+                this.wordHighligth();
             } else {
                 const elem: HTMLElement = document.getElementById(c.x.toString() + (c.y).toString());
                 elem.blur();
@@ -157,7 +153,7 @@ export class GridComponent implements OnInit {
             this._x = w.row;
             this._y = w.col;
             this.findEndWrittenWord();
-            this.wordHigligth();
+            this.wordHighligth();
         }
     }
 
@@ -175,7 +171,7 @@ export class GridComponent implements OnInit {
         }
     }
 
-    private wordHigligth(): void {
+    private wordHighligth(): void {
         const currentCase: Case = null;
 
         this.iterateGrid(currentCase, (x: number, y: number, caseTemp: Case, cell: number) => {
