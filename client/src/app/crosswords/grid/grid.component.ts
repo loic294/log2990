@@ -1,14 +1,16 @@
+/* tslint:disable:no-shadowed-variable */
 
 import { Component, OnInit } from "@angular/core";
 
 import { Case } from "../../../../../common/grid/case";
 import Word, { Orientation } from "../../../../../common/lexical/word";
 import { WordService } from "../../word.service/word.service";
+import { GridService } from "../../grid.service/grid.service";
 
 /** TEMPORARY MOCKED CONTENT
    * Example table
    * **/
-
+/*
 const grid: Array<String> = [
     "- - - - - - - - _ -",
     "- - - - _ - _ _ _ _",
@@ -21,7 +23,7 @@ const grid: Array<String> = [
     "- - - - _ - _ - - _",
     "_ _ _ _ _ - _ _ _ _",
 ];
-
+*/
 @Component({
     selector: "app-grid",
     templateUrl: "./grid.component.html",
@@ -29,13 +31,14 @@ const grid: Array<String> = [
 })
 
 export class GridComponent implements OnInit {
-
+/*
     private _grid: Array<Array<Case>> = grid.map((row: string) => {
         const strings: Array<string> = row.split(" ");
 
         return strings.map((c: string) => new Case(c));
     });
-
+*/
+    private _grid: Array<Array<Case>>;
     private _isHorizontal: boolean;
     private _selectedWord: Case;
     private _selWord: Word;
@@ -44,7 +47,11 @@ export class GridComponent implements OnInit {
     private _x: number;
     private _y: number;
 
-    public constructor(private _wordService: WordService) { }
+    public constructor(
+        private _gridService: GridService,
+        private _wordService: WordService) {
+            this._grid = this._gridService.getGrid();
+        }
 
     public get grid(): Array<Array<Case>> {
         return this._grid;
@@ -260,7 +267,6 @@ export class GridComponent implements OnInit {
     public isBlack(letter: string): boolean {
         return (/\-/.test(letter) && letter.length === 1);
     }
-
     public validateWord(enteredWord: string, elem: HTMLElement): void {
         if (this._word.name.toUpperCase() === enteredWord.toUpperCase()) {
             let tempX: number = this._word.row;
@@ -275,7 +281,6 @@ export class GridComponent implements OnInit {
             elem.blur();
         }
     }
-
     public ngOnInit(): void {
         for (let i: number = 0; i < this._grid.length; i++) {
             for (let j: number = 0; j < this._grid[i].length; j++) {
