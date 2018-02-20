@@ -113,12 +113,11 @@ export class RenderService {
         const sidesOfSkybox: MeshBasicMaterial[] = [];
         const imageDirectory: string = "../../../assets/skybox/";
         const imageName: string = "stormydays_";
-        const imageSuffix: string[] = ["ft", "bk", "up", "dn", "rt", "lf"];
+        const imageSuffixes: string[] = ["ft", "bk", "up", "dn", "rt", "lf"];
         const imageType: string = ".png";
         let imageFilePath: string = "";
 
-        /* tslint:disable: prefer-for-of*/
-        for (let i: number = 0; i < 6; i++) {
+        for (const imageSuffix of imageSuffixes) {
             imageFilePath = imageDirectory + imageName + imageSuffix + imageType;
             sidesOfSkybox.push( new MeshBasicMaterial ( {map: new TextureLoader().load( imageFilePath ), side: DoubleSide } ));
         }

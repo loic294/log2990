@@ -1,7 +1,7 @@
 import { Case } from "../../../../common/grid/case";
-import Word, { Orientation } from "../../../../common/lexical/word";
+import Word from "../../../../common/lexical/word";
 import Constraint from "./constraint";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 
 export enum Difficulty {
     easy = 0,
@@ -76,7 +76,7 @@ export default class GridGeneration {
         }
 
         const FETCH_URL: string =
-            `http://localhost:4200/lexical/wordAndDefinition/${this.findCriteriaForWord(word)}/${commonality}/${level}`;
+            `http://localhost:3000/lexical/wordAndDefinition/${this.findCriteriaForWord(word)}/${commonality}/${level}`;
 
         const { data }: { data: Array<string> } = await axios.get(FETCH_URL);
 

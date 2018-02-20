@@ -118,3 +118,13 @@ describe("Car", () => {
         expect(car["dragCoefficient"]).toBe(DEFAULT_DRAG_COEFFICIENT);
     });
 });
+
+describe("Car", () => {
+    let car: Car;
+    let collidingCar: Car;
+
+    it("should check validity of dragCoefficient parameter", () => {
+        car = new Car(new MockEngine(), new Wheel(), DEFAULT_WHEELBASE, DEFAULT_MASS, -10);
+        expect(car["dragCoefficient"]).toBe(DEFAULT_DRAG_COEFFICIENT);
+    });
+});
