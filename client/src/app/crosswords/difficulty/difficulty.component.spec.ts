@@ -29,20 +29,18 @@ describe("DifficultyComponent", () => {
     });
 
     it("Should display Easy", () => {
-        component.onSelect(component.difficulties[Difficulty.Easy]);
-        expect(component.selectedDifficulty).toBe("Easy");
+        component.onSelect(Difficulty.Easy);
+        expect(component.selectedDifficulty).toBe(Difficulty.Easy);
     });
 
     it("Should display Normal", () => {
-
-        component.onSelect(component.difficulties[Difficulty.Normal]);
-        expect(component.selectedDifficulty).toBe("Normal");
+        component.onSelect(Difficulty.Normal);
+        expect(component.selectedDifficulty).toBe(Difficulty.Normal);
     });
 
     it("Should display Hard", () => {
-
-        component.onSelect(component.difficulties[Difficulty.Hard]);
-        expect(component.selectedDifficulty).toBe("Hard");
+        component.onSelect(Difficulty.Hard);
+        expect(component.selectedDifficulty).toBe(Difficulty.Hard);
     });
 
 });

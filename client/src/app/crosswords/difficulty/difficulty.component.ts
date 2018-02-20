@@ -14,25 +14,18 @@ export enum Difficulty {
 
 export class DifficultyComponent implements OnInit {
 
-    private _selectedDifficulty: string = "Easy";
-    private _difficulties: string[];
+    private _selectedDifficulty: Difficulty = Difficulty.Easy;
 
-    public constructor() {
-        this._difficulties = ["Easy", "Normal", "Hard"];
-    }
+    public constructor() { }
 
-    public onSelect(diff: string): void {
+    public onSelect(diff: Difficulty): void {
         this._selectedDifficulty = diff;
     }
 
     public ngOnInit(): void {
     }
 
-    public get difficulties(): string[] {
-        return this._difficulties;
-    }
-
-    public get selectedDifficulty(): string {
+    public get selectedDifficulty(): Difficulty {
         return this._selectedDifficulty;
     }
 
