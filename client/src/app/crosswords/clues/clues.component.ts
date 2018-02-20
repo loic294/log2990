@@ -43,10 +43,10 @@ const CLUES: Array<Word> = [
 })
 export class CluesComponent implements OnInit {
 
-    private _clues: Array<Word> = CLUES;
-    private _selectedClue: Word;
-
-    public constructor(public _wordService: WordService) { }
+    public constructor(public _wordService: WordService, private _clues: Array<Word>, private _selectedClue: Word) {
+        this._clues = CLUES;
+        this._selectedClue = null;
+    }
 
     public onSelect(clue: Word): void {
         if (!clue.validated) {

@@ -1,12 +1,7 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { DifficultyComponent } from "./difficulty.component";
 import { ButtonComponent } from "../button/button.component";
-
-enum Difficulty {
-    Easy = 0,
-    Normal = 1,
-    Hard = 2
-}
+import { Difficulty } from "../../../../../common/grid/difficulties";
 
 describe("DifficultyComponent", () => {
     let component: DifficultyComponent;
@@ -25,7 +20,7 @@ describe("DifficultyComponent", () => {
 
     it("Should create DifficultyComponent", () => {
         expect(component).toBeTruthy();
-        expect(component.selectedDifficulty).toBe("Easy");
+        expect(component.selectedDifficulty).toBe(Difficulty.Easy);
     });
 
     it("Should display Easy", () => {
