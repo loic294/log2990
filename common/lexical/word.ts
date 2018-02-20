@@ -3,22 +3,32 @@ export enum Orientation {
     vertical = 1,
 }
 
-export default class Word {
+export interface AbstractWord {
+    _name: string,
+    _desc: string,
+    _position: Array<number>,
+    _orientation: Orientation,
+    _index: number,
+    _isValidated: boolean,
+    _length: number
+}
+
+export default class Word implements AbstractWord {
   
     constructor(
-        private _name : string,
-        private _desc : string,
-        private _position : Array<number>,
-        private _orientation : Orientation,
-        private _index : number,
-		private _isValidated: boolean = false,
-		private _length: number = 0
+        public _name : string,
+        public _desc : string,
+        public _position : Array<number>,
+        public _orientation : Orientation,
+        public _index : number,
+		public _isValidated: boolean = false,
+		public _length: number = 0
     ) {
         if (!_length) {
             this._length = this._name.length
         }
     }
-
+    // À voir avec mathieu
     public get name() {
         return this._name;
     }
