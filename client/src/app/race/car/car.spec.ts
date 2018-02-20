@@ -117,14 +117,17 @@ describe("Car", () => {
         car = new Car(new MockEngine(), new Wheel(), DEFAULT_WHEELBASE, DEFAULT_MASS, -10);
         expect(car["dragCoefficient"]).toBe(DEFAULT_DRAG_COEFFICIENT);
     });
-});
 
-describe("Car", () => {
-    let car: Car;
-    let collidingCar: Car;
+    it("should have a valid bounding box.", () => {
 
-    it("should check validity of dragCoefficient parameter", () => {
-        car = new Car(new MockEngine(), new Wheel(), DEFAULT_WHEELBASE, DEFAULT_MASS, -10);
-        expect(car["dragCoefficient"]).toBe(DEFAULT_DRAG_COEFFICIENT);
+        expect(car.boundingBox.getCenter()).toEqual(car.getWorldPosition());
+    });
+
+    it("should have a bounding box which follows the center of the car.", () => {
+        car.isAcceleratorPressed = true;
+        car.update(MS_BETWEEN_FRAMES * 3);
+        car.isAcceleratorPressed = false;
+
+        expect(car.boundingBox.getCenter()).toEqual(car.getWorldPosition());
     });
 });

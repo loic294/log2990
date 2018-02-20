@@ -1,4 +1,6 @@
 import { Vector3, Matrix4, Object3D, ObjectLoader, Euler, Quaternion } from "three";
+/* tslint:disable:no-duplicate-imports */
+import * as THREE from "three";
 import { Engine } from "./engine";
 import { MS_TO_SECONDS, GRAVITY, PI_OVER_2, RAD_TO_DEG } from "../../constants";
 import { Wheel } from "./wheel";
@@ -28,6 +30,7 @@ export class Car extends Object3D {
     private mesh: Object3D;
     private steeringWheelDirection: number;
     private weightRear: number;
+    private _boundingBox: THREE.Box3;
 
     public get speed(): Vector3 {
         return this._speed.clone();
@@ -57,6 +60,10 @@ export class Car extends Object3D {
 
     public get meshPosition(): Vector3 {
         return this.mesh.position;
+    }
+
+    public get boundingBox(): THREE.Box3 {
+        return this._boundingBox;
     }
 
     public constructor(
@@ -92,6 +99,8 @@ export class Car extends Object3D {
         this.steeringWheelDirection = 0;
         this.weightRear = INITIAL_WEIGHT_DISTRIBUTION;
         this._speed = new Vector3(0, 0, 0);
+
+        this._boundingBox = new THREE.Box3().setFromObject(this);
     }
 
     // TODO: move loading code outside of car class.
@@ -192,14 +201,6 @@ export class Car extends Object3D {
         }
 
         return resultingForce;
-    }
-
-    public checkCollision(car: Car): void {
-
-    }
-
-    public collide(car: Car): void {
-
     }
 
     private getRollingResistance(): Vector3 {
