@@ -15,6 +15,12 @@ export interface WordQueue {
     childTries?: number;
 }
 
+export interface RandomStart {
+    position: Array<number>;
+    length: number;
+    orientation: number;
+}
+
 export default class GridGeneration {
     private _grid: Array<Array<Case>>;
     private _constraintsArray: Array<Constraint>;
@@ -27,13 +33,26 @@ export default class GridGeneration {
         this._wordStack = [];
     }
 
-    public addWordToGrid(): boolean {
+    public createGrid(): void {
+        this.fillGridWithCases(this._DEFAULT_SIZE);
 
-        const POINT: Array<number> = this.generateRandomPoint();
+    }
+
+    public getRandomStartPoint(): RandomStart {
         const WORD_LENGTH: number = 10;
-        const DIRECTION: number = this.randomDirection();
 
-        const NEW_WORD = new Word(null, null, POINT, DIRECTION, 0, false, WORD_LENGTH);
+        return {
+            position: this.generateRandomPoint(),
+            length: WORD_LENGTH,
+            orientation: this.randomDirection()
+        };
+    }
+
+    public addWordToGrid(start: RandomStart): boolean {
+
+        const NEW_WORD = new Word(null, null, start.position, start.orientation, 0, false, start.length);
+
+
 
         // 1. Generate a word at a given position
             // 1.1 Check that the word is valid in position
@@ -70,8 +89,8 @@ export default class GridGeneration {
             word.desc = wordAndDescription[1];
         } while (!this.wordExists(word));
 
-        this._wordStack.push({ word, tries: 0, childTries: 0 });
-        this.addConstraintForWord(this._wordStack[this._wordStack.length - 1]);
+        // this._wordStack.push({ word, tries: 0, childTries: 0 });
+        // this.addConstraintForWord(this._wordStack[this._wordStack.length - 1]);
     }
 
     private wordExists(word: Word): boolean {
