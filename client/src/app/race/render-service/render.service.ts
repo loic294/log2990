@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import { PerspectiveCamera, WebGLRenderer, Scene, AmbientLight,
-     MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, CubeGeometry } from "three";
+MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, CubeGeometry, CubeTexture } from "three";
 import { Car } from "../car/car";
 
 const FAR_CLIPPING_PLANE: number = 1000;
@@ -15,9 +15,9 @@ const RIGHT_KEYCODE: number = 68;       // d
 
 const INITIAL_CAMERA_POSITION_Y: number = 25;
 const WHITE: number = 0xFFFFFF;
-const AMBIENT_LIGHT_OPACITY: number = 0.5;
+const AMBIENT_LIGHT_OPACITY: number = 1;
 
-const SIZE_SKYBOX: number = 100000;
+const SIZE_SKYBOX: number = 1000;
 
 @Injectable()
 export class RenderService {
@@ -71,13 +71,12 @@ export class RenderService {
             FAR_CLIPPING_PLANE
         );
 
-        this.loadSkybox();
-
         await this._car.init();
         this.camera.position.set(0, INITIAL_CAMERA_POSITION_Y, 0);
         this.camera.lookAt(this._car.position);
         this.scene.add(this._car);
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
+        this.loadSkybox();
     }
 
     // {map: new TextureLoader().load( imageFilePath ), side: BackSide }
