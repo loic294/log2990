@@ -3,7 +3,7 @@ import { PlaceCommand } from "./PlaceCommand";
 
 import { Vector3, PointsMaterial, Points, Geometry, LineBasicMaterial, Line, Object3D } from "three";
 
-const TWO: number = 2; // a changer
+const TWO: number = 2;
 const POINT_SIZE: number = 2;
 
 export class PlaceDotCommand extends PlaceCommand {
@@ -14,7 +14,7 @@ export class PlaceDotCommand extends PlaceCommand {
     public place(scene: THREE.Scene, renderer: THREE.WebGLRenderer, event: MouseEvent): void {
         // Methode temporaire (activer le click seulement sur objet)
 
-        /*if (event.srcElement === renderer.domElement) {*/
+       // if (event.srcElement === renderer.domElement) {
 
             if (!this._isCycle) {
                 const dotGeo: THREE.Geometry = new Geometry();
@@ -57,8 +57,20 @@ export class PlaceDotCommand extends PlaceCommand {
         }
     }
 
+    private connectToFirst(scene: THREE.Scene): void {
+        this.undo(scene);
+        const lineMat: THREE.LineBasicMaterial = new LineBasicMaterial({ color: 0xFF0000, linewidth: 8 });
+        const lineGeo: THREE.Geometry = new Geometry();
+        lineGeo.vertices.push(this._dotMemory[this._dotMemory.length - 1]);
+        lineGeo.vertices.push(this._dotMemory[0]);
+        const line: THREE.Line = new Line(lineGeo, lineMat);
+        line.name = "line" + (this._dotMemory.length - 1);
+        scene.add(line);
+    }
+
     private findIfCycle(scene: THREE.Scene): void {
         if (this._dotMemory.length !== 1 && this.pointsRadiusCollide()) {
+             this.connectToFirst(scene);
              this._isCycle = true;
         }
     }
