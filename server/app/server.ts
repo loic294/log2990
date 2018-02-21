@@ -30,6 +30,10 @@ var io = require('socket.io')(server);
 
 io.on('connection', function (socket: any) {
     console.log('Connected to socket');
+    socket.on("get_games", async function () {
+        const games: IGameModel[] = await Game.find();
+        socket.emit("add_games", games);
+    })
 
     socket.on('create_game', async function (room: string) {
         const game: IGameModel = new Game({
@@ -37,6 +41,7 @@ io.on('connection', function (socket: any) {
             createdAt: new Date(),
         });
         await game.save();
+        socket.emit("created_game", game);
         Game.count({name: room}, function (err, count){
             console.log("created game in db ", count);
         });
@@ -48,10 +53,10 @@ io.on('connection', function (socket: any) {
         if (game.players.length === 0 ) {
             socket.join(room);
             await Game.findOneAndUpdate(room, {
-                players : ["player1"]
+                    players : ["player1"]
                 })
-                console.log("connecting player 1 to ", room);
-                socket.emit("connected_to_game", io.sockets.adapter.rooms[room].length);
+            console.log("connecting player 1 to ", room);
+            socket.emit("connected_to_game", io.sockets.adapter.rooms[room].length);
         }
         else if (game.players.length === 1 ) {
             socket.join(room);
@@ -60,6 +65,7 @@ io.on('connection', function (socket: any) {
             })
             console.log("connecting player 2 to ", room);
             socket.emit("connected_to_game", io.sockets.adapter.rooms[room].length);
+            await game.remove();
         }
         else {
             console.log("Already 2 players");

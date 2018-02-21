@@ -1,5 +1,6 @@
 import { Component, OnInit, Optional } from "@angular/core";
 import { Socket } from "ng-socket-io";
+import { IGameModel } from "./../../../../../server/app/models/game"
 
 @Component({
   selector: "app-mode",
@@ -12,9 +13,13 @@ export class ModeComponent implements OnInit {
         @Optional() private _modes: string [],
         @Optional() private _selectedMode: string,
         private _socket: Socket,
+        @Optional() private _games: String [],
+        @Optional() private _showGames: boolean
         ) {
+        this._games = [];
         this._modes = ["Single Player", "Two Players"];
         this._selectedMode = "Single Player";
+        this._showGames = false;
     }
 
     public get modes(): string [] {
@@ -28,15 +33,36 @@ export class ModeComponent implements OnInit {
         this._selectedMode = mode;
     }
 
-    public createGame(mode: string): void {
+    public get games(): String[] {
+        return this._games;
+    }
 
+    public addGames(): void {
+        this._socket.emit("get_games");
+        this._socket.on("add_games", (games: IGameModel[]) => {
+            for (const game of games) {
+                if (this.games[games.indexOf(game)] !== game.name) {
+                this._games.push(game.name);
+                }
+            }
+        });
+    }
+    public toggleShowGames(): void {
+        this._showGames = !this._showGames;
+    }
+    public get showGames(): boolean {
+        return this._showGames;
+    }
+
+    public createGame(mode: string): void {
         if (mode === "Two Players") {
-            //const gameId: string = `game${Math.random().toString(36).substr(2, 9)}`;
-            const gameId: string = "test";
+            const gameId: string = `game${Math.random().toString(36).substr(2, 9)}`;
             this._socket.emit("create_game", gameId);
+            this._socket.on("created_game", (game: IGameModel): void => {
+            });
             this.joinGame(gameId);
         } else {
-            console.log("single player"); 
+            console.log("single player");
         }
     }
 
