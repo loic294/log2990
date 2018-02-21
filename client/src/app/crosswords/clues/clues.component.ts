@@ -42,12 +42,12 @@ const CLUES: Array<Word> = [
     styleUrls: ["./clues.component.css"]
 })
 export class CluesComponent implements OnInit {
-
     private _clues: Array<Word>;
     private _selectedClue: Word;
 
     public constructor(public _wordService: WordService) {
         this._clues = CLUES;
+        this._selectedClue = null;
     }
 
     public onSelect(clue: Word): void {
