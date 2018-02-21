@@ -41,9 +41,7 @@ export class GridComponent implements OnInit {
     private _x: number;
     private _y: number;
 
-    public constructor( private _gridService: GridService, private _wordService: WordService) {
-        this._grid = this._gridService.intializeGrid();
-    }
+    public constructor( private _gridService: GridService, private _wordService: WordService) {}
 
     public updateGrid(event: KeyboardEvent, c: Case): void {
         this._gridService.updateGrid(event, c).subscribe((_grid) => this._grid = _grid);
@@ -111,7 +109,6 @@ export class GridComponent implements OnInit {
     }
 
     public selectCaseFromGrid(c: Case): void {
-
             this._x = c.x;
             this._y = c.y;
             const tempWord: Word = this.findWordStart();
@@ -278,18 +275,12 @@ export class GridComponent implements OnInit {
         }
     }
     public ngOnInit(): void {
-        for (let i: number = 0; i < this._grid.length; i++) {
-            for (let j: number = 0; j < this._grid[i].length; j++) {
-                this._grid[i][j].x = i;
-                this._grid[i][j].y = j;
-                if (this._grid[i][j].char === "_") {
-                    this._grid[i][j].char = "";
-                }
-            }
-        }
+        this._grid = this._gridService.intializeGrid();
+
         this._wordService.wordFromClue.subscribe(
             (_wordFromClue) => {this._word = _wordFromClue,
                 this.selectCaseFromService(_wordFromClue);
             });
     }
+
 }
