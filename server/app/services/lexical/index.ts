@@ -9,6 +9,11 @@ interface AxiosWords {
     tags: Array<string>;
 }
 
+const enum Level {
+    Easy = "easy",
+    Hard = "hard"
+}
+
 export default class LexicalService {
 
     private async baseDefinition(word: string): Promise<AxiosResponse> {
@@ -76,11 +81,11 @@ export default class LexicalService {
                 return "No definitions";
             }
             switch (level) {
-                case "easy":
+                case Level.Easy:
                     {
                         return filteredDefinitions[0];
                     }
-                case "hard":
+                case Level.Hard:
                     {
                         if (filteredDefinitions.length > 1) {
                             return filteredDefinitions[Math.floor((Math.random() * (filteredDefinitions.length - 1) + 1))];
