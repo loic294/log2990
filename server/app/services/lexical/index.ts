@@ -33,6 +33,20 @@ export default class LexicalService {
             throw err;
         }
     }
+    private removeExamplesDefinitions(definitions: string []): void {
+        for (const def in definitions) {
+            if (definitions[def].includes(":")) {
+                definitions[def] = definitions[def].substring(0, definitions[def].indexOf(":"));
+            }
+        }
+    }
+    private removeDetailsDefinitions(definitions: string []): void {
+        for (const def in definitions) {
+            if (definitions[def].includes(";")) {
+                definitions[def] = definitions[def].substring(0, definitions[def].indexOf(";"));
+            }
+        }
+    }
 
     private async filterDefinitions(word: string): Promise<Array<string>> {
         const definitions: string [] = [];
@@ -44,18 +58,10 @@ export default class LexicalService {
                     definitions.push(data[def].text);
                 }
             }
-            // Remove examples from definitions
-            for (const def in definitions) {
-                if (definitions[def].includes(":")) {
-                    definitions[def] = definitions[def].substring(0, definitions[def].indexOf(":"));
-                }
-            }
-            // Remove unecessary details from definitions
-            for (const def in definitions) {
-                if (definitions[def].includes(";")) {
-                    definitions[def] = definitions[def].substring(0, definitions[def].indexOf(";"));
-                }
-            }
+
+            this.removeExamplesDefinitions(definitions);
+            this.removeDetailsDefinitions(definitions);
+
         } catch (err) {
             throw err;
         }
