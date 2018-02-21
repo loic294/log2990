@@ -18,8 +18,6 @@ export class GridService {
     private _selWord: Word;
     private _wordStart: number;
     private _word: Word;
-    private _x: number;
-    private _y: number;
 
     public intializeGrid(): Array<Array<Case>> {
         return GRID.map((row: string) => {
@@ -103,7 +101,7 @@ export class GridService {
     }
 
     private isHorizontal(): boolean {
-        return this._word.direction === Orientation.horizontal;
+        return this._word.orientation === Orientation.horizontal;
     }
 
     private iterateGrid(caseTemp: Case, fct: Function): void {
@@ -126,7 +124,7 @@ export class GridService {
                 this.isHorizontal() ? tempY++ : tempX++;
                 i++;
             }
-            this._word.validate();
+            this._word.isValidated = true;
             elem.blur();
         }
     }

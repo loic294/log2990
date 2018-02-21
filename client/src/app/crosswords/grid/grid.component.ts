@@ -158,7 +158,7 @@ export class GridComponent implements OnInit {
     }
 
     private isHorizontal(): boolean {
-        return this._word.direction === Orientation.horizontal;
+        return this._word.orientation === Orientation.horizontal;
     }
 
     private iterateGrid (caseTemp: Case, fct: Function): void {
@@ -273,7 +273,7 @@ export class GridComponent implements OnInit {
                 this.isHorizontal() ? tempY++ : tempX++;
                 i++;
             }
-            this._word.validate();
+            this._word.isValidated = true;
             elem.blur();
         }
     }
