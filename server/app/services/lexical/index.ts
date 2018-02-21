@@ -2,7 +2,7 @@
     This service will be responsible of requesting and creating lexical content.
 */
 import axios, { AxiosResponse } from "axios";
-const API_KEY: String = "api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5";
+import KEYS from "./../../config/index";
 
 interface AxiosWords {
     word: string;
@@ -18,7 +18,7 @@ export default class LexicalService {
 
     private async baseDefinition(word: string): Promise<AxiosResponse> {
         let WORDNIK_URL: string;
-        WORDNIK_URL = `http://api.wordnik.com:80/v4/word.json/${word}/definitions?limit=200&${API_KEY}`;
+        WORDNIK_URL = `http://api.wordnik.com:80/v4/word.json/${word}/definitions?limit=200&${KEYS.WORDNIK_KEY}`;
         try {
             const response: AxiosResponse = await axios.get(WORDNIK_URL);
 
