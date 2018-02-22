@@ -43,7 +43,7 @@ export default class InputManagerService {
 
     public handleKeyDown(event: KeyboardEvent): void {
         const command: CommandKeyDict = this.keyDownCommands.find( (cmd: CommandKeyDict) => {
-            return command.keyCode === event.keyCode;
+            return cmd.keyCode === event.keyCode;
         });
         if (command) {
             command.command.subscribe();
@@ -52,7 +52,7 @@ export default class InputManagerService {
 
     public handleKeyUp(event: KeyboardEvent): void {
         const command: CommandKeyDict = this.keyUpCommands.find( (cmd: CommandKeyDict) => {
-            return command.keyCode === event.keyCode;
+            return cmd.keyCode === event.keyCode;
         });
         if (command) {
             command.command.subscribe();

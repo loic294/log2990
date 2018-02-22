@@ -7,7 +7,11 @@ import InputManagerService from "../input-manager/input-manager.service";
     moduleId: module.id,
     selector: "app-game-component",
     templateUrl: "./game.component.html",
-    styleUrls: ["./game.component.css"]
+    styleUrls: ["./game.component.css"],
+    providers: [
+        RenderService,
+        InputManagerService
+    ]
 })
 
 export class GameComponent implements AfterViewInit {
@@ -37,6 +41,7 @@ export class GameComponent implements AfterViewInit {
             .initialize(this.containerRef.nativeElement)
             .then(/* do nothing */)
             .catch((err) => console.error(err));
+        this.inputManager.init(this.car);
     }
 
     public get car(): Car {
