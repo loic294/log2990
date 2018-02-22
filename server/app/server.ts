@@ -70,6 +70,10 @@ io.on('connection', function (socket: any) {
         else {
             console.log("Already 2 players");
         }
+        socket.on('disconnect', async function(){
+            game.remove();
+            console.log("disconnect", game);
+        })
     });
 });
 

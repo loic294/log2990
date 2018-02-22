@@ -1,6 +1,7 @@
 import { Component, OnInit, Optional } from "@angular/core";
 import { Socket } from "ng-socket-io";
-import { IGameModel } from "./../../../../../server/app/models/game"
+import { IGameModel } from "./../../../../../server/app/models/game";
+
 
 @Component({
   selector: "app-mode",
@@ -9,6 +10,7 @@ import { IGameModel } from "./../../../../../server/app/models/game"
 })
 export class ModeComponent implements OnInit {
 
+    private input: String;
     public constructor(
         @Optional() private _modes: string [],
         @Optional() private _selectedMode: string,
@@ -20,6 +22,7 @@ export class ModeComponent implements OnInit {
         this._modes = ["Single Player", "Two Players"];
         this._selectedMode = "Single Player";
         this._showGames = false;
+
     }
 
     public get modes(): string [] {

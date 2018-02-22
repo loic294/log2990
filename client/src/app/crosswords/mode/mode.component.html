@@ -4,6 +4,7 @@
 <ui-button (click)="createGame(selectedMode)">Create Game</ui-button>
 <ui-button (click)= "addGames(); toggleShowGames()">Join Game</ui-button>
 <button [ngClass] = "{ 'hide': !showGames, 'show': showGames}" *ngFor = "let game of games">{{game}}</button>
+<input type="text" [(ngModel)]="input"/>{{input}}
 
 
 
