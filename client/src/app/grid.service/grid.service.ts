@@ -13,7 +13,6 @@ const BACK_SPACE_KEY_CODE: number = 8;
 @Injectable()
 export class GridService {
 
-    private _wordService: WordService;
 
     private _grid: Array<Array<Case>>;
     private _isHorizontal: boolean;
@@ -24,12 +23,21 @@ export class GridService {
     private _x: number;
     private _y: number;
 
-    public intializeGrid(): Array<Array<Case>> {
-        /*this._wordService.wordFromClue.subscribe(
+    public constructor (private _wordService: WordService) {
+        this._wordService.wordFromClue.subscribe(
             (_wordFromClue) => {this._word = _wordFromClue,
                 this.selectCaseFromService(_wordFromClue);
             });
-        */
+
+        this._grid = GRID.map((row: string) => {
+                const strings: Array<string> = row.split(" ");
+
+                return strings.map((c: string) => new Case(c));
+            });
+    }
+
+    public intializeGrid(): Array<Array<Case>> {
+
         return GRID.map((row: string) => {
             const strings: Array<string> = row.split(" ");
 
@@ -41,7 +49,7 @@ export class GridService {
     public get grid(): Array<Array<Case>> {
         return this._grid;
     }
-    /*
+    
     private selectCaseFromService(w: Word): void {
 
         if (this._selectedWord != null) {
@@ -61,7 +69,7 @@ export class GridService {
             this.wordHighligth();
         }
     }
-    */
+    
     public selectCaseFromGrid(c: Case): void {
 
         this._x = c.x;
