@@ -44,7 +44,7 @@ export class ModeComponent implements OnInit {
         this._socket.emit("get_games");
         this._socket.on("add_games", (games: IGameModel[]) => {
             for (const game of games) {
-                if (this.games[games.indexOf(game)] !== game.name) {
+                if (this.games[games.indexOf(game)] !== game.name && game.players.length === 1 ) {
                 this._games.push(game.name);
                 }
             }
