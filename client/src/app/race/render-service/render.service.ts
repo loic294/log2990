@@ -4,7 +4,7 @@ import { PerspectiveCamera, WebGLRenderer, Scene, AmbientLight,
 MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, CubeGeometry } from "three";
 import { Car } from "../car/car";
 
-const FAR_CLIPPING_PLANE: number = 1000;
+const FAR_CLIPPING_PLANE: number = 100000;
 const NEAR_CLIPPING_PLANE: number = 1;
 const FIELD_OF_VIEW: number = 70;
 
@@ -17,7 +17,7 @@ const INITIAL_CAMERA_POSITION_Y: number = 25;
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 1;
 
-const SIZE_SKYBOX: number = 1000;
+const SIZE_SKYBOX: number = 10000;
 
 @Injectable()
 export class RenderService {
