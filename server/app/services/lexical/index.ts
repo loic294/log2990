@@ -3,15 +3,11 @@
 */
 import axios, { AxiosResponse } from "axios";
 import KEYS from "./../../config/index";
+import { Level } from "./../../../../common/lexical/level";
 
 interface AxiosWords {
     word: string;
     tags: Array<string>;
-}
-
-const enum Level {
-    Easy = "easy",
-    Hard = "hard"
 }
 
 export default class LexicalService {
