@@ -103,7 +103,6 @@ export class Car extends Object3D {
         this._boundingBox = new THREE.Box3().setFromObject(this);
     }
 
-    // TODO: move loading code outside of car class.
     private async load(): Promise<Object3D> {
         return new Promise<Object3D>((resolve, reject) => {
             const loader: ObjectLoader = new ObjectLoader();
