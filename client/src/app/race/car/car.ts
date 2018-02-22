@@ -1,6 +1,4 @@
-import { Vector3, Matrix4, Object3D, ObjectLoader, Euler, Quaternion } from "three";
-/* tslint:disable:no-duplicate-imports */
-import * as THREE from "three";
+import { Vector3, Matrix4, Object3D, ObjectLoader, Euler, Quaternion, Box3 } from "three";
 import { Engine } from "./engine";
 import { MS_TO_SECONDS, GRAVITY, PI_OVER_2, RAD_TO_DEG } from "../../constants";
 import { Wheel } from "./wheel";
@@ -62,7 +60,7 @@ export class Car extends Object3D {
         return this.mesh.position;
     }
 
-    public get boundingBox(): THREE.Box3 {
+    public get boundingBox(): Box3 {
         return this._boundingBox;
     }
 
@@ -100,7 +98,7 @@ export class Car extends Object3D {
         this.weightRear = INITIAL_WEIGHT_DISTRIBUTION;
         this._speed = new Vector3(0, 0, 0);
 
-        this._boundingBox = new THREE.Box3().setFromObject(this);
+        this._boundingBox = new Box3().setFromObject(this);
     }
 
     private async load(): Promise<Object3D> {

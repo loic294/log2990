@@ -120,14 +120,14 @@ describe("Car", () => {
 
     it("should have a valid bounding box.", () => {
 
-        expect(car.boundingBox.getCenter()).toEqual(car.getWorldPosition());
+        expect(car.boundingBox.min).toEqual(car.meshPosition);
     });
 
     it("should have a bounding box which follows the center of the car.", () => {
         car.isAcceleratorPressed = true;
-        car.update(MS_BETWEEN_FRAMES * 3);
+        car.update(MS_BETWEEN_FRAMES * 20);
         car.isAcceleratorPressed = false;
 
-        expect(car.boundingBox.getCenter()).toEqual(car.getWorldPosition());
+        expect(car.boundingBox.max).toEqual(car.meshPosition);
     });
 });
