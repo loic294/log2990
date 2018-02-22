@@ -6,11 +6,14 @@ import { Case } from "../../../../common/grid/case";
 import { Observable } from "rxjs/Observable";
 import { of } from "rxjs/observable/of";
 import Word, { Orientation } from "../../../../common/lexical/word";
+import { WordService } from "../word.service/word.service";
 
 const BACK_SPACE_KEY_CODE: number = 8;
 
 @Injectable()
 export class GridService {
+
+    private _wordService: WordService;
 
     private _grid: Array<Array<Case>>;
     private _isHorizontal: boolean;
@@ -18,12 +21,130 @@ export class GridService {
     private _selWord: Word;
     private _wordStart: number;
     private _word: Word;
+    private _x: number;
+    private _y: number;
 
     public intializeGrid(): Array<Array<Case>> {
+        /*this._wordService.wordFromClue.subscribe(
+            (_wordFromClue) => {this._word = _wordFromClue,
+                this.selectCaseFromService(_wordFromClue);
+            });
+        */
         return GRID.map((row: string) => {
             const strings: Array<string> = row.split(" ");
 
             return strings.map((c: string) => new Case(c));
+        });
+
+    }
+
+    public get grid(): Array<Array<Case>> {
+        return this._grid;
+    }
+    /*
+    private selectCaseFromService(w: Word): void {
+
+        if (this._selectedWord != null) {
+            const caseTemp: Case = this._selectedWord;
+
+            this.iterateGrid(caseTemp, (x: number, y: number, caseTest: Case) => {
+                this._grid[x][y].unselect();
+            });
+
+        }
+
+        if (w != null) {
+            this._grid[w.row][w.col].select();
+            this._x = w.row;
+            this._y = w.col;
+            this.findEndWrittenWord();
+            this.wordHighligth();
+        }
+    }
+    */
+    public selectCaseFromGrid(c: Case): void {
+
+        this._x = c.x;
+        this._y = c.y;
+        const tempWord: Word = this.findWordStart();
+        this._wordService.selectWordFromGrid(tempWord);
+
+        if (this._selectedWord != null) {
+            const caseTemp: Case = this._selectedWord;
+
+            this.iterateGrid(caseTemp, (x: number, y: number) => {
+                this._grid[x][y].unselect();
+            });
+        }
+
+        if (this._word != null) {
+            this._grid[tempWord.row][tempWord.col].select();
+            this._x = this._grid[tempWord.row][tempWord.col].x;
+            this._y = this._grid[tempWord.row][tempWord.col].y;
+            this.findEndWrittenWord();
+            this.wordHighligth();
+        } else {
+            const elem: HTMLElement = document.getElementById(c.x.toString() + (c.y).toString());
+            elem.blur();
+        }
+    }
+
+    private findWordStart(): Word {
+        let tempOrientation: Orientation;
+
+        if (!this.isBlack(this._grid[this._x][this._y].char)) {
+            if (this.previousHorizontalIsNotBlack() || this.nextHorizontalIsNotBlack()) {
+
+                this.findHorizontalWordStart();
+                tempOrientation = Orientation.horizontal;
+            } else {
+                this.findVerticalWordStart();
+                tempOrientation = Orientation.vertical;
+            }
+        }
+
+        return new Word("", "", [this._x, this._y], tempOrientation, 0, false);
+    }
+
+    public isBlack(letter: string): boolean {
+        return (/\-/.test(letter) && letter.length === 1);
+    }
+
+    private findHorizontalWordStart(): void {
+        while (this.previousHorizontalIsNotBlack()) {
+            this._y--;
+        }
+    }
+
+    private findVerticalWordStart(): void {
+        while (this.previousVerticalIsNotBlack()) {
+            this._x--;
+        }
+    }
+
+    private previousHorizontalIsNotBlack(): boolean {
+        return (this._y - 1 >= 0 && !this.isBlack(this._grid[this._x][this._y - 1].char));
+    }
+
+    private nextHorizontalIsNotBlack(): boolean {
+        return (this._y + 1 < this._grid[this._x].length && !this.isBlack(this._grid[this._x][this._y + 1].char));
+    }
+
+    private previousVerticalIsNotBlack(): boolean {
+        return (this._x - 1 >= 0 && !this.isBlack(this._grid[this._x - 1][this._y].char));
+    }
+
+    private wordHighligth(): void {
+        const currentCase: Case = null;
+
+        this.iterateGrid(currentCase, (x: number, y: number, caseTemp: Case, cell: number) => {
+            this._grid[caseTemp.x][caseTemp.y].select();
+            if (caseTemp.char === "-") {
+
+                return true;
+            }
+
+            return false;
         });
     }
 
