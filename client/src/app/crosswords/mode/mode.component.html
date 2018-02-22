@@ -3,7 +3,7 @@
 </ui-button>
 <ui-button (click)="createGame(selectedMode)">Create Game</ui-button>
 <ui-button (click)= "addGames(); toggleShowGames()">Join Game</ui-button>
-<button [ngClass] = "{ 'hide': !showGames, 'show': showGames}" *ngFor = "let game of games">{{game}}</button>
+<button [ngClass] = "{ 'hide': !showGames, 'show': showGames}" *ngFor = "let game of games" (click) = "joinGame(game)">{{game}}</button>
 
 
 
