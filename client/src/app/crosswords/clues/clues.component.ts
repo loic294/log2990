@@ -42,14 +42,16 @@ const CLUES: Array<Word> = [
     styleUrls: ["./clues.component.css"]
 })
 export class CluesComponent implements OnInit {
-
-    private _clues: Array<Word> = CLUES;
+    private _clues: Array<Word>;
     private _selectedClue: Word;
 
-    public constructor(public _wordService: WordService) { }
+    public constructor(public _wordService: WordService) {
+        this._clues = CLUES;
+        this._selectedClue = null;
+    }
 
     public onSelect(clue: Word): void {
-        if (!clue.validated) {
+        if (!clue.isValidated) {
             this._selectedClue = clue;
             this._wordService.selectWordFromClue(this._selectedClue);
         } else {
@@ -70,8 +72,8 @@ export class CluesComponent implements OnInit {
 
         return (item.col === position.col &&
             item.row === position.row &&
-            item.direction === position.direction &&
-            !item.validated);
+            item.orientation === position.orientation &&
+            !item.isValidated);
     }
 
     private selectWord(position: Word): void {

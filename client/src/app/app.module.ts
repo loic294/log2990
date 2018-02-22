@@ -20,6 +20,8 @@ import { ContainerComponent } from "./crosswords/container/container.component";
 import { ButtonComponent } from "./crosswords/button/button.component";
 import { SocketIoModule, SocketIoConfig } from "ng-socket-io";
 import { ModeComponent } from './crosswords/mode/mode.component';
+// import { AppRoutingModule } from ".//app-routing.module";
+import { GridService } from "./grid.service/grid.service";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
@@ -47,6 +49,7 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         RenderService,
         BasicService,
         WordService,
+        GridService
     ],
     bootstrap: [AppComponent]
 })
