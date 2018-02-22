@@ -128,7 +128,7 @@ export class RenderService {
         this.scene.add(skybox);
     }
 
-    // TODO: Create an event handler service.
+    // Create an input manager service.
     public handleKeyDown(event: KeyboardEvent): void {
         switch (event.keyCode) {
             case ACCELERATE_KEYCODE:
@@ -148,7 +148,7 @@ export class RenderService {
         }
     }
 
-    // TODO: Create an event handler service.
+    // Create an input manager service.
     public handleKeyUp(event: KeyboardEvent): void {
         switch (event.keyCode) {
             case ACCELERATE_KEYCODE:

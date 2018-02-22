@@ -1,4 +1,4 @@
-import { Vector3, Matrix4, Object3D, ObjectLoader, Euler, Quaternion } from "three";
+import { Vector3 } from "three";
 import { Car } from "./car";
 
 export default class Collision {
@@ -9,7 +9,7 @@ export default class Collision {
     public static collide(carA: Car, carB: Car): void {
         const ra: Vector3 = carA.boundingBox.getCenter();
         const rb: Vector3 = carB.boundingBox.getCenter();
-        const mBA: number = carB.mass / carA.mass;
+        const mBA: number = carB.getMass() / carA.getMass();
 
         const n: Vector3 = new Vector3();
         n.addVectors(rb, (ra).negate()).normalize();
@@ -22,7 +22,7 @@ export default class Collision {
         const snABO: number = sABO.dot(n);
         const snAB: number = ((1 - mBA) / (mBA + 1)) * snABO;
 
-        const sBB: Vector3 = n.multiplyScalar((-carA.mass / carB.mass) * (snAB - snABO));
+        const sBB: Vector3 = n.multiplyScalar((-carA.getMass() / carB.getMass()) * (snAB - snABO));
 
         const sAB: Vector3 = new Vector3();
         sAB.addVectors(sABO, n.multiplyScalar(snAB - snABO));
