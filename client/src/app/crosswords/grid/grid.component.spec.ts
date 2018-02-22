@@ -92,6 +92,4 @@ describe("GridComponent", () => {
         expect(component.word.validated).toBe(false);
     });
 
-
-
 });
