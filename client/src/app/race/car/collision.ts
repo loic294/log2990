@@ -1,7 +1,7 @@
 import { Vector3 } from "three";
 import { Car } from "./car";
 
-export default class Collision {
+export class Collision {
     public static checkCollision(carA: Car, carB: Car): boolean {
         return  carA.boundingBox.isIntersectionBox(carB.boundingBox);
     }
