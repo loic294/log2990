@@ -3,7 +3,7 @@ export enum Orientation {
     vertical = 1,
 }
 
-export default interface IWord {
+export interface IWord {
     name: string,
     desc: string,
     position: Array<number>,

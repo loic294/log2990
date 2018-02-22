@@ -45,16 +45,6 @@ export class GridService {
         }
     }
 
-    public intializeGrid(): Array<Array<Case>> {
-
-        return GRID.map((row: string) => {
-            const strings: Array<string> = row.split(" ");
-
-            return strings.map((c: string) => new Case(c));
-        });
-
-    }
-
     public get grid(): Array<Array<Case>> {
         return this._grid;
     }
