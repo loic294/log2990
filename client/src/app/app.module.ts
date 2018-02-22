@@ -18,7 +18,8 @@ import { CluesComponent } from "./crosswords/clues/clues.component";
 import { ShadowBoxComponent } from "./crosswords/shadow-box/shadow-box.component";
 import { ContainerComponent } from "./crosswords/container/container.component";
 import { ButtonComponent } from "./crosswords/button/button.component";
-import { AppRoutingModule } from './/app-routing.module';
+import { AppRoutingModule } from ".//app-routing.module";
+import { GridService } from "./grid.service/grid.service";
 
 @NgModule({
     declarations: [
@@ -43,6 +44,7 @@ import { AppRoutingModule } from './/app-routing.module';
         RenderService,
         BasicService,
         WordService,
+        GridService
     ],
     bootstrap: [AppComponent]
 })
