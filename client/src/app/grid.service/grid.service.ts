@@ -19,8 +19,8 @@ export class GridService {
     private _selWord: Word;
     private _wordStart: number;
     private _word: Word;
-    private _x: number;
-    private _y: number;
+    private _row: number;
+    private _col: number;
 
     public constructor(private _wordService: WordService) {
         this._wordService.wordFromClue.subscribe(
@@ -52,9 +52,9 @@ export class GridService {
     private selectCaseFromService(w: Word): void {
 
         if (this._selectedWord != null) {
-            const caseTemp: Case = this._selectedWord;
+            const cellTemp: Case = this._selectedWord;
 
-            this.iterateGrid(caseTemp, (x: number, y: number, caseTest: Case) => {
+            this.iterateGrid(cellTemp, (x: number, y: number, caseTest: Case) => {
                 this._grid[x][y].unselect();
             });
 
@@ -62,8 +62,8 @@ export class GridService {
 
         if (w != null) {
             this._grid[w.row][w.col].select();
-            this._x = w.row;
-            this._y = w.col;
+            this._row = w.row;
+            this._col = w.col;
             this.findEndWrittenWord();
             this.wordHighligth();
         }
@@ -71,23 +71,23 @@ export class GridService {
 
     public selectCaseFromGrid(c: Case): void {
 
-        this._x = c.x;
-        this._y = c.y;
+        this._row = c.x;
+        this._col = c.y;
         const tempWord: Word = this.findWordStart();
         this._wordService.selectWordFromGrid(tempWord);
 
         if (this._selectedWord != null) {
-            const caseTemp: Case = this._selectedWord;
+            const cellTemp: Case = this._selectedWord;
 
-            this.iterateGrid(caseTemp, (x: number, y: number) => {
+            this.iterateGrid(cellTemp, (x: number, y: number) => {
                 this._grid[x][y].unselect();
             });
         }
 
         if (this._word != null) {
             this._grid[tempWord.row][tempWord.col].select();
-            this._x = this._grid[tempWord.row][tempWord.col].x;
-            this._y = this._grid[tempWord.row][tempWord.col].y;
+            this._row = this._grid[tempWord.row][tempWord.col].x;
+            this._col = this._grid[tempWord.row][tempWord.col].y;
             this.findEndWrittenWord();
             this.wordHighligth();
         } else {
@@ -99,7 +99,7 @@ export class GridService {
     private findWordStart(): Word {
         let tempOrientation: Orientation;
 
-        if (!this.isBlack(this._grid[this._x][this._y].char)) {
+        if (!this.isBlack(this._grid[this._row][this._col].char)) {
             if (this.previousHorizontalIsNotBlack() || this.nextHorizontalIsNotBlack()) {
 
                 this.findHorizontalWordStart();
@@ -110,7 +110,7 @@ export class GridService {
             }
         }
 
-        return new Word("", "", [this._x, this._y], tempOrientation, 0, false);
+        return new Word("", "", [this._row, this._col], tempOrientation, 0, false);
     }
 
     public isBlack(letter: string): boolean {
@@ -119,34 +119,34 @@ export class GridService {
 
     private findHorizontalWordStart(): void {
         while (this.previousHorizontalIsNotBlack()) {
-            this._y--;
+            this._col--;
         }
     }
 
     private findVerticalWordStart(): void {
         while (this.previousVerticalIsNotBlack()) {
-            this._x--;
+            this._row--;
         }
     }
 
     private previousHorizontalIsNotBlack(): boolean {
-        return (this._y - 1 >= 0 && !this.isBlack(this._grid[this._x][this._y - 1].char));
+        return (this._col - 1 >= 0 && !this.isBlack(this._grid[this._row][this._col - 1].char));
     }
 
     private nextHorizontalIsNotBlack(): boolean {
-        return (this._y + 1 < this._grid[this._x].length && !this.isBlack(this._grid[this._x][this._y + 1].char));
+        return (this._col + 1 < this._grid[this._row].length && !this.isBlack(this._grid[this._row][this._col + 1].char));
     }
 
     private previousVerticalIsNotBlack(): boolean {
-        return (this._x - 1 >= 0 && !this.isBlack(this._grid[this._x - 1][this._y].char));
+        return (this._row - 1 >= 0 && !this.isBlack(this._grid[this._row - 1][this._col].char));
     }
 
     private wordHighligth(): void {
         const currentCase: Case = null;
 
-        this.iterateGrid(currentCase, (x: number, y: number, caseTemp: Case, cell: number) => {
-            this._grid[caseTemp.x][caseTemp.y].select();
-            if (caseTemp.char === "-") {
+        this.iterateGrid(currentCase, (x: number, y: number, cellTemp: Case, cell: number) => {
+            this._grid[cellTemp.x][cellTemp.y].select();
+            if (cellTemp.char === "-") {
 
                 return true;
             }
@@ -198,22 +198,22 @@ export class GridService {
 
     private findEndWrittenWord(): void {
         let wordStart: number = 0;
-        const caseTemp: Case = null;
+        const cellTemp: Case = null;
         let wordEntered: string = "";
         this._selWord = this._word;
         this.isHorizontal() ? wordStart = this._word.col : wordStart = this._word.row;
         this._wordStart = wordStart;
         this._isHorizontal = this.isHorizontal();
 
-        this.iterateGrid(caseTemp, (x: number, y: number, caseTemp: Case, cell: number) => {
+        this.iterateGrid(cellTemp, (x: number, y: number, cellTemp: Case, cell: number) => {
             this._grid[x][y].unselect();
             if (cell === wordStart) {
-                this._selectedWord = caseTemp;
+                this._selectedWord = cellTemp;
             }
-            this._grid[caseTemp.x][caseTemp.y].select();
-            if (caseTemp.char === "" || cell === wordStart + this._word.length - 1) {
-                wordEntered += caseTemp.char;
-                const elem: HTMLElement = document.getElementById(caseTemp.x.toString() + (caseTemp.y).toString());
+            this._grid[cellTemp.x][cellTemp.y].select();
+            if (cellTemp.char === "" || cell === wordStart + this._word.length - 1) {
+                wordEntered += cellTemp.char;
+                const elem: HTMLElement = document.getElementById(cellTemp.x.toString() + cellTemp.y.toString());
                 elem.focus();
                 if (cell === wordStart + this._word.length - 1) {
                     this.validateWord(wordEntered, elem);
@@ -221,7 +221,7 @@ export class GridService {
 
                 return true;
             } else {
-                wordEntered += caseTemp.char;
+                wordEntered += cellTemp.char;
 
                 return false;
             }
@@ -232,11 +232,11 @@ export class GridService {
         return this._word.orientation === Orientation.horizontal;
     }
 
-    private iterateGrid(caseTemp: Case, fct: Function): void {
+    private iterateGrid(cellTemp: Case, fct: Function): void {
         for (let cell: number = this._wordStart; cell < this._wordStart + this._selWord.length; cell++) {
-            this._isHorizontal ? caseTemp = this._grid[this._selWord.row][cell] : caseTemp = this._grid[cell][this._selWord.col];
+            this._isHorizontal ? cellTemp = this._grid[this._selWord.row][cell] : cellTemp = this._grid[cell][this._selWord.col];
 
-            if (fct(caseTemp.x, caseTemp.y, caseTemp, cell, stop)) {
+            if (fct(cellTemp.x, cellTemp.y, cellTemp, cell, stop)) {
                 break;
             }
         }
