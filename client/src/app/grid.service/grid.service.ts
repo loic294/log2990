@@ -13,7 +13,6 @@ const BACK_SPACE_KEY_CODE: number = 8;
 @Injectable()
 export class GridService {
 
-
     private _grid: Array<Array<Case>>;
     private _isHorizontal: boolean;
     private _selectedWord: Case;
@@ -23,17 +22,27 @@ export class GridService {
     private _x: number;
     private _y: number;
 
-    public constructor (private _wordService: WordService) {
+    public constructor(private _wordService: WordService) {
         this._wordService.wordFromClue.subscribe(
-            (_wordFromClue) => {this._word = _wordFromClue,
+            (_wordFromClue) => {
+            this._word = _wordFromClue,
                 this.selectCaseFromService(_wordFromClue);
             });
 
         this._grid = GRID.map((row: string) => {
-                const strings: Array<string> = row.split(" ");
+            const strings: Array<string> = row.split(" ");
 
-                return strings.map((c: string) => new Case(c));
-            });
+            return strings.map((c: string) => new Case(c));
+        });
+        for (let i: number = 0; i < this._grid.length; i++) {
+            for (let j: number = 0; j < this._grid[i].length; j++) {
+                this._grid[i][j].x = i;
+                this._grid[i][j].y = j;
+                if (this._grid[i][j].char === "_") {
+                    this._grid[i][j].char = "";
+                }
+            }
+        }
     }
 
     public intializeGrid(): Array<Array<Case>> {
@@ -49,7 +58,7 @@ export class GridService {
     public get grid(): Array<Array<Case>> {
         return this._grid;
     }
-    
+
     private selectCaseFromService(w: Word): void {
 
         if (this._selectedWord != null) {
@@ -69,7 +78,7 @@ export class GridService {
             this.wordHighligth();
         }
     }
-    
+
     public selectCaseFromGrid(c: Case): void {
 
         this._x = c.x;
