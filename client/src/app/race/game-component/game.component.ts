@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, ViewChild, HostListener } from "@angular/core";
 import { RenderService } from "../render-service/render.service";
 import { Car } from "../car/car";
+import InputManagerService from "../input-manager/input-manager.service";
 
 @Component({
     moduleId: module.id,
@@ -14,7 +15,7 @@ export class GameComponent implements AfterViewInit {
     @ViewChild("container")
     private containerRef: ElementRef;
 
-    public constructor(private renderService: RenderService) { }
+    public constructor(private renderService: RenderService, private inputManager: InputManagerService) { }
 
     @HostListener("window:resize", ["$event"])
     public onResize(): void {
