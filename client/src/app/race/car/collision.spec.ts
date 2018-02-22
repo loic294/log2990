@@ -31,6 +31,10 @@ describe("Collision", () => {
     });
 
     it("should detect a collision with two identical cars.", () => {
+        carB.isAcceleratorPressed = true;
+        carB.update(MS_BETWEEN_FRAMES);
+        carB.isAcceleratorPressed = false;
+
         expect(Collision.checkCollision(carA, carB)).toBe(true);
     });
 

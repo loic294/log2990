@@ -8,11 +8,6 @@ const FAR_CLIPPING_PLANE: number = 100000;
 const NEAR_CLIPPING_PLANE: number = 1;
 const FIELD_OF_VIEW: number = 70;
 
-const ACCELERATE_KEYCODE: number = 87;  // w
-const LEFT_KEYCODE: number = 65;        // a
-const BRAKE_KEYCODE: number = 83;       // s
-const RIGHT_KEYCODE: number = 68;       // d
-
 const INITIAL_CAMERA_POSITION_Y: number = 25;
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 1;
@@ -79,8 +74,6 @@ export class RenderService {
         this.loadSkybox();
     }
 
-    // {map: new TextureLoader().load( imageFilePath ), side: BackSide }
-
     private getAspectRatio(): number {
         return this.container.clientWidth / this.container.clientHeight;
     }
@@ -126,43 +119,5 @@ export class RenderService {
         const skybox: Mesh = new Mesh(skyboxGeometry, skyboxTexture);
 
         this.scene.add(skybox);
-    }
-
-    // Create an input manager service.
-    public handleKeyDown(event: KeyboardEvent): void {
-        switch (event.keyCode) {
-            case ACCELERATE_KEYCODE:
-                this._car.isAcceleratorPressed = true;
-                break;
-            case LEFT_KEYCODE:
-                this._car.steerLeft();
-                break;
-            case RIGHT_KEYCODE:
-                this._car.steerRight();
-                break;
-            case BRAKE_KEYCODE:
-                this._car.brake();
-                break;
-            default:
-                break;
-        }
-    }
-
-    // Create an input manager service.
-    public handleKeyUp(event: KeyboardEvent): void {
-        switch (event.keyCode) {
-            case ACCELERATE_KEYCODE:
-                this._car.isAcceleratorPressed = false;
-                break;
-            case LEFT_KEYCODE:
-            case RIGHT_KEYCODE:
-                this._car.releaseSteering();
-                break;
-            case BRAKE_KEYCODE:
-                this._car.releaseBrakes();
-                break;
-            default:
-                break;
-        }
     }
 }
