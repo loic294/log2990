@@ -24,40 +24,40 @@ export default class Collision {
         return car.boundingBox.getCenter();
     }
 
-    private static calculateSpeedFromAToBThruO(): Vector3 {
+    private static calculateSpeedARelativeToBReferentialO(): Vector3 {
         return new Vector3().addVectors(this.carA.speed, this.carB.speed.negate());
     }
 
-    private static calculateProjectedSpeedFromAToBOnNormalThruO(): number {
-        return Collision.calculateSpeedFromAToBThruO().dot(Collision.calculateNormalVector());
+    private static projectSpeedARelativeToBOnNormalReferentialO(): number {
+        return Collision.calculateSpeedARelativeToBReferentialO().dot(Collision.calculateNormalVector());
     }
 
     private static divideMasses(car1: Car, car2: Car): number {
         return car1.getMass() / car2.getMass();
     }
 
-    private static calculateProjectedSpeedFromAToBOnNormal(): number {
+    private static projectSpeedARelativeToBOnNormal(): number {
         return ((1 - Collision.divideMasses(this.carB, this.carA)) / (Collision.divideMasses(this.carB, this.carA) + 1))
-            * Collision.calculateProjectedSpeedFromAToBOnNormalThruO();
+            * Collision.projectSpeedARelativeToBOnNormalReferentialO();
     }
 
-    private static calculateSpeedFromBToB(): Vector3 {
+    private static calculateSpeedBRelativeToB(): Vector3 {
         return Collision.calculateNormalVector().multiplyScalar((-Collision.divideMasses(this.carA, this.carB)) *
-            (Collision.calculateProjectedSpeedFromAToBOnNormal() -
-                Collision.calculateProjectedSpeedFromAToBOnNormalThruO()));
+            (Collision.projectSpeedARelativeToBOnNormal() -
+                Collision.projectSpeedARelativeToBOnNormalReferentialO()));
     }
 
-    private static calculateSpeedFromAToB(): Vector3 {
-        return new Vector3().addVectors(Collision.calculateSpeedFromAToBThruO(), Collision.calculateNormalVector()
-                .multiplyScalar(Collision.calculateProjectedSpeedFromAToBOnNormal() -
-                Collision.calculateProjectedSpeedFromAToBOnNormalThruO()));
+    private static calculateSpeedARelativeToB(): Vector3 {
+        return new Vector3().addVectors(Collision.calculateSpeedARelativeToBReferentialO(), Collision.calculateNormalVector()
+                .multiplyScalar(Collision.projectSpeedARelativeToBOnNormal() -
+                Collision.projectSpeedARelativeToBOnNormalReferentialO()));
     }
 
     private static calculateSpeedForB(): void {
-        this.carB.speed.addVectors(Collision.calculateSpeedFromBToB(), this.carB.speed);
+        this.carB.speed.addVectors(Collision.calculateSpeedBRelativeToB(), this.carB.speed);
     }
 
     private static calculateSpeedForA(): void {
-        this.carA.speed.addVectors(Collision.calculateSpeedFromAToB(), this.carB.speed);
+        this.carA.speed.addVectors(Collision.calculateSpeedARelativeToB(), this.carB.speed);
     }
 }
