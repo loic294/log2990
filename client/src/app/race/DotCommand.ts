@@ -29,8 +29,8 @@ export class DotCommand {
     private findRelativePosition(event: MouseEvent): Vector3 {
         const canvas: HTMLCanvasElement = this._renderer.domElement;
 
-        const relativeX: number = event.offsetX - (canvas.clientWidth / TWO);
-        const relativeZ: number = event.offsetY - (canvas.clientHeight / TWO);
+        const relativeX: number = event.offsetX - (canvas.clientWidth / 2);
+        const relativeZ: number = event.offsetY - (canvas.clientHeight / 2);
 
         return new Vector3(relativeX * CAMERA_DISTANCE / canvas.clientHeight,
                            0, relativeZ * CAMERA_DISTANCE / canvas.clientHeight);
