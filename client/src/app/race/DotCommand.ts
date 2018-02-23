@@ -1,4 +1,4 @@
-import { Vector3, SphereGeometry, MeshBasicMaterial, Mesh, Object3D, LineBasicMaterial, Geometry, Line, Raycaster } from "three";
+import { Vector3, SphereGeometry, MeshBasicMaterial, Mesh, Object3D, LineBasicMaterial, Geometry, Line } from "three";
 
 const TWO: number = 2;
 const CAMERA_DISTANCE: number = 50;
@@ -10,6 +10,7 @@ export class DotCommand {
     private _trackIsCompleted: boolean;
     private _vertices: Array<Object3D>;
     private _edges: Array<Line>;
+    // private _controls: DragControls;
 
     public constructor(private _scene: THREE.Scene, private _renderer: THREE.WebGLRenderer) {
         this._trackIsCompleted = false;
@@ -19,13 +20,12 @@ export class DotCommand {
     }
 
     public add(event: MouseEvent): void {
-        if (!this._trackIsCompleted) {
+        if (!this._trackIsCompleted && !this.detectCompletedTrack(event)) {
             const relativeDotPosition: Vector3 = this.findRelativePosition(event);
             const sphereMesh: Mesh = this.createSphere(relativeDotPosition);
-            this._scene.add(sphereMesh);
             this._vertices.push(sphereMesh);
+            this._scene.add(sphereMesh);
             this.updateEdges();
-            this.detectCompletedTrack();
         }
 
     }
@@ -45,8 +45,9 @@ export class DotCommand {
         }
     }
 
-    private detectCompletedTrack(): void {
-        
+    private detectCompletedTrack(event: MouseEvent): boolean {
+
+        return true;
     }
 
     public remove(): void {
