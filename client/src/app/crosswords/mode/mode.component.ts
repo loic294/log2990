@@ -2,7 +2,6 @@ import { Component, OnInit, Optional } from "@angular/core";
 import { Socket } from "ng-socket-io";
 import { IGameModel } from "./../../../../../server/app/models/game";
 
-
 @Component({
   selector: "app-mode",
   templateUrl: "./mode.component.html",
@@ -10,7 +9,8 @@ import { IGameModel } from "./../../../../../server/app/models/game";
 })
 export class ModeComponent implements OnInit {
 
-    private input: String;
+    // private input: String;
+    
     public constructor(
         @Optional() private _modes: string [],
         @Optional() private _selectedMode: string,
@@ -23,6 +23,13 @@ export class ModeComponent implements OnInit {
         this._selectedMode = "Single Player";
         this._showGames = false;
 
+    }
+
+    public value: string = "";
+
+    public onEnter(value: string): void {
+            this.value = value;
+            console.log(this.value);
     }
 
     public get modes(): string [] {
@@ -60,7 +67,7 @@ export class ModeComponent implements OnInit {
     public createGame(mode: string): void {
         if (mode === "Two Players") {
             const gameId: string = `game${Math.random().toString(36).substr(2, 9)}`;
-            this._socket.emit("create_game", gameId);
+            this._socket.emit("create_game", gameId, this.value);
             this._socket.on("created_game", (game: IGameModel): void => {
             });
             this.joinGame(gameId);
@@ -71,7 +78,7 @@ export class ModeComponent implements OnInit {
 
     public joinGame(gameId: string): void {
         this._socket.connect();
-        this._socket.emit("connect_to_game", gameId);
+        this._socket.emit("connect_to_game", gameId, this.value);
         this._socket.on("connected_to_game", (users: number): void => {
             console.log("Users connected to game ", gameId, ": ", users);
         });

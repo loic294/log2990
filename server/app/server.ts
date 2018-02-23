@@ -35,12 +35,16 @@ io.on('connection', function (socket: any) {
         socket.emit("add_games", games);
     })
 
-    socket.on('create_game', async function (room: string) {
+    socket.on('create_game', async function (room: string, value: string) {
         const game: IGameModel = new Game({
             name: room,
             createdAt: new Date(),
+            players: [],
         });
+        game.players.push(value);
+        console.log(game);
         await game.save();
+        
         socket.emit("created_game", game);
         Game.count({name: room}, function (err, count){
             console.log("created game in db ", count);
