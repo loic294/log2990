@@ -25,7 +25,8 @@ const grid: Array<String> = [
 @Component({
     selector: "app-grid",
     templateUrl: "./grid.component.html",
-    styleUrls: ["./grid.component.css"]
+    styleUrls: ["./grid.component.css"],
+    providers: [ GridService ]
 })
 
 export class GridComponent implements OnInit {

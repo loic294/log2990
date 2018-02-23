@@ -12,10 +12,6 @@ describe("GridService", () => {
         });
     });
 
-    it("should be created", inject([GridService], (svc: GridService) => {
-        expect(svc).toBeTruthy();
-    }));
-
     it("should be a letter", () => {
         let letter: string = "b";
         expect(service.isLetter(letter)).toBe(true);

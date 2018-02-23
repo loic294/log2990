@@ -47,12 +47,15 @@ export default class InputManagerService {
     }
 
     public handleKey(event: KeyboardEvent, release: Release): void {
-        const commandKeyDict: CommandKeyDict[] = (release ? this.keyDownCommands : this.keyUpCommands);
-        const command: CommandKeyDict = commandKeyDict.find( (cmd: CommandKeyDict) => {
+        const command: CommandKeyDict = this.assignProperCommandKeyDict(release).find( (cmd: CommandKeyDict) => {
             return cmd.keyCode === event.keyCode;
         });
         if (command) {
             command.command.subscribe();
         }
+    }
+
+    private assignProperCommandKeyDict(release: Release): CommandKeyDict[] {
+        return (release ? this.keyDownCommands : this.keyUpCommands);
     }
 }
