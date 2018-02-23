@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, ViewChild, HostListener } from "@angular/core";
 import { RenderService } from "../render-service/render.service";
 import { Car } from "../car/car";
-import InputManagerService from "../input-manager/input-manager.service";
+import InputManagerService, { Release } from "../input-manager/input-manager.service";
 
 @Component({
     moduleId: module.id,
@@ -28,12 +28,12 @@ export class GameComponent implements AfterViewInit {
 
     @HostListener("window:keydown", ["$event"])
     public onKeyDown(event: KeyboardEvent): void {
-        this.inputManager.handleKeyDown(event);
+        this.inputManager.handleKey(event, Release.Down);
     }
 
     @HostListener("window:keyup", ["$event"])
     public onKeyUp(event: KeyboardEvent): void {
-        this.inputManager.handleKeyUp(event);
+        this.inputManager.handleKey(event, Release.Up);
     }
 
     public ngAfterViewInit(): void {

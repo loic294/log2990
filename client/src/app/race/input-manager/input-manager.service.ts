@@ -19,6 +19,11 @@ interface CommandKeyDict {
     keyCode: number;
 }
 
+export enum Release {
+    Up = 0,
+    Down = 1
+}
+
 @Injectable()
 export default class InputManagerService {
 
@@ -41,17 +46,9 @@ export default class InputManagerService {
         ];
     }
 
-    public handleKeyDown(event: KeyboardEvent): void {
-        const command: CommandKeyDict = this.keyDownCommands.find( (cmd: CommandKeyDict) => {
-            return cmd.keyCode === event.keyCode;
-        });
-        if (command) {
-            command.command.subscribe();
-        }
-    }
-
-    public handleKeyUp(event: KeyboardEvent): void {
-        const command: CommandKeyDict = this.keyUpCommands.find( (cmd: CommandKeyDict) => {
+    public handleKey(event: KeyboardEvent, release: Release): void {
+        const commandKeyDict: CommandKeyDict[] = (release ? this.keyDownCommands : this.keyUpCommands);
+        const command: CommandKeyDict = commandKeyDict.find( (cmd: CommandKeyDict) => {
             return cmd.keyCode === event.keyCode;
         });
         if (command) {
