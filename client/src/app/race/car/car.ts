@@ -28,7 +28,7 @@ export class Car extends Object3D {
     private mesh: Object3D;
     private steeringWheelDirection: number;
     private weightRear: number;
-    private _boundingBox: THREE.Box3;
+    private _boundingBox: Box3;
 
     public get speed(): Vector3 {
         return this._speed.clone();
@@ -156,6 +156,7 @@ export class Car extends Object3D {
         const R: number = DEFAULT_WHEELBASE / Math.sin(this.steeringWheelDirection * deltaTime);
         const omega: number = this._speed.length() / R;
         this.mesh.rotateY(omega);
+        this._boundingBox = new Box3().setFromObject(this);
     }
 
     private physicsUpdate(deltaTime: number): void {
