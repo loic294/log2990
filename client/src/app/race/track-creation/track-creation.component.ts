@@ -21,12 +21,14 @@ export class TrackCreationComponent implements AfterViewInit {
     private _scene: THREE.Scene = new Scene();
     private _camera: THREE.OrthographicCamera;
     private _renderer: THREE.WebGLRenderer = new WebGLRenderer();
-    private _dotCommand: DotCommand = new DotCommand();
+    private _dotCommand: DotCommand;
 
     @ViewChild("container")
     private container: ElementRef;
 
-    public constructor() { }
+    public constructor() {
+        this._dotCommand = new DotCommand(this._scene, this._renderer);
+    }
 
     @HostListener("window:drag", ["event"])
     public dragDot(event: DragEvent): void {
@@ -54,7 +56,7 @@ export class TrackCreationComponent implements AfterViewInit {
     }
 
     private placeDot(event: MouseEvent): void {
-        this._dotCommand.add(this._scene, this._renderer, event);
+        this._dotCommand.add(event);
         this.render();
     }
     /*
