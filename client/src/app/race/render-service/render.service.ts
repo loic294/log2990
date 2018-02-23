@@ -110,7 +110,7 @@ export class RenderService {
         let imageFilePath: string = "";
 
         for (const imageSuffix of imageSuffixes) {
-            imageFilePath = imageDirectory + imageName + imageSuffix + imageType;
+            imageFilePath = `${imageDirectory}${imageName}${imageSuffix}${imageType}`;
             sidesOfSkybox.push( new MeshBasicMaterial ( {map: new TextureLoader().load( imageFilePath ), side: DoubleSide } ));
         }
 
