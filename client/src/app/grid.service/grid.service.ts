@@ -7,6 +7,7 @@ import { Observable } from "rxjs/Observable";
 import { of } from "rxjs/observable/of";
 import Word, { Orientation } from "../../../../common/lexical/word";
 import { WordService } from "../word.service/word.service";
+// import { SocketService } from "../socket.service/socket.service";
 
 const BACK_SPACE_KEY_CODE: number = 8;
 
@@ -22,7 +23,10 @@ export class GridService {
     private _row: number;
     private _col: number;
 
-    public constructor(private _wordService: WordService) {
+    public constructor(
+        private _wordService: WordService,
+        // private _socket: SocketService
+    ) {
         this._wordService.wordFromClue.subscribe(
             (_wordFromClue) => {
             this._word = _wordFromClue,

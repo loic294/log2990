@@ -22,6 +22,7 @@ import { SocketIoModule, SocketIoConfig } from "ng-socket-io";
 import { ModeComponent } from './crosswords/mode/mode.component';
 // import { AppRoutingModule } from ".//app-routing.module";
 import { GridService } from "./grid.service/grid.service";
+import { SocketService } from "./socket.service/socket.service";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
@@ -49,7 +50,8 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         RenderService,
         BasicService,
         WordService,
-        GridService
+        GridService,
+        SocketService
     ],
     bootstrap: [AppComponent]
 })

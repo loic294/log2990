@@ -1,5 +1,5 @@
-import { Component, OnInit, Optional } from "@angular/core";
-import { Socket } from "ng-socket-io";
+import { Component, OnInit } from "@angular/core";
+import { SocketService } from "../../socket.service/socket.service";
 import { IGameModel } from "./../../../../../server/app/models/game";
 
 @Component({
@@ -10,80 +10,55 @@ import { IGameModel } from "./../../../../../server/app/models/game";
 export class ModeComponent implements OnInit {
 
     // private input: String;
-    
-    public constructor(
-        @Optional() private _modes: string [],
-        @Optional() private _selectedMode: string,
-        private _socket: Socket,
-        @Optional() private _games: String [],
-        @Optional() private _showGames: boolean
-        ) {
-        this._games = [];
-        this._modes = ["Single Player", "Two Players"];
-        this._selectedMode = "Single Player";
-        this._showGames = false;
 
+    public constructor(
+        private _socket: SocketService
+    ) { }
+
+    public get modes(): string[] {
+        return this._socket.modes;
     }
 
-    public value: string = "";
+    public get player(): string {
+        return this._socket.player;
+    }
 
     public onEnter(value: string): void {
-            this.value = value;
-            console.log(this.value);
+        this._socket.onEnter(value);
     }
 
-    public get modes(): string [] {
-        return this._modes;
-    }
     public get selectedMode(): string {
-        return this._selectedMode;
+        return this._socket.selectedMode;
     }
 
     public onSelect(mode: string): void {
-        this._selectedMode = mode;
+        return this._socket.onSelect(mode);
     }
 
-    public get games(): String[] {
-        return this._games;
+    public get games(): IGameModel[] {
+        return this._socket.games;
     }
 
     public addGames(): void {
-        this._socket.emit("get_games");
-        this._socket.on("add_games", (games: IGameModel[]) => {
-            for (const game of games) {
-                if (this.games[games.indexOf(game)] !== game.name && game.players.length === 1 ) {
-                this._games.push(game.name);
-                }
-            }
-        });
+        this._socket.addGames();
     }
+
     public toggleShowGames(): void {
-        this._showGames = !this._showGames;
+        this._socket.toggleShowGames();
     }
+
     public get showGames(): boolean {
-        return this._showGames;
+        return this._socket.showGames;
     }
 
     public createGame(mode: string): void {
-        if (mode === "Two Players") {
-            const gameId: string = `game${Math.random().toString(36).substr(2, 9)}`;
-            this._socket.emit("create_game", JSON.stringify({gameId, value: this.value}));
-            this._socket.on("created_game", (game: IGameModel): void => {
-            });
-            this.joinGame(gameId);
-        } else {
-            console.log("single player");
-        }
+        this._socket.createGame(mode);
     }
 
     public joinGame(gameId: string): void {
-        this._socket.connect();
-        this._socket.emit("connect_to_game", JSON.stringify({gameId, value: this.value}));
-        this._socket.on("connected_to_game", (users: number): void => {
-            console.log("Users connected to game ", gameId, ": ", users);
-        });
-
+        this._socket.joinGame(gameId);
     }
+
     public ngOnInit(): void {
     }
 

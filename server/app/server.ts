@@ -31,12 +31,19 @@ var io = require('socket.io')(server);
 io.on('connection', function (socket: any) {
     console.log('Connected to socket');
     socket.on("get_games", async function () {
-        const games: IGameModel[] = await Game.find();
+        const games: IGameModel[] = await Game.find({
+            $and: [{
+                "players.0": { "$exists": true }
+            },{
+                "players.1": { "$exists": false }
+            }]
+            
+        });
         socket.emit("add_games", games);
     })
 
     socket.on('create_game', async function (data: string) {
-        const { gameId: room, value } : { gameId: string, value: string } = JSON.parse(data)
+        const { gameId: room, value } : { gameId: string, value: string } = JSON.parse(data);
         const game: IGameModel = new Game({
             name: room,
             createdAt: new Date(),
@@ -52,31 +59,33 @@ io.on('connection', function (socket: any) {
     });
 
     socket.on("connect_to_game", async function (data: string) {
-        const { gameId: room, value } : { gameId: string, value: string } = JSON.parse(data)
+        const { gameId: room, value } : { gameId: string, value: string } = JSON.parse(data);
         const game = await Game.findOne({ name: room });
+
+        console.log('CONNECT TO GAME', room)
 
         if (game.players.length === 0 ) {
             socket.join(room);
-            await Game.findOneAndUpdate(room, {
+            await Game.findOneAndUpdate({name: game.name}, {
                     players : [value]
                 })
             console.log("connecting player 1 to ", room);
-            socket.emit("connected_to_game", io.sockets.adapter.rooms[room].length);
+            socket.emit("connected_to_game", JSON.stringify({game}));
         }
         else if (game.players.length === 1 ) {
             socket.join(room);
-            await Game.findOneAndUpdate(room, {
+            await Game.findOneAndUpdate({name: game.name}, {
                 players : ["player1", "player2"]
             })
             console.log("connecting player 2 to ", room);
             socket.emit("connected_to_game", io.sockets.adapter.rooms[room].length);
-            await game.remove();
+            // await game.remove();
         }
         else {
             console.log("Already 2 players");
         }
         socket.on('disconnect', async function(){
-            game.remove();
+            await game.remove();
             console.log("disconnect", game);
         })
     });
