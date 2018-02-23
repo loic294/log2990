@@ -12,19 +12,6 @@ export default class Collision {
         this.carA = carA;
         this.carB = carB;
 
-        const massBA: number = Collision.divideMasses(carB, carA);
-        const normal: Vector3 = Collision.calculateNormalVector();
-
-        const speedBO: Vector3 = carB.speed;
-        const speedABO: Vector3 = Collision.calculateSpeedFromAToBThruO();
-
-        const speedNormalABO: number = Collision.calculateProjectedSpeedFromAToBOnNormalThruO();
-        const speedNormalAB: number = Collision.calculateProjectedSpeedFromAToBOnNormal();
-
-        const speedBB: Vector3 = Collision.calculateSpeedFromBToB();
-
-        const sAB: Vector3 = Collision.calculateSpeedFromAToB();
-
         Collision.calculateSpeedForB();
         Collision.calculateSpeedForA();
     }
