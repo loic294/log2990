@@ -10,13 +10,13 @@ export interface IGame {
 export interface IGameModel extends Document {
     name: String;
     createdAt: Date;
-    players: [String];
+    players: Array<String>;
 }
 
 export const gameSchema: Schema = new Schema({
   name: String,
   createdAt: Date,
-  players: [String],
+  players: [String]
 });
 
 export default mongoose.model<IGameModel>("Game", gameSchema);

@@ -67,7 +67,7 @@ export class ModeComponent implements OnInit {
     public createGame(mode: string): void {
         if (mode === "Two Players") {
             const gameId: string = `game${Math.random().toString(36).substr(2, 9)}`;
-            this._socket.emit("create_game", gameId, this.value);
+            this._socket.emit("create_game", JSON.stringify({gameId, value: this.value}));
             this._socket.on("created_game", (game: IGameModel): void => {
             });
             this.joinGame(gameId);
@@ -78,7 +78,7 @@ export class ModeComponent implements OnInit {
 
     public joinGame(gameId: string): void {
         this._socket.connect();
-        this._socket.emit("connect_to_game", gameId, this.value);
+        this._socket.emit("connect_to_game", JSON.stringify({gameId, value: this.value}));
         this._socket.on("connected_to_game", (users: number): void => {
             console.log("Users connected to game ", gameId, ": ", users);
         });

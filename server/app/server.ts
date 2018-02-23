@@ -35,15 +35,15 @@ io.on('connection', function (socket: any) {
         socket.emit("add_games", games);
     })
 
-    socket.on('create_game', async function (room: string, value: string) {
+    socket.on('create_game', async function (data: string) {
+        const { gameId: room, value } : { gameId: string, value: string } = JSON.parse(data)
         const game: IGameModel = new Game({
             name: room,
             createdAt: new Date(),
-            players: [],
+            players: []
         });
-        game.players.push(value);
-        console.log(game);
         await game.save();
+        console.log(game, value);
         
         socket.emit("created_game", game);
         Game.count({name: room}, function (err, count){
@@ -51,13 +51,14 @@ io.on('connection', function (socket: any) {
         });
     });
 
-    socket.on("connect_to_game", async function (room: string) {
+    socket.on("connect_to_game", async function (data: string) {
+        const { gameId: room, value } : { gameId: string, value: string } = JSON.parse(data)
         const game = await Game.findOne({ name: room });
 
         if (game.players.length === 0 ) {
             socket.join(room);
             await Game.findOneAndUpdate(room, {
-                    players : ["player1"]
+                    players : [value]
                 })
             console.log("connecting player 1 to ", room);
             socket.emit("connected_to_game", io.sockets.adapter.rooms[room].length);
