@@ -257,4 +257,12 @@ export class GridService {
         }
     }
 
+    public get word(): Word {
+        return this._word;
+    }
+
+    public set word(word: Word) {
+        this._word = word;
+    }
+
 }

@@ -117,4 +117,18 @@ describe("Car", () => {
         car = new Car(new MockEngine(), new Wheel(), DEFAULT_WHEELBASE, DEFAULT_MASS, -10);
         expect(car["dragCoefficient"]).toBe(DEFAULT_DRAG_COEFFICIENT);
     });
+
+    it("should have a valid bounding box.", () => {
+        expect(car.boundingBox).toBeTruthy();
+    });
+
+    it("should have a bounding box which moves with the car.", () => {
+        const oldValue: Vector3 = car.boundingBox.getCenter();
+        car.isAcceleratorPressed = true;
+        car.update(MS_BETWEEN_FRAMES * 20);
+        car.isAcceleratorPressed = false;
+        oldValue.addVectors(car.boundingBox.getCenter(), oldValue.negate());
+
+        expect(oldValue === new Vector3()).toBe(false);
+    });
 });

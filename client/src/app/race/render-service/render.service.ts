@@ -1,20 +1,18 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
-import { PerspectiveCamera, WebGLRenderer, Scene, AmbientLight } from "three";
+import { PerspectiveCamera, WebGLRenderer, Scene, AmbientLight,
+MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, CubeGeometry } from "three";
 import { Car } from "../car/car";
 
-const FAR_CLIPPING_PLANE: number = 1000;
+const FAR_CLIPPING_PLANE: number = 100000;
 const NEAR_CLIPPING_PLANE: number = 1;
 const FIELD_OF_VIEW: number = 70;
 
-const ACCELERATE_KEYCODE: number = 87;  // w
-const LEFT_KEYCODE: number = 65;        // a
-const BRAKE_KEYCODE: number = 83;       // s
-const RIGHT_KEYCODE: number = 68;       // d
-
 const INITIAL_CAMERA_POSITION_Y: number = 25;
 const WHITE: number = 0xFFFFFF;
-const AMBIENT_LIGHT_OPACITY: number = 0.5;
+const AMBIENT_LIGHT_OPACITY: number = 1;
+
+const SIZE_SKYBOX: number = 10000;
 
 @Injectable()
 export class RenderService {
@@ -52,6 +50,8 @@ export class RenderService {
 
     private update(): void {
         const timeSinceLastFrame: number = Date.now() - this.lastDate;
+        this.camera.position.x = this._car.meshPosition.x;
+        this.camera.position.z = this._car.meshPosition.z;
         this._car.update(timeSinceLastFrame);
         this.lastDate = Date.now();
     }
@@ -71,6 +71,7 @@ export class RenderService {
         this.camera.lookAt(this._car.position);
         this.scene.add(this._car);
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
+        this.loadSkybox();
     }
 
     private getAspectRatio(): number {
@@ -100,41 +101,23 @@ export class RenderService {
         this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
     }
 
-    // TODO: Create an event handler service.
-    public handleKeyDown(event: KeyboardEvent): void {
-        switch (event.keyCode) {
-            case ACCELERATE_KEYCODE:
-                this._car.isAcceleratorPressed = true;
-                break;
-            case LEFT_KEYCODE:
-                this._car.steerLeft();
-                break;
-            case RIGHT_KEYCODE:
-                this._car.steerRight();
-                break;
-            case BRAKE_KEYCODE:
-                this._car.brake();
-                break;
-            default:
-                break;
-        }
-    }
+    private loadSkybox(): void {
+        const sidesOfSkybox: MeshBasicMaterial[] = [];
+        const imageDirectory: string = "../../../assets/skybox/";
+        const imageName: string = "stormydays_";
+        const imageSuffixes: string[] = ["ft", "bk", "up", "dn", "rt", "lf"];
+        const imageType: string = ".png";
+        let imageFilePath: string = "";
 
-    // TODO: Create an event handler service.
-    public handleKeyUp(event: KeyboardEvent): void {
-        switch (event.keyCode) {
-            case ACCELERATE_KEYCODE:
-                this._car.isAcceleratorPressed = false;
-                break;
-            case LEFT_KEYCODE:
-            case RIGHT_KEYCODE:
-                this._car.releaseSteering();
-                break;
-            case BRAKE_KEYCODE:
-                this._car.releaseBrakes();
-                break;
-            default:
-                break;
+        for (const imageSuffix of imageSuffixes) {
+            imageFilePath = `${imageDirectory}${imageName}${imageSuffix}${imageType}`;
+            sidesOfSkybox.push( new MeshBasicMaterial ( {map: new TextureLoader().load( imageFilePath ), side: DoubleSide } ));
         }
+
+        const skyboxGeometry: CubeGeometry = new CubeGeometry(SIZE_SKYBOX, SIZE_SKYBOX, SIZE_SKYBOX);
+        const skyboxTexture: MultiMaterial = new MultiMaterial(sidesOfSkybox);
+        const skybox: Mesh = new Mesh(skyboxGeometry, skyboxTexture);
+
+        this.scene.add(skybox);
     }
 }
