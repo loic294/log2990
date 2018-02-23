@@ -9,30 +9,26 @@ const POINT_SIZE: number = 2;
 export class PlaceDotCommand extends PlaceCommand {
 
     private _dotMemory: Array<Vector3> = new Array();
-    private _isCycle: boolean = false;
+    private _isComplete: boolean = false;
 
     public place(scene: THREE.Scene, renderer: THREE.WebGLRenderer, event: MouseEvent): void {
-        // Methode temporaire (activer le click seulement sur objet)
+        if (!this._isComplete) {
+            const dotGeo: THREE.Geometry = new Geometry();
+            this.findCoordinates(event.offsetX, event.offsetY, renderer);
+            dotGeo.vertices.push(new Vector3(this._dotMemory[this._dotMemory.length - 1].x,
+                this._dotMemory[this._dotMemory.length - 1].y,
+                this._dotMemory[this._dotMemory.length - 1].z));
+            const dotMat: THREE.PointsMaterial = (this._dotMemory.length === 1) ?
+                new PointsMaterial({ color: 0xFFFFFF, size: POINT_SIZE }) :
+                new PointsMaterial({ color: 0x0000FF, size: POINT_SIZE });
+            const dot: THREE.Points = new Points(dotGeo, dotMat);
+            dot.name = "dot" + this._dotMemory.length;
+            scene.add(dot);
 
-       // if (event.srcElement === renderer.domElement) {
+            this.updateLines(scene);
+            this.findIfCycle(scene);
+        }
 
-            if (!this._isCycle) {
-                const dotGeo: THREE.Geometry = new Geometry();
-                this.findCoordinates(event.offsetX, event.offsetY, renderer);
-                dotGeo.vertices.push(new Vector3(this._dotMemory[this._dotMemory.length - 1].x,
-                                                 this._dotMemory[this._dotMemory.length - 1].y,
-                                                 this._dotMemory[this._dotMemory.length - 1].z));
-                const dotMat: THREE.PointsMaterial = (this._dotMemory.length === 1) ?
-                                                    new PointsMaterial({ color: 0xFFFFFF, size: POINT_SIZE }) :
-                                                    new PointsMaterial({ color: 0x0000FF, size: POINT_SIZE });
-                const dot: THREE.Points = new Points(dotGeo, dotMat);
-                dot.name = "dot" + this._dotMemory.length;
-                scene.add(dot);
-
-                this.updateLines(scene);
-                this.findIfCycle(scene);
-            }
-       // }
     }
 
     private findCoordinates(offsetX: number, offsetY: number, renderer: THREE.WebGLRenderer): void {
@@ -41,7 +37,7 @@ export class PlaceDotCommand extends PlaceCommand {
         const tempX: number = offsetX - (canvas.clientWidth / TWO);
         const tempY: number = offsetY - (canvas.clientHeight / TWO);
         const vec: Vector3 = new Vector3((canvas.clientWidth / canvas.clientHeight) * tempX * this._distanceZ / canvas.clientWidth,
-                                         0, tempY * this._distanceZ / canvas.clientHeight);
+            0, tempY * this._distanceZ / canvas.clientHeight);
         this._dotMemory.push(vec);
     }
 
@@ -70,18 +66,18 @@ export class PlaceDotCommand extends PlaceCommand {
 
     private findIfCycle(scene: THREE.Scene): void {
         if (this._dotMemory.length !== 1 && this.pointsRadiusCollide()) {
-             this.connectToFirst(scene);
-             this._isCycle = true;
+            this.connectToFirst(scene);
+            this._isComplete = true;
         }
     }
 
     private pointsRadiusCollide(): boolean {
         return Math.sqrt(Math.pow(this._dotMemory[0].x - this._dotMemory[this._dotMemory.length - 1].x, TWO) +
-               Math.pow(this._dotMemory[0].z - this._dotMemory[this._dotMemory.length - 1].z, TWO)) < POINT_SIZE / TWO;
+            Math.pow(this._dotMemory[0].z - this._dotMemory[this._dotMemory.length - 1].z, TWO)) < POINT_SIZE / TWO;
     }
 
     public undo(scene: THREE.Scene): void {
-        if (!this._isCycle) {
+        if (!this._isComplete) {
             const dotName: string = "dot" + this._dotMemory.length;
             const lineName: string = "line" + (this._dotMemory.length - 1);
 

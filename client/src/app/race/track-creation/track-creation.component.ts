@@ -1,7 +1,6 @@
 import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from "@angular/core";
 import { OrthographicCamera, WebGLRenderer, Scene, /* GridHelper, AxisHelper, */ Vector3 } from "three";
-import { PlaceCommand } from "../PlaceCommands/PlaceCommand";
-import { PlaceDotCommand } from "../PlaceCommands/PlaceDotCommand";
+import { DotCommand } from "../DotCommand";
 
 const FAR_CLIPPING_PLANE: number = 10000;
 const NEAR_CLIPPING_PLANE: number = 0;
@@ -22,7 +21,7 @@ export class TrackCreationComponent implements AfterViewInit {
     private _scene: THREE.Scene = new Scene();
     private _camera: THREE.OrthographicCamera;
     private _renderer: THREE.WebGLRenderer = new WebGLRenderer();
-    private _dotCommand: PlaceCommand = new PlaceDotCommand(CAMERA_DISTANCE);
+    private _dotCommand: DotCommand = new DotCommand();
 
     @ViewChild("container")
     private container: ElementRef;
@@ -31,7 +30,7 @@ export class TrackCreationComponent implements AfterViewInit {
 
     @HostListener("window:drag", ["event"])
     public dragDot(event: DragEvent): void {
-        this._dotCommand.dragDot(event, this._renderer);
+        // this._dotCommand.dragDot(event, this._renderer);
         this.render();
     }
 
@@ -50,20 +49,20 @@ export class TrackCreationComponent implements AfterViewInit {
         if (event.which === LEFT_CLICK) {
             this.placeDot(event);
         } else if (event.which === RIGHT_CLICK) {
-            this.undo();
+            // this.undo();
         }
     }
 
     private placeDot(event: MouseEvent): void {
-        this._dotCommand.place(this._scene, this._renderer, event);
+        this._dotCommand.add(this._scene, this._renderer, event);
         this.render();
     }
-
+    /*
     private undo(): void {
         this._dotCommand.undo(this._scene);
         this.render();
     }
-
+    */
     private render(): void {
         this._renderer.render(this._scene, this._camera);
     }
