@@ -1,6 +1,7 @@
 import { Car } from "./car";
 import { Engine } from "./engine";
 import Collision from "./collision";
+import { Vector3 } from "three";
 
 const MS_BETWEEN_FRAMES: number = 16.6667;
 
@@ -35,10 +36,28 @@ describe("Collision", () => {
         carB.update(MS_BETWEEN_FRAMES);
         carB.isAcceleratorPressed = false;
 
-        expect(Collision.checkCollision(carA, carB)).toBe(true);
+        expect(Collision.detectCollision(carA, carB)).toBe(true);
     });
 
-    it("should detect a collision when two cars drive into each other.");
+    it("should detect a collision when two cars drive into each other.", () => {
+        carB.meshPosition.z = -0.01;
+        carA.isAcceleratorPressed = true;
+        let speedBeforeCollisionA: Vector3;
+        let speedBeforeCollisionB: Vector3;
+        let collided: boolean = false;
+        while (!collided) {
+            carA.update(MS_BETWEEN_FRAMES);
+            carB.update(MS_BETWEEN_FRAMES);
+            if (Collision.detectCollision(carA, carB)) {
+                speedBeforeCollisionA = carA.speed;
+                speedBeforeCollisionB = carB.speed;
+                collided = true;
+            }
+        }
+        Collision.collide(carA, carB);
+        expect(speedBeforeCollisionA === carA.speed).toBe(false);
+        expect(speedBeforeCollisionB === carB.speed).toBe(false);
+    });
 
     it("should modify the speeds properly?.");
 });

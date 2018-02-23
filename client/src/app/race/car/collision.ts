@@ -2,7 +2,7 @@ import { Vector3 } from "three";
 import { Car } from "./car";
 
 export default class Collision {
-    public static checkCollision(carA: Car, carB: Car): boolean {
+    public static detectCollision(carA: Car, carB: Car): boolean {
         return  carA.boundingBox.intersectsBox(carB.boundingBox);
     }
 
