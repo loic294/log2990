@@ -51,7 +51,7 @@ export class TrackCreationComponent implements AfterViewInit {
         if (event.which === LEFT_CLICK) {
             this.placeDot(event);
         } else if (event.which === RIGHT_CLICK) {
-            // this.undo();
+            this.remove();
         }
     }
 
@@ -59,12 +59,12 @@ export class TrackCreationComponent implements AfterViewInit {
         this._dotCommand.add(event);
         this.render();
     }
-    /*
-    private undo(): void {
-        this._dotCommand.undo(this._scene);
+
+    private remove(): void {
+        this._dotCommand.remove();
         this.render();
     }
-    */
+
     private render(): void {
         this._renderer.render(this._scene, this._camera);
     }
