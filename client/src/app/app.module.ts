@@ -37,6 +37,7 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         ShadowBoxComponent,
         ContainerComponent,
         ButtonComponent,
+        ModeComponent
     ],
     imports: [
         BrowserModule,

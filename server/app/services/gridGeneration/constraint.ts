@@ -52,7 +52,7 @@ export default class Constraint {
 
     public checkWordHasConstraint(word: Word): boolean {
         for (let pos: number = 0; pos < word.length; pos++) {
-            const posi: number[] = (word.direction ? [word.row + pos, word.col] : [word.row, word.col + pos]);
+            const posi: number[] = (word.orientation ? [word.row + pos, word.col] : [word.row, word.col + pos]);
             if (posi[0] === this._row && posi[1] === this._col) {
                 return true;
             }
@@ -62,7 +62,7 @@ export default class Constraint {
     }
 
     public checkPositionOfWordHasConstraint(word: Word, wordIndex: number): boolean {
-        const posi: number[] = (word.direction ? [word.row + wordIndex, word.col] : [word.row, word.col + wordIndex]);
+        const posi: number[] = (word.orientation ? [word.row + wordIndex, word.col] : [word.row, word.col + wordIndex]);
         if (posi[0] === this._row && posi[1] === this._col) {
             return true;
         } else {

@@ -120,7 +120,7 @@ export default class GridGeneration {
                 }
             }
             if (!checkConstraint) {
-                const position: Array<number> = (word.direction ? [word.row + wordIndex, word.col] : [word.row, word.col + wordIndex]);
+                const position: Array<number> = (word.orientation ? [word.row + wordIndex, word.col] : [word.row, word.col + wordIndex]);
                 this.constraintsArray.push(new Constraint(word.name[wordIndex], position[0], position[1], [word.name]));
             }
         }
