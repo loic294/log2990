@@ -29,7 +29,8 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
 io.on('connection', function (socket: any) {
-    console.log('Connected to socket');
+	console.log('Connected to socket');
+	console.log('CLIENTS 0', Object.keys(io.sockets.sockets));
     socket.on("get_games", async function () {
         const games: IGameModel[] = await Game.find({
             $and: [{
@@ -43,6 +44,7 @@ io.on('connection', function (socket: any) {
     })
 
     socket.on('create_game', async function (data: string) {
+		console.log('CLIENTS 1', Object.keys(io.sockets.sockets));
         const { gameId: room, value } : { gameId: string, value: string } = JSON.parse(data);
         const game: IGameModel = new Game({
             name: room,
@@ -74,27 +76,30 @@ io.on('connection', function (socket: any) {
         }
         else if (game.players.length === 1 ) {
             socket.join(room);
-            await Game.findOneAndUpdate({name: game.name}, {
-                players : ["player1", "player2"]
-            })
+			const dbGame = await Game.findOne({name: game.name});
+			dbGame.players.push(value);
+			await dbGame.save();
             console.log("connecting player 2 to ", room);
-            socket.emit("connected_to_game", io.sockets.adapter.rooms[room].length);
+            socket.emit("connected_to_game", JSON.stringify({ game: dbGame }));
         }
         else {
             console.log("Already 2 players");
 		}
 		
 		socket.on("highligth_cell", (data: string) => {
-			console.log('CELL TO HILIGHT', data)
-			console.log('ROOM', room)
-			socket.emit('highligth_cell_in_color', data)
+			// console.log('CELL TO HILIGHT', data)
+			console.log('CLIENTS 2', Object.keys(io.sockets.sockets));
+			// console.log('ROOM', room)
+			socket.to(room).emit('highligth_cell_in_color', data)
+			socket.broadcast.emit("TEST", "Hello world");
 		})
 
-        socket.on('disconnect', async function(){
+		socket.on('disconnect', async function(){
             await game.remove();
             console.log("disconnect", game);
-        })
-    });
+		})
+	});
+	
 });
 
 

@@ -163,6 +163,7 @@ export class GridService {
             // this._grid[cellTemp.x][cellTemp.y].select();
             console.log('SEND WORD TO HILIGTHTJHR');
             this._socket.highligthCell(cellTemp.x, cellTemp.y);
+            this.highligthCell(cellTemp.x, cellTemp.y);
             if (cellTemp.char === "-") {
 
                 return true;

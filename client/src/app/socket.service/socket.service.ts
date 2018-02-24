@@ -33,6 +33,7 @@ export class SocketService {
         });
 
         this._socket.on("connected_to_game", (data: string): void => {
+            console.log('DATA RECEIVED', data)
             const { game }: { game: IGameModel } = JSON.parse(data);
             console.log("Users connected to game ", game);
         });
@@ -44,6 +45,10 @@ export class SocketService {
             console.log("CELLS TO H", data);
             this._highlightCell.next(data);
         });
+
+        this._socket.on("TEST", (test:string) => {
+            console.log("TEST RECEIVED", "test");
+        })
     }
 
     public get cellToHighligh(): Observable<string> {
