@@ -16,7 +16,6 @@ import { GridComponent } from "./crosswords/grid/grid.component";
 import { CrosswordComponent } from "./crosswords/crossword/crossword.component";
 import { CluesComponent } from "./crosswords/clues/clues.component";
 import { AppRoutingModule } from "./app-routing.module";
-// import { AppRoutingModule } from ".//app-routing.module";
 import { GridService } from "./grid.service/grid.service";
 import { SocketIoModule, SocketIoConfig } from "ng-socket-io";
 import { ModeComponent, ModeDialog } from "./crosswords/mode/mode.component";
@@ -49,7 +48,8 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         SocketIoModule.forRoot(config),
         MatProgressSpinnerModule,
         MatDialogModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        AppRoutingModule
     ],
     providers: [
         RenderService,
