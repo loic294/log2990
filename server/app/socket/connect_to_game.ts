@@ -2,6 +2,7 @@ import Game, {IGameModel} from "../models/game";
 
 const joinFirstPlayer: Function = async (socket: any, game: IGameModel, room: string, value: string): Promise<void> => {
     socket.join(room);
+    
     await Game.findOneAndUpdate({ name: game.name}, { players: [value] })
     socket.emit("connected_to_game", JSON.stringify({
         game
