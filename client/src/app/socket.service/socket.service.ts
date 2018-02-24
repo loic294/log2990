@@ -1,5 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Socket } from "ng-socket-io";
+import { Observable } from "rxjs/Observable";
+import { Subject } from "rxjs/Subject";
 import { IGameModel } from "./../../../../server/app/models/game";
 
 @Injectable()
@@ -12,6 +14,9 @@ export class SocketService {
     private _games: IGameModel[];
     private _showGames: boolean;
 
+    private _updateHighligthCell: Observable<string>;
+    private _highlightCell: Subject<string> = new Subject<string>();
+
     public constructor(
         private _socket: Socket
     ) {
@@ -20,6 +25,8 @@ export class SocketService {
         this._selectedMode = "Single Player";
         this._showGames = false;
         this._socket.connect();
+
+        this._updateHighligthCell = this._highlightCell.asObservable();
 
         this._socket.on("add_games", (games: IGameModel[]) => {
             this._games = games;
@@ -32,6 +39,15 @@ export class SocketService {
 
         this._socket.on("created_game", (data: string): void => {
         });
+
+        this._socket.on("highligth_cell_in_color", (data: string): void => {
+            console.log("CELLS TO H", data);
+            this._highlightCell.next(data);
+        });
+    }
+
+    public get cellToHighligh(): Observable<string> {
+        return this._updateHighligthCell;
     }
 
     public onEnter(value: string): void {
@@ -80,6 +96,11 @@ export class SocketService {
 
     public get player(): string {
         return this._player;
+    }
+
+    public highligthCell(row: number, col: number): void {
+        console.log('EMIT WORD HILIGHT')
+        this._socket.emit("highligth_cell", JSON.stringify({ row, col}));
     }
 
 }

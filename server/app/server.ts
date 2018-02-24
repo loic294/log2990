@@ -79,11 +79,17 @@ io.on('connection', function (socket: any) {
             })
             console.log("connecting player 2 to ", room);
             socket.emit("connected_to_game", io.sockets.adapter.rooms[room].length);
-            // await game.remove();
         }
         else {
             console.log("Already 2 players");
-        }
+		}
+		
+		socket.on("highligth_cell", (data: string) => {
+			console.log('CELL TO HILIGHT', data)
+			console.log('ROOM', room)
+			socket.emit('highligth_cell_in_color', data)
+		})
+
         socket.on('disconnect', async function(){
             await game.remove();
             console.log("disconnect", game);

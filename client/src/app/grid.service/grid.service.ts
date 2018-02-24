@@ -7,7 +7,7 @@ import { Observable } from "rxjs/Observable";
 import { of } from "rxjs/observable/of";
 import Word, { Orientation } from "../../../../common/lexical/word";
 import { WordService } from "../word.service/word.service";
-// import { SocketService } from "../socket.service/socket.service";
+import { SocketService } from "../socket.service/socket.service";
 
 const BACK_SPACE_KEY_CODE: number = 8;
 
@@ -25,12 +25,11 @@ export class GridService {
 
     public constructor(
         private _wordService: WordService,
-        // private _socket: SocketService
+        private _socket: SocketService
     ) {
         this._wordService.wordFromClue.subscribe(
             (_wordFromClue) => {
-            this._word = _wordFromClue,
-                this.selectCaseFromService(_wordFromClue);
+                this._word = _wordFromClue, this.selectCaseFromService(_wordFromClue);
             });
 
         this._grid = GRID.map((row: string) => {
@@ -47,6 +46,14 @@ export class GridService {
                 }
             }
         }
+
+        this._socket.cellToHighligh.subscribe(
+            (data: string) => {
+                const { row, col }: { row: number, col: number } = JSON.parse(data);
+                console.log("ROW/COL TO UPDATE", row, col);
+                this.highligthCell(row, col);
+            });
+
     }
 
     public get grid(): Array<Array<Case>> {
@@ -145,11 +152,17 @@ export class GridService {
         return (this._row - 1 >= 0 && !this.isBlack(this._grid[this._row - 1][this._col].char));
     }
 
+    private highligthCell (row: number, col: number): void {
+        this._grid[row][col].select();
+    }
+
     private wordHighligth(): void {
         const currentCase: Case = null;
 
         this.iterateGrid(currentCase, (x: number, y: number, cellTemp: Case, cell: number) => {
-            this._grid[cellTemp.x][cellTemp.y].select();
+            // this._grid[cellTemp.x][cellTemp.y].select();
+            console.log('SEND WORD TO HILIGTHTJHR');
+            this._socket.highligthCell(cellTemp.x, cellTemp.y);
             if (cellTemp.char === "-") {
 
                 return true;
