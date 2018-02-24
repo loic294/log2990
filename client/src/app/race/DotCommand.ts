@@ -1,4 +1,7 @@
-import { Vector3, SphereGeometry, MeshBasicMaterial, Mesh, Object3D, LineBasicMaterial, Geometry, Line } from "three";
+import {
+    Vector3, SphereGeometry, MeshBasicMaterial, Mesh, Object3D,
+    LineBasicMaterial, Geometry, Line, Raycaster, Intersection, Vector2
+} from "three";
 
 const TWO: number = 2;
 const CAMERA_DISTANCE: number = 50;
@@ -12,7 +15,7 @@ export class DotCommand {
     private _edges: Array<Line>;
     // private _controls: DragControls;
 
-    public constructor(private _scene: THREE.Scene, private _renderer: THREE.WebGLRenderer) {
+    public constructor(private _scene: THREE.Scene, private _renderer: THREE.WebGLRenderer, private _camera: THREE.OrthographicCamera) {
         this._trackIsCompleted = false;
         this._vertices = new Array<Object3D>();
         this._edges = new Array<Line>();
@@ -46,46 +49,56 @@ export class DotCommand {
     }
 
     private detectCompletedTrack(event: MouseEvent): boolean {
+        const raycaster: Raycaster = new Raycaster();
+        const mouse3D: Vector3 = this.findRelativePosition(event);
+        const mouse2D: Vector2 = new Vector2(mouse3D.x, mouse3D.z);
+        raycaster.setFromCamera(mouse2D.normalize(), this._camera);
+        const intersects: Intersection[] = raycaster.intersectObjects(this._scene.children);
+        if (intersects.length > 0) {
+            if (intersects[0].object.id === this._vertices[0].id) {
+                this._trackIsCompleted = true;
+            }
+        }
 
-        return true;
+        return this._trackIsCompleted;
     }
 
     public remove(): void {
-        if (!this._trackIsCompleted) {
+    if (!this._trackIsCompleted) {
 
-            if (this._vertices.length > 0) {
-                const dot: Object3D = this._scene.getObjectById(this._vertices[this._vertices.length - 1].id);
-                this._scene.remove(dot);
-                this._vertices.pop();
-            }
-
-            if (this._edges.length > 0) {
-                const line: Object3D = this._scene.getObjectById(this._edges[this._edges.length - 1].id);
-                this._scene.remove(line);
-                this._edges.pop();
-            }
-
+        if (this._vertices.length > 0) {
+            const dot: Object3D = this._scene.getObjectById(this._vertices[this._vertices.length - 1].id);
+            this._scene.remove(dot);
+            this._vertices.pop();
         }
+
+        if (this._edges.length > 0) {
+            const line: Object3D = this._scene.getObjectById(this._edges[this._edges.length - 1].id);
+            this._scene.remove(line);
+            this._edges.pop();
+        }
+
     }
+}
 
     private findRelativePosition(event: MouseEvent): Vector3 {
-        const canvas: HTMLCanvasElement = this._renderer.domElement;
+    const canvas: HTMLCanvasElement = this._renderer.domElement;
 
-        const relativeX: number = event.offsetX - (canvas.clientWidth / 2);
-        const relativeZ: number = event.offsetY - (canvas.clientHeight / 2);
+    const relativeX: number = event.offsetX - (canvas.clientWidth / 2);
+    const relativeZ: number = event.offsetY - (canvas.clientHeight / 2);
 
-        return new Vector3(relativeX * CAMERA_DISTANCE / canvas.clientHeight,
-                           0, relativeZ * CAMERA_DISTANCE / canvas.clientHeight);
+    return new Vector3(relativeX * CAMERA_DISTANCE / canvas.clientHeight,
+                       0, relativeZ * CAMERA_DISTANCE / canvas.clientHeight);
 
-    }
+}
 
     private createSphere(spherePosition: Vector3): THREE.Mesh {
-        const geometry: THREE.SphereGeometry = new SphereGeometry( CIRCLE_SIZE, CIRCLE_PIXEL, CIRCLE_PIXEL );
-        const material: THREE.MeshBasicMaterial = (this._vertices.length === 0) ? new MeshBasicMaterial( { color: 0xFFFF00 } ) :
-                                                                                  new MeshBasicMaterial( { color: 0xFFFFFF } );
-        const sphereMesh: Mesh = new Mesh(geometry, material);
-        sphereMesh.position.set(spherePosition.x, spherePosition.y, spherePosition.z);
+    const geometry: THREE.SphereGeometry = new SphereGeometry(CIRCLE_SIZE, CIRCLE_PIXEL, CIRCLE_PIXEL);
+    const material: THREE.MeshBasicMaterial = (this._vertices.length === 0) ? new MeshBasicMaterial({ color: 0xFFFF00 }) :
+        new MeshBasicMaterial({ color: 0xFFFFFF });
+    const sphereMesh: Mesh = new Mesh(geometry, material);
+    sphereMesh.position.set(spherePosition.x, spherePosition.y, spherePosition.z);
 
-        return sphereMesh;
-    }
+    return sphereMesh;
+}
 }
