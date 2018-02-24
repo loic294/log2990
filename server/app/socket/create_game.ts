@@ -11,8 +11,7 @@ export default (socket: any) => {
         await game.save();
 
         socket.emit("created_game", game);
-        Game.count({name: room}, (err: Error, count: number): void => {
-            console.log("created game in db ", count);
-        });
+        const count: number = await Game.count({name: room});
+        console.log("created game in db ", count);
     });
 };
