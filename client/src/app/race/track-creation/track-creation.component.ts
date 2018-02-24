@@ -26,9 +26,7 @@ export class TrackCreationComponent implements AfterViewInit {
     @ViewChild("container")
     private container: ElementRef;
 
-    public constructor() {
-        this._dotCommand = new DotCommand(this._scene, this._renderer);
-    }
+    public constructor() {}
 
     @HostListener("window:drag", ["event"])
     public dragDot(event: DragEvent): void {
@@ -90,6 +88,7 @@ export class TrackCreationComponent implements AfterViewInit {
         this._scene.add(this._camera);
 
         this._renderer.render(this._scene, this._camera);
+        this._dotCommand = new DotCommand(this._scene, this._renderer, this._camera);
     }
 
 }
