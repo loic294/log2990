@@ -5,6 +5,7 @@ import * as session from "express-session";
 import * as bodyParser from "body-parser";
 import * as logger from "morgan";
 import routes from "./routes/index";
+import sockets from "./socket/index";
 
 let app = express();
 
@@ -22,5 +23,13 @@ app.use(session({
 
 app = routes(app)
 
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 
-app.listen(3000, () => console.log("Listening on port 3000"))
+io.on('connection', function (socket: any) {
+	console.log('Connected to socket');
+	sockets(socket)
+});
+
+
+server.listen(3000, () => console.log("Listening on port 3000"))

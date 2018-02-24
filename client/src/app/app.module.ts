@@ -18,8 +18,13 @@ import { CluesComponent } from "./crosswords/clues/clues.component";
 import { ShadowBoxComponent } from "./crosswords/shadow-box/shadow-box.component";
 import { ContainerComponent } from "./crosswords/container/container.component";
 import { ButtonComponent } from "./crosswords/button/button.component";
-import { AppRoutingModule } from ".//app-routing.module";
+import { AppRoutingModule } from "./app-routing.module";
 import { GridService } from "./grid.service/grid.service";
+import { SocketIoModule, SocketIoConfig } from "ng-socket-io";
+import { ModeComponent } from "./crosswords/mode/mode.component";
+import { SocketService } from "./socket.service/socket.service";
+
+const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
 @NgModule({
     declarations: [
@@ -38,13 +43,15 @@ import { GridService } from "./grid.service/grid.service";
         HttpClientModule,
         FormsModule,
         ClickOutsideModule,
-        AppRoutingModule
+        AppRoutingModule,
+        SocketIoModule.forRoot(config)
     ],
     providers: [
         RenderService,
         BasicService,
         WordService,
-        GridService
+        GridService,
+        SocketService
     ],
     bootstrap: [AppComponent]
 })

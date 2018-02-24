@@ -7,6 +7,7 @@ import { Observable } from "rxjs/Observable";
 import { of } from "rxjs/observable/of";
 import Word, { Orientation } from "../../../../common/lexical/word";
 import { WordService } from "../word.service/word.service";
+import { SocketService } from "../socket.service/socket.service";
 
 const BACK_SPACE_KEY_CODE: number = 8;
 
@@ -22,11 +23,13 @@ export class GridService {
     private _row: number;
     private _col: number;
 
-    public constructor(private _wordService: WordService) {
+    public constructor(
+        private _wordService: WordService,
+        private socketService: SocketService
+    ) {
         this._wordService.wordFromClue.subscribe(
             (_wordFromClue) => {
-            this._word = _wordFromClue,
-                this.selectCaseFromService(_wordFromClue);
+                this._word = _wordFromClue, this.selectCaseFromService(_wordFromClue);
             });
 
         this._grid = GRID.map((row: string) => {
@@ -43,18 +46,35 @@ export class GridService {
                 }
             }
         }
+
+        this.socketService.cellToHighligh.subscribe(
+            (data: string) => {
+                const { row, col }: { row: number, col: number } = JSON.parse(data);
+                this.highligthCell(row, col);
+                // TODO: Call selectCaseFromService instead of highligthCell
+                // TODO: Parse word.
+            });
+
     }
 
     public get grid(): Array<Array<Case>> {
         return this._grid;
     }
 
+    // TODO: Add fonction when word selected from service
+        // TODO: send data to socket inside
+        // TODO: pass user color
+
+    // TODO: Method that receives the word changed
+
     private selectCaseFromService(w: Word): void {
+
+        // TODO: Change socket to this function instead of highligth
 
         if (this._selectedWord != null) {
             const cellTemp: Case = this._selectedWord;
 
-            this.iterateGrid(cellTemp, (x: number, y: number, caseTest: Case) => {
+            this.iterateWord(cellTemp, (x: number, y: number, caseTest: Case) => {
                 this._grid[x][y].unselect();
             });
 
@@ -79,7 +99,7 @@ export class GridService {
         if (this._selectedWord != null) {
             const cellTemp: Case = this._selectedWord;
 
-            this.iterateGrid(cellTemp, (x: number, y: number) => {
+            this.iterateWord(cellTemp, (x: number, y: number) => {
                 this._grid[x][y].unselect();
             });
         }
@@ -141,11 +161,16 @@ export class GridService {
         return (this._row - 1 >= 0 && !this.isBlack(this._grid[this._row - 1][this._col].char));
     }
 
+    private highligthCell (row: number, col: number): void {
+        this._grid[row][col].select();
+    }
+
     private wordHighligth(): void {
         const currentCase: Case = null;
 
-        this.iterateGrid(currentCase, (x: number, y: number, cellTemp: Case, cell: number) => {
-            this._grid[cellTemp.x][cellTemp.y].select();
+        this.iterateWord(currentCase, (x: number, y: number, cellTemp: Case, cell: number) => {
+            this.socketService.highligthCell(cellTemp.x, cellTemp.y);
+            this.highligthCell(cellTemp.x, cellTemp.y);
             if (cellTemp.char === "-") {
 
                 return true;
@@ -205,7 +230,7 @@ export class GridService {
         this._wordStart = wordStart;
         this._isHorizontal = this.isHorizontal();
 
-        this.iterateGrid(cellTemp, (x: number, y: number, cellTemp: Case, cell: number) => {
+        this.iterateWord(cellTemp, (x: number, y: number, cellTemp: Case, cell: number) => {
             this._grid[x][y].unselect();
             if (cell === wordStart) {
                 this._selectedWord = cellTemp;
@@ -232,7 +257,7 @@ export class GridService {
         return this._word.orientation === Orientation.horizontal;
     }
 
-    private iterateGrid(cellTemp: Case, fct: Function): void {
+    private iterateWord(cellTemp: Case, fct: Function): void {
         for (let cell: number = this._wordStart; cell < this._wordStart + this._selWord.length; cell++) {
             this._isHorizontal ? cellTemp = this._grid[this._selWord.row][cell] : cellTemp = this._grid[cell][this._selWord.col];
 

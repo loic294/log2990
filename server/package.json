@@ -49,7 +49,7 @@
     "@types/morgan": "1.7.32",
     "@types/node": "^8.0.26",
     "@types/node-uuid": "0.0.28",
-    "@types/socket.io": "1.4.30",
+    "@types/socket.io": "^1.4.30",
     "chai": "4.0.0",
     "concurrently": "^3.0.0",
     "mocha": "3.5.0",
