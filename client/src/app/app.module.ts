@@ -19,10 +19,16 @@ import { ShadowBoxComponent } from "./crosswords/shadow-box/shadow-box.component
 import { ContainerComponent } from "./crosswords/container/container.component";
 import { ButtonComponent } from "./crosswords/button/button.component";
 import { AppRoutingModule } from "./app-routing.module";
+// import { AppRoutingModule } from ".//app-routing.module";
 import { GridService } from "./grid.service/grid.service";
 import { SocketIoModule, SocketIoConfig } from "ng-socket-io";
-import { ModeComponent } from "./crosswords/mode/mode.component";
+import { ModeComponent, ModeDialog } from "./crosswords/mode/mode.component";
 import { SocketService } from "./socket.service/socket.service";
+import {MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material/dialog';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+
+
+import {MatProgressSpinnerModule} from '@angular/material';
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
@@ -37,22 +43,33 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         ShadowBoxComponent,
         ContainerComponent,
         ButtonComponent,
-        ModeComponent
+        ModeComponent,
+        ModeDialog
+    ],
+    entryComponents: [
+        ModeDialog
     ],
     imports: [
         BrowserModule,
         HttpClientModule,
         FormsModule,
         ClickOutsideModule,
-        AppRoutingModule,
-        SocketIoModule.forRoot(config)
+        SocketIoModule.forRoot(config),
+        MatProgressSpinnerModule,
+        MatDialogModule,
+        BrowserAnimationsModule
     ],
     providers: [
         RenderService,
         BasicService,
         WordService,
         GridService,
-        SocketService
+        SocketService,
+        {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}}
+    ],
+    exports: [
+        MatProgressSpinnerModule,
+        MatDialogModule
     ],
     bootstrap: [AppComponent]
 })
