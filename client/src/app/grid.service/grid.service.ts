@@ -25,7 +25,7 @@ export class GridService {
 
     public constructor(
         private _wordService: WordService,
-        private _socket: SocketService
+        private socketService: SocketService
     ) {
         this._wordService.wordFromClue.subscribe(
             (_wordFromClue) => {
@@ -47,11 +47,12 @@ export class GridService {
             }
         }
 
-        this._socket.cellToHighligh.subscribe(
+        this.socketService.cellToHighligh.subscribe(
             (data: string) => {
                 const { row, col }: { row: number, col: number } = JSON.parse(data);
-                console.log("ROW/COL TO UPDATE", row, col);
                 this.highligthCell(row, col);
+                // TODO: Call selectCaseFromService instead of highligthCell
+                // TODO: Parse word.
             });
 
     }
@@ -60,12 +61,20 @@ export class GridService {
         return this._grid;
     }
 
+    // TODO: Add fonction when word selected from service
+        // TODO: send data to socket inside
+        // TODO: pass user color
+
+    // TODO: Method that receives the word changed
+
     private selectCaseFromService(w: Word): void {
+
+        // TODO: Change socket to this function instead of highligth
 
         if (this._selectedWord != null) {
             const cellTemp: Case = this._selectedWord;
 
-            this.iterateGrid(cellTemp, (x: number, y: number, caseTest: Case) => {
+            this.iterateWord(cellTemp, (x: number, y: number, caseTest: Case) => {
                 this._grid[x][y].unselect();
             });
 
@@ -90,7 +99,7 @@ export class GridService {
         if (this._selectedWord != null) {
             const cellTemp: Case = this._selectedWord;
 
-            this.iterateGrid(cellTemp, (x: number, y: number) => {
+            this.iterateWord(cellTemp, (x: number, y: number) => {
                 this._grid[x][y].unselect();
             });
         }
@@ -159,10 +168,8 @@ export class GridService {
     private wordHighligth(): void {
         const currentCase: Case = null;
 
-        this.iterateGrid(currentCase, (x: number, y: number, cellTemp: Case, cell: number) => {
-            // this._grid[cellTemp.x][cellTemp.y].select();
-            console.log('SEND WORD TO HILIGTHTJHR');
-            this._socket.highligthCell(cellTemp.x, cellTemp.y);
+        this.iterateWord(currentCase, (x: number, y: number, cellTemp: Case, cell: number) => {
+            this.socketService.highligthCell(cellTemp.x, cellTemp.y);
             this.highligthCell(cellTemp.x, cellTemp.y);
             if (cellTemp.char === "-") {
 
@@ -223,7 +230,7 @@ export class GridService {
         this._wordStart = wordStart;
         this._isHorizontal = this.isHorizontal();
 
-        this.iterateGrid(cellTemp, (x: number, y: number, cellTemp: Case, cell: number) => {
+        this.iterateWord(cellTemp, (x: number, y: number, cellTemp: Case, cell: number) => {
             this._grid[x][y].unselect();
             if (cell === wordStart) {
                 this._selectedWord = cellTemp;
@@ -250,7 +257,7 @@ export class GridService {
         return this._word.orientation === Orientation.horizontal;
     }
 
-    private iterateGrid(cellTemp: Case, fct: Function): void {
+    private iterateWord(cellTemp: Case, fct: Function): void {
         for (let cell: number = this._wordStart; cell < this._wordStart + this._selWord.length; cell++) {
             this._isHorizontal ? cellTemp = this._grid[this._selWord.row][cell] : cellTemp = this._grid[cell][this._selWord.col];
 

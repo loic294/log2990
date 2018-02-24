@@ -12,51 +12,51 @@ export class ModeComponent implements OnInit {
     // private input: String;
 
     public constructor(
-        private _socket: SocketService
+        private socketService: SocketService
     ) { }
 
     public get modes(): string[] {
-        return this._socket.modes;
+        return this.socketService.modes;
     }
 
     public get player(): string {
-        return this._socket.player;
+        return this.socketService.player;
     }
 
     public onEnter(value: string): void {
-        this._socket.onEnter(value);
+        this.socketService.onEnter(value);
     }
 
     public get selectedMode(): string {
-        return this._socket.selectedMode;
+        return this.socketService.selectedMode;
     }
 
     public onSelect(mode: string): void {
-        return this._socket.onSelect(mode);
+        return this.socketService.onSelect(mode);
     }
 
     public get games(): IGameModel[] {
-        return this._socket.games;
+        return this.socketService.games;
     }
 
     public addGames(): void {
-        this._socket.addGames();
+        this.socketService.addGames();
     }
 
     public toggleShowGames(): void {
-        this._socket.toggleShowGames();
+        this.socketService.toggleShowGames();
     }
 
     public get showGames(): boolean {
-        return this._socket.showGames;
+        return this.socketService.showGames;
     }
 
     public createGame(mode: string): void {
-        this._socket.createGame(mode);
+        this.socketService.createGame(mode);
     }
 
     public joinGame(gameId: string): void {
-        this._socket.joinGame(gameId);
+        this.socketService.joinGame(gameId);
     }
 
     public ngOnInit(): void {

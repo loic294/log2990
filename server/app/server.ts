@@ -30,7 +30,7 @@ var io = require('socket.io')(server);
 
 io.on('connection', function (socket: any) {
 	console.log('Connected to socket');
-	console.log('CLIENTS 0', Object.keys(io.sockets.sockets));
+
     socket.on("get_games", async function () {
         const games: IGameModel[] = await Game.find({
             $and: [{
@@ -44,7 +44,6 @@ io.on('connection', function (socket: any) {
     })
 
     socket.on('create_game', async function (data: string) {
-		console.log('CLIENTS 1', Object.keys(io.sockets.sockets));
         const { gameId: room, value } : { gameId: string, value: string } = JSON.parse(data);
         const game: IGameModel = new Game({
             name: room,
@@ -52,7 +51,6 @@ io.on('connection', function (socket: any) {
             players: []
         });
         await game.save();
-        console.log(game, value);
         
         socket.emit("created_game", game);
         Game.count({name: room}, function (err, count){
@@ -64,34 +62,29 @@ io.on('connection', function (socket: any) {
         const { gameId: room, value } : { gameId: string, value: string } = JSON.parse(data);
         const game = await Game.findOne({ name: room });
 
-        console.log('CONNECT TO GAME', room)
-
         if (game.players.length === 0 ) {
             socket.join(room);
             await Game.findOneAndUpdate({name: game.name}, {
                     players : [value]
                 })
-            console.log("connecting player 1 to ", room);
             socket.emit("connected_to_game", JSON.stringify({game}));
         }
         else if (game.players.length === 1 ) {
-            socket.join(room);
+			socket.join(room);
+			
 			const dbGame = await Game.findOne({name: game.name});
 			dbGame.players.push(value);
 			await dbGame.save();
-            console.log("connecting player 2 to ", room);
-            socket.emit("connected_to_game", JSON.stringify({ game: dbGame }));
+
+			socket.emit("connected_to_game", JSON.stringify({ game: dbGame }));
+			// SEND CONNECTED TO OTHER PLAYER
         }
         else {
             console.log("Already 2 players");
 		}
 		
 		socket.on("highligth_cell", (data: string) => {
-			// console.log('CELL TO HILIGHT', data)
-			console.log('CLIENTS 2', Object.keys(io.sockets.sockets));
-			// console.log('ROOM', room)
-			socket.to(room).emit('highligth_cell_in_color', data)
-			socket.broadcast.emit("TEST", "Hello world");
+			socket.to(room).emit('highligth_cell_in_color', data);
 		})
 
 		socket.on('disconnect', async function(){
