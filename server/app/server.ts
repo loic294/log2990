@@ -6,7 +6,7 @@ import * as bodyParser from "body-parser";
 import * as logger from "morgan";
 import * as cors from "cors";
 import routes from "./routes/index";
-import Game, { IGameModel } from "./models/game";
+import sockets from "./socket/index";
 
 let app = express();
 
@@ -30,69 +30,7 @@ var io = require('socket.io')(server);
 
 io.on('connection', function (socket: any) {
 	console.log('Connected to socket');
-
-    socket.on("get_games", async function () {
-        const games: IGameModel[] = await Game.find({
-            $and: [{
-                "players.0": { "$exists": true }
-            },{
-                "players.1": { "$exists": false }
-            }]
-            
-        });
-        socket.emit("add_games", games);
-    })
-
-    socket.on('create_game', async function (data: string) {
-        const { gameId: room, value } : { gameId: string, value: string } = JSON.parse(data);
-        const game: IGameModel = new Game({
-            name: room,
-            createdAt: new Date(),
-            players: []
-        });
-        await game.save();
-        
-        socket.emit("created_game", game);
-        Game.count({name: room}, function (err, count){
-            console.log("created game in db ", count);
-        });
-    });
-
-    socket.on("connect_to_game", async function (data: string) {
-        const { gameId: room, value } : { gameId: string, value: string } = JSON.parse(data);
-        const game = await Game.findOne({ name: room });
-
-        if (game.players.length === 0 ) {
-            socket.join(room);
-            await Game.findOneAndUpdate({name: game.name}, {
-                    players : [value]
-                })
-            socket.emit("connected_to_game", JSON.stringify({game}));
-        }
-        else if (game.players.length === 1 ) {
-			socket.join(room);
-			
-			const dbGame = await Game.findOne({name: game.name});
-			dbGame.players.push(value);
-			await dbGame.save();
-
-			socket.emit("connected_to_game", JSON.stringify({ game: dbGame }));
-			// SEND CONNECTED TO OTHER PLAYER
-        }
-        else {
-            console.log("Already 2 players");
-		}
-		
-		socket.on("highligth_cell", (data: string) => {
-			socket.to(room).emit('highligth_cell_in_color', data);
-		})
-
-		socket.on('disconnect', async function(){
-            await game.remove();
-            console.log("disconnect", game);
-		})
-	});
-	
+	sockets(socket)
 });
 
 
