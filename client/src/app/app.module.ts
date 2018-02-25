@@ -58,7 +58,7 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         WordService,
         GridService,
         SocketService,
-        {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}}
+        {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: true}}
     ],
     exports: [
         MatProgressSpinnerModule,
