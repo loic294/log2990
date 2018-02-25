@@ -1,9 +1,9 @@
 
 <h1>Welcome {{player}}!</h1>
 
-<ui-button *ngFor="let mode of modes" (click)="onSelect(mode)" [active]="selectedMode == mode">
+<button *ngFor="let mode of modes" (click)="onSelect(mode)" [class.active]="selectedMode == mode">
   {{mode}}
-</ui-button>
+</button>
 
 
 <div [hidden]="showDifficulty">
@@ -11,7 +11,7 @@
 </div>
 
 <div [hidden]="!startSoloGame()">
-  <ui-button (click)="closeDialog()">Start Game</ui-button>
+  <button (click)="closeDialog()">Start Game</button>
 </div>
 
 <div [hidden]="!isMultiPlayer()">
@@ -22,8 +22,8 @@
   <div *ngIf="player.length > 2">
 
 
-    <ui-button (click)="createGame(selectedMode); closeDialog()">Create Game</ui-button>
-    <ui-button (click)="addGames(); toggleShowGames()">Join Game</ui-button>
+    <button (click)="createGame(selectedMode); closeDialog()">Create Game</button>
+    <button (click)="addGames(); toggleShowGames()">Join Game</button>
     <button [ngClass]="{ 'hide': !showGames, 'show': showGames}" *ngFor="let game of games" (click)="joinGame(game.name)">{{game.players[0]}}</button>
   </div>
 

@@ -2,7 +2,7 @@
 <!-- <button mat-button (click)="openDialog()">Open dialog</button>
 
 
-<ui-button *ngFor = "let mode of modes" (click)="onSelect(mode)" [active]="selectedMode == mode">
+<button *ngFor = "let mode of modes" (click)="onSelect(mode)" [class.active]="selectedMode == mode">
   {{mode}}
 </button>
 <button (click)="createGame(selectedMode)">Create Game</button>
