@@ -156,53 +156,11 @@ export class DotCommand {
     private dragLines(oldPos: THREE.Vector3, newPos: THREE.Vector3): void {
 
         const connectedLines: Array<Line> = this.findConnectedLines(oldPos);
-        const lineToRemove: Object3D = this._scene.getObjectById(connectedLines[0].id);
-        console.log(connectedLines[0].id);
-        this._scene.remove(lineToRemove);
+        const lineToRemove: Line = this._scene.getObjectById(connectedLines[0].id) as Line;
 
-        for (const i of connectedLines) {
-            const lineMat: THREE.LineBasicMaterial = new LineBasicMaterial({ color: 0xFF0000, linewidth: 8 });
-            const lineGeo: THREE.Geometry = new Geometry();
-            lineGeo.vertices.push( (i.userData.vertices[0] !== oldPos) ? i.userData.vertices[0] : i.userData.vertices[1]);
-            lineGeo.vertices.push(newPos);
+        lineToRemove.geometry.vertices[ 1 ] = newPos;
+        lineToRemove.geometry.verticesNeedUpdate = true;
 
-            const line: THREE.Line = new Line(lineGeo, lineMat);
-            line.userData.vertices = [];
-
-            line.userData.vertices.push((i.userData.vertices[0] !== oldPos) ? i.userData.vertices[0] : i.userData.vertices[1]);
-            line.userData.vertices.push(newPos);
-
-            /*const lineToRemove: Object3D = this._scene.getObjectById(i.id);
-            this._scene.remove(lineToRemove);*/
-
-            this._edges.push(line);
-            this._scene.add(line);
-        }
-
-
-        /* for (let i: number = 0; i < this._selectedObject.userData.edges.length; i++) {
- 
-             let line: Object3D = this._scene.getObjectById(this._selectedObject.userData.edges[i].id);
-             const vertex: Object3D = (line.userData.vertices[0] !== this._selectedObject) ?
-                                      line.userData.vertices[0] : line.userData.vertices[1];
- 
-             this._scene.remove(line);
- 
-             const lineMat: THREE.LineBasicMaterial = new LineBasicMaterial({ color: 0xFF0000, linewidth: 8 });
-             const lineGeo: THREE.Geometry = new Geometry();
-             lineGeo.vertices.push(this._selectedObject.position);
-             lineGeo.vertices.push(vertex.position);
- 
-             line = new Line(lineGeo, lineMat);
- 
-             line.userData.vertices = [];
-             line.userData.vertices.push(this._selectedObject);
-             line.userData.vertices.push(vertex);
-             this._selectedObject.userData.edges.push(line);
-             vertex.userData.edges.push(line);
- 
-             this._scene.add(line);
-         }*/
     }
 
     public unselect(): void {
