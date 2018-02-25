@@ -75,4 +75,61 @@ describe("ConstraintService", () => {
         expect(service.checkIfAngleIsValid(service.getAngleOfTwoVectors(vectorA, vectorB))).toEqual(false);
     }));
 
+
+    it("should send a distance of 100", inject([ConstraintService], (service: ConstraintService) => {
+        const vertexA: VectorI = { x: 0, y: 100 };
+        const vertexB: VectorI = { x: 0, y: 0 };
+
+        expect(service.distance(vertexA, vertexB)).toEqual(100);
+    }));
+
+    it("should send a distance of 141.4213562373095", inject([ConstraintService], (service: ConstraintService) => {
+        const vertexA: VectorI = { x: 0, y: 100 };
+        const vertexB: VectorI = { x: 100, y: 0 };
+
+        expect(service.distance(vertexA, vertexB)).toEqual(141.4213562373095);
+    }));
+
+    it("should distance of 6 should fail validation", inject([ConstraintService], (service: ConstraintService) => {
+        const distance: number = 6;
+
+        expect(service.checkIfDistanceIsTwiceTheWidth(distance)).toEqual(false);
+    }));
+
+    it("should distance of 15.99999 should fail validation", inject([ConstraintService], (service: ConstraintService) => {
+        const distance: number = 15.99999;
+
+        expect(service.checkIfDistanceIsTwiceTheWidth(distance)).toEqual(false);
+    }));
+
+    it("should distance of 16 should pass validation", inject([ConstraintService], (service: ConstraintService) => {
+        const distance: number = 16;
+
+        expect(service.checkIfDistanceIsTwiceTheWidth(distance)).toEqual(true);
+    }));
+
+    it("should distance of 29484.299229 should pass validation", inject([ConstraintService], (service: ConstraintService) => {
+        const distance: number = 29484.299229;
+
+        expect(service.checkIfDistanceIsTwiceTheWidth(distance)).toEqual(true);
+    }));
+
+    it("should not intersect because they are parrallel", inject([ConstraintService], (service: ConstraintService) => {
+        const vertexA: VectorI = { x: 0, y: 0 };
+        const vertexB: VectorI = { x: 0, y: 100 };
+        const vertexC: VectorI = { x: 20, y: 0 };
+        const vertexD: VectorI = { x: 20, y: 100 };
+
+        expect(service.intersects(vertexA, vertexB, vertexC, vertexD)).toEqual(false);
+    }));
+
+    it("should intersect because they cross at 45 degre angle", inject([ConstraintService], (service: ConstraintService) => {
+        const vertexA: VectorI = { x: 0, y: 0 };
+        const vertexB: VectorI = { x: 100, y: 100 };
+        const vertexC: VectorI = { x: 100, y: 0 };
+        const vertexD: VectorI = { x: 0, y: 100 };
+
+        expect(service.intersects(vertexA, vertexB, vertexC, vertexD)).toEqual(true);
+    }));
+
 });
