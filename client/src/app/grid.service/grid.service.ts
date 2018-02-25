@@ -1,4 +1,5 @@
 /* tslint:disable:no-shadowed-variable */
+// tslint:disable:no-suspicious-comment
 
 import { Injectable } from "@angular/core";
 import { GRID } from "../mock-grid";
@@ -9,9 +10,7 @@ import Word, { Orientation } from "../../../../common/lexical/word";
 
 import { WordService } from "../word.service/word.service";
 import { SocketService } from "../socket.service/socket.service";
-
 import CLUES from "../mock-words";
-
 const BACK_SPACE_KEY_CODE: number = 8;
 
 @Injectable()
@@ -34,17 +33,14 @@ export class GridService {
             (_wordFromClue) => {
                 this._word = _wordFromClue, this.selectCaseFromService(_wordFromClue);
             });
-
         this.socketService.cellToHighligh.subscribe(
             (data: string) => {
                 const { row, col }: { row: number, col: number } = JSON.parse(data);
                 this.highligthCell(row, col);
-                // TODO: Call selectCaseFromService instead of highligthCell
-                // TODO: Parse word.
+                // TODO: Call selectCaseFromService instead of highligthCell // TODO: Parse word.
             });
 
         this.initGrid();
-
     }
 
     private initGrid(): void {
@@ -70,17 +66,12 @@ export class GridService {
     public get grid(): Array<Array<Case>> {
         return this._grid;
     }
-
     // TODO: Add fonction when word selected from service
         // TODO: send data to socket inside
         // TODO: pass user color
-
     // TODO: Method that receives the word changed
-
     private selectCaseFromService(w: Word): void {
-
         // TODO: Change socket to this function instead of highligth
-
         if (this._selectedWord != null) {
             const cellTemp: Case = this._selectedWord;
 
@@ -100,9 +91,7 @@ export class GridService {
     }
 
     private wordsStartAtPosition(row: number, col: number): Array<number> {
-
-        return CLUES
-            .filter((word: Word): boolean => word.position[0] === row && word.position[1] === col)
+        return CLUES.filter((word: Word): boolean => word.position[0] === row && word.position[1] === col)
             .map((word: Word): number => word.index + 1);
     }
 
