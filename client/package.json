@@ -25,11 +25,13 @@
     "core-js": "^2.4.1",
     "glob": "^7.1.2",
     "ng-click-outside": "^3.2.0",
+    "ng-socket-io": "^0.2.4",
     "rxjs": "^5.5.2",
     "socket.io": "1.4.4",
     "socket.io-client": "1.4.4",
     "stats.js": "^0.17.0",
     "three": "~0.84.0",
+    "update": "^0.7.4",
     "zone.js": "^0.8.14"
   },
   "devDependencies": {

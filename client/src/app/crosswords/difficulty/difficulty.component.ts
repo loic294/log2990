@@ -13,7 +13,7 @@ export class DifficultyComponent implements OnInit {
     private difficulties: Array<Difficulty>;
 
     public constructor( ) {
-        this._selectedDifficulty = Difficulty.Easy;
+        this._selectedDifficulty;
         this.difficulties = [
             Difficulty.Easy,
             Difficulty.Normal,

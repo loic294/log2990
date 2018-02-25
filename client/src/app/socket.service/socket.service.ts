@@ -22,7 +22,7 @@ export class SocketService {
     ) {
         this._games = [];
         this._modes = ["Single Player", "Two Players"];
-        this._selectedMode = "Single Player";
+        this._selectedMode = "";
         this._showGames = false;
         this._socket.connect();
 
