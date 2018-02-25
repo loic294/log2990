@@ -1,17 +1,17 @@
 <div class="clues">
   <h2>Vertical</h2>
-  <div class="row" *ngFor="let clue of clues" (click)="onSelect(clue)">
+  <div class="row" *ngFor="let clue of clues; let i = index" (click)="onSelect(clue)">
     <div *ngIf="clue.orientation===1">
       <div class="clue" [class.selected]="this._selectedClue == clue">
-        {{ clue.desc }}
+        <span class="index">{{i+1}}</span> {{ clue.desc }}
       </div>
     </div>
   </div>
   <h2>Horizontal</h2>
-  <div class="row" *ngFor="let clue of clues" (click)="onSelect(clue)">
+  <div class="row" *ngFor="let clue of clues; let i = index" (click)="onSelect(clue)">
     <div *ngIf="clue.orientation===0">
       <div class="clue" [class.selected]="this._selectedClue == clue">
-        {{ clue.desc }}
+					<span class="index">{{i+1}}</span> {{ clue.desc }}
       </div>
     </div>
   </div>
