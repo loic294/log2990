@@ -2,7 +2,6 @@ import {
     Vector3, SphereGeometry, MeshBasicMaterial, Mesh, Object3D,
     LineBasicMaterial, Geometry, Line, Raycaster, Intersection
 } from "three";
-/*import { DragControls} from "three-dragcontrols";*/
 
 const CAMERA_DISTANCE: number = 50;
 const CIRCLE_PIXEL: number = 20;
@@ -14,7 +13,6 @@ export class DotCommand {
     private _vertices: Array<Object3D>;
     private _edges: Array<Line>;
     private _selectedObject: Object3D;
-    // private _controls: DragControls;
 
     public constructor(private _scene: THREE.Scene, private _renderer: THREE.WebGLRenderer, private _camera: THREE.OrthographicCamera) {
         this._trackIsCompleted = false;
@@ -29,7 +27,6 @@ export class DotCommand {
 
             const relativeDotPosition: Vector3 = this.findRelativePosition(event);
             const sphereMesh: Mesh = this.createSphere(relativeDotPosition);
-            //sphereMesh.userData.edges = [];
             this._scene.add(sphereMesh);
             this._vertices.push(sphereMesh);
             this.updateEdges();
@@ -46,12 +43,6 @@ export class DotCommand {
             lineGeo.vertices.push(this._vertices[this._vertices.length - 1].position);
 
             const line: THREE.Line = new Line(lineGeo, lineMat);
-            line.userData.vertices = [];
-
-            line.userData.vertices.push(this._vertices[this._vertices.length - 2].position);
-            line.userData.vertices.push(this._vertices[this._vertices.length - 1].position);
-            //this._vertices[this._vertices.length - 2].userData.edges.push(line);
-            //this._vertices[this._vertices.length - 1].userData.edges.push(line);*/
 
             this._edges.push(line);
             this._scene.add(line);
@@ -61,9 +52,11 @@ export class DotCommand {
     private detectCompletedTrack(event: MouseEvent): boolean {
         let foundCircle: boolean = false;
         if (this._vertices.length > 0) {
+
             const mouse3D: Vector3 = this.findRelativePosition(event);
             const raycaster: THREE.Raycaster = new Raycaster(this._camera.position, mouse3D.sub(this._camera.position).normalize());
             const intersects: Intersection[] = raycaster.intersectObjects(this._vertices);
+
             if (intersects.length > 0 && intersects[0].object === this._vertices[0]) {
                 this.connectToFirst();
                 this._trackIsCompleted = true;
@@ -78,7 +71,7 @@ export class DotCommand {
     }
 
     private connectToFirst(): void {
-        //this.remove();
+        // this.remove();
         const lineMat: THREE.LineBasicMaterial = new LineBasicMaterial({ color: 0xFF0000, linewidth: 8 });
         const lineGeo: THREE.Geometry = new Geometry();
         lineGeo.vertices.push(this._vertices[this._vertices.length - 1].position);
@@ -113,7 +106,7 @@ export class DotCommand {
         const relativeZ: number = event.offsetY - (canvas.clientHeight / 2);
 
         return new Vector3(relativeX * CAMERA_DISTANCE / canvas.clientHeight,
-            0, relativeZ * CAMERA_DISTANCE / canvas.clientHeight);
+                           0, relativeZ * CAMERA_DISTANCE / canvas.clientHeight);
 
     }
 
@@ -158,9 +151,11 @@ export class DotCommand {
         const connectedLines: Array<Line> = this.findConnectedLines(oldPos);
 
         for (const i of connectedLines) {
-            i.geometry.vertices[ i ] = newPos;
-            i.geometry.verticesNeedUpdate = true;
-        }
+            const testGeometry: Geometry = i.geometry as Geometry;
+            const vertexToChange: number = (testGeometry.vertices[0] !== oldPos) ? 0 : 1;
+            testGeometry.vertices[ vertexToChange ] = newPos;
+            testGeometry.verticesNeedUpdate = true;
+       }
     }
 
     public unselect(): void {

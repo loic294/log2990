@@ -1,5 +1,5 @@
 import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from "@angular/core";
-import { OrthographicCamera, WebGLRenderer, Scene, /* GridHelper, AxisHelper, */ Vector3 } from "three";
+import { OrthographicCamera, WebGLRenderer, Scene, Vector3 } from "three";
 import { DotCommand } from "../DotCommand";
 
 const FAR_CLIPPING_PLANE: number = 10000;
@@ -26,7 +26,6 @@ export class TrackCreationComponent implements AfterViewInit {
     private container: ElementRef;
 
     public constructor() {}
-
 
     @HostListener("window:resize", ["$event"])
     public onResize(): void {
@@ -74,14 +73,6 @@ export class TrackCreationComponent implements AfterViewInit {
     }
 
     public ngAfterViewInit(): void {
-        // Debug help
-        /*const gridHelper: THREE.GridHelper = new GridHelper(10, 10);
-        const axes: THREE.AxisHelper = new AxisHelper(2);
-        this._scene.add(axes);
-        gridHelper.position.set(0, 0, 0);
-        gridHelper.scale.set(2, 2, 2);
-        this._scene.add(gridHelper);*/
-        /////////////////////////////////////////////////////////////////
 
         this._camera = new OrthographicCamera(CAMERA_DISTANCE * ASPECT / - 2, CAMERA_DISTANCE * ASPECT / 2,
                                               CAMERA_DISTANCE / 2, CAMERA_DISTANCE / - 2, NEAR_CLIPPING_PLANE, FAR_CLIPPING_PLANE);
