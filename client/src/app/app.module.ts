@@ -25,7 +25,6 @@ import { TrackCreationComponent } from './race/track-creation/track-creation.com
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
-
 @NgModule({
     declarations: [
         AppComponent,
