@@ -1,3 +1,6 @@
+
+<h1>Welcome {{player}}!</h1>
+
 <ui-button *ngFor="let mode of modes" (click)="onSelect(mode)" [active]="selectedMode == mode">
   {{mode}}
 </ui-button>
@@ -13,7 +16,7 @@
 
 <div [hidden]="!isMultiPlayer()">
   Please enter your name:
-  <input (input)="onEnter($event.target.value)"> {{player}}
+  <input (input)="onEnter($event.target.value)">
 
 
   <div *ngIf="player.length > 2">
