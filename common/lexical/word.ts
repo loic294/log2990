@@ -3,71 +3,35 @@ export enum Orientation {
     vertical = 1,
 }
 
-export default class Word {
+export interface IWord {
+    name: string,
+    desc: string,
+    position: Array<number>,
+    orientation: Orientation,
+    index: number,
+    isValidated: boolean,
+}
+
+export default class Word implements IWord {
   
     constructor(
-        private _name : string,
-        private _desc : string,
-        private _position : Array<number>,
-        private _orientation : Orientation,
-        private _index : number,
-        private _isValidated: boolean = false
+        public name : string,
+        public desc : string,
+        public position : Array<number>,
+        public orientation : Orientation,
+        public index : number,
+		public isValidated: boolean = false,
     ) {}
 
-    public get name() {
-        return this._name;
+    public get row(): number {
+        return this.position[0];
     }
 
-    public set name(name : string) {
-        this._name = name;
+    public get col(): number {
+        return this.position[1];
     }
 
-    public get desc() {
-        return this._desc;
+    public get length(): number {
+        return this.name.length;
     }
-
-    public set desc(desc: string) {
-        this._desc = desc;
-    }
-
-    public get position() {
-        return this._position
-    }
-
-    public set position( position : Array<number> ) {
-        this._position = position;
-    }
-
-    public get col () {
-        return this._position[1]
-    }
-
-    public get row () {
-        return this._position[0]
-    }
-
-    public get direction() {
-        return this._orientation;
-    }
-
-    public get length() {
-        return this._name.length;
-    }
-    
-    public get validated() {
-        return this._isValidated
-    }
-    
-    public validate() {
-        this._isValidated = true
-    }
-
-    public get index() {
-        return this._index;
-    }
-
-    public set index( index : number ) {
-        this._index = index;
-    }
-
 }

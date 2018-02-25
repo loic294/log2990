@@ -9,6 +9,7 @@
 }
 
 .square {
+	position: relative;
 	height: 50px;
 	width: 50px;
 	border: 1px solid black;
@@ -28,6 +29,10 @@
     pointer-events: none;
 }
 
+.col {
+	position: relative;
+}
+
 .col input {
     text-align: center;
 }
@@ -39,4 +44,14 @@
 
 .col input:disabled {
     background-color: rgba(34, 75, 22, 0.301);
+}
+
+.indexes {
+	position: absolute;
+	top: 6px;
+	left: 6px;
+}
+
+.small-index {
+	font-size: 10px;
 }

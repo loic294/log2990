@@ -4,7 +4,7 @@
   "version": "1.1.0",
   "private": true,
   "scripts": {
-    "start": "tsc && concurrently --kill-others \"tsc -w \" \"nodemon --require dotenv/config out/server.js\" ",
+    "start": "tsc && concurrently --kill-others \"tsc -w \" \"nodemon --require dotenv/config out/server/app/server.js\" ",
     "lint": "tslint --project tsconfig.json \"./app/**/*.ts\" --format stylish",
     "test": "mocha -r ts-node/register app/**/*.spec.ts",
     "tsc": "tsc",
@@ -49,7 +49,7 @@
     "@types/morgan": "1.7.32",
     "@types/node": "^8.0.26",
     "@types/node-uuid": "0.0.28",
-    "@types/socket.io": "1.4.30",
+    "@types/socket.io": "^1.4.30",
     "chai": "4.0.0",
     "concurrently": "^3.0.0",
     "mocha": "3.5.0",

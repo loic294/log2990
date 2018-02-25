@@ -1,3 +1,10 @@
+# Burndown chart Sprint 2
+https://1drv.ms/x/s!AoniEACHkbqViOQb4M-5TeL7nLEH1w
+
+Merci de mettre à jour quotidiennement en utilisant les heures planifiées!
+
+--------------------------------------------------------------------------------------------------------
+
 # Log2990
 Projet généré avec [Angular CLI](https://github.com/angular/angular-cli) version 1.3.2.
 

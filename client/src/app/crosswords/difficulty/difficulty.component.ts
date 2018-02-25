@@ -1,10 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-
-export enum Difficulty {
-    Easy = 0,
-    Normal = 1,
-    Hard = 2
-}
+import { Difficulty, difficultyName } from "../../../../../common/grid/difficulties";
 
 @Component({
     selector: "app-difficulty",
@@ -14,26 +9,30 @@ export enum Difficulty {
 
 export class DifficultyComponent implements OnInit {
 
-    private _selectedDifficulty: string = "Easy";
-    private _difficulties: string[];
+    private _selectedDifficulty: Difficulty;
+    private difficulties: Array<Difficulty>;
 
-    public constructor() {
-        this._difficulties = ["Easy", "Normal", "Hard"];
+    public constructor( ) {
+        this._selectedDifficulty = Difficulty.Easy;
+        this.difficulties = [
+            Difficulty.Easy,
+            Difficulty.Normal,
+            Difficulty.Hard
+        ];
     }
 
-    public onSelect(diff: string): void {
+    public onSelect(diff: Difficulty): void {
         this._selectedDifficulty = diff;
     }
 
-    public ngOnInit(): void {
-    }
+    public ngOnInit(): void {}
 
-    public get difficulties(): string[] {
-        return this._difficulties;
-    }
-
-    public get selectedDifficulty(): string {
+    public get selectedDifficulty(): Difficulty {
         return this._selectedDifficulty;
+    }
+
+    public get difficultyName(): Function {
+        return difficultyName;
     }
 
 }

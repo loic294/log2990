@@ -5,7 +5,8 @@ import { WordService } from "../../word.service/word.service";
 @Component({
   selector: "app-crossword",
   templateUrl: "./crossword.component.html",
-  styleUrls: ["./crossword.component.css"]
+  styleUrls: ["./crossword.component.css"],
+  providers: [ WordService ]
 })
 export class CrosswordComponent implements OnInit {
 

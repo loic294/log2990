@@ -14,3 +14,7 @@
 .clue:hover, .clue.selected {
 	background-color: #f1f1f1;
 }
+
+.index {
+	font-weight: 900;
+}

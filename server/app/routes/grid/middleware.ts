@@ -1,13 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 
-import GridGeneratorService from '../../services/gridGenerator'
-
 // Test lexical service
-export async function generate(req: Request, res: Response, next: NextFunction) {
+export const generate: (req: Request, res: Response, next: NextFunction) => Promise<void> =
+    async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
-	const gridGeneratorService = new GridGeneratorService()
+    res.json({ success: true });
 
-	const grid = await gridGeneratorService.generate()
-
-	res.json({ grid })
-}
+};
