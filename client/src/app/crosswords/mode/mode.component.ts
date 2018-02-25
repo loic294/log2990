@@ -25,11 +25,36 @@ export class ModeComponent implements OnInit {
         console.log('The dialog was closed');
       });}
 
-
     public ngOnInit(): void {
     }
 
 }
+
+@Component({
+    selector: 'mode-component-waitConnection',
+    templateUrl: 'mode.component.waitConnection.html',
+})
+    export class WaitConnectionDialog {
+        constructor(
+            private socketService: SocketService,            
+            public dialogRef: MatDialogRef<ModeComponent>,
+            
+          @Inject(MAT_DIALOG_DATA) public data: any) {
+          }
+      
+
+        connected(): boolean {
+            console.log(this.socketService.isUserConnected);
+            return this.socketService.isUserConnected;
+        }
+
+
+        closeDialog(): void {
+          this.dialogRef.close();
+        }
+        
+    
+    }
 
 @Component({
     selector: 'mode-component-popup',
@@ -45,12 +70,24 @@ export class ModeComponent implements OnInit {
     constructor(
         private socketService: SocketService,
         public dialogRef: MatDialogRef<ModeComponent>,
+        public dialog: MatDialog,
       @Inject(MAT_DIALOG_DATA) public data: any) { }
   
     closeDialog(): void {
       this.dialogRef.close();
     }
 
+    private waitingForConnection(){
+    let dialogRef = this.dialog.open(WaitConnectionDialog, {
+        width: '500px',
+        height: '500px',
+        data: {  }
+      });
+  
+      dialogRef.afterClosed().subscribe(result => {
+        console.log('The dialog was closed');
+      });
+    }
 
     public startSoloGame(): boolean {
         if(this.selectedMode == "Single Player" && !this.showNameInput)
@@ -109,6 +146,7 @@ export class ModeComponent implements OnInit {
 
     public createGame(mode: string): void {
         this.socketService.createGame(mode);
+        this.waitingForConnection();
     }
 
     public joinGame(gameId: string): void {

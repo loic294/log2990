@@ -24,7 +24,7 @@
 
     <ui-button (click)="createGame(selectedMode); closeDialog()">Create Game</ui-button>
     <ui-button (click)="addGames(); toggleShowGames()">Join Game</ui-button>
-    <button [ngClass]="{ 'hide': !showGames, 'show': showGames}" *ngFor="let game of games" (click)="joinGame(game.name)">{{game.players[0]}}</button>
+    <button [ngClass]="{ 'hide': !showGames, 'show': showGames}" *ngFor="let game of games" (click)="joinGame(game.name); closeDialog()">{{game.players[0]}}</button>
   </div>
 
 </div>

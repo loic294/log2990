@@ -21,6 +21,7 @@ const joinSecondPlayer: Function = async (socket: any, game: IGameModel, room: s
     socket.emit("connected_to_game", JSON.stringify({
         game: dbGame
     }));
+
     // SEND CONNECTED TO OTHER PLAYER
 };
 
@@ -36,6 +37,7 @@ export default (socket: any) => {
             joinFirstPlayer(socket, game, room, value);
         } else if (game.players.length === 1) {
             joinSecondPlayer(socket, game, room, value);
+            socket.to(room).emit("second_player_joined", value);
         } else {
             console.log("Already 2 players");
         }
