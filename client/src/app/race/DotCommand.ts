@@ -14,7 +14,6 @@ export class DotCommand {
     private _vertices: Array<Object3D>;
     private _edges: Array<Line>;
     private _selectedObject: Object3D;
-    private _selectedLines: Array<Line>;
     // private _controls: DragControls;
 
     public constructor(private _scene: THREE.Scene, private _renderer: THREE.WebGLRenderer, private _camera: THREE.OrthographicCamera) {
@@ -22,7 +21,6 @@ export class DotCommand {
         this._vertices = new Array<Object3D>();
         this._edges = new Array<Line>();
         this._selectedObject = null;
-        this._selectedLines = new Array<Line>();
     }
 
     public add(event: MouseEvent): void {
@@ -31,6 +29,7 @@ export class DotCommand {
 
             const relativeDotPosition: Vector3 = this.findRelativePosition(event);
             const sphereMesh: Mesh = this.createSphere(relativeDotPosition);
+            //sphereMesh.userData.edges = [];
             this._scene.add(sphereMesh);
             this._vertices.push(sphereMesh);
             this.updateEdges();
@@ -46,11 +45,14 @@ export class DotCommand {
             lineGeo.vertices.push(this._vertices[this._vertices.length - 2].position);
             lineGeo.vertices.push(this._vertices[this._vertices.length - 1].position);
 
-
             const line: THREE.Line = new Line(lineGeo, lineMat);
+            line.userData.vertices = [];
 
-            this._vertices[this._vertices.length - 2].userData.edges1 = line;
-            this._vertices[this._vertices.length - 1].userData.edges2 = line;
+            line.userData.vertices.push(this._vertices[this._vertices.length - 2].position);
+            line.userData.vertices.push(this._vertices[this._vertices.length - 1].position);
+            //this._vertices[this._vertices.length - 2].userData.edges.push(line);
+            //this._vertices[this._vertices.length - 1].userData.edges.push(line);*/
+
             this._edges.push(line);
             this._scene.add(line);
         }
@@ -67,27 +69,12 @@ export class DotCommand {
                 this._trackIsCompleted = true;
                 foundCircle = true;
             } else if (intersects.length > 0) {
-                this.drag(intersects[0].object, event);
-               // this.findConnectedEdges();
+                this._selectedObject = intersects[0].object;
                 foundCircle = true;
             }
         }
 
         return foundCircle;
-    }
-
-    /*private findConnectedEdges(): void {
-        this._edges[0].
-        for (let i in this._edges) {
-            if (i.vertices)
-        }
-    }*/
-
-    private drag(object: Object3D, event: MouseEvent): void {
-        this._selectedObject = object;
-        /*object.position.set(0, 0, 0);
-        event.preventDefault();
-        this._renderer.render(this._scene, this._camera);*/
     }
 
     private connectToFirst(): void {
@@ -126,7 +113,7 @@ export class DotCommand {
         const relativeZ: number = event.offsetY - (canvas.clientHeight / 2);
 
         return new Vector3(relativeX * CAMERA_DISTANCE / canvas.clientHeight,
-                           0, relativeZ * CAMERA_DISTANCE / canvas.clientHeight);
+            0, relativeZ * CAMERA_DISTANCE / canvas.clientHeight);
 
     }
 
@@ -145,21 +132,77 @@ export class DotCommand {
     public dragDot(event: MouseEvent): void {
         if (this._selectedObject !== null) {
             const mouse3D: THREE.Vector3 = this.findRelativePosition(event);
+            const oldPos: THREE.Vector3 = this._selectedObject.position;
             this._selectedObject.position.set(mouse3D.x, mouse3D.y, mouse3D.z);
 
-            if (this._selectedObject.userData.edges1) {
-                this.dragLine(this._selectedObject.userData.edges1, mouse3D);
-            }
-            if (this._selectedObject.userData.edges2) {
-                this.dragLine(this._selectedObject.userData.edges2, mouse3D);
-            }
+            this.dragLines(oldPos, mouse3D);
+
             this._renderer.render(this._scene, this._camera);
         }
     }
 
-    private dragLine(line: Line, pos: Vector3): void {
+    private findConnectedLines(oldPos: THREE.Vector3): Array<Line> {
+        const connectedLines: Array<Line> = new Array<Line>();
 
-        //this._selectedObject.userData.edges[0].vertices.pop();
+        for (const i of this._edges) {
+            if (i.userData.vertices[0] === oldPos || i.userData.vertices[1] === oldPos) {
+                connectedLines.push(i);
+            }
+        }
+
+        return connectedLines;
+    }
+
+    private dragLines(oldPos: THREE.Vector3, newPos: THREE.Vector3): void {
+
+        const connectedLines: Array<Line> = this.findConnectedLines(oldPos);
+        const lineToRemove: Object3D = this._scene.getObjectById(connectedLines[0].id);
+        console.log(connectedLines[0].id);
+        this._scene.remove(lineToRemove);
+
+        for (const i of connectedLines) {
+            const lineMat: THREE.LineBasicMaterial = new LineBasicMaterial({ color: 0xFF0000, linewidth: 8 });
+            const lineGeo: THREE.Geometry = new Geometry();
+            lineGeo.vertices.push( (i.userData.vertices[0] !== oldPos) ? i.userData.vertices[0] : i.userData.vertices[1]);
+            lineGeo.vertices.push(newPos);
+
+            const line: THREE.Line = new Line(lineGeo, lineMat);
+            line.userData.vertices = [];
+
+            line.userData.vertices.push((i.userData.vertices[0] !== oldPos) ? i.userData.vertices[0] : i.userData.vertices[1]);
+            line.userData.vertices.push(newPos);
+
+            /*const lineToRemove: Object3D = this._scene.getObjectById(i.id);
+            this._scene.remove(lineToRemove);*/
+
+            this._edges.push(line);
+            this._scene.add(line);
+        }
+
+
+        /* for (let i: number = 0; i < this._selectedObject.userData.edges.length; i++) {
+ 
+             let line: Object3D = this._scene.getObjectById(this._selectedObject.userData.edges[i].id);
+             const vertex: Object3D = (line.userData.vertices[0] !== this._selectedObject) ?
+                                      line.userData.vertices[0] : line.userData.vertices[1];
+ 
+             this._scene.remove(line);
+ 
+             const lineMat: THREE.LineBasicMaterial = new LineBasicMaterial({ color: 0xFF0000, linewidth: 8 });
+             const lineGeo: THREE.Geometry = new Geometry();
+             lineGeo.vertices.push(this._selectedObject.position);
+             lineGeo.vertices.push(vertex.position);
+ 
+             line = new Line(lineGeo, lineMat);
+ 
+             line.userData.vertices = [];
+             line.userData.vertices.push(this._selectedObject);
+             line.userData.vertices.push(vertex);
+             this._selectedObject.userData.edges.push(line);
+             vertex.userData.edges.push(line);
+ 
+             this._scene.add(line);
+         }*/
     }
 
     public unselect(): void {
