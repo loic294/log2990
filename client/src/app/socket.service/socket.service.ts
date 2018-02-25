@@ -35,22 +35,15 @@ export class SocketService {
         });
 
         this._socket.on("connected_to_game", (data: string): void => {
-            console.log('DATA RECEIVED', data)
             const { game }: { game: IGameModel } = JSON.parse(data);
-            console.log("Users connected to game ", game);
         });
 
         this._socket.on("created_game", (data: string): void => {
         });
 
         this._socket.on("highligth_cell_in_color", (data: string): void => {
-            console.log("CELLS TO H", data);
             this._highlightCell.next(data);
         });
-
-        this._socket.on("TEST", (test:string) => {
-            console.log("TEST RECEIVED", "test");
-        })
 
         this._socket.on("second_player_joined", (data: any) => {
             this._userConnected == true;
@@ -88,9 +81,11 @@ export class SocketService {
     public addGames(): void {
         this._socket.emit("get_games");
     }
+
     public toggleShowGames(): void {
         this._showGames = !this._showGames;
     }
+
     public get showGames(): boolean {
         return this._showGames;
     }
@@ -114,7 +109,6 @@ export class SocketService {
     }
 
     public highligthCell(row: number, col: number): void {
-        console.log('EMIT WORD HILIGHT')
         this._socket.emit("highligth_cell", JSON.stringify({ row, col}));
     }
 

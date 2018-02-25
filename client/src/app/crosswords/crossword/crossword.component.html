@@ -19,13 +19,20 @@
 			<div class="inline-box">
 				<div class="box">
 					<app-clues></app-clues>
-				</div>
+        </div>
+        
+        <div>
+          <div class="box">
+            <b>Mode: </b>{{selectedMode}}
+            <b>Playing against: </b> Other player's name
+          </div>
+          <div class="box">
+            <div (clickOutside)="unselect()">
+              <app-grid></app-grid>
+            </div>
+          </div>
+        </div>
 
-				<div class="box">
-					<div (clickOutside)="unselect()">
-						<app-grid></app-grid>
-					</div>
-				</div>
 			</div>
     </div>
 
