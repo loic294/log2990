@@ -1,8 +1,8 @@
-<ui-button *ngFor = "let mode of modes" (click)="onSelect(mode)" [active]="selectedMode == mode">
+<button *ngFor = "let mode of modes" (click)="onSelect(mode)" [class.active]="selectedMode == mode">
   {{mode}}
-</ui-button>
-<ui-button (click)="createGame(selectedMode)">Create Game</ui-button>
-<ui-button (click)= "addGames(); toggleShowGames()">Join Game</ui-button>
+</button>
+<button (click)="createGame(selectedMode)">Create Game</button>
+<button (click)= "addGames(); toggleShowGames()">Join Game</button>
 <button [ngClass] = "{ 'hide': !showGames, 'show': showGames}" *ngFor = "let game of games" (click) = "joinGame(game.name)">{{game.players[0]}}</button>
 
 <!-- <input type="text" [(ngModel)]="input"/>{{input}} -->

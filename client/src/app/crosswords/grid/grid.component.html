@@ -2,11 +2,22 @@
   <div class="grid">
     <div class="row" *ngFor="let row of _gridService.grid;">
       <div class="col" *ngFor="let case of row;">
-          <input [disabled]="case.validated" class="square" [ngModel]="case.char" (keypress)="updateGrid($event, case)" (keyup)="updateGrid($event, case)" maxlength="1" 
-          [class.selected]="case.selected()"
-          [class.is-black]="case.char === '-'"      
-          (click)=selectCaseFromGrid(case)
-          id={{case.id}}  />
+					<input 
+						[disabled]="case.validated" 
+						class="square" 
+						[ngModel]="case.char" 
+						(keypress)="updateGrid($event, case)" 
+						(keyup)="updateGrid($event, case)"
+						maxlength="1" 
+          	[class.selected]="case.selected()"
+          	[class.is-black]="case.char === '-'"      
+          	(click)=selectCaseFromGrid(case)
+						id={{case.id}}  />
+					<div class="indexes">
+						<div class="small-index" *ngFor="let index of case.wordIndexes">
+							{{index}}
+						</div>
+					</div>
       </div>
     </div>
   </div>

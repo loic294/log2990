@@ -1,4 +1,5 @@
 /* tslint:disable:no-shadowed-variable */
+// tslint:disable:no-suspicious-comment
 
 import { Injectable } from "@angular/core";
 import { GRID } from "../mock-grid";
@@ -6,9 +7,10 @@ import { Case } from "../../../../common/grid/case";
 import { Observable } from "rxjs/Observable";
 import { of } from "rxjs/observable/of";
 import Word, { Orientation } from "../../../../common/lexical/word";
+
 import { WordService } from "../word.service/word.service";
 import { SocketService } from "../socket.service/socket.service";
-
+import CLUES from "../mock-words";
 const BACK_SPACE_KEY_CODE: number = 8;
 
 @Injectable()
@@ -31,12 +33,23 @@ export class GridService {
             (_wordFromClue) => {
                 this._word = _wordFromClue, this.selectCaseFromService(_wordFromClue);
             });
+        this.socketService.cellToHighligh.subscribe(
+            (data: string) => {
+                const { row, col }: { row: number, col: number } = JSON.parse(data);
+                this.highligthCell(row, col);
+                // TODO: Call selectCaseFromService instead of highligthCell // TODO: Parse word.
+            });
 
+        this.initGrid();
+    }
+
+    private initGrid(): void {
         this._grid = GRID.map((row: string) => {
             const strings: Array<string> = row.split(" ");
 
             return strings.map((c: string) => new Case(c));
         });
+
         for (let i: number = 0; i < this._grid.length; i++) {
             for (let j: number = 0; j < this._grid[i].length; j++) {
                 this._grid[i][j].x = i;
@@ -44,33 +57,21 @@ export class GridService {
                 if (this._grid[i][j].char === "_") {
                     this._grid[i][j].char = "";
                 }
+
+                this._grid[i][j].wordIndexes = this.wordsStartAtPosition(i, j);
             }
         }
-
-        this.socketService.cellToHighligh.subscribe(
-            (data: string) => {
-                const { row, col }: { row: number, col: number } = JSON.parse(data);
-                this.highligthCell(row, col);
-                // TODO: Call selectCaseFromService instead of highligthCell
-                // TODO: Parse word.
-            });
-
     }
 
     public get grid(): Array<Array<Case>> {
         return this._grid;
     }
-
     // TODO: Add fonction when word selected from service
         // TODO: send data to socket inside
         // TODO: pass user color
-
     // TODO: Method that receives the word changed
-
     private selectCaseFromService(w: Word): void {
-
         // TODO: Change socket to this function instead of highligth
-
         if (this._selectedWord != null) {
             const cellTemp: Case = this._selectedWord;
 
@@ -87,6 +88,11 @@ export class GridService {
             this.findEndWrittenWord();
             this.wordHighligth();
         }
+    }
+
+    private wordsStartAtPosition(row: number, col: number): Array<number> {
+        return CLUES.filter((word: Word): boolean => word.position[0] === row && word.position[1] === col)
+            .map((word: Word): number => word.index + 1);
     }
 
     public selectCaseFromGrid(c: Case): void {

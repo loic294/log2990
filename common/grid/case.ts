@@ -1,12 +1,17 @@
 export class Case {
 
+	public wordIndexes: Array<number>;
+
     public constructor(
         private _char: string = "-",
         private _x: number = 0,
         private _y: number = 0,
         private _isSelected: boolean = false,
         private _isValidated: boolean = false,
-        private _black: boolean = false) { }
+        private _black: boolean = false) {
+
+		this.wordIndexes = [];
+	}
 
     public set char(c: string) {
         this._char = c;
