@@ -1,7 +1,7 @@
 
 <button mat-button (click)="onNoClick()">Open dialog</button>
 
-
+<app-difficulty></app-difficulty>
 
 <ui-button *ngFor = "let mode of modes" (click)="onSelect(mode)" [active]="selectedMode == mode">
   {{mode}}
@@ -17,5 +17,3 @@
 <input (input)="onEnter($event.target.value)">
 {{player}}
 
-
-<div>sbdus</div>
