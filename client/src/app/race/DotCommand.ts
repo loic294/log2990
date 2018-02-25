@@ -44,6 +44,10 @@ export class DotCommand {
 
             const line: THREE.Line = new Line(lineGeo, lineMat);
 
+            line.userData.vertices = [];
+            line.userData.vertices.push(this._vertices[this._vertices.length - 2].position);
+            line.userData.vertices.push(this._vertices[this._vertices.length - 1].position);
+
             this._edges.push(line);
             this._scene.add(line);
         }
@@ -124,13 +128,11 @@ export class DotCommand {
 
     public dragDot(event: MouseEvent): void {
         if (this._selectedObject !== null) {
-            const mouse3D: THREE.Vector3 = this.findRelativePosition(event);
+            const newPos: THREE.Vector3 = this.findRelativePosition(event);
             const oldPos: THREE.Vector3 = this._selectedObject.position;
-            this._selectedObject.position.set(mouse3D.x, mouse3D.y, mouse3D.z);
+            this._selectedObject.position.set(newPos.x, newPos.y, newPos.z);
 
-            this.dragLines(oldPos, mouse3D);
-
-            this._renderer.render(this._scene, this._camera);
+            this.dragLines(oldPos, newPos);
         }
     }
 
@@ -151,10 +153,8 @@ export class DotCommand {
         const connectedLines: Array<Line> = this.findConnectedLines(oldPos);
 
         for (const i of connectedLines) {
-            const testGeometry: Geometry = i.geometry as Geometry;
-            const vertexToChange: number = (testGeometry.vertices[0] !== oldPos) ? 0 : 1;
-            testGeometry.vertices[ vertexToChange ] = newPos;
-            testGeometry.verticesNeedUpdate = true;
+            const lineGeometry: Geometry = i.geometry as Geometry;
+            lineGeometry.verticesNeedUpdate = true;
        }
     }
 

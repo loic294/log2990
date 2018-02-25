@@ -55,7 +55,12 @@ export class TrackCreationComponent implements AfterViewInit {
 
     @HostListener("window:mousemove", ["$event"])
     public onKeyMove(event: MouseEvent): void {
+        this.drag(event);
+    }
+
+    private drag(event: MouseEvent): void {
         this._dotCommand.dragDot(event);
+        this.render();
     }
 
     private placeDot(event: MouseEvent): void {
