@@ -3,10 +3,9 @@ import { OrthographicCamera, WebGLRenderer, Scene, /* GridHelper, AxisHelper, */
 import { DotCommand } from "../DotCommand";
 
 const FAR_CLIPPING_PLANE: number = 10000;
-const NEAR_CLIPPING_PLANE: number = 0;
+const NEAR_CLIPPING_PLANE: number = 1;
 const CAMERA_DISTANCE: number = 50;
 const ASPECT: number = window.innerWidth / window.innerHeight;
-const TWO: number = 2;
 
 const LEFT_CLICK: number = 1;
 const RIGHT_CLICK: number = 3;
@@ -36,10 +35,10 @@ export class TrackCreationComponent implements AfterViewInit {
 
     @HostListener("window:resize", ["$event"])
     public onResize(): void {
-        this._camera.left = CAMERA_DISTANCE * ASPECT / - TWO;
-        this._camera.right = CAMERA_DISTANCE * ASPECT / TWO;
-        this._camera.top = CAMERA_DISTANCE / TWO;
-        this._camera.bottom = CAMERA_DISTANCE / - TWO;
+        this._camera.left = CAMERA_DISTANCE * ASPECT / - 2;
+        this._camera.right = CAMERA_DISTANCE * ASPECT / 2;
+        this._camera.top = CAMERA_DISTANCE / 2;
+        this._camera.bottom = CAMERA_DISTANCE / - 2;
         this._camera.updateProjectionMatrix();
         this._renderer.setSize(window.innerWidth, window.innerHeight);
     }
@@ -77,8 +76,8 @@ export class TrackCreationComponent implements AfterViewInit {
         this._scene.add(gridHelper);*/
         /////////////////////////////////////////////////////////////////
 
-        this._camera = new OrthographicCamera(CAMERA_DISTANCE * ASPECT / - TWO, CAMERA_DISTANCE * ASPECT / TWO,
-                                              CAMERA_DISTANCE / TWO, CAMERA_DISTANCE / - TWO, NEAR_CLIPPING_PLANE, FAR_CLIPPING_PLANE);
+        this._camera = new OrthographicCamera(CAMERA_DISTANCE * ASPECT / - 2, CAMERA_DISTANCE * ASPECT / 2,
+                                              CAMERA_DISTANCE / 2, CAMERA_DISTANCE / - 2, NEAR_CLIPPING_PLANE, FAR_CLIPPING_PLANE);
 
         this._camera.position.set(0, CAMERA_DISTANCE , 0);
         this._camera.lookAt(new Vector3(0, 0, 0));
