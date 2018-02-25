@@ -27,11 +27,6 @@ export class TrackCreationComponent implements AfterViewInit {
 
     public constructor() {}
 
-    @HostListener("window:drag", ["event"])
-    public dragDot(event: DragEvent): void {
-        // this._dotCommand.dragDot(event, this._renderer);
-        this.render();
-    }
 
     @HostListener("window:resize", ["$event"])
     public onResize(): void {
@@ -43,13 +38,25 @@ export class TrackCreationComponent implements AfterViewInit {
         this._renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
-    @HostListener("window:click", ["$event"])
-    public onKeyUp(event: MouseEvent): void {
+    @HostListener("window:mousedown", ["$event"])
+    public onKeyDown(event: MouseEvent): void {
         if (event.which === LEFT_CLICK) {
             this.placeDot(event);
         } else if (event.which === RIGHT_CLICK) {
             this.remove();
         }
+    }
+
+    @HostListener("window:mouseup", ["$event"])
+    public onKeyUp(event: MouseEvent): void {
+        if (event.which === LEFT_CLICK) {
+            this._dotCommand.unselect();
+        }
+    }
+
+    @HostListener("window:mousemove", ["$event"])
+    public onKeyMove(event: MouseEvent): void {
+        this._dotCommand.dragDot(event);
     }
 
     private placeDot(event: MouseEvent): void {
