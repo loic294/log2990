@@ -37,13 +37,35 @@ export class ModeComponent implements OnInit {
   })
   export class ModeDialog {
   
+    public showDifficulty:boolean = true;
+    public showNameInput:boolean = true;
+    public showStartSoloGame: boolean = true;
+    public showStartDuoGame: boolean = true;
+
     constructor(
         private socketService: SocketService,
         public dialogRef: MatDialogRef<ModeComponent>,
       @Inject(MAT_DIALOG_DATA) public data: any) { }
   
-    onNoClick(): void {
+    closeDialog(): void {
       this.dialogRef.close();
+    }
+
+
+    public startSoloGame(): boolean {
+        if(this.selectedMode == "Single Player" && !this.showNameInput)
+            return true;
+        return false;
+    }
+
+    public isDifficultySelected(): boolean {
+       return this.showNameInput = false;
+    }
+
+    public isMultiPlayer(): boolean {
+        if(!this.showNameInput && this.selectedMode == "Two Players")
+            return true;
+        return false;
     }
 
     public get modes(): string[] {
@@ -64,6 +86,8 @@ export class ModeComponent implements OnInit {
     }
 
     public onSelect(mode: string): void {
+        this.showDifficulty = false;
+
         return this.socketService.onSelect(mode);
     }
 
@@ -91,5 +115,4 @@ export class ModeComponent implements OnInit {
         this.socketService.joinGame(gameId);
     }
 
-  
-  }
+}
