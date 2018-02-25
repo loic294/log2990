@@ -24,7 +24,9 @@
         <div>
           <div class="box">
             <b>Mode: </b>{{selectedMode}}
-            <b>Playing against: </b> Other player's name
+            <div *ngIf="selectedMode === 'Two Players'">
+              <b>Playing against: </b> Other player's name
+            </div>
           </div>
           <div class="box">
             <div (clickOutside)="unselect()">
