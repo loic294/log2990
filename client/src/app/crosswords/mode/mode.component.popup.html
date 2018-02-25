@@ -1,0 +1,30 @@
+
+<h1>Welcome {{player}}!</h1>
+
+<ui-button *ngFor="let mode of modes" (click)="onSelect(mode)" [active]="selectedMode == mode">
+  {{mode}}
+</ui-button>
+
+
+<div [hidden]="showDifficulty">
+  <app-difficulty (click)="isDifficultySelected()"></app-difficulty>
+</div>
+
+<div [hidden]="!startSoloGame()">
+  <ui-button (click)="closeDialog()">Start Game</ui-button>
+</div>
+
+<div [hidden]="!isMultiPlayer()">
+  Please enter your name:
+  <input (input)="onEnter($event.target.value)">
+
+
+  <div *ngIf="player.length > 2">
+
+
+    <ui-button (click)="createGame(selectedMode); closeDialog()">Create Game</ui-button>
+    <ui-button (click)="addGames(); toggleShowGames()">Join Game</ui-button>
+    <button [ngClass]="{ 'hide': !showGames, 'show': showGames}" *ngFor="let game of games" (click)="joinGame(game.name)">{{game.players[0]}}</button>
+  </div>
+
+</div>
