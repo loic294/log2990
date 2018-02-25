@@ -35,7 +35,7 @@ export class SocketService {
         });
 
         this._socket.on("connected_to_game", (data: string): void => {
-            const { game }: { game: IGameModel } = JSON.parse(data);
+            // const { game }: { game: IGameModel } = JSON.parse(data);
         });
 
         this._socket.on("created_game", (data: string): void => {

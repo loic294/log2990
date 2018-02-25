@@ -18,7 +18,7 @@ import { CluesComponent } from "./crosswords/clues/clues.component";
 import { AppRoutingModule } from "./app-routing.module";
 import { GridService } from "./grid.service/grid.service";
 import { SocketIoModule, SocketIoConfig } from "ng-socket-io";
-import { ModeComponent, ModeDialog, WaitConnectionDialog } from "./crosswords/mode/mode.component";
+import { ModeComponent, ModeDialog } from "./crosswords/mode/mode.component";
 import { SocketService } from "./socket.service/socket.service";
 import {MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material/dialog';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -47,7 +47,6 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         FormsModule,
         ClickOutsideModule,
         SocketIoModule.forRoot(config),
-        MatProgressSpinnerModule,
         MatDialogModule,
         BrowserAnimationsModule,
         AppRoutingModule
