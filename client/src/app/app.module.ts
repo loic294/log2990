@@ -15,9 +15,6 @@ import { DifficultyComponent } from "./crosswords/difficulty/difficulty.componen
 import { GridComponent } from "./crosswords/grid/grid.component";
 import { CrosswordComponent } from "./crosswords/crossword/crossword.component";
 import { CluesComponent } from "./crosswords/clues/clues.component";
-import { ShadowBoxComponent } from "./crosswords/shadow-box/shadow-box.component";
-import { ContainerComponent } from "./crosswords/container/container.component";
-import { ButtonComponent } from "./crosswords/button/button.component";
 import { AppRoutingModule } from "./app-routing.module";
 import { GridService } from "./grid.service/grid.service";
 import { SocketIoModule, SocketIoConfig } from "ng-socket-io";
@@ -34,9 +31,6 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         GridComponent,
         CrosswordComponent,
         CluesComponent,
-        ShadowBoxComponent,
-        ContainerComponent,
-        ButtonComponent,
         ModeComponent
     ],
     imports: [

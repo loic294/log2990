@@ -7,30 +7,27 @@
         <span class="stripe-3"></span>
         <span class="stripe-4"></span>
       </div>
-      <ui-container>
+      <div class="container">
         <div id="header-content">
           <h1 class="big-title">Crossword</h1>
           <app-difficulty></app-difficulty>
         </div>
-      </ui-container>
+      </div>
     </header>
   
-    <ui-container>
-  
-      <div (clickOutside)="unselect()" >
-        <ui-shadow-box>
-        <app-clues></app-clues>
-      </ui-shadow-box>
-  
-      <ui-shadow-box>
-        <div >
-          <app-grid></app-grid>
-        </div>
-      </ui-shadow-box>
-      </div>
-      
-  
-    </ui-container>
+    <div class="container">
+			<div class="inline-box">
+				<div class="box">
+					<app-clues></app-clues>
+				</div>
+
+				<div class="box">
+					<div (clickOutside)="unselect()">
+						<app-grid></app-grid>
+					</div>
+				</div>
+			</div>
+    </div>
   
   </main>
   
