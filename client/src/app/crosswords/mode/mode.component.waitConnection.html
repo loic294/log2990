@@ -1,0 +1,7 @@
+<h2>Waiting for another player to join</h2>
+  <mat-spinner></mat-spinner>
+
+  <div *ngIf="connected()">
+      <div [ngClass]="closeDialog()"></div>
+  </div>
+

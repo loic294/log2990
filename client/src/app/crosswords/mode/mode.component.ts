@@ -3,7 +3,6 @@ import { SocketService } from "../../socket.service/socket.service";
 import { IGameModel } from "./../../../../../server/app/models/game";
 import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from '@angular/material';
 
-
 @Component({
   selector: "app-mode",
   templateUrl: "./mode.component.html",
@@ -15,20 +14,43 @@ export class ModeComponent implements OnInit {
 
     public constructor(
         public dialog: MatDialog
-    ) { let dialogRef = this.dialog.open(ModeDialog, {
-        width: '500px',
-        height: '500px',
-        data: {  }
-      });
-  
-      dialogRef.afterClosed().subscribe(result => {
-        console.log('The dialog was closed');
-      });}
+    ) {
 
+        let dialogRef = this.dialog.open(ModeDialog, {
+            width: '500px',
+            height: '500px',
+            data: {  }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('The dialog was closed');
+        });
+
+    }
 
     public ngOnInit(): void {
     }
 
+}
+
+@Component({
+    selector: 'mode-component-waitConnection',
+    templateUrl: 'mode.component.waitConnection.html',
+})
+export class WaitConnectionDialog {
+    constructor(
+        private socketService: SocketService,
+        public dialogRef: MatDialogRef<ModeComponent>,
+        @Inject(MAT_DIALOG_DATA) public data: any) { }
+
+    public connected(): boolean {
+        console.log(this.socketService.isUserConnected);
+        return this.socketService.isUserConnected;
+    }
+
+    public closeDialog(): void {
+        this.dialogRef.close();
+    }
 }
 
 @Component({
@@ -45,16 +67,31 @@ export class ModeComponent implements OnInit {
     constructor(
         private socketService: SocketService,
         public dialogRef: MatDialogRef<ModeComponent>,
-      @Inject(MAT_DIALOG_DATA) public data: any) { }
-  
+        public dialog: MatDialog,
+        @Inject(MAT_DIALOG_DATA) public data: any) { }
+
     closeDialog(): void {
       this.dialogRef.close();
     }
 
+    private waitingForConnection(){
+        let dialogRef = this.dialog.open(WaitConnectionDialog, {
+            width: '500px',
+            height: '500px',
+            data: {  }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('The dialog was closed');
+        });
+
+    }
 
     public startSoloGame(): boolean {
-        if(this.selectedMode == "Single Player" && !this.showNameInput)
+        if (this.selectedMode === "Single Player" && !this.showNameInput) {
             return true;
+        }
+
         return false;
     }
 
@@ -63,8 +100,10 @@ export class ModeComponent implements OnInit {
     }
 
     public isMultiPlayer(): boolean {
-        if(!this.showNameInput && this.selectedMode == "Two Players")
+        if (!this.showNameInput && this.selectedMode === "Two Players") {
             return true;
+        }
+
         return false;
     }
 
@@ -89,6 +128,7 @@ export class ModeComponent implements OnInit {
         this.showDifficulty = false;
 
         return this.socketService.onSelect(mode);
+
     }
 
     public get games(): IGameModel[] {
@@ -109,6 +149,7 @@ export class ModeComponent implements OnInit {
 
     public createGame(mode: string): void {
         this.socketService.createGame(mode);
+        this.waitingForConnection();
     }
 
     public joinGame(gameId: string): void {

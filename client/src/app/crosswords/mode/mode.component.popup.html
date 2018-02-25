@@ -20,8 +20,6 @@
 
 
   <div *ngIf="player.length > 2">
-
-
     <button (click)="createGame(selectedMode); closeDialog()">Create Game</button>
     <button (click)="addGames(); toggleShowGames()">Join Game</button>
     <button [ngClass]="{ 'hide': !showGames, 'show': showGames}" *ngFor="let game of games" (click)="joinGame(game.name)">{{game.players[0]}}</button>
