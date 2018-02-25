@@ -156,11 +156,11 @@ export class DotCommand {
     private dragLines(oldPos: THREE.Vector3, newPos: THREE.Vector3): void {
 
         const connectedLines: Array<Line> = this.findConnectedLines(oldPos);
-        const lineToRemove: Line = this._scene.getObjectById(connectedLines[0].id) as Line;
 
-        lineToRemove.geometry.vertices[ 1 ] = newPos;
-        lineToRemove.geometry.verticesNeedUpdate = true;
-
+        for (const i of connectedLines) {
+            i.geometry.vertices[ i ] = newPos;
+            i.geometry.verticesNeedUpdate = true;
+        }
     }
 
     public unselect(): void {
