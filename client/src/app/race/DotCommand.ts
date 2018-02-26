@@ -23,7 +23,7 @@ export class DotCommand {
 
     public add(event: MouseEvent): void {
 
-        if (!this._trackIsCompleted && !this.detectCompletedTrack(event)) {
+        if (!this.detectObjectsAtMouse(event) && !this._trackIsCompleted) {
 
             const relativeDotPosition: Vector3 = this.findRelativePosition(event);
             const sphereMesh: Mesh = this.createSphere(relativeDotPosition);
@@ -31,7 +31,6 @@ export class DotCommand {
             this._vertices.push(sphereMesh);
             this.updateEdges();
         }
-
     }
 
     private updateEdges(): void {
@@ -53,8 +52,10 @@ export class DotCommand {
         }
     }
 
-    private detectCompletedTrack(event: MouseEvent): boolean {
+    private detectObjectsAtMouse(event: MouseEvent): boolean {
+
         let foundCircle: boolean = false;
+
         if (this._vertices.length > 0) {
 
             const mouse3D: Vector3 = this.findRelativePosition(event);
@@ -64,6 +65,7 @@ export class DotCommand {
             if (intersects.length > 0 && intersects[0].object === this._vertices[0]) {
                 this.connectToFirst();
                 this._trackIsCompleted = true;
+                this._selectedObject = intersects[0].object;
                 foundCircle = true;
             } else if (intersects.length > 0) {
                 this._selectedObject = intersects[0].object;
@@ -78,9 +80,16 @@ export class DotCommand {
         // this.remove();
         const lineMat: THREE.LineBasicMaterial = new LineBasicMaterial({ color: 0xFF0000, linewidth: 8 });
         const lineGeo: THREE.Geometry = new Geometry();
+
         lineGeo.vertices.push(this._vertices[this._vertices.length - 1].position);
         lineGeo.vertices.push(this._vertices[0].position);
+
         const line: THREE.Line = new Line(lineGeo, lineMat);
+
+        line.userData.vertices = [];
+        line.userData.vertices.push(this._vertices[this._vertices.length - 1].position);
+        line.userData.vertices.push(this._vertices[0].position);
+
         this._scene.add(line);
         this._edges.push(line);
     }
@@ -89,18 +98,29 @@ export class DotCommand {
         if (!this._trackIsCompleted) {
 
             if (this._vertices.length > 0) {
-                const dot: Object3D = this._scene.getObjectById(this._vertices[this._vertices.length - 1].id);
-                this._scene.remove(dot);
-                this._vertices.pop();
+                this.removeLastVertex();
             }
 
             if (this._edges.length > 0) {
-                const line: Object3D = this._scene.getObjectById(this._edges[this._edges.length - 1].id);
-                this._scene.remove(line);
-                this._edges.pop();
+                this.removeLastEdge();
             }
 
+        } else {
+            this.removeLastEdge();
+            this._trackIsCompleted = false;
         }
+    }
+
+    private removeLastVertex(): void {
+        const dot: Object3D = this._scene.getObjectById(this._vertices[this._vertices.length - 1].id);
+        this._scene.remove(dot);
+        this._vertices.pop();
+    }
+
+    private removeLastEdge(): void {
+        const line: Object3D = this._scene.getObjectById(this._edges[this._edges.length - 1].id);
+        this._scene.remove(line);
+        this._edges.pop();
     }
 
     private findRelativePosition(event: MouseEvent): Vector3 {
@@ -123,7 +143,6 @@ export class DotCommand {
         sphereMesh.position.set(spherePosition.x, spherePosition.y, spherePosition.z);
 
         return sphereMesh;
-
     }
 
     public dragDot(event: MouseEvent): void {
