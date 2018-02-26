@@ -3,12 +3,15 @@ import { Socket } from "ng-socket-io";
 import { Observable } from "rxjs/Observable";
 import { Subject } from "rxjs/Subject";
 import { IGameModel } from "./../../../../server/app/models/game";
+import { Difficulty, difficultyName } from "../../../../common/grid/difficulties";
+import { DifficultyService } from "./../difficulty.service/difficulty.service";
 
 @Injectable()
 export class SocketService {
 
     // private input: String;
     public _player: string = "";
+    private _difficulty: Difficulty;
     private _modes: string[];
     private _selectedMode: string;
     private _games: IGameModel[];
@@ -21,8 +24,13 @@ export class SocketService {
     private _highlightCell: Subject<string> = new Subject<string>();
 
     public constructor(
-        private _socket: Socket
+        private _socket: Socket,
+        private difficultyService: DifficultyService
     ) {
+        this.difficultyService.difficulty.subscribe((diff)=>{
+            this._difficulty = diff;
+        });
+
         this._games = [];
         this._modes = ["Single Player", "Two Players"];
         this._selectedMode = "";
@@ -99,8 +107,9 @@ export class SocketService {
 
     public createGame(mode: string): void {
         if (mode === "Two Players") {
-            const gameId: string = `game${Math.random().toString(36).substr(2, 9)}`;
-            this._socket.emit("create_game", JSON.stringify({ gameId, value: this.player }));
+            const gameId: string = this.player;
+            const difficulty: string = difficultyName(this.difficulty);
+            this._socket.emit("create_game", JSON.stringify({ gameId, difficulty}));
             this.joinGame(gameId);
         } else {
             console.log("single player");
@@ -113,6 +122,9 @@ export class SocketService {
 
     public get player(): string {
         return this._player;
+    }
+    public get difficulty(): Difficulty {
+        return this._difficulty;
     }
 
     public highligthCell(row: number, col: number): void {
