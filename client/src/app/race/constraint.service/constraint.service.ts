@@ -8,7 +8,10 @@ interface VectorI {
     y: number;
 }
 
-const MOCK_LARGEUR_PISTE: number = 8;
+const HALF_CIRCLE: number = 180;
+const TWO: number = 2;
+
+const MOCK_LARGEUR_PISTE: number = 20;
 
 @Injectable()
 export class ConstraintService {
@@ -16,11 +19,9 @@ export class ConstraintService {
   public constructor() { }
 
   public converteToDegre(angle: number): number {
-        const HALF_CIRCLE: number = 180;
-        const TWO: number = 2;
-        // if (angle < 0) { angle += TWO * Math.PI; }
+        if (angle < 0) { angle += TWO * Math.PI; }
 
-        return Math.abs(angle) * HALF_CIRCLE / Math.PI;
+        return angle * HALF_CIRCLE / Math.PI;
   }
 
   public getAngleOfTwoVectors(vectorA: VectorI, vectorB: VectorI): number {
@@ -32,7 +33,7 @@ export class ConstraintService {
   public checkIfAngleIsValid(angle: number): boolean {
     const MIN_ANGLE: number = 45;
 
-    return angle >= MIN_ANGLE;
+    return angle > HALF_CIRCLE - MIN_ANGLE && angle < HALF_CIRCLE + MIN_ANGLE;
   }
 
   public distance(vertexA: VectorI, vertexB: VectorI): number {
@@ -79,7 +80,7 @@ export class ConstraintService {
             const edge1: VectorI = this.vectorFromLine(line1, true);
             const edge2: VectorI = this.vectorFromLine(line2, false);
             const angle: number = this.getAngleOfTwoVectors(edge1, edge2);
-            console.log('IS VALID', angle, edge1, edge2, this.checkIfAngleIsValid(angle));
+            // console.log('IS VALID', angle, edge1, edge2, this.checkIfAngleIsValid(angle));
 
             if (!this.checkIfAngleIsValid(angle)) {
                 invalid.push(i);
