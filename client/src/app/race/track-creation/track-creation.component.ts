@@ -93,4 +93,12 @@ export class TrackCreationComponent implements AfterViewInit {
         this._dotCommand = new DotCommand(this._scene, this._renderer, this._camera);
     }
 
+    public getScene(): THREE.Scene {
+        return this._scene;
+    }
+
+    public getDotCommand(): DotCommand {
+        return this._dotCommand;
+    }
+
 }
