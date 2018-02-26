@@ -8,7 +8,7 @@ const routes: Routes = [
     { path: "crossword", component: CrosswordComponent },
     { path: "race", component: GameComponent },
     { path: "admin/:id", component: AdminComponent },
-    { path: "admin", component: AdminComponent },
+    { path: "admin", component: AdminComponent }
 ];
 
 @NgModule({
