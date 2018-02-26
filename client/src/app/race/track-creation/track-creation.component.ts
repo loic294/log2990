@@ -17,15 +17,18 @@ const RIGHT_CLICK: number = 3;
 })
 export class TrackCreationComponent implements AfterViewInit {
 
-    private _scene: THREE.Scene = new Scene();
+    private _scene: THREE.Scene;
     private _camera: THREE.OrthographicCamera;
-    private _renderer: THREE.WebGLRenderer = new WebGLRenderer();
+    private _renderer: THREE.WebGLRenderer;
     private _dotCommand: DotCommand;
 
     @ViewChild("container")
     private container: ElementRef;
 
-    public constructor() {}
+    public constructor() {
+        this._scene = new Scene();
+        this._renderer = new WebGLRenderer();
+    }
 
     @HostListener("window:resize", ["$event"])
     public onResize(): void {
