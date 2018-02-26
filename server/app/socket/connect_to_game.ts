@@ -9,8 +9,8 @@ interface DataReceived {
 // tslint:disable-next-line:no-any
 const joinFirstPlayer: Function = async (socket: any, game: IGameModel, room: string, value: string): Promise<void> => {
     socket.join(room);
-    
-    await Game.findOneAndUpdate({ name: game.name}, { players: [value] })
+
+    await Game.findOneAndUpdate({ name: game.name}, { players: [value] });
     socket.emit("connected_to_game", JSON.stringify({
         game
     }));
@@ -47,8 +47,6 @@ export default (socket: any) => {
         } else if (game.players.length === 1) {
             joinSecondPlayer(socket, game, room, value);
             socket.to(room).emit("second_player_joined", value);
-        } else {
-            console.log("Already 2 players");
         }
 
         socket.on("highligth_cell", (content: string) => {

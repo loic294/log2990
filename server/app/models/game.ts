@@ -1,6 +1,5 @@
 import { Document, Schema} from "mongoose";
 import mongoose from "../config/mongoose";
-import { Difficulty } from "./../../../common/grid/difficulties";
 
 export interface IGame {
   name?: String;

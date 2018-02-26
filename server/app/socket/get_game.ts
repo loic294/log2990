@@ -1,5 +1,5 @@
 // tslint:disable:await-promise
-import Game, { IGame } from "../models/game";
+import Game from "../models/game";
 
 // Les types sont dans @types dans node modules mais Typescript n'est pas capable des lires.
 // tslint:disable-next-line:no-any
