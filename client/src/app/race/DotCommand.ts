@@ -9,8 +9,9 @@ import { ConstraintService } from "./constraint.service/constraint.service";
 const CAMERA_DISTANCE: number = 50;
 const CIRCLE_PIXEL: number = 20;
 const CIRCLE_SIZE: number = 1;
-const COLOR_LINE: number = 0xF8F060;
-const COLOR_FIRST_LINE: number = 0xFF0000;
+const COLOR_LINE: number = 0xE2E2E2;
+const COLOR_LINE_ERROR: number = 0xEF1F1F;
+const COLOR_FIRST_LINE: number = 0x247BA0;
 const COLOR_FIRST_CIRCLE: number = 0xFFFF00;
 const COLOR_CIRCLE: number = 0xFFFFFF;
 
@@ -133,6 +134,7 @@ export class DotCommand {
             this.removeLastEdge();
             this._trackIsCompleted = false;
         }
+        this.validateTrack();
     }
 
     private removeLastVertex(): void {
@@ -205,13 +207,14 @@ export class DotCommand {
     public validateTrack(): void {
         const fails: Array<number> = this._constraintService.validate(this._vertices, this._edges);
 
+        let count: number = 0;
         for (const edge of this._edges) {
-            edge.material.color =  new Color(COLOR_CIRCLE);
+            edge.material.color =  new Color(count++ > 0 ? COLOR_LINE : COLOR_FIRST_LINE);
             edge.material.needsUpdate = true;
         }
 
         for (const fail of fails) {
-            this._edges[fail].material.color =  new Color(COLOR_FIRST_LINE);
+            this._edges[fail].material.color =  new Color(COLOR_LINE_ERROR);
             this._edges[fail].material.needsUpdate = true;
         }
 
