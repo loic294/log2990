@@ -20,6 +20,7 @@ import { GridService } from "./grid.service/grid.service";
 import { SocketIoModule, SocketIoConfig } from "ng-socket-io";
 import { ModeComponent } from "./crosswords/mode/mode.component";
 import { SocketService } from "./socket.service/socket.service";
+import { AdminComponent } from "./race/admin-component/admin.component";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
@@ -31,7 +32,8 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         GridComponent,
         CrosswordComponent,
         CluesComponent,
-        ModeComponent
+        ModeComponent,
+        AdminComponent
     ],
     imports: [
         BrowserModule,
