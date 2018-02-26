@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import { PerspectiveCamera, WebGLRenderer, Scene, AmbientLight,
-MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, CubeGeometry } from "three";
+MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, BoxGeometry } from "three";
 import { Car } from "../car/car";
 
 const FAR_CLIPPING_PLANE: number = 100000;
@@ -114,7 +114,7 @@ export class RenderService {
             sidesOfSkybox.push( new MeshBasicMaterial ( {map: new TextureLoader().load( imageFilePath ), side: DoubleSide } ));
         }
 
-        const skyboxGeometry: CubeGeometry = new CubeGeometry(SIZE_SKYBOX, SIZE_SKYBOX, SIZE_SKYBOX);
+        const skyboxGeometry: BoxGeometry = new BoxGeometry(SIZE_SKYBOX, SIZE_SKYBOX, SIZE_SKYBOX);
         const skyboxTexture: MultiMaterial = new MultiMaterial(sidesOfSkybox);
         const skybox: Mesh = new Mesh(skyboxGeometry, skyboxTexture);
 

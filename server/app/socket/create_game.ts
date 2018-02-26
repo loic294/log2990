@@ -2,6 +2,13 @@ import Game, { IGameModel } from "../models/game";
 import { Difficulty } from "../services/gridGeneration/gridGeneration";
 import { difficultyName } from "../../../common/grid/difficulties";
 
+interface DataReceived {
+    gameId: string;
+    value: string;
+}
+
+// Les types sont dans @types dans node modules mais Typescript n'est pas capable des lires.
+// tslint:disable-next-line:no-any
 export default (socket: any) => {
     socket.on("create_game", async (data: string): Promise<void> => {
         const { gameId: room, difficulty: difficulty }: { gameId: string, difficulty: String } = JSON.parse(data);
@@ -14,7 +21,5 @@ export default (socket: any) => {
         await game.save();
 
         socket.emit("created_game", game);
-        const count: number = await Game.count({name: room});
-        console.log("created game in db ", count);
     });
 };

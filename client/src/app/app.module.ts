@@ -20,6 +20,7 @@ import { GridService } from "./grid.service/grid.service";
 import { SocketIoModule, SocketIoConfig } from "ng-socket-io";
 import { ModeComponent, ModeDialog } from "./crosswords/mode/mode.component";
 import { SocketService } from "./socket.service/socket.service";
+import { AdminComponent } from "./race/admin-component/admin.component";
 import {MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material/dialog';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
@@ -36,6 +37,7 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         GridComponent,
         CrosswordComponent,
         CluesComponent,
+        AdminComponent
         ModeComponent,
         ModeDialog
     ],

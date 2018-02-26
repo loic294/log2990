@@ -1,3 +1,4 @@
+// tslint:disable:no-floating-promises
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { DifficultyComponent } from "./difficulty.component";
 import { ButtonComponent } from "../button/button.component";

@@ -62,6 +62,7 @@ export class Engine {
             transmissionEfficiency = DEFAULT_TRANSMISSION_EFFICIENCY;
         }
 
+        // tslint:disable-next-line:no-suspicious-comment
         // TODO: check all interactions with RPM values, such as downshift vs minimumrpm, upshift maximum, etc.
         this.gearRatios = gearRatios;
         this.driveRatio = driveRatio;

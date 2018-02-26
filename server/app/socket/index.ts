@@ -1,7 +1,7 @@
-/// <reference types="socket.io" />
 import * as fs from "fs";
 
-// Socket.io ne semble pas avoir un type pour le socket.
+// Il n'est pas possible d'importer les types pour Socket
+// tslint:disable-next-line:no-any
 export default (socket: any) => {
 
     fs.readdirSync(__dirname).forEach((filename: string) => {

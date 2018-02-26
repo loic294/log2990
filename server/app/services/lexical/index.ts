@@ -2,7 +2,8 @@
     This service will be responsible of requesting and creating lexical content.
 */
 import axios, { AxiosResponse } from "axios";
-const API_KEY: String = "api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5";
+import KEYS from "./../../config/index";
+import { Level } from "./../../../../common/lexical/level";
 
 interface AxiosWords {
     word: string;
@@ -13,7 +14,7 @@ export default class LexicalService {
 
     private async baseDefinition(word: string): Promise<AxiosResponse> {
         let WORDNIK_URL: string;
-        WORDNIK_URL = `http://api.wordnik.com:80/v4/word.json/${word}/definitions?limit=200&${API_KEY}`;
+        WORDNIK_URL = `http://api.wordnik.com:80/v4/word.json/${word}/definitions?limit=200&${KEYS.WORDNIK_KEY}`;
         try {
             const response: AxiosResponse = await axios.get(WORDNIK_URL);
 
@@ -33,6 +34,20 @@ export default class LexicalService {
             throw err;
         }
     }
+    private removeExamplesDefinitions(definitions: string []): void {
+        for (const def in definitions) {
+            if (definitions[def].includes(":")) {
+                definitions[def] = definitions[def].substring(0, definitions[def].indexOf(":"));
+            }
+        }
+    }
+    private removeDetailsDefinitions(definitions: string []): void {
+        for (const def in definitions) {
+            if (definitions[def].includes(";")) {
+                definitions[def] = definitions[def].substring(0, definitions[def].indexOf(";"));
+            }
+        }
+    }
 
     private async filterDefinitions(word: string): Promise<Array<string>> {
         const definitions: string [] = [];
@@ -44,18 +59,10 @@ export default class LexicalService {
                     definitions.push(data[def].text);
                 }
             }
-            // Remove examples from definitions
-            for (const def in definitions) {
-                if (definitions[def].includes(":")) {
-                    definitions[def] = definitions[def].substring(0, definitions[def].indexOf(":"));
-                }
-            }
-            // Remove unecessary details from definitions
-            for (const def in definitions) {
-                if (definitions[def].includes(";")) {
-                    definitions[def] = definitions[def].substring(0, definitions[def].indexOf(";"));
-                }
-            }
+
+            this.removeExamplesDefinitions(definitions);
+            this.removeDetailsDefinitions(definitions);
+
         } catch (err) {
             throw err;
         }
@@ -70,11 +77,11 @@ export default class LexicalService {
                 return "No definitions";
             }
             switch (level) {
-                case "easy":
+                case Level.Easy:
                     {
                         return filteredDefinitions[0];
                     }
-                case "hard":
+                case Level.Hard:
                     {
                         if (filteredDefinitions.length > 1) {
                             return filteredDefinitions[Math.floor((Math.random() * (filteredDefinitions.length - 1) + 1))];
