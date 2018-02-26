@@ -62,9 +62,11 @@ export class DotCommand {
             const raycaster: THREE.Raycaster = new Raycaster(this._camera.position, mouse3D.sub(this._camera.position).normalize());
             const intersects: Intersection[] = raycaster.intersectObjects(this._vertices);
 
-            if (intersects.length > 0 && intersects[0].object === this._vertices[0]) {
-                this.connectToFirst();
-                this._trackIsCompleted = true;
+            if (intersects.length > 0 && intersects[0].object === this._vertices[0] && this._vertices.length > 1) {
+                if (!this._trackIsCompleted) {
+                    this.connectToFirst();
+                    this._trackIsCompleted = true;
+                }
                 this._selectedObject = intersects[0].object;
                 foundCircle = true;
             } else if (intersects.length > 0) {
@@ -100,7 +102,6 @@ export class DotCommand {
             if (this._vertices.length > 0) {
                 this.removeLastVertex();
             }
-
             if (this._edges.length > 0) {
                 this.removeLastEdge();
             }
