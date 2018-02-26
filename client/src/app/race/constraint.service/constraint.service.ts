@@ -31,7 +31,6 @@ export class ConstraintService {
     return angle > MIN_ANGLE && angle < HALF_CIRCLE * TWO - MIN_ANGLE;
   }
 
-
   public checkDistance(distance: number): boolean {
     return distance <= MOCK_LARGEUR_PISTE * 2;
   }
