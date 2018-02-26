@@ -9,7 +9,6 @@ describe("TrackCreationComponent", () => {
     let scene: THREE.Scene;
     let vertices: Array<Object3D>;
     let edges: Array<Line>;
-    let tackIsCompleted: boolean;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
