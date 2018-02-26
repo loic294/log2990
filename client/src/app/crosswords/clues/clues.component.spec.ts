@@ -1,3 +1,5 @@
+// tslint:disable:no-magic-numbers
+// tslint:disable:no-floating-promises
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { CluesComponent } from "./clues.component";
