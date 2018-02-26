@@ -93,5 +93,4 @@ describe("TrackCreationComponent", () => {
         expect(component.getDotCommand().getTrackIsCompleted()).toBe(false);
     });
 
-
 });
