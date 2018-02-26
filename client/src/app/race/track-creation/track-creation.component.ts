@@ -81,10 +81,11 @@ export class TrackCreationComponent implements AfterViewInit {
 
         this._camera = new OrthographicCamera(CAMERA_DISTANCE * ASPECT / - 2, CAMERA_DISTANCE * ASPECT / 2,
                                               CAMERA_DISTANCE / 2, CAMERA_DISTANCE / - 2, NEAR_CLIPPING_PLANE, FAR_CLIPPING_PLANE);
-
         this._camera.position.set(0, CAMERA_DISTANCE , 0);
         this._camera.lookAt(new Vector3(0, 0, 0));
+
         this._renderer.setSize(window.innerWidth, window.innerHeight);
+
         this.container.nativeElement.appendChild(this._renderer.domElement);
 
         this._scene.add(this._camera);
