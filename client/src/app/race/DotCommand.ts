@@ -1,6 +1,6 @@
 import {
     Vector3, SphereGeometry, MeshBasicMaterial, Mesh, Object3D,
-    LineBasicMaterial, Geometry, Line, Raycaster, Intersection,
+    LineBasicMaterial, Geometry, LineSegments, Raycaster, Intersection,
     Color
 } from "three";
 
@@ -14,22 +14,31 @@ const COLOR_FIRST_LINE: number = 0xFF0000;
 const COLOR_FIRST_CIRCLE: number = 0xFFFF00;
 const COLOR_CIRCLE: number = 0xFFFFFF;
 
+export class LineSegment extends LineSegments {
+    public constructor(
+        public geometry: Geometry,
+        public material: LineBasicMaterial,
+    ) {
+        super();
+    }
+}
+
 export class DotCommand {
 
     private _trackIsCompleted: boolean;
     private _vertices: Array<Object3D>;
-    private _edges: Array<Line>;
+    private _edges: Array<LineSegment>;
     private _selectedObject: Object3D;
+    private _constraintService: ConstraintService;
 
     public constructor(
         private _scene: THREE.Scene,
         private _renderer: THREE.WebGLRenderer,
-        private _camera: THREE.OrthographicCamera,
-        private _constraintService: ConstraintService
+        private _camera: THREE.OrthographicCamera
     ) {
         this._trackIsCompleted = false;
         this._vertices = new Array<Object3D>();
-        this._edges = new Array<Line>();
+        this._edges = new Array<LineSegment>();
         this._selectedObject = null;
         this._constraintService = new ConstraintService();
     }
@@ -48,14 +57,14 @@ export class DotCommand {
     private updateEdges(): void {
         if (this._vertices.length > 1) {
 
-            const lineMat: THREE.LineBasicMaterial = (this._vertices.length === 2 ?
+            const lineMat: LineBasicMaterial = (this._vertices.length === 2 ?
                 new LineBasicMaterial({ color: COLOR_FIRST_LINE, linewidth: 8 }) :
                 new LineBasicMaterial({ color: COLOR_LINE, linewidth: 8 }));
             const lineGeo: THREE.Geometry = new Geometry();
             lineGeo.vertices.push(this._vertices[this._vertices.length - 2].position);
             lineGeo.vertices.push(this._vertices[this._vertices.length - 1].position);
 
-            const line: THREE.Line = new Line(lineGeo, lineMat);
+            const line: LineSegment = new LineSegment(lineGeo, lineMat);
 
             line.userData.vertices = [];
             line.userData.vertices.push(this._vertices[this._vertices.length - 2].position);
@@ -94,13 +103,13 @@ export class DotCommand {
 
     private connectToFirst(): void {
         // this.remove();
-        const lineMat: THREE.LineBasicMaterial = new LineBasicMaterial({ color: COLOR_LINE, linewidth: 8 });
+        const lineMat: LineBasicMaterial = new LineBasicMaterial({ color: COLOR_LINE, linewidth: 8 });
         const lineGeo: THREE.Geometry = new Geometry();
 
         lineGeo.vertices.push(this._vertices[this._vertices.length - 1].position);
         lineGeo.vertices.push(this._vertices[0].position);
 
-        const line: THREE.Line = new Line(lineGeo, lineMat);
+        const line: LineSegment = new LineSegment(lineGeo, lineMat);
 
         line.userData.vertices = [];
         line.userData.vertices.push(this._vertices[this._vertices.length - 1].position);
@@ -169,8 +178,8 @@ export class DotCommand {
         }
     }
 
-    private findConnectedLines(oldPos: THREE.Vector3): Array<Line> {
-        const connectedLines: Array<Line> = new Array<Line>();
+    private findConnectedLines(oldPos: THREE.Vector3): Array<LineSegment> {
+        const connectedLines: Array<LineSegment> = new Array<LineSegment>();
 
         for (const i of this._edges) {
             if (i.userData.vertices[0] === oldPos || i.userData.vertices[1] === oldPos) {
@@ -183,7 +192,7 @@ export class DotCommand {
 
     private dragLines(oldPos: THREE.Vector3, newPos: THREE.Vector3): void {
 
-        const connectedLines: Array<Line> = this.findConnectedLines(oldPos);
+        const connectedLines: Array<LineSegment> = this.findConnectedLines(oldPos);
 
         for (const i of connectedLines) {
             const lineGeometry: Geometry = i.geometry as Geometry;
@@ -220,7 +229,7 @@ export class DotCommand {
         return this._vertices;
     }
 
-    public getEdges(): Array<Line> {
+    public getEdges(): Array<LineSegment> {
         return this._edges;
     }
 }
