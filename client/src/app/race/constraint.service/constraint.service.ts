@@ -41,7 +41,8 @@ export class ConstraintService {
   }
 
   public checkIfDistanceIsTwiceTheWidth(distance: number): boolean {
-    console.log("DISTANCE", distance);
+	console.log("DISTANCE", distance);
+
     return distance <= MOCK_LARGEUR_PISTE * 2;
   }
 
