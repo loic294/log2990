@@ -1,13 +1,21 @@
+// tslint:disable:await-promise
 import Game, {IGameModel} from "../models/game";
+interface DataReceived {
+    gameId: string;
+    value: string;
+}
 
+// Les types sont dans @types dans node modules mais Typescript n'est pas capable des lires.
+// tslint:disable-next-line:no-any
 const joinFirstPlayer: Function = async (socket: any, game: IGameModel, room: string, value: string): Promise<void> => {
     socket.join(room);
-    await Game.findOneAndUpdate({ name: game.name}, { players: [value] })
+    await Game.findOneAndUpdate({ name: game.name}, { players: [value] });
     socket.emit("connected_to_game", JSON.stringify({
         game
     }));
 };
 
+// tslint:disable-next-line:no-any
 const joinSecondPlayer: Function = async (socket: any, game: IGameModel, room: string, value: string): Promise<void> => {
     socket.join(room);
 
@@ -20,13 +28,13 @@ const joinSecondPlayer: Function = async (socket: any, game: IGameModel, room: s
     socket.emit("connected_to_game", JSON.stringify({
         game: dbGame
     }));
-    // SEND CONNECTED TO OTHER PLAYER
 };
 
+// tslint:disable-next-line:no-any
 export default (socket: any) => {
 
     socket.on("connect_to_game", async (data: string) => {
-        const { gameId: room, value }: { gameId: string, value: string} = JSON.parse(data);
+        const { gameId: room, value }: DataReceived = JSON.parse(data);
         const game: IGameModel = await Game.findOne({
             name: room
         });
@@ -35,8 +43,6 @@ export default (socket: any) => {
             joinFirstPlayer(socket, game, room, value);
         } else if (game.players.length === 1) {
             joinSecondPlayer(socket, game, room, value);
-        } else {
-            console.log("Already 2 players");
         }
 
         socket.on("highligth_cell", (content: string) => {
@@ -45,7 +51,6 @@ export default (socket: any) => {
 
         socket.on("disconnect", async () => {
             await game.remove();
-            console.log("disconnect", game);
         });
     });
 };
