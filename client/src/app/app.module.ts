@@ -24,6 +24,7 @@ import {MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material/dia
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import {MatProgressSpinnerModule} from '@angular/material';
+import { DifficultyService } from './difficulty.service/difficulty.service';
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
@@ -58,6 +59,7 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         WordService,
         GridService,
         SocketService,
+        DifficultyService,
         {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}}
     ],
     exports: [
