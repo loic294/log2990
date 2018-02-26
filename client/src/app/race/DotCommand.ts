@@ -6,8 +6,10 @@ import {
 const CAMERA_DISTANCE: number = 50;
 const CIRCLE_PIXEL: number = 20;
 const CIRCLE_SIZE: number = 1;
-const COLOR_LINE: number = 0xFFF000;
+const COLOR_LINE: number = 0xF8F060;
 const COLOR_FIRST_LINE: number = 0xFF0000;
+const COLOR_FIRST_CIRCLE: number = 0xFFFF00;
+const COLOR_CIRCLE: number = 0xFFFFFF;
 
 export class DotCommand {
 
@@ -25,11 +27,8 @@ export class DotCommand {
 
     public add(event: MouseEvent): void {
         if (!this.detectObjectsAtMouse(event) && !this._trackIsCompleted /*&& event.srcElement.localName === "canvas"*/) {
-
-            const relativeDotPosition: Vector3 = this.findRelativePosition(event);
-            const sphereMesh: Mesh = this.createSphere(relativeDotPosition);
-            this._scene.add(sphereMesh);
-            this._vertices.push(sphereMesh);
+            this._scene.add(this.createSphere(this.findRelativePosition(event)));
+            this._vertices.push(this.createSphere(this.findRelativePosition(event)));
             this.updateEdges();
         }
     }
@@ -140,8 +139,8 @@ export class DotCommand {
     private createSphere(spherePosition: Vector3): THREE.Mesh {
         const geometry: THREE.SphereGeometry = new SphereGeometry(CIRCLE_SIZE, CIRCLE_PIXEL, CIRCLE_PIXEL);
         const material: THREE.MeshBasicMaterial = (this._vertices.length === 0) ?
-            new MeshBasicMaterial({ color: 0xFFFF00 }) :
-            new MeshBasicMaterial({ color: 0xFFFFFF });
+            new MeshBasicMaterial({ color: COLOR_FIRST_CIRCLE }) :
+            new MeshBasicMaterial({ color: COLOR_CIRCLE });
         const sphereMesh: Mesh = new Mesh(geometry, material);
         sphereMesh.position.set(spherePosition.x, spherePosition.y, spherePosition.z);
 
