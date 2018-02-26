@@ -1,4 +1,9 @@
 
-<div id="1" #container oncontextmenu="return false"></div>
+<div 
+	id="track"
+	#container
+	oncontextmenu="return false"
+	(mousedown)="onKeyDown($event)"
+	(mouseup)="onKeyUp($event)"></div>
 
 

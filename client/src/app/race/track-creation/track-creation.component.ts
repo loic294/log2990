@@ -41,7 +41,6 @@ export class TrackCreationComponent implements AfterViewInit {
         this._renderer.setSize(this.getWindowSize()[0], this.getWindowSize()[1]);
     }
 
-    @HostListener("window:mousedown", ["$event"])
     public onKeyDown(event: MouseEvent): void {
         if (event.which === LEFT_CLICK) {
             this.placeDot(event);
@@ -50,7 +49,6 @@ export class TrackCreationComponent implements AfterViewInit {
         }
     }
 
-    @HostListener("window:mouseup", ["$event"])
     public onKeyUp(event: MouseEvent): void {
         if (event.which === LEFT_CLICK) {
             this._dotCommand.unselect();

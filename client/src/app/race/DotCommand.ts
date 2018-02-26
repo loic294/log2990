@@ -1,28 +1,47 @@
 import {
     Vector3, SphereGeometry, MeshBasicMaterial, Mesh, Object3D,
-    LineBasicMaterial, Geometry, Line, Raycaster, Intersection
+    LineBasicMaterial, Geometry, LineSegments, Raycaster, Intersection,
+    Color
 } from "three";
+
+import { ConstraintService } from "./constraint.service/constraint.service";
 
 const CAMERA_DISTANCE: number = 50;
 const CIRCLE_PIXEL: number = 20;
 const CIRCLE_SIZE: number = 1;
-const COLOR_LINE: number = 0xF8F060;
-const COLOR_FIRST_LINE: number = 0xFF0000;
+const COLOR_LINE: number = 0xE2E2E2;
+const COLOR_LINE_ERROR: number = 0xEF1F1F;
+const COLOR_FIRST_LINE: number = 0x247BA0;
 const COLOR_FIRST_CIRCLE: number = 0xFFFF00;
 const COLOR_CIRCLE: number = 0xFFFFFF;
+
+export class LineSegment extends LineSegments {
+    public constructor(
+        public geometry: Geometry,
+        public material: LineBasicMaterial,
+    ) {
+        super();
+    }
+}
 
 export class DotCommand {
 
     private _trackIsCompleted: boolean;
     private _vertices: Array<Object3D>;
-    private _edges: Array<Line>;
+    private _edges: Array<LineSegment>;
     private _selectedObject: Object3D;
+    private _constraintService: ConstraintService;
 
-    public constructor(private _scene: THREE.Scene, private _renderer: THREE.WebGLRenderer, private _camera: THREE.OrthographicCamera) {
+    public constructor(
+        private _scene: THREE.Scene,
+        private _renderer: THREE.WebGLRenderer,
+        private _camera: THREE.OrthographicCamera
+    ) {
         this._trackIsCompleted = false;
         this._vertices = new Array<Object3D>();
-        this._edges = new Array<Line>();
+        this._edges = new Array<LineSegment>();
         this._selectedObject = null;
+        this._constraintService = new ConstraintService();
     }
 
     public add(event: MouseEvent): void {
@@ -32,20 +51,21 @@ export class DotCommand {
             this._scene.add(sphereMesh);
             this._vertices.push(sphereMesh);
             this.updateEdges();
+            this.validateTrack();
         }
     }
 
     private updateEdges(): void {
         if (this._vertices.length > 1) {
 
-            const lineMat: THREE.LineBasicMaterial = (this._vertices.length === 2 ?
+            const lineMat: LineBasicMaterial = (this._vertices.length === 2 ?
                 new LineBasicMaterial({ color: COLOR_FIRST_LINE, linewidth: 8 }) :
                 new LineBasicMaterial({ color: COLOR_LINE, linewidth: 8 }));
             const lineGeo: THREE.Geometry = new Geometry();
             lineGeo.vertices.push(this._vertices[this._vertices.length - 2].position);
             lineGeo.vertices.push(this._vertices[this._vertices.length - 1].position);
 
-            const line: THREE.Line = new Line(lineGeo, lineMat);
+            const line: LineSegment = new LineSegment(lineGeo, lineMat);
 
             line.userData.vertices = [];
             line.userData.vertices.push(this._vertices[this._vertices.length - 2].position);
@@ -84,13 +104,13 @@ export class DotCommand {
 
     private connectToFirst(): void {
         // this.remove();
-        const lineMat: THREE.LineBasicMaterial = new LineBasicMaterial({ color: COLOR_LINE, linewidth: 8 });
+        const lineMat: LineBasicMaterial = new LineBasicMaterial({ color: COLOR_LINE, linewidth: 8 });
         const lineGeo: THREE.Geometry = new Geometry();
 
         lineGeo.vertices.push(this._vertices[this._vertices.length - 1].position);
         lineGeo.vertices.push(this._vertices[0].position);
 
-        const line: THREE.Line = new Line(lineGeo, lineMat);
+        const line: LineSegment = new LineSegment(lineGeo, lineMat);
 
         line.userData.vertices = [];
         line.userData.vertices.push(this._vertices[this._vertices.length - 1].position);
@@ -114,6 +134,7 @@ export class DotCommand {
             this.removeLastEdge();
             this._trackIsCompleted = false;
         }
+        this.validateTrack();
     }
 
     private removeLastVertex(): void {
@@ -159,8 +180,8 @@ export class DotCommand {
         }
     }
 
-    private findConnectedLines(oldPos: THREE.Vector3): Array<Line> {
-        const connectedLines: Array<Line> = new Array<Line>();
+    private findConnectedLines(oldPos: THREE.Vector3): Array<LineSegment> {
+        const connectedLines: Array<LineSegment> = new Array<LineSegment>();
 
         for (const i of this._edges) {
             if (i.userData.vertices[0] === oldPos || i.userData.vertices[1] === oldPos) {
@@ -173,12 +194,30 @@ export class DotCommand {
 
     private dragLines(oldPos: THREE.Vector3, newPos: THREE.Vector3): void {
 
-        const connectedLines: Array<Line> = this.findConnectedLines(oldPos);
+        const connectedLines: Array<LineSegment> = this.findConnectedLines(oldPos);
 
         for (const i of connectedLines) {
             const lineGeometry: Geometry = i.geometry as Geometry;
             lineGeometry.verticesNeedUpdate = true;
         }
+
+        this.validateTrack();
+    }
+
+    public validateTrack(): void {
+        const fails: Array<number> = this._constraintService.validate(this._vertices, this._edges);
+
+        let count: number = 0;
+        for (const edge of this._edges) {
+            edge.material.color =  new Color(count++ > 0 ? COLOR_LINE : COLOR_FIRST_LINE);
+            edge.material.needsUpdate = true;
+        }
+
+        for (const fail of fails) {
+            this._edges[fail].material.color =  new Color(COLOR_LINE_ERROR);
+            this._edges[fail].material.needsUpdate = true;
+        }
+
     }
 
     public unselect(): void {
@@ -193,7 +232,7 @@ export class DotCommand {
         return this._vertices;
     }
 
-    public getEdges(): Array<Line> {
+    public getEdges(): Array<LineSegment> {
         return this._edges;
     }
 }
