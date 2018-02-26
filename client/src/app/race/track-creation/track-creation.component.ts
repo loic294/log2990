@@ -6,6 +6,7 @@ const FAR_CLIPPING_PLANE: number = 10000;
 const NEAR_CLIPPING_PLANE: number = 1;
 const CAMERA_DISTANCE: number = 50;
 const ASPECT: number = window.innerWidth / window.innerHeight;
+const CANVAS_ASPECT: number = window.innerHeight / window.innerWidth;
 
 const LEFT_CLICK: number = 1;
 const RIGHT_CLICK: number = 3;
@@ -37,7 +38,7 @@ export class TrackCreationComponent implements AfterViewInit {
         this._camera.top = CAMERA_DISTANCE / 2;
         this._camera.bottom = CAMERA_DISTANCE / - 2;
         this._camera.updateProjectionMatrix();
-        this._renderer.setSize(window.innerWidth, window.innerHeight);
+        this._renderer.setSize(this.getWindowSize()[0], this.getWindowSize()[1]);
     }
 
     @HostListener("window:mousedown", ["$event"])
@@ -87,7 +88,7 @@ export class TrackCreationComponent implements AfterViewInit {
         this._camera.position.set(0, CAMERA_DISTANCE , 0);
         this._camera.lookAt(new Vector3(0, 0, 0));
 
-        this._renderer.setSize(window.innerWidth, window.innerHeight);
+        this._renderer.setSize(this.getWindowSize()[0], this.getWindowSize()[1]);
 
         this.container.nativeElement.appendChild(this._renderer.domElement);
 
@@ -95,6 +96,13 @@ export class TrackCreationComponent implements AfterViewInit {
 
         this._renderer.render(this._scene, this._camera);
         this._dotCommand = new DotCommand(this._scene, this._renderer, this._camera);
+    }
+
+    private getWindowSize(): Array<number> {
+        const design: number = 360;
+        const canvasWidth: number = window.innerWidth - design;
+
+        return [canvasWidth, canvasWidth * CANVAS_ASPECT];
     }
 
     public getScene(): THREE.Scene {

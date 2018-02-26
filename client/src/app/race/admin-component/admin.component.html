@@ -20,7 +20,7 @@
   </div>
   <div *ngIf="id">
     <h1>Edit game</h1>
-    <p>GAME CANVAS COMES HERE!</p>
+		<app-track-creation></app-track-creation>
     <div>
       <button routerLink="/admin" (click)="deleteGame(id)">Delete game</button>
     </div>
