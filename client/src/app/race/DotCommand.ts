@@ -6,6 +6,8 @@ import {
 const CAMERA_DISTANCE: number = 50;
 const CIRCLE_PIXEL: number = 20;
 const CIRCLE_SIZE: number = 1;
+const COLOR_LINE: number = 0xFFF000;
+const COLOR_FIRST_LINE: number = 0xFF0000;
 
 export class DotCommand {
 
@@ -37,8 +39,8 @@ export class DotCommand {
         if (this._vertices.length > 1) {
 
             const lineMat: THREE.LineBasicMaterial = (this._vertices.length === 2 ?
-                new LineBasicMaterial({ color: 0xFF0000, linewidth: 8 }) :
-                new LineBasicMaterial({ color: 0xFFF000, linewidth: 8 }));
+                new LineBasicMaterial({ color: COLOR_FIRST_LINE, linewidth: 8 }) :
+                new LineBasicMaterial({ color: COLOR_LINE, linewidth: 8 }));
             const lineGeo: THREE.Geometry = new Geometry();
             lineGeo.vertices.push(this._vertices[this._vertices.length - 2].position);
             lineGeo.vertices.push(this._vertices[this._vertices.length - 1].position);
@@ -82,7 +84,7 @@ export class DotCommand {
 
     private connectToFirst(): void {
         // this.remove();
-        const lineMat: THREE.LineBasicMaterial = new LineBasicMaterial({ color: 0xFF0000, linewidth: 8 });
+        const lineMat: THREE.LineBasicMaterial = new LineBasicMaterial({ color: COLOR_LINE, linewidth: 8 });
         const lineGeo: THREE.Geometry = new Geometry();
 
         lineGeo.vertices.push(this._vertices[this._vertices.length - 1].position);
