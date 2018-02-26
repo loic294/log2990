@@ -11,7 +11,7 @@ export class SocketService {
 
     // private input: String;
     public _player: string = "";
-    private _difficulty: Difficulty;
+    private _difficulty: String;
     private _modes: string[];
     private _selectedMode: string;
     private _games: IGameModel[];
@@ -28,7 +28,7 @@ export class SocketService {
         private difficultyService: DifficultyService
     ) {
         this.difficultyService.difficulty.subscribe((diff)=>{
-            this._difficulty = diff;
+            this._difficulty = difficultyName(diff);
         });
 
         this._games = [];
@@ -96,7 +96,7 @@ export class SocketService {
     }
 
     public addGames(): void {
-        this._socket.emit("get_games");
+        this._socket.emit("get_games", this.difficulty);
     }
     public toggleShowGames(): void {
         this._showGames = !this._showGames;
@@ -108,7 +108,7 @@ export class SocketService {
     public createGame(mode: string): void {
         if (mode === "Two Players") {
             const gameId: string = this.player;
-            const difficulty: string = difficultyName(this.difficulty);
+            const difficulty: String = this.difficulty;
             this._socket.emit("create_game", JSON.stringify({ gameId, difficulty}));
             this.joinGame(gameId);
         } else {
@@ -123,7 +123,7 @@ export class SocketService {
     public get player(): string {
         return this._player;
     }
-    public get difficulty(): Difficulty {
+    public get difficulty(): String {
         return this._difficulty;
     }
 

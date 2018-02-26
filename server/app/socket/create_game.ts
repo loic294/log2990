@@ -4,7 +4,7 @@ import { difficultyName } from "../../../common/grid/difficulties";
 
 export default (socket: any) => {
     socket.on("create_game", async (data: string): Promise<void> => {
-        const { gameId: room, difficulty: difficulty }: { gameId: string, difficulty: Difficulty } = JSON.parse(data);
+        const { gameId: room, difficulty: difficulty }: { gameId: string, difficulty: String } = JSON.parse(data);
         const game: IGameModel = new Game({
             name: room,
             createdAt: new Date(),
