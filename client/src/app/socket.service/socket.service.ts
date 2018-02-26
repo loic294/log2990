@@ -36,19 +36,16 @@ export class SocketService {
         this._selectedMode = "";
         this._showGames = false;
         this._updateUserConnected = this._userConnected.asObservable();
-        this._socket.connect();
-
         this._updateHighligthCell = this._highlightCell.asObservable();
+        this.initializeSocket();
+
+    }
+
+    public initializeSocket(): void {
+        this._socket.connect();
 
         this._socket.on("add_games", (games: IGameModel[]) => {
             this._games = games;
-        });
-
-        this._socket.on("connected_to_game", (data: string): void => {
-            // const { game }: { game: IGameModel } = JSON.parse(data);
-        });
-
-        this._socket.on("created_game", (data: string): void => {
         });
 
         this._socket.on("highligth_cell_in_color", (data: string): void => {
@@ -57,8 +54,7 @@ export class SocketService {
 
         this._socket.on("second_player_joined", (data: any) => {
             this._userConnected.next(true);
-            console.log("player connected --------");
-        })
+        });
     }
 
     public get isUserConnected(): Observable<boolean>{
