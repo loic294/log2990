@@ -28,14 +28,13 @@
     </div>
 
   </div>
+</div>
 
-  <div *ngIf="isWaitingForPlayer()">
-    <h2>Waiting for another player to join</h2>
-    <mat-spinner></mat-spinner>
+<div *ngIf="isWaitingForPlayer()">
+  <h2>Waiting for another player to join</h2>
+  <mat-spinner></mat-spinner>
 
-    <!-- <div *ngIf="connected()">
-      <div [ngClass]="closeDialog()"></div>
-    </div> -->
-  </div>
-
+  <!-- <div *ngIf="connected()">
+    <div [ngClass]="closeDialog()"></div>
+  </div> -->
 </div>

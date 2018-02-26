@@ -5,12 +5,6 @@
 ///<reference types="node" />
 // tslint:disable
 
-declare module 'socket.io' {
-    var server: SocketIOStatic;
-
-    export = server;
-}
-
 export interface SocketIOStatic {
     /**
      * Default Server constructor
