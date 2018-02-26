@@ -11,7 +11,7 @@ interface VectorI {
 const HALF_CIRCLE: number = 180;
 const TWO: number = 2;
 
-const MOCK_LARGEUR_PISTE: number = 20;
+const MOCK_LARGEUR_PISTE: number = 2;
 
 @Injectable()
 export class ConstraintService {
@@ -36,12 +36,13 @@ export class ConstraintService {
     return angle > HALF_CIRCLE - MIN_ANGLE && angle < HALF_CIRCLE + MIN_ANGLE;
   }
 
-  public distance(vertexA: VectorI, vertexB: VectorI): number {
-    return Math.sqrt(Math.pow(vertexA.x - vertexB.x, 2) + Math.pow(vertexA.y - vertexB.y, 2));
+  public distance(vertex: VectorI): number {
+    return Math.sqrt(Math.pow(vertex.x, 2) + Math.pow(vertex.y, 2));
   }
 
   public checkIfDistanceIsTwiceTheWidth(distance: number): boolean {
-    return distance >= MOCK_LARGEUR_PISTE * 2;
+    console.log('DISTANCE', distance)
+    return distance <= MOCK_LARGEUR_PISTE * 2;
   }
 
   public intersects(vertexA: VectorI, vertexB: VectorI, vertexC: VectorI, vertexD: VectorI): boolean {
@@ -84,6 +85,13 @@ export class ConstraintService {
 
             if (!this.checkIfAngleIsValid(angle)) {
                 invalid.push(i);
+                invalid.push(i + 1);
+            }
+
+            if (this.checkIfDistanceIsTwiceTheWidth(this.distance(edge1))) {
+                invalid.push(i);
+            }
+            if (this.checkIfDistanceIsTwiceTheWidth(this.distance(edge2))) {
                 invalid.push(i + 1);
             }
 
