@@ -36,7 +36,9 @@ export class DotCommand {
     private updateEdges(): void {
         if (this._vertices.length > 1) {
 
-            const lineMat: THREE.LineBasicMaterial = new LineBasicMaterial({ color: 0xFF0000, linewidth: 8 });
+            const lineMat: THREE.LineBasicMaterial = (this._vertices.length === 2 ?
+                new LineBasicMaterial({ color: 0xFF0000, linewidth: 8 }) :
+                new LineBasicMaterial({ color: 0xFFF000, linewidth: 8 }));
             const lineGeo: THREE.Geometry = new Geometry();
             lineGeo.vertices.push(this._vertices[this._vertices.length - 2].position);
             lineGeo.vertices.push(this._vertices[this._vertices.length - 1].position);
@@ -130,8 +132,7 @@ export class DotCommand {
         const relativeX: number = event.offsetX - (canvas.clientWidth / 2);
         const relativeZ: number = event.offsetY - (canvas.clientHeight / 2);
 
-        return new Vector3(relativeX * CAMERA_DISTANCE / canvas.clientHeight,
-                           0, relativeZ * CAMERA_DISTANCE / canvas.clientHeight);
+        return new Vector3(relativeX * CAMERA_DISTANCE / canvas.clientHeight, 0, relativeZ * CAMERA_DISTANCE / canvas.clientHeight);
 
     }
 
@@ -175,7 +176,7 @@ export class DotCommand {
         for (const i of connectedLines) {
             const lineGeometry: Geometry = i.geometry as Geometry;
             lineGeometry.verticesNeedUpdate = true;
-       }
+        }
     }
 
     public unselect(): void {
