@@ -6,7 +6,7 @@ import { TrackCreationComponent } from "./race/track-creation/track-creation.com
 
 const routes: Routes = [
     { path: "crossword", component: CrosswordComponent },
-    { path: "race", component: GameComponent }
+    { path: "race", component: GameComponent },
     { path: "race/admin", component: TrackCreationComponent  }
 ];
 
