@@ -97,25 +97,25 @@ describe("ConstraintService", () => {
     it("should distance of 6 should fail validation", inject([ConstraintService], (service: ConstraintService) => {
         const distance: number = 6;
 
-        expect(service.checkIfDistanceIsTwiceTheWidth(distance)).toEqual(false);
+        expect(service.checkDistance(distance)).toEqual(false);
     }));
 
     it("should distance of 15.99999 should fail validation", inject([ConstraintService], (service: ConstraintService) => {
         const distance: number = 15.99999;
 
-        expect(service.checkIfDistanceIsTwiceTheWidth(distance)).toEqual(false);
+        expect(service.checkDistance(distance)).toEqual(false);
     }));
 
     it("should distance of 16 should pass validation", inject([ConstraintService], (service: ConstraintService) => {
         const distance: number = 16;
 
-        expect(service.checkIfDistanceIsTwiceTheWidth(distance)).toEqual(true);
+        expect(service.checkDistance(distance)).toEqual(true);
     }));
 
     it("should distance of 29484.299229 should pass validation", inject([ConstraintService], (service: ConstraintService) => {
         const distance: number = 29484.299229;
 
-        expect(service.checkIfDistanceIsTwiceTheWidth(distance)).toEqual(true);
+        expect(service.checkDistance(distance)).toEqual(true);
     }));
 
     it("should not intersect because they are parrallel", inject([ConstraintService], (service: ConstraintService) => {

@@ -40,7 +40,7 @@ export class ConstraintService {
     return Math.sqrt(Math.pow(vertex.x, 2) + Math.pow(vertex.y, 2));
   }
 
-  public checkIfDistanceIsTwiceTheWidth(distance: number): boolean {
+  public checkDistance(distance: number): boolean {
     return distance <= MOCK_LARGEUR_PISTE * 2;
   }
 
@@ -67,32 +67,59 @@ export class ConstraintService {
     };
   }
 
+  public lineToPoint(line: Line, index: number): VectorI {
+    return {
+        x: line.userData.vertices[index].x,
+        y: line.userData.vertices[index].z
+    };
+  }
+
+  public findIntersaction(edges: Array<Line>): Array<number> {
+    const invalid: Array<number> = [];
+
+    edges.forEach((edge: Line, index: number) => {
+        for (let j: number = index + 1; j < edges.length; j++) {
+            const intersects: boolean = this.intersects(
+                this.lineToPoint(edge, 0),
+                this.lineToPoint(edge, 1),
+                this.lineToPoint(edges[j], 0),
+                this.lineToPoint(edges[j], 1)
+            );
+
+            if (intersects) {
+                invalid.push(index);
+                invalid.push(j);
+            }
+        }
+    });
+
+    return invalid;
+  }
+
   public validate(vertices: Array<Object3D>, edges: Array<Line>): Array<number> {
 
-    const invalid: Array<number>  = [];
+    let invalid: Array<number>  = [];
 
     if (edges.length > 1) {
-
         for (let i: number = 0; i < edges.length - 1; i++) {
-            const line1: Line = edges[i];
-            const line2: Line = edges[i + 1];
-
-            const edge1: VectorI = this.vectorFromLine(line1, true);
-            const edge2: VectorI = this.vectorFromLine(line2, false);
+            const edge1: VectorI = this.vectorFromLine(edges[i], true);
+            const edge2: VectorI = this.vectorFromLine(edges[i + 1], false);
             const angle: number = this.getAngleOfTwoVectors(edge1, edge2);
-            // console.log('IS VALID', angle, edge1, edge2, this.checkIfAngleIsValid(angle));
 
             if (!this.checkIfAngleIsValid(angle)) {
                 invalid.push(i);
                 invalid.push(i + 1);
             }
 
-            if (this.checkIfDistanceIsTwiceTheWidth(this.distance(edge1))) {
+            if (this.checkDistance(this.distance(edge1))) {
                 invalid.push(i);
             }
-            if (this.checkIfDistanceIsTwiceTheWidth(this.distance(edge2))) {
+
+            if (this.checkDistance(this.distance(edge2))) {
                 invalid.push(i + 1);
             }
+
+            invalid = [...invalid, ...this.findIntersaction(edges)];
 
         }
     }
