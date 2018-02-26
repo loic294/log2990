@@ -51,6 +51,7 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         ClickOutsideModule,
         SocketIoModule.forRoot(config),
         MatDialogModule,
+        MatProgressSpinnerModule,
         BrowserAnimationsModule,
         AppRoutingModule
     ],

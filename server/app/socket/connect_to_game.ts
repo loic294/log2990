@@ -1,13 +1,12 @@
 // tslint:disable:await-promise
 import Game, {IGameModel} from "../models/game";
+import { Socket } from "./socket.io-types";
 interface DataReceived {
     gameId: string;
     value: string;
 }
 
-// Les types sont dans @types dans node modules mais Typescript n'est pas capable des lires.
-// tslint:disable-next-line:no-any
-const joinFirstPlayer: Function = async (socket: any, game: IGameModel, room: string, value: string): Promise<void> => {
+const joinFirstPlayer: Function = async (socket: Socket, game: IGameModel, room: string, value: string): Promise<void> => {
     socket.join(room);
 
     await Game.findOneAndUpdate({ name: game.name}, { players: [value] });
@@ -16,8 +15,7 @@ const joinFirstPlayer: Function = async (socket: any, game: IGameModel, room: st
     }));
 };
 
-// tslint:disable-next-line:no-any
-const joinSecondPlayer: Function = async (socket: any, game: IGameModel, room: string, value: string): Promise<void> => {
+const joinSecondPlayer: Function = async (socket: Socket, game: IGameModel, room: string, value: string): Promise<void> => {
     socket.join(room);
 
     const dbGame: IGameModel = await Game.findOne({
@@ -33,8 +31,7 @@ const joinSecondPlayer: Function = async (socket: any, game: IGameModel, room: s
     // SEND CONNECTED TO OTHER PLAYER
 };
 
-// tslint:disable-next-line:no-any
-export default (socket: any) => {
+export default (socket: Socket) => {
 
     socket.on("connect_to_game", async (data: string) => {
         const { gameId: room, value }: DataReceived = JSON.parse(data);
