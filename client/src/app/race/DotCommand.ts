@@ -45,7 +45,7 @@ export class DotCommand {
     }
 
     public add(event: MouseEvent): void {
-        if (!this.detectObjectsAtMouse(event) && !this._trackIsCompleted /*&& event.srcElement.localName === "canvas"*/) {
+        if (!this.detectObjectsAtMouse(event) && !this._trackIsCompleted) {
             const relativeDotPosition: Vector3 = this.findRelativePosition(event);
             const sphereMesh: Mesh = this.createSphere(relativeDotPosition);
             this._scene.add(sphereMesh);
@@ -103,7 +103,6 @@ export class DotCommand {
     }
 
     private connectToFirst(): void {
-        // this.remove();
         const lineMat: LineBasicMaterial = new LineBasicMaterial({ color: COLOR_LINE, linewidth: 8 });
         const lineGeo: THREE.Geometry = new Geometry();
 

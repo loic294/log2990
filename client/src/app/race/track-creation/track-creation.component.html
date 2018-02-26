@@ -4,6 +4,12 @@
 	#container
 	oncontextmenu="return false"
 	(mousedown)="onKeyDown($event)"
-	(mouseup)="onKeyUp($event)"></div>
+  (mouseup)="onKeyUp($event)"></div>
+  <div>
+    <button (click)="save()">save game</button>
+  </div>
+  <div *ngIf="_isSaved">
+    Game is saved!
+  </div>
 
 

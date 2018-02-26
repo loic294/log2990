@@ -1,5 +1,5 @@
 import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from "@angular/core";
-import { OrthographicCamera, WebGLRenderer, Scene, Vector3 } from "three";
+import { OrthographicCamera, WebGLRenderer, Scene, Vector3, Color } from "three";
 import { DotCommand } from "../DotCommand";
 
 const FAR_CLIPPING_PLANE: number = 10000;
@@ -7,6 +7,7 @@ const NEAR_CLIPPING_PLANE: number = 1;
 const CAMERA_DISTANCE: number = 50;
 const ASPECT: number = window.innerWidth / window.innerHeight;
 const CANVAS_ASPECT: number = window.innerHeight / window.innerWidth;
+const COLOR_LINE_ERROR: number = 0xEF1F1F;
 
 const LEFT_CLICK: number = 1;
 const RIGHT_CLICK: number = 3;
@@ -22,6 +23,7 @@ export class TrackCreationComponent implements AfterViewInit {
     private _camera: THREE.OrthographicCamera;
     private _renderer: THREE.WebGLRenderer;
     private _dotCommand: DotCommand;
+    private _isSaved: boolean;
 
     @ViewChild("container")
     private container: ElementRef;
@@ -29,6 +31,20 @@ export class TrackCreationComponent implements AfterViewInit {
     public constructor() {
         this._scene = new Scene();
         this._renderer = new WebGLRenderer();
+        this._isSaved = false;
+    }
+
+    public save(): void {
+        let trackIsValid: boolean = true;
+        const errorColor: Color = new Color(COLOR_LINE_ERROR);
+
+        for (const i of this._dotCommand.getEdges()) {
+            if (i.material.color.r === errorColor.r) {
+                trackIsValid = false;
+            }
+        }
+
+        this._isSaved = (trackIsValid && this._dotCommand.getTrackIsCompleted());
     }
 
     @HostListener("window:resize", ["$event"])
@@ -42,10 +58,12 @@ export class TrackCreationComponent implements AfterViewInit {
     }
 
     public onKeyDown(event: MouseEvent): void {
-        if (event.which === LEFT_CLICK) {
-            this.placeDot(event);
-        } else if (event.which === RIGHT_CLICK) {
-            this.remove();
+        if (!this._isSaved) {
+            if (event.which === LEFT_CLICK) {
+                this.placeDot(event);
+            } else if (event.which === RIGHT_CLICK) {
+                this.remove();
+            }
         }
     }
 
@@ -83,7 +101,7 @@ export class TrackCreationComponent implements AfterViewInit {
 
         this._camera = new OrthographicCamera(CAMERA_DISTANCE * ASPECT / - 2, CAMERA_DISTANCE * ASPECT / 2,
                                               CAMERA_DISTANCE / 2, CAMERA_DISTANCE / - 2, NEAR_CLIPPING_PLANE, FAR_CLIPPING_PLANE);
-        this._camera.position.set(0, CAMERA_DISTANCE , 0);
+        this._camera.position.set(0, CAMERA_DISTANCE, 0);
         this._camera.lookAt(new Vector3(0, 0, 0));
 
         this._renderer.setSize(this.getWindowSize()[0], this.getWindowSize()[1]);
