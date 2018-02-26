@@ -13,7 +13,9 @@ export class SocketService {
     private _selectedMode: string;
     private _games: IGameModel[];
     private _showGames: boolean;
-    private _userConnected: boolean;
+
+    private _updateUserConnected: Observable<boolean>;
+    private _userConnected: Subject<boolean> = new Subject<boolean>();
 
     private _updateHighligthCell: Observable<string>;
     private _highlightCell: Subject<string> = new Subject<string>();
@@ -25,7 +27,7 @@ export class SocketService {
         this._modes = ["Single Player", "Two Players"];
         this._selectedMode = "";
         this._showGames = false;
-        this._userConnected = false;
+        this._updateUserConnected = this._userConnected.asObservable();
         this._socket.connect();
 
         this._updateHighligthCell = this._highlightCell.asObservable();
@@ -53,13 +55,13 @@ export class SocketService {
         })
 
         this._socket.on("second_player_joined", (data: any) => {
-            this._userConnected == true;
+            this._userConnected.next(true);
             console.log("player connected --------");
         })
     }
 
-    public get isUserConnected(): boolean{
-        return this._userConnected;
+    public get isUserConnected(): Observable<boolean>{
+        return this._updateUserConnected;
     }
 
     public get cellToHighligh(): Observable<string> {

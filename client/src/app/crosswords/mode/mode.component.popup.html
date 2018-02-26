@@ -1,28 +1,39 @@
+<div *ngIf="!isWaitingForPlayer()">
+  <h1>Welcome {{player}}!</h1>
 
-<h1>Welcome {{player}}!</h1>
-
-<button *ngFor="let mode of modes" (click)="onSelect(mode)" [class.active]="selectedMode == mode">
-  {{mode}}
-</button>
-
-
-<div [hidden]="showDifficulty">
-  <app-difficulty (click)="isDifficultySelected()"></app-difficulty>
-</div>
-
-<div [hidden]="!startSoloGame()">
-  <button (click)="closeDialog()">Start Game</button>
-</div>
-
-<div [hidden]="!isMultiPlayer()">
-  Please enter your name:
-  <input (input)="onEnter($event.target.value)">
+  <button *ngFor="let mode of modes" (click)="onSelect(mode)" [class.active]="selectedMode == mode">
+    {{mode}}
+  </button>
 
 
-  <div *ngIf="player.length > 2">
-    <button (click)="createGame(selectedMode); closeDialog()">Create Game</button>
-    <button (click)="addGames(); toggleShowGames()">Join Game</button>
-    <button [ngClass]="{ 'hide': !showGames, 'show': showGames}" *ngFor="let game of games" (click)="joinGame(game.name)">{{game.players[0]}}</button>
+  <div [hidden]="showDifficulty">
+    <app-difficulty (click)="isDifficultySelected()"></app-difficulty>
   </div>
 
+  <div [hidden]="!startSoloGame()">
+    <button (click)="closeDialog()">Start Game</button>
+  </div>
+
+  <div [hidden]="!isMultiPlayer()">
+    Please enter your name:
+    <input (input)="onEnter($event.target.value)">
+
+
+    <div *ngIf="player.length > 2">
+      <button (click)="createGame(selectedMode);">Create Game</button>
+      <button (click)="addGames(); toggleShowGames();">Join Game</button>
+      <button [ngClass]="{ 'hide': !showGames, 'show': showGames}" *ngFor="let game of games" (click)="joinGame(game.name); closeDialog()">{{game.players[0]}}</button>
+    </div>
+
+  </div>
+
+</div>
+
+<div *ngIf="isWaitingForPlayer()">
+  <h2>Waiting for another player to join</h2>
+  <mat-spinner></mat-spinner>
+
+  <!-- <div *ngIf="connected()">
+    <div [ngClass]="closeDialog()"></div>
+  </div> -->
 </div>

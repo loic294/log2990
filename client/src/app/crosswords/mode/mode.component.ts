@@ -10,8 +10,6 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from '@angular/material';
 })
 export class ModeComponent implements OnInit {
 
-    // private input: String;
-
     public constructor(
         public dialog: MatDialog
     ) {
@@ -34,26 +32,6 @@ export class ModeComponent implements OnInit {
 }
 
 @Component({
-    selector: 'mode-component-waitConnection',
-    templateUrl: 'mode.component.waitConnection.html',
-})
-export class WaitConnectionDialog {
-    constructor(
-        private socketService: SocketService,
-        public dialogRef: MatDialogRef<ModeComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: any) { }
-
-    public connected(): boolean {
-        console.log(this.socketService.isUserConnected);
-        return this.socketService.isUserConnected;
-    }
-
-    public closeDialog(): void {
-        this.dialogRef.close();
-    }
-}
-
-@Component({
     selector: 'mode-component-popup',
     templateUrl: 'mode.component.popup.html',
   })
@@ -62,29 +40,34 @@ export class WaitConnectionDialog {
     public showDifficulty:boolean = true;
     public showNameInput:boolean = true;
     public showStartSoloGame: boolean = true;
-    public showStartDuoGame: boolean = true;
+    public waitingForPlayer: boolean = false;
 
     constructor(
         private socketService: SocketService,
         public dialogRef: MatDialogRef<ModeComponent>,
         public dialog: MatDialog,
-        @Inject(MAT_DIALOG_DATA) public data: any) { }
+        @Inject(MAT_DIALOG_DATA) public data: any) { 
+            this.waitingConnection();
+        }
+
+     
 
     closeDialog(): void {
       this.dialogRef.close();
     }
 
-    private waitingForConnection(){
-        let dialogRef = this.dialog.open(WaitConnectionDialog, {
-            width: '500px',
-            height: '500px',
-            data: {  }
-        });
+   
 
-        dialogRef.afterClosed().subscribe(result => {
-            console.log('The dialog was closed');
-        });
+    private waitingConnection(): void{
+        this.socketService.isUserConnected.subscribe( (userConnected: boolean)=>{
+            if(userConnected)
+                this.closeDialog();
+       });
+    }
 
+
+    public isWaitingForPlayer(): boolean{
+        return this.waitingForPlayer;
     }
 
     public startSoloGame(): boolean {
@@ -149,7 +132,7 @@ export class WaitConnectionDialog {
 
     public createGame(mode: string): void {
         this.socketService.createGame(mode);
-        this.waitingForConnection();
+        this.waitingForPlayer = true;
     }
 
     public joinGame(gameId: string): void {
