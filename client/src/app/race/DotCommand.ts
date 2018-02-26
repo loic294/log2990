@@ -24,8 +24,7 @@ export class DotCommand {
     }
 
     public add(event: MouseEvent): void {
-
-        if (!this.detectObjectsAtMouse(event) && !this._trackIsCompleted && event.srcElement.localName === "canvas") {
+        if (!this.detectObjectsAtMouse(event) && !this._trackIsCompleted /*&& event.srcElement.localName === "canvas"*/) {
 
             const relativeDotPosition: Vector3 = this.findRelativePosition(event);
             const sphereMesh: Mesh = this.createSphere(relativeDotPosition);
@@ -183,5 +182,17 @@ export class DotCommand {
 
     public unselect(): void {
         this._selectedObject = null;
+    }
+
+    public getTrackIsCompleted(): boolean {
+        return this._trackIsCompleted;
+    }
+
+    public getVertices(): Array<Object3D> {
+        return this._vertices;
+    }
+
+    public getEdges(): Array<Line> {
+        return this._edges;
     }
 }
