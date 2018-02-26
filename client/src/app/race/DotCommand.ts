@@ -1,7 +1,10 @@
 import {
     Vector3, SphereGeometry, MeshBasicMaterial, Mesh, Object3D,
-    LineBasicMaterial, Geometry, Line, Raycaster, Intersection
+    LineBasicMaterial, Geometry, Line, Raycaster, Intersection,
+    Color
 } from "three";
+
+import { ConstraintService } from "./constraint.service/constraint.service";
 
 const CAMERA_DISTANCE: number = 50;
 const CIRCLE_PIXEL: number = 20;
@@ -18,11 +21,17 @@ export class DotCommand {
     private _edges: Array<Line>;
     private _selectedObject: Object3D;
 
-    public constructor(private _scene: THREE.Scene, private _renderer: THREE.WebGLRenderer, private _camera: THREE.OrthographicCamera) {
+    public constructor(
+        private _scene: THREE.Scene,
+        private _renderer: THREE.WebGLRenderer,
+        private _camera: THREE.OrthographicCamera,
+        private _constraintService: ConstraintService
+    ) {
         this._trackIsCompleted = false;
         this._vertices = new Array<Object3D>();
         this._edges = new Array<Line>();
         this._selectedObject = null;
+        this._constraintService = new ConstraintService();
     }
 
     public add(event: MouseEvent): void {
@@ -32,6 +41,7 @@ export class DotCommand {
             this._scene.add(sphereMesh);
             this._vertices.push(sphereMesh);
             this.updateEdges();
+            this.validateTrack();
         }
     }
 
@@ -179,6 +189,23 @@ export class DotCommand {
             const lineGeometry: Geometry = i.geometry as Geometry;
             lineGeometry.verticesNeedUpdate = true;
         }
+
+        this.validateTrack();
+    }
+
+    public validateTrack(): void {
+        const fails: Array<number> = this._constraintService.validate(this._vertices, this._edges);
+
+        for (const edge of this._edges) {
+            edge.material.color =  new Color(COLOR_CIRCLE);
+            edge.material.needsUpdate = true;
+        }
+
+        for (const fail of fails) {
+            this._edges[fail].material.color =  new Color(COLOR_FIRST_LINE);
+            this._edges[fail].material.needsUpdate = true;
+        }
+
     }
 
     public unselect(): void {
