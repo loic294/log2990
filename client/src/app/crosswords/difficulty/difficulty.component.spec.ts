@@ -1,7 +1,6 @@
 // tslint:disable:no-floating-promises
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { DifficultyComponent } from "./difficulty.component";
-import { ButtonComponent } from "../button/button.component";
 import { Difficulty } from "../../../../../common/grid/difficulties";
 
 describe("DifficultyComponent", () => {
@@ -9,7 +8,7 @@ describe("DifficultyComponent", () => {
     let fixture: ComponentFixture<DifficultyComponent>;
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [DifficultyComponent, ButtonComponent]
+            declarations: [DifficultyComponent]
         }).compileComponents();
     }));
 
