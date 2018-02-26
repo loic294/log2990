@@ -21,11 +21,11 @@ import { SocketIoModule, SocketIoConfig } from "ng-socket-io";
 import { ModeComponent, ModeDialog } from "./crosswords/mode/mode.component";
 import { SocketService } from "./socket.service/socket.service";
 import { AdminComponent } from "./race/admin-component/admin.component";
-import {MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material/dialog';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS} from "@angular/material/dialog";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
-import {MatProgressSpinnerModule} from '@angular/material';
-import { DifficultyService } from './difficulty.service/difficulty.service';
+import {MatProgressSpinnerModule} from "@angular/material";
+import { DifficultyService } from "./difficulty.service/difficulty.service";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
@@ -50,7 +50,6 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         FormsModule,
         ClickOutsideModule,
         SocketIoModule.forRoot(config),
-        MatProgressSpinnerModule,
         MatDialogModule,
         BrowserAnimationsModule,
         AppRoutingModule
@@ -62,7 +61,7 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         GridService,
         SocketService,
         DifficultyService,
-        {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}}
+        {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: true}}
     ],
     exports: [
         MatProgressSpinnerModule,

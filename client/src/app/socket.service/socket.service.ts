@@ -55,10 +55,6 @@ export class SocketService {
             this._highlightCell.next(data);
         });
 
-        this._socket.on("TEST", (test:string) => {
-            console.log("TEST RECEIVED", "test");
-        })
-
         this._socket.on("second_player_joined", (data: any) => {
             this._userConnected.next(true);
             console.log("player connected --------");
@@ -95,9 +91,11 @@ export class SocketService {
     public addGames(): void {
         this._socket.emit("get_games", this.difficulty);
     }
+
     public toggleShowGames(): void {
         this._showGames = !this._showGames;
     }
+
     public get showGames(): boolean {
         return this._showGames;
     }
