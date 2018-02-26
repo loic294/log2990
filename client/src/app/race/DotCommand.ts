@@ -27,8 +27,10 @@ export class DotCommand {
 
     public add(event: MouseEvent): void {
         if (!this.detectObjectsAtMouse(event) && !this._trackIsCompleted /*&& event.srcElement.localName === "canvas"*/) {
-            this._scene.add(this.createSphere(this.findRelativePosition(event)));
-            this._vertices.push(this.createSphere(this.findRelativePosition(event)));
+            const relativeDotPosition: Vector3 = this.findRelativePosition(event);
+            const sphereMesh: Mesh = this.createSphere(relativeDotPosition);
+            this._scene.add(sphereMesh);
+            this._vertices.push(sphereMesh);
             this.updateEdges();
         }
     }
