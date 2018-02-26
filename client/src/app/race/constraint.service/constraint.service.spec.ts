@@ -76,10 +76,6 @@ describe("ConstraintService", () => {
         expect(service.checkIfAngleIsValid(service.getAngleOfTwoVectors(vectorA, vectorB))).toEqual(false);
     }));
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 89d530f1dbddfec148392f0672cf13ce54785a3b
     it("should send a distance of 100", inject([ConstraintService], (service: ConstraintService) => {
         const vertexA: VectorI = { x: 0, y: 100 };
         const vertexB: VectorI = { x: 0, y: 0 };

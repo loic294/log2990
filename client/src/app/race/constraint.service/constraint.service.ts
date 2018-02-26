@@ -33,7 +33,7 @@ export class ConstraintService {
   public checkIfAngleIsValid(angle: number): boolean {
     const MIN_ANGLE: number = 45;
 
-    return angle > HALF_CIRCLE - MIN_ANGLE && angle < HALF_CIRCLE + MIN_ANGLE;
+    return angle > MIN_ANGLE && angle < HALF_CIRCLE * TWO - MIN_ANGLE;
   }
 
   public distance(vertex: VectorI): number {
@@ -87,6 +87,10 @@ export class ConstraintService {
             );
 
             if (intersects) {
+                console.log(this.lineToPoint(edge, 0),
+                this.lineToPoint(edge, 1),
+                this.lineToPoint(edges[j], 0),
+                this.lineToPoint(edges[j], 1))
                 invalid.push(index);
                 invalid.push(j);
             }
