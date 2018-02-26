@@ -1,3 +1,4 @@
+// tslint:disable:no-magic-numbers
 import { TestBed, inject } from "@angular/core/testing";
 
 import { ConstraintService } from "./constraint.service";
@@ -74,7 +75,6 @@ describe("ConstraintService", () => {
 
         expect(service.checkIfAngleIsValid(service.getAngleOfTwoVectors(vectorA, vectorB))).toEqual(false);
     }));
-
 
     it("should send a distance of 100", inject([ConstraintService], (service: ConstraintService) => {
         const vertexA: VectorI = { x: 0, y: 100 };
