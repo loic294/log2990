@@ -18,7 +18,6 @@ export class Car extends Object3D {
     public isAcceleratorPressed: boolean;
 
     private readonly engine: Engine;
-    private    [x: string]: {};
     private readonly mass: number;
     private readonly rearWheel: Wheel;
     private readonly wheelbase: number;

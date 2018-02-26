@@ -37,7 +37,7 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         GridComponent,
         CrosswordComponent,
         CluesComponent,
-        AdminComponent
+        AdminComponent,
         ModeComponent,
         ModeDialog
     ],

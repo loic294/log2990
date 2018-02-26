@@ -3,7 +3,7 @@ import { Socket } from "ng-socket-io";
 import { Observable } from "rxjs/Observable";
 import { Subject } from "rxjs/Subject";
 import { IGameModel } from "./../../../../server/app/models/game";
-import { Difficulty, difficultyName } from "../../../../common/grid/difficulties";
+import { difficultyName } from "../../../../common/grid/difficulties";
 import { DifficultyService } from "./../difficulty.service/difficulty.service";
 
 @Injectable()
@@ -103,7 +103,6 @@ export class SocketService {
     }
 
     public createGame(mode: string): void {
-        const TWO: number = 2, NINE: number = 9, THIRTY_SIX: number = 9;
         if (mode === "Two Players") {
             const gameId: string = this.player;
             const difficulty: String = this.difficulty;
