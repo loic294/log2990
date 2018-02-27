@@ -4,8 +4,8 @@ import { IGameModel } from "./../../../../../server/app/models/game";
 import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
 
 @Component({
-    selector: "app-mode-component-popup",
-    templateUrl: "mode.component.popup.html",
+    selector: "app-mode-component",
+    templateUrl: "mode.component.html",
     styleUrls: ["./mode.component.css"]
   })
   export class ModeDialogComponent {
