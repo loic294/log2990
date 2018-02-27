@@ -10,7 +10,8 @@
 						(keyup)="updateGrid($event, case)"
 						maxlength="1" 
           	[class.selected]="case.selected()"
-          	[class.is-black]="case.char === '-'"      
+            [class.is-black]="case.char === '-'"  
+            [class.other-player]="case.isOtherPlayer"    
           	(click)=selectCaseFromGrid(case)
 						id={{case.id}}  />
 					<div class="indexes">

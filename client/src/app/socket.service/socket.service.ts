@@ -4,8 +4,8 @@ import { Observable } from "rxjs/Observable";
 import { Subject } from "rxjs/Subject";
 import { IGameModel } from "./../../../../server/app/models/game";
 import { difficultyName } from "../../../../common/grid/difficulties";
+import Word from "../../../../common/lexical/word";
 import { DifficultyService } from "./../difficulty.service/difficulty.service";
-
 @Injectable()
 export class SocketService {
 
@@ -23,6 +23,9 @@ export class SocketService {
     private _updateHighligthCell: Observable<string>;
     private _highlightCell: Subject<string> = new Subject<string>();
 
+    private _updateWordValidated: Observable<string>;
+    private _wordToValidate: Subject<string> = new Subject<string>();
+
     public constructor(
         private _socket: Socket,
         private difficultyService: DifficultyService
@@ -36,26 +39,30 @@ export class SocketService {
         this._selectedMode = "";
         this._showGames = false;
         this._updateUserConnected = this._userConnected.asObservable();
-        this._socket.connect();
         this._updateHighligthCell = this._highlightCell.asObservable();
+        this._updateWordValidated = this._wordToValidate.asObservable();
+        this.initializeSocket();
+
+    }
+
+    public initializeSocket(): void {
+        this._socket.connect();
+
         this._socket.on("add_games", (games: IGameModel[]) => {
             this._games = games;
         });
 
-        this._socket.on("connected_to_game", (data: string): void => {
-            // const { game }: { game: IGameModel } = JSON.parse(data);
-        });
-
-        this._socket.on("created_game", (data: string): void => {
-        });
-
-        this._socket.on("highligth_cell_in_color", (data: string): void => {
+        this._socket.on("receive_word", (data: string): void => {
             this._highlightCell.next(data);
         });
 
-        this._socket.on("second_player_joined", (data: any) => {
+        this._socket.on("push_validation", (data: string): void => {
+            console.log('VALIDATE WORD', data)
+            this._wordToValidate.next(data);
+        });
+
+        this._socket.on("second_player_joined", (data: boolean) => {
             this._userConnected.next(true);
-            console.log("player connected --------");
         });
     }
 
@@ -65,6 +72,10 @@ export class SocketService {
 
     public get cellToHighligh(): Observable<string> {
         return this._updateHighligthCell;
+    }
+
+    public get wordIsValidated(): Observable<string> {
+        return this._updateWordValidated;
     }
 
     public onEnter(value: string): void {
@@ -118,8 +129,12 @@ export class SocketService {
         return this._difficulty;
     }
 
-    public highligthCell(row: number, col: number): void {
-        this._socket.emit("highligth_cell", JSON.stringify({ row, col}));
+    public syncWord(word: Word): void {
+        this._socket.emit("sync_word", JSON.stringify({word}));
+    }
+
+    public sendValidation(word: Word): void {
+        this._socket.emit("send_validation", JSON.stringify({word}));
     }
 
 }

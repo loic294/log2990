@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { SocketService } from "../../socket.service/socket.service";
 import { IGameModel } from "./../../../../../server/app/models/game";
-import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from '@angular/material';
+import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
 
 @Component({
   selector: "app-mode",
@@ -14,35 +14,30 @@ export class ModeComponent implements OnInit {
         public dialog: MatDialog
     ) {
 
-        let dialogRef = this.dialog.open(ModeDialog, {
-            width: '500px',
-            height: '500px',
+        this.dialog.open(ModeDialogComponent, {
+            width: "500px",
+            height: "500px",
             data: {  }
         });
 
-        dialogRef.afterClosed().subscribe(result => {
-            console.log('The dialog was closed');
-        });
-
     }
 
-    public ngOnInit(): void {
-    }
+    public ngOnInit(): void {}
 
 }
 
 @Component({
-    selector: 'mode-component-popup',
-    templateUrl: 'mode.component.popup.html',
+    selector: "app-mode-component-popup",
+    templateUrl: "mode.component.popup.html",
   })
-  export class ModeDialog {
-  
+  export class ModeDialogComponent {
+
     public showDifficulty:boolean = true;
     public showNameInput:boolean = true;
     public showStartSoloGame: boolean = true;
     public waitingForPlayer: boolean = false;
 
-    constructor(
+    public constructor (
         private socketService: SocketService,
         public dialogRef: MatDialogRef<ModeComponent>,
         public dialog: MatDialog,
@@ -50,21 +45,17 @@ export class ModeComponent implements OnInit {
             this.waitingConnection();
         }
 
-     
-
-    closeDialog(): void {
+    public closeDialog(): void {
       this.dialogRef.close();
     }
 
-   
-
     private waitingConnection(): void{
         this.socketService.isUserConnected.subscribe( (userConnected: boolean)=>{
-            if(userConnected)
+            if (userConnected) {
                 this.closeDialog();
+            }
        });
     }
-
 
     public isWaitingForPlayer(): boolean{
         return this.waitingForPlayer;
