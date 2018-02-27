@@ -7,6 +7,7 @@ import { Case } from "../../../../common/grid/case";
 import { Observable } from "rxjs/Observable";
 import { of } from "rxjs/observable/of";
 import Word, { Orientation } from "../../../../common/lexical/word";
+import { GridTools } from "./grid.tools";
 
 import { WordService } from "../word.service/word.service";
 import { SocketService } from "../socket.service/socket.service";
@@ -17,23 +18,28 @@ const BACK_SPACE_KEY_CODE: number = 8;
 export class GridService {
 
     private _grid: Array<Array<Case>>;
-    private _isHorizontal: boolean;
     private _selectedWord: Case;
-    private _selWord: Word;
-    private _wordStart: number;
     private _word: Word;
-    private _row: number;
-    private _col: number;
     private _otherWord: Word;
+    private _gridTools: GridTools;
 
     public constructor(
         private _wordService: WordService,
         private socketService: SocketService
     ) {
 
+        this._gridTools = new GridTools();
+        this.initGrid();
+        this.initServicesListeners();
+    }
+
+    private initServicesListeners(): void {
         this._wordService.wordFromClue.subscribe(
-            (_wordFromClue) => {
-                this._word = _wordFromClue, this.selectCaseFromService(_wordFromClue);
+            (_wordFromClue: Word) => {
+                if (_wordFromClue) {
+                    this._word = _wordFromClue;
+                    this.selectCaseFromService(_wordFromClue);
+                }
             });
 
         this.socketService.cellToHighligh.subscribe(
@@ -49,57 +55,6 @@ export class GridService {
                 const selectedWord: Word = CLUES.find((w: Word) => word !== null && w.index === word.index);
                 this.applyValidation(selectedWord, true);
             });
-
-        this.initGrid();
-    }
-
-    private initGrid(): void {
-        this._grid = GRID.map((row: string) => {
-            const strings: Array<string> = row.split(" ");
-
-            return strings.map((c: string) => new Case(c));
-        });
-
-        for (let i: number = 0; i < this._grid.length; i++) {
-            for (let j: number = 0; j < this._grid[i].length; j++) {
-                this._grid[i][j].x = i;
-                this._grid[i][j].y = j;
-                if (this._grid[i][j].char === "_") {
-                    this._grid[i][j].char = "";
-                }
-
-                this._grid[i][j].wordIndexes = this.wordsStartAtPosition(i, j);
-            }
-        }
-    }
-
-    public get grid(): Array<Array<Case>> {
-        return this._grid;
-    }
-
-    public selectOtherPlayerWord(w: Word): void {
-
-        if (this._otherWord) {
-            this.iterateOtherWord(this._otherWord, (row: number, col: number) => {
-                this._grid[row][col].isOtherPlayer = false;
-            });
-        }
-
-        this._otherWord = w;
-        if (w) {
-            this.iterateOtherWord(w, (row: number, col: number) => {
-                this._grid[row][col].isOtherPlayer = true;
-            });
-        }
-
-    }
-
-    public iterateOtherWord(w: Word, fct: Function): void {
-        const wordStart: number = w.orientation === Orientation.horizontal ?  w.col : w.row;
-        for (let cell: number = wordStart; cell < wordStart + w.length; cell++) {
-            const cellTemp: Case = w.orientation === Orientation.horizontal ? this._grid[w.row][cell] : this._grid[cell][w.col];
-            fct(cellTemp.x, cellTemp.y);
-        }
     }
 
     private selectCaseFromService(w: Word): void {
@@ -107,111 +62,82 @@ export class GridService {
         this.socketService.syncWord(w);
     }
 
+    public selectOtherPlayerWord(w: Word): void {
+
+        this._gridTools.setGrid(this._grid);
+
+        if (this._otherWord) {
+            this._gridTools.iterateWord(this._otherWord, (row: number, col: number) => {
+                this._grid[row][col].isOtherPlayer = false;
+            });
+        }
+
+        this._otherWord = w;
+        if (w) {
+            this._gridTools.iterateWord(w, (row: number, col: number) => {
+                this._grid[row][col].isOtherPlayer = true;
+            });
+        }
+
+    }
+
+    public applyValidation(word: Word, isOther: boolean = false): void {
+        let tempX: number = word.row;
+        let tempY: number = word.col;
+        let i: number = 0;
+        while (i < word.length) {
+            this._grid[tempX][tempY].validate();
+            if (isOther) {
+                this._grid[tempX][tempY].isOtherPlayer = true;
+                this._grid[tempX][tempY].char = word.name[i];
+            }
+            word.orientation === Orientation.horizontal ? tempY++ : tempX++;
+            i++;
+        }
+    }
+
     private selectCells(w: Word, isMe: boolean = true): void {
 
-        if (this._selectedWord != null) {
-            const cellTemp: Case = this._selectedWord;
+        this._gridTools.setGrid(this._grid);
 
-            this.iterateWord(cellTemp, (x: number, y: number, caseTest: Case) => {
-                this._grid[x][y].unselect();
+        if (this._selectedWord != null) {
+            this._gridTools.iterateGrid(this._grid, (row: number, col: number) => {
+                if (this._grid[row][col].selected) {
+                    this._grid[row][col].unselect();
+                }
             });
         }
 
         if (w != null) {
             this._grid[w.row][w.col].select();
-            this._row = w.row;
-            this._col = w.col;
             this.findEndWrittenWord();
             this.wordHighligth();
         }
-    }
-
-    private wordsStartAtPosition(row: number, col: number): Array<number> {
-        return CLUES.filter((word: Word): boolean => word.position[0] === row && word.position[1] === col)
-            .map((word: Word): number => word.index + 1);
     }
 
     public selectCaseFromGrid(c: Case): void {
 
-        this._row = c.x;
-        this._col = c.y;
-        const tempWord: Word = this.findWordStart();
+        const tempWord: Word = this.findWordStart(c.x, c.y);
         this._wordService.selectWordFromGrid(tempWord);
+        this.selectCells(tempWord);
 
-        if (this._selectedWord != null) {
-            const cellTemp: Case = this._selectedWord;
-
-            this.iterateWord(cellTemp, (x: number, y: number) => {
-                this._grid[x][y].unselect();
-            });
-        }
-
-        if (this._word != null) {
-            this._grid[tempWord.row][tempWord.col].select();
-            this._row = this._grid[tempWord.row][tempWord.col].x;
-            this._col = this._grid[tempWord.row][tempWord.col].y;
-            this.findEndWrittenWord();
-            this.wordHighligth();
-        } else {
-            const elem: HTMLElement = document.getElementById(c.x.toString() + (c.y).toString());
+        if (this._word === null) {
+            const elem: HTMLElement = document.getElementById(c.id);
             elem.blur();
         }
     }
 
-    private findWordStart(): Word {
-        let tempOrientation: Orientation;
+    private findWordStart(row: number, col: number): Word {
+        this._gridTools.setPosition(row, col);
+        this._gridTools.setGrid(this._grid);
 
-        if (!this.isBlack(this._grid[this._row][this._col].char)) {
-            if (this.previousHorizontalIsNotBlack() || this.nextHorizontalIsNotBlack()) {
-
-                this.findHorizontalWordStart();
-                tempOrientation = Orientation.horizontal;
-            } else {
-                this.findVerticalWordStart();
-                tempOrientation = Orientation.vertical;
-            }
-        }
-
-        return new Word("", "", [this._row, this._col], tempOrientation, 0, false);
-    }
-
-    public isBlack(letter: string): boolean {
-        return (/\-/.test(letter) && letter.length === 1);
-    }
-
-    private findHorizontalWordStart(): void {
-        while (this.previousHorizontalIsNotBlack()) {
-            this._col--;
-        }
-    }
-
-    private findVerticalWordStart(): void {
-        while (this.previousVerticalIsNotBlack()) {
-            this._row--;
-        }
-    }
-
-    private previousHorizontalIsNotBlack(): boolean {
-        return (this._col - 1 >= 0 && !this.isBlack(this._grid[this._row][this._col - 1].char));
-    }
-
-    private nextHorizontalIsNotBlack(): boolean {
-        return (this._col + 1 < this._grid[this._row].length && !this.isBlack(this._grid[this._row][this._col + 1].char));
-    }
-
-    private previousVerticalIsNotBlack(): boolean {
-        return (this._row - 1 >= 0 && !this.isBlack(this._grid[this._row - 1][this._col].char));
-    }
-
-    private highligthCell (row: number, col: number): void {
-        this._grid[row][col].select();
+        return this._gridTools.findWordStart();
     }
 
     private wordHighligth(): void {
-        const currentCase: Case = null;
-
-        this.iterateWord(currentCase, (x: number, y: number, cellTemp: Case, cell: number) => {
-            this.highligthCell(cellTemp.x, cellTemp.y);
+        this._gridTools.setGrid(this._grid);
+        this._gridTools.iterateWord(this._word, (x: number, y: number, cellTemp: Case, cell: number) => {
+            this._grid[cellTemp.x][cellTemp.y].select();
             if (cellTemp.char === "-") { return true; }
 
             return false;
@@ -219,6 +145,7 @@ export class GridService {
     }
 
     public updateGrid(event: KeyboardEvent, c: Case): Observable<Array<Array<Case>>> {
+
         if (event.keyCode === BACK_SPACE_KEY_CODE) {
             if (c.char === "") {
                 this.erasePrevious(c);
@@ -226,7 +153,8 @@ export class GridService {
             c.char = "";
             this.findEndWrittenWord();
         }
-        if (!this.isLetter(String.fromCharCode(event.charCode))) {
+
+        if (!this._gridTools.isLetter(String.fromCharCode(event.charCode))) {
             event.preventDefault();
         } else {
             c.char = (String.fromCharCode(event.charCode));
@@ -253,22 +181,12 @@ export class GridService {
         }
     }
 
-    public isLetter(element: string): boolean {
-        const constraint: RegExp = /^[a-z]+$/i;
-
-        return constraint.test(element);
-    }
-
     private findEndWrittenWord(): void {
         let wordStart: number = 0;
-        const cellTemp: Case = null;
         let wordEntered: string = "";
-        this._selWord = this._word;
         this.isHorizontal() ? wordStart = this._word.col : wordStart = this._word.row;
-        this._wordStart = wordStart;
-        this._isHorizontal = this.isHorizontal();
 
-        this.iterateWord(cellTemp, (x: number, y: number, cellTemp: Case, cell: number) => {
+        this._gridTools.iterateWord(this._word, (x: number, y: number, cellTemp: Case, cell: number) => {
             this._grid[x][y].unselect();
             if (cell === wordStart) {
                 this._selectedWord = cellTemp;
@@ -291,20 +209,6 @@ export class GridService {
         });
     }
 
-    private isHorizontal(): boolean {
-        return this._word.orientation === Orientation.horizontal;
-    }
-
-    private iterateWord(cellTemp: Case, fct: Function): void {
-        for (let cell: number = this._wordStart; cell < this._wordStart + this._selWord.length; cell++) {
-            this._isHorizontal ? cellTemp = this._grid[this._selWord.row][cell] : cellTemp = this._grid[cell][this._selWord.col];
-
-            if (fct(cellTemp.x, cellTemp.y, cellTemp, cell, stop)) {
-                break;
-            }
-        }
-    }
-
     public validateWord(enteredWord: string, elem: HTMLElement): void {
         if (this._word.name.toUpperCase() === enteredWord.toUpperCase()) {
             this.applyValidation(this._word);
@@ -314,19 +218,31 @@ export class GridService {
         }
     }
 
-    public applyValidation(word: Word, isOther: boolean = false): void {
-        let tempX: number = word.row;
-        let tempY: number = word.col;
-        let i: number = 0;
-        while (i < word.length) {
-            this._grid[tempX][tempY].validate();
-            if (isOther) {
-                this._grid[tempX][tempY].isOtherPlayer = true;
-                this._grid[tempX][tempY].char = word.name[i];
+    private initGrid(): void {
+        this._grid = GRID.map((row: string) => {
+            const strings: Array<string> = row.split(" ");
+
+            return strings.map((c: string) => new Case(c));
+        });
+
+        this._gridTools.iterateGrid(this._grid, (row: number, col: number) => {
+            this._grid[row][col].x = row;
+            this._grid[row][col].y = col;
+            if (this._grid[row][col].char === "_") {
+                this._grid[row][col].char = "";
             }
-            word.orientation === Orientation.horizontal ? tempY++ : tempX++;
-            i++;
-        }
+
+            this._grid[row][col].wordIndexes = this._gridTools.wordsStartAtPosition(row, col);
+        });
+
+    }
+
+    private isHorizontal(): boolean {
+        return this._word.orientation === Orientation.horizontal;
+    }
+
+    public get grid(): Array<Array<Case>> {
+        return this._grid;
     }
 
     public get word(): Word {
