@@ -57,7 +57,6 @@ export class SocketService {
         });
 
         this._socket.on("push_validation", (data: string): void => {
-            console.log('VALIDATE WORD', data)
             this._wordToValidate.next(data);
         });
 

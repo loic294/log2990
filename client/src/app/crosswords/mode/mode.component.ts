@@ -4,36 +4,13 @@ import { IGameModel } from "./../../../../../server/app/models/game";
 import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
 
 @Component({
-  selector: "app-mode",
-  templateUrl: "./mode.component.html",
-  styleUrls: ["./mode.component.css"]
-})
-export class ModeComponent implements OnInit {
-
-    public constructor(
-        public dialog: MatDialog
-    ) {
-
-        this.dialog.open(ModeDialogComponent, {
-            width: "500px",
-            height: "500px",
-            data: {  }
-        });
-
-    }
-
-    public ngOnInit(): void {}
-
-}
-
-@Component({
     selector: "app-mode-component-popup",
     templateUrl: "mode.component.popup.html",
   })
   export class ModeDialogComponent {
 
-    public showDifficulty:boolean = true;
-    public showNameInput:boolean = true;
+    public showDifficulty: boolean = true;
+    public showNameInput: boolean = true;
     public showStartSoloGame: boolean = true;
     public waitingForPlayer: boolean = false;
 
@@ -41,7 +18,7 @@ export class ModeComponent implements OnInit {
         private socketService: SocketService,
         public dialogRef: MatDialogRef<ModeComponent>,
         public dialog: MatDialog,
-        @Inject(MAT_DIALOG_DATA) public data: any) { 
+        @Inject(MAT_DIALOG_DATA) public data: {}) {
             this.waitingConnection();
         }
 
@@ -49,15 +26,15 @@ export class ModeComponent implements OnInit {
       this.dialogRef.close();
     }
 
-    private waitingConnection(): void{
-        this.socketService.isUserConnected.subscribe( (userConnected: boolean)=>{
+    private waitingConnection(): void {
+        this.socketService.isUserConnected.subscribe( (userConnected: boolean) => {
             if (userConnected) {
                 this.closeDialog();
             }
        });
     }
 
-    public isWaitingForPlayer(): boolean{
+    public isWaitingForPlayer(): boolean {
         return this.waitingForPlayer;
     }
 
@@ -129,5 +106,28 @@ export class ModeComponent implements OnInit {
     public joinGame(gameId: string): void {
         this.socketService.joinGame(gameId);
     }
+
+}
+
+@Component({
+    selector: "app-mode",
+    templateUrl: "./mode.component.html",
+    styleUrls: ["./mode.component.css"]
+  })
+  export class ModeComponent implements OnInit {
+
+      public constructor(
+          public dialog: MatDialog
+      ) {
+
+          this.dialog.open(ModeDialogComponent, {
+              width: "500px",
+              height: "500px",
+              data: {  }
+          });
+
+      }
+
+      public ngOnInit(): void {}
 
 }
