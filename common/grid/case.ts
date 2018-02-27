@@ -1,4 +1,4 @@
-export class Case {
+export class Cell {
 
     public wordIndexes: Array<number>;
     public isOtherPlayer: boolean;
