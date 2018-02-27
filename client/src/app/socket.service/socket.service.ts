@@ -27,7 +27,7 @@ export class SocketService {
         private _socket: Socket,
         private difficultyService: DifficultyService
     ) {
-        this.difficultyService.difficulty.subscribe((diff)=>{
+        this.difficultyService.difficulty.subscribe((diff) => {
             this._difficulty = difficultyName(diff);
         });
 
@@ -37,9 +37,7 @@ export class SocketService {
         this._showGames = false;
         this._updateUserConnected = this._userConnected.asObservable();
         this._socket.connect();
-
         this._updateHighligthCell = this._highlightCell.asObservable();
-
         this._socket.on("add_games", (games: IGameModel[]) => {
             this._games = games;
         });
@@ -58,10 +56,10 @@ export class SocketService {
         this._socket.on("second_player_joined", (data: any) => {
             this._userConnected.next(true);
             console.log("player connected --------");
-        })
+        });
     }
 
-    public get isUserConnected(): Observable<boolean>{
+    public get isUserConnected(): Observable<boolean> {
         return this._updateUserConnected;
     }
 
