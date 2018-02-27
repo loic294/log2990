@@ -1,9 +1,10 @@
-import { TestBed, inject, async } from "@angular/core/testing";
+import { TestBed, async } from "@angular/core/testing";
 import { Socket, SocketIoConfig } from "ng-socket-io";
 import { WordService } from "../word.service/word.service";
 import { SocketService } from "../socket.service/socket.service";
 import { GridService } from "./grid.service";
 import Word, { Orientation } from "../../../../common/lexical/word";
+import { DifficultyService } from "./../difficulty.service/difficulty.service";
 
 describe("GridService", () => {
 
@@ -12,13 +13,13 @@ describe("GridService", () => {
 
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        providers: [ SocketService ]
+        providers: [ SocketService, DifficultyService ]
       })
       .compileComponents();
     }));
 
     beforeEach(() => {
-        service = new GridService(new WordService(), new SocketService(new Socket(config)));
+        service = new GridService(new WordService(), new SocketService(new Socket(config), new DifficultyService()));
     });
 
     it("'b' should be a letter", () => {
@@ -42,7 +43,10 @@ describe("GridService", () => {
         const elem: HTMLElement = document.createElement("div");
         service.validateWord("clue", elem);
         expect(service.word.isValidated).toBe(true);
-
+        expect(service.grid[0][0].validated).toBe(true);
+        expect(service.grid[1][0].validated).toBe(true);
+        expect(service.grid[2][0].validated).toBe(true);
+        expect(service.grid[3][0].validated).toBe(true);
     });
 
     it("Word clue shoud not be validated after entering 'oops'", () => {
@@ -51,7 +55,10 @@ describe("GridService", () => {
 
         service.validateWord("oops", elem);
         expect(service.word.isValidated).toBe(false);
-
+        expect(service.grid[0][0].validated).toBe(false);
+        expect(service.grid[1][0].validated).toBe(false);
+        expect(service.grid[2][0].validated).toBe(false);
+        expect(service.grid[3][0].validated).toBe(false);
     });
 
 });
