@@ -30,7 +30,7 @@ export class SocketService {
         private _socket: Socket,
         private difficultyService: DifficultyService
     ) {
-        this.difficultyService.difficulty.subscribe((diff)=>{
+        this.difficultyService.difficulty.subscribe((diff) => {
             this._difficulty = difficultyName(diff);
         });
 
@@ -57,7 +57,6 @@ export class SocketService {
         });
 
         this._socket.on("push_validation", (data: string): void => {
-            console.log('VALIDATE WORD', data)
             this._wordToValidate.next(data);
         });
 
@@ -66,7 +65,7 @@ export class SocketService {
         });
     }
 
-    public get isUserConnected(): Observable<boolean>{
+    public get isUserConnected(): Observable<boolean> {
         return this._updateUserConnected;
     }
 
