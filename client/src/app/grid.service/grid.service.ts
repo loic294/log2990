@@ -253,4 +253,8 @@ export class GridService {
         this._word = word;
     }
 
+    public get gridTools(): GridTools {
+        return this._gridTools;
+    }
+
 }
