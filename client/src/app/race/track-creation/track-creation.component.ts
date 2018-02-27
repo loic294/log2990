@@ -129,4 +129,8 @@ export class TrackCreationComponent implements AfterViewInit {
         return this._dotCommand;
     }
 
+    public isSaved(): boolean {
+        return this._isSaved;
+    }
+
 }

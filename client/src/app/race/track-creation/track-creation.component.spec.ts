@@ -93,4 +93,62 @@ describe("TrackCreationComponent", () => {
         expect(component.getDotCommand().getTrackIsCompleted()).toBe(false);
     });
 
+    it("constraints not respected so should not save.", () => {
+        const eventDown1: MouseEvent = new MouseEvent("mousedown", {clientX: 100, clientY: 50});
+        const eventUp: MouseEvent = new MouseEvent("mouseup");
+        component.onKeyDown(eventDown1);
+        component.onKeyUp(eventUp);
+        const eventDown2: MouseEvent = new MouseEvent("mousedown", {clientX: 200, clientY: 100});
+        component.onKeyDown(eventDown2);
+        component.onKeyUp(eventUp);
+        const eventDown3: MouseEvent = new MouseEvent("mousedown", {clientX: 300, clientY: 50});
+        component.onKeyDown(eventDown3);
+        component.onKeyUp(eventUp);
+        component.onKeyDown(eventDown1);
+        component.onKeyUp(eventUp);
+        const eventDown4: MouseEvent = new MouseEvent("mousedown", {clientX: 150, clientY: 150});
+        component.onKeyDown(eventDown4);
+        component.onKeyUp(eventUp);
+
+        component.save();
+
+        expect(component.isSaved()).toBe(false);
+    });
+
+    it("track no in cycle so should not save.", () => {
+        const eventDown1: MouseEvent = new MouseEvent("mousedown", {clientX: 100, clientY: 50});
+        const eventUp: MouseEvent = new MouseEvent("mouseup");
+        component.onKeyDown(eventDown1);
+        component.onKeyUp(eventUp);
+        const eventDown2: MouseEvent = new MouseEvent("mousedown", {clientX: 200, clientY: 100});
+        component.onKeyDown(eventDown2);
+        component.onKeyUp(eventUp);
+        const eventDown3: MouseEvent = new MouseEvent("mousedown", {clientX: 300, clientY: 50});
+        component.onKeyDown(eventDown3);
+        component.onKeyUp(eventUp);
+
+        component.save();
+
+        expect(component.isSaved()).toBe(false);
+    });
+
+    it("track is cycle and constraints respected so should save.", () => {
+        const eventDown1: MouseEvent = new MouseEvent("mousedown", {clientX: 100, clientY: 50});
+        const eventUp: MouseEvent = new MouseEvent("mouseup");
+        component.onKeyDown(eventDown1);
+        component.onKeyUp(eventUp);
+        const eventDown2: MouseEvent = new MouseEvent("mousedown", {clientX: 200, clientY: 300});
+        component.onKeyDown(eventDown2);
+        component.onKeyUp(eventUp);
+        const eventDown3: MouseEvent = new MouseEvent("mousedown", {clientX: 400, clientY: 50});
+        component.onKeyDown(eventDown3);
+        component.onKeyUp(eventUp);
+        component.onKeyDown(eventDown1);
+        component.onKeyUp(eventUp);
+
+        component.save();
+
+        expect(component.isSaved()).toBe(true);
+    });
+
 });

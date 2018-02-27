@@ -89,6 +89,7 @@ export class DotCommand {
             if (intersects.length > 0 && intersects[0].object === this._vertices[0] && this._vertices.length > 1) {
                 if (!this._trackIsCompleted) {
                     this.connectToFirst();
+                    this.validateTrack();
                     this._trackIsCompleted = true;
                 }
                 this._selectedObject = intersects[0].object;
