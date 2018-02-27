@@ -30,7 +30,7 @@ button {
 	text-decoration: none;
 	display: inline-block;
 	font-size: 16px;
-	margin-left: 10px;
+	margin-right: 10px;
 	border-radius: 50px;
 	box-shadow: 0 2px 12px rgba(0,0,0,0.1);
 	cursor: pointer;
@@ -38,7 +38,7 @@ button {
 }
 
 button:hover, button.active {
-	background-color: #247BA0;
+	background-color: #0099dd;
 	box-shadow: 0 2px 12px rgba(0,0,0,0.6);
 	color: #fff;
 }

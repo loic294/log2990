@@ -46,21 +46,19 @@ export class CluesComponent implements OnInit {
     }
 
     private selectWord(position: Word): void {
-        if (position != null) {
+        if (position !== null) {
             for ( const item of this._clues) {
                 if (this.foundWord(item, position)) {
                     this._selectedClue = item;
                     this._wordService.selectWordFromClue(this._selectedClue);
                 }
             }
-        } else {
-            this._selectedClue = null;
         }
     }
 
     public ngOnInit(): void {
         this._wordService.wordFromGrid
-    .subscribe((_wordFromGrid) => this.selectWord(_wordFromGrid));
+            .subscribe((_wordFromGrid) => this.selectWord(_wordFromGrid));
     }
 
 }
