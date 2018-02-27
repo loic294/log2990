@@ -13,11 +13,13 @@
     "postinstall": "rimraf false"
   },
   "dependencies": {
+    "@angular/material": "^5.2.3",
     "@types/compression": "0.0.35",
     "@types/dotenv": "^4.0.2",
     "@types/errorhandler": "0.0.32",
     "@types/express-session": "^1.15.6",
     "@types/mongoose": "^5.0.2",
+    "animations": "0.0.0",
     "axios": "^0.17.1",
     "body-parser": "~1.16.0",
     "compression": "^1.7.1",
@@ -37,6 +39,7 @@
     "session": "^0.1.0",
     "socket.io": "1.4.4",
     "systemjs": "0.19.39",
+    "three": "^0.90.0",
     "ts-node": "^4.1.0"
   },
   "devDependencies": {

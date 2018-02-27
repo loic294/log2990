@@ -4,6 +4,7 @@ import { FormsModule } from "@angular/forms";
 
 import { GridComponent } from "./grid.component";
 import { WordService } from "../../word.service/word.service";
+import { SocketService } from "../../socket.service/socket.service";
 
 describe("GridComponent", () => {
   let component: GridComponent;
@@ -13,7 +14,7 @@ describe("GridComponent", () => {
     TestBed.configureTestingModule({
       imports: [ FormsModule ],
       declarations: [ GridComponent ],
-      providers: [ WordService ]
+      providers: [ WordService, SocketService ]
     })
     .compileComponents();
   }));
