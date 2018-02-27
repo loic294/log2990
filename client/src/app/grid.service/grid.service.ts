@@ -24,20 +24,30 @@ export class GridService {
     private _word: Word;
     private _row: number;
     private _col: number;
+    private _otherWord: Word;
 
     public constructor(
         private _wordService: WordService,
         private socketService: SocketService
     ) {
+
         this._wordService.wordFromClue.subscribe(
             (_wordFromClue) => {
                 this._word = _wordFromClue, this.selectCaseFromService(_wordFromClue);
             });
+
         this.socketService.cellToHighligh.subscribe(
             (data: string) => {
-                const { row, col }: { row: number, col: number } = JSON.parse(data);
-                this.highligthCell(row, col);
-                // TODO: Call selectCaseFromService instead of highligthCell // TODO: Parse word.
+                const { word }: { word: Word } = JSON.parse(data);
+                const selectedWord: Word = CLUES.find((w: Word) => word !== null && w.index === word.index);
+                this.selectOtherPlayerWord(selectedWord || null);
+            });
+
+        this.socketService.wordIsValidated.subscribe(
+            (data: string) => {
+                const { word }: { word: Word } = JSON.parse(data);
+                const selectedWord: Word = CLUES.find((w: Word) => word !== null && w.index === word.index);
+                this.applyValidation(selectedWord, true);
             });
 
         this.initGrid();
@@ -66,19 +76,45 @@ export class GridService {
     public get grid(): Array<Array<Case>> {
         return this._grid;
     }
-    // TODO: Add fonction when word selected from service
-        // TODO: send data to socket inside
-        // TODO: pass user color
-    // TODO: Method that receives the word changed
+
+    public selectOtherPlayerWord(w: Word): void {
+
+        if (this._otherWord) {
+            this.iterateOtherWord(this._otherWord, (row: number, col: number) => {
+                this._grid[row][col].isOtherPlayer = false;
+            });
+        }
+
+        this._otherWord = w;
+        if (w) {
+            this.iterateOtherWord(w, (row: number, col: number) => {
+                this._grid[row][col].isOtherPlayer = true;
+            });
+        }
+
+    }
+
+    public iterateOtherWord(w: Word, fct: Function): void {
+        const wordStart: number = w.orientation === Orientation.horizontal ?  w.col : w.row;
+        for (let cell: number = wordStart; cell < wordStart + w.length; cell++) {
+            const cellTemp: Case = w.orientation === Orientation.horizontal ? this._grid[w.row][cell] : this._grid[cell][w.col];
+            fct(cellTemp.x, cellTemp.y);
+        }
+    }
+
     private selectCaseFromService(w: Word): void {
-        // TODO: Change socket to this function instead of highligth
+        this.selectCells(w);
+        this.socketService.syncWord(w);
+    }
+
+    private selectCells(w: Word, isMe: boolean = true): void {
+
         if (this._selectedWord != null) {
             const cellTemp: Case = this._selectedWord;
 
             this.iterateWord(cellTemp, (x: number, y: number, caseTest: Case) => {
                 this._grid[x][y].unselect();
             });
-
         }
 
         if (w != null) {
@@ -175,12 +211,8 @@ export class GridService {
         const currentCase: Case = null;
 
         this.iterateWord(currentCase, (x: number, y: number, cellTemp: Case, cell: number) => {
-            this.socketService.highligthCell(cellTemp.x, cellTemp.y);
             this.highligthCell(cellTemp.x, cellTemp.y);
-            if (cellTemp.char === "-") {
-
-                return true;
-            }
+            if (cellTemp.char === "-") { return true; }
 
             return false;
         });
@@ -275,16 +307,25 @@ export class GridService {
 
     public validateWord(enteredWord: string, elem: HTMLElement): void {
         if (this._word.name.toUpperCase() === enteredWord.toUpperCase()) {
-            let tempX: number = this._word.row;
-            let tempY: number = this._word.col;
-            let i: number = 0;
-            while (i < this._word.length) {
-                this._grid[tempX][tempY].validate();
-                this.isHorizontal() ? tempY++ : tempX++;
-                i++;
-            }
+            this.applyValidation(this._word);
             this._word.isValidated = true;
+            this.socketService.sendValidation(this._word);
             elem.blur();
+        }
+    }
+
+    public applyValidation(word: Word, isOther: boolean = false): void {
+        let tempX: number = word.row;
+        let tempY: number = word.col;
+        let i: number = 0;
+        while (i < word.length) {
+            this._grid[tempX][tempY].validate();
+            if (isOther) {
+                this._grid[tempX][tempY].isOtherPlayer = true;
+                this._grid[tempX][tempY].char = word.name[i];
+            }
+            word.orientation === Orientation.horizontal ? tempY++ : tempX++;
+            i++;
         }
     }
 

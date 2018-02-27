@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 
 import { WordService } from "../../word.service/word.service";
+import { SocketService } from "../../socket.service/socket.service";
 
 @Component({
   selector: "app-crossword",
@@ -10,11 +11,18 @@ import { WordService } from "../../word.service/word.service";
 })
 export class CrosswordComponent implements OnInit {
 
-  public constructor(public _wordService: WordService) { }
+  public constructor(
+      public _wordService: WordService,
+      public _socketService: SocketService
+    ) { }
 
   public unselect(): void {
       this._wordService.selectWordFromClue(null);
       this._wordService.selectWordFromGrid(null);
+  }
+
+  public get selectedMode(): string {
+      return this._socketService.selectedMode;
   }
 
   public ngOnInit(): void {

@@ -1,14 +1,14 @@
 // tslint:disable:await-promise
-import Game, { IGame } from "../models/game";
+import Game, { IGameModel } from "../models/game";
+import { Socket } from "./socket.io-types";
 
-// Les types sont dans @types dans node modules mais Typescript n'est pas capable des lires.
-// tslint:disable-next-line:no-any
-export default (socket: any) => {
-    socket.on("get_games", async (): Promise<void> => {
-        const games: IGame[] = await Game.find({
+export default (socket: Socket) => {
+    socket.on("get_games", async (difficulty: String): Promise<void> => {
+        const games: IGameModel[] = await Game.find({
             $and: [
                 {"players.0": { "$exists": true }},
-                {"players.1": { "$exists": false }
+                {"players.1": { "$exists": false }},
+                {"difficulty": {"$eq": difficulty}
             }]
         });
         socket.emit("add_games", games);

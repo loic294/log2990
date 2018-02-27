@@ -41,8 +41,8 @@ export class AdminComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.route.params.subscribe((params: Array<string>) => {
-            this.id = params["id"];
+        this.route.params.subscribe(({ id }: { id: string }) => {
+            this.id = id;
         });
     }
 
