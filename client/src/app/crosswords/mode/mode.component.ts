@@ -6,6 +6,7 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
 @Component({
     selector: "app-mode-component-popup",
     templateUrl: "mode.component.popup.html",
+    styleUrls: ["./mode.component.css"]
   })
   export class ModeDialogComponent {
 
