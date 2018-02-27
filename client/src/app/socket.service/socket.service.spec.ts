@@ -30,4 +30,8 @@ describe("SocketService", () => {
     it("should be created", inject([SocketService], (service: SocketService) => {
         expect(service).toBeTruthy();
     }));
+
+    it("should initialize properly", inject([SocketService], (service: SocketService) => {
+        expect(service.initializeSocket()).toBeTruthy();
+    }));
 });
