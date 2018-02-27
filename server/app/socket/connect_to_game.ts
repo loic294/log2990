@@ -1,22 +1,21 @@
 // tslint:disable:await-promise
 import Game, {IGameModel} from "../models/game";
+import { Socket } from "./socket.io-types";
 interface DataReceived {
     gameId: string;
     value: string;
 }
 
-// Les types sont dans @types dans node modules mais Typescript n'est pas capable des lires.
-// tslint:disable-next-line:no-any
-const joinFirstPlayer: Function = async (socket: any, game: IGameModel, room: string, value: string): Promise<void> => {
+const joinFirstPlayer: Function = async (socket: Socket, game: IGameModel, room: string, value: string): Promise<void> => {
     socket.join(room);
+
     await Game.findOneAndUpdate({ name: game.name}, { players: [value] });
     socket.emit("connected_to_game", JSON.stringify({
         game
     }));
 };
 
-// tslint:disable-next-line:no-any
-const joinSecondPlayer: Function = async (socket: any, game: IGameModel, room: string, value: string): Promise<void> => {
+const joinSecondPlayer: Function = async (socket: Socket, game: IGameModel, room: string, value: string): Promise<void> => {
     socket.join(room);
 
     const dbGame: IGameModel = await Game.findOne({
@@ -28,10 +27,11 @@ const joinSecondPlayer: Function = async (socket: any, game: IGameModel, room: s
     socket.emit("connected_to_game", JSON.stringify({
         game: dbGame
     }));
+
+    // SEND CONNECTED TO OTHER PLAYER
 };
 
-// tslint:disable-next-line:no-any
-export default (socket: any) => {
+export default (socket: Socket) => {
 
     socket.on("connect_to_game", async (data: string) => {
         const { gameId: room, value }: DataReceived = JSON.parse(data);
@@ -43,10 +43,15 @@ export default (socket: any) => {
             joinFirstPlayer(socket, game, room, value);
         } else if (game.players.length === 1) {
             joinSecondPlayer(socket, game, room, value);
+            socket.to(room).emit("second_player_joined", value);
         }
 
-        socket.on("highligth_cell", (content: string) => {
-            socket.to(room).emit("highligth_cell_in_color", content);
+        socket.on("sync_word", (content: string) => {
+            socket.to(room).emit("receive_word", content);
+        });
+
+        socket.on("send_validation", (content: string) => {
+            socket.to(room).emit("push_validation", content);
         });
 
         socket.on("disconnect", async () => {

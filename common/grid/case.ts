@@ -1,6 +1,7 @@
 export class Case {
 
-	public wordIndexes: Array<number>;
+    public wordIndexes: Array<number>;
+    public isOtherPlayer: boolean;
 
     public constructor(
         private _char: string = "-",
@@ -10,7 +11,8 @@ export class Case {
         private _isValidated: boolean = false,
         private _black: boolean = false) {
 
-		this.wordIndexes = [];
+        this.wordIndexes = [];
+        this.isOtherPlayer = false;
 	}
 
     public set char(c: string) {
@@ -65,8 +67,12 @@ export class Case {
         return this._black;
     }
 
-    public setBlack(black : boolean) : void{
+    public setBlack(black : boolean) : void {
         this._black = black;
+    }
+
+    public getValidatedValue(): string {
+        return this._char;
     }
 
 }

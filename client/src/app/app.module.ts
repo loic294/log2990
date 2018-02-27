@@ -18,10 +18,18 @@ import { CluesComponent } from "./crosswords/clues/clues.component";
 import { AppRoutingModule } from "./app-routing.module";
 import { GridService } from "./grid.service/grid.service";
 import { SocketIoModule, SocketIoConfig } from "ng-socket-io";
-import { ModeComponent } from "./crosswords/mode/mode.component";
+import { ModeComponent, ModeDialogComponent } from "./crosswords/mode/mode.component";
 import { SocketService } from "./socket.service/socket.service";
 import { AdminComponent } from "./race/admin-component/admin.component";
+<<<<<<< HEAD
 import { TrackCreationComponent } from "./race/track-creation/track-creation.component";
+=======
+import {MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS} from "@angular/material/dialog";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+
+import {MatProgressSpinnerModule} from "@angular/material";
+import { DifficultyService } from "./difficulty.service/difficulty.service";
+>>>>>>> 51e96e12aaf95419048e6b014781b87e30228775
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
@@ -33,24 +41,41 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         GridComponent,
         CrosswordComponent,
         CluesComponent,
+        AdminComponent,
         ModeComponent,
+<<<<<<< HEAD
         AdminComponent,
         TrackCreationComponent,
+=======
+        ModeDialogComponent
+    ],
+    entryComponents: [
+        ModeDialogComponent
+>>>>>>> 51e96e12aaf95419048e6b014781b87e30228775
     ],
     imports: [
         BrowserModule,
         HttpClientModule,
         FormsModule,
         ClickOutsideModule,
-        AppRoutingModule,
-        SocketIoModule.forRoot(config)
+        SocketIoModule.forRoot(config),
+        MatDialogModule,
+        MatProgressSpinnerModule,
+        BrowserAnimationsModule,
+        AppRoutingModule
     ],
     providers: [
         RenderService,
         BasicService,
         WordService,
         GridService,
-        SocketService
+        SocketService,
+        DifficultyService,
+        {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: true}}
+    ],
+    exports: [
+        MatProgressSpinnerModule,
+        MatDialogModule
     ],
     bootstrap: [AppComponent]
 })

@@ -1,3 +1,7 @@
+
+<!-- <button mat-button (click)="openDialog()">Open dialog</button>
+
+
 <button *ngFor = "let mode of modes" (click)="onSelect(mode)" [class.active]="selectedMode == mode">
   {{mode}}
 </button>
@@ -5,9 +9,11 @@
 <button (click)= "addGames(); toggleShowGames()">Join Game</button>
 <button [ngClass] = "{ 'hide': !showGames, 'show': showGames}" *ngFor = "let game of games" (click) = "joinGame(game.name)">{{game.players[0]}}</button>
 
-<!-- <input type="text" [(ngModel)]="input"/>{{input}} -->
+<input type="text" [(ngModel)]="input"/>{{input}} -->
 
 
-
+<!-- 
 <input (input)="onEnter($event.target.value)">
 {{player}}
+
+<mat-spinner></mat-spinner> -->

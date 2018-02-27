@@ -43,7 +43,7 @@
 }
 
 .col input:disabled {
-    background-color: rgba(34, 75, 22, 0.301);
+    background-color: #41D63B;
 }
 
 .indexes {
@@ -54,4 +54,12 @@
 
 .small-index {
 	font-size: 10px;
+}
+
+.other-player{
+    background-color: #6EAEC9; 
+}
+
+.col input:disabled.other-player{
+    background-color: #3BD674; 
 }

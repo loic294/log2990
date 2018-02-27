@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
  html,
  body {
@@ -21,7 +22,7 @@ h1, h2, h3 {
 }
 
 button {
-	background-color: #fff;
+	background-color: #d9d9d9;
 	border: none;
 	color: #605F5E;
 	padding: 15px 32px;
@@ -31,14 +32,14 @@ button {
 	font-size: 16px;
 	margin-left: 10px;
 	border-radius: 50px;
-	box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+	box-shadow: 0 2px 12px rgba(0,0,0,0.1);
 	cursor: pointer;
-	transition: all ease 0.2s;
+	transition: all ease 0.4s;
 }
 
 button:hover, button.active {
 	background-color: #247BA0;
-	box-shadow: 0 2px 12px rgba(0,0,0,0.20);
+	box-shadow: 0 2px 12px rgba(0,0,0,0.6);
 	color: #fff;
 }
 
@@ -63,4 +64,8 @@ button:focus {
     border-radius: 6px;
 	margin-bottom: 20px;
 	margin-right: 20px;
+}
+
+.input-row {
+    padding: 5px 0 15px;
 }

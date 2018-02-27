@@ -1,20 +1,20 @@
 import Game, { IGameModel } from "../models/game";
+import { Socket } from "./socket.io-types";
 
-interface DataReceived {
+interface GameData {
     gameId: string;
-    value: string;
+    difficulty: String;
 }
 
-// Les types sont dans @types dans node modules mais Typescript n'est pas capable des lires.
-// tslint:disable-next-line:no-any
-export default (socket: any) => {
+export default (socket: Socket) => {
     socket.on("create_game", async (data: string): Promise<void> => {
-        const { gameId: room }: DataReceived = JSON.parse(data);
 
+        const { gameId: room, difficulty: difficulty }: GameData = JSON.parse(data);
         const game: IGameModel = new Game({
             name: room,
             createdAt: new Date(),
-            players: []
+            players: [],
+            difficulty: difficulty
         });
         await game.save();
 
