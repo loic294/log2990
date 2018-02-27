@@ -1,4 +1,4 @@
-import { Case } from "../../../../common/grid/case";
+import { Cell } from "../../../../common/grid/cell";
 import Word from "../../../../common/lexical/word";
 import Constraint from "./constraint";
 import axios from "axios";
@@ -10,7 +10,7 @@ export enum Difficulty {
 }
 
 export default class GridGeneration {
-    private _grid: Array<Array<Case>>;
+    private _grid: Array<Array<Cell>>;
     private _constraintsArray: Array<Constraint>;
     private _wordStack: Array<Word>;
     private _DEFAULT_SIZE: number = 10;
@@ -21,14 +21,14 @@ export default class GridGeneration {
         this._wordStack = [];
     }
 
-    public fillGridWithCases(size: number): Array<Array<Case>> {
+    public fillGridWithCases(size: number): Array<Array<Cell>> {
         size = size > 0 ? size : this._DEFAULT_SIZE;
         this._grid = [];
 
         for (let row: number = 0; row < size; row++) {
             this._grid[row] = [];
             for (let col: number = 0; col < size; col++) {
-                this._grid[row][col] = new Case("", row, col);
+                this._grid[row][col] = new Cell("", row, col);
             }
         }
 
@@ -126,7 +126,7 @@ export default class GridGeneration {
         }
     }
 
-    public get grid(): Case[][] {
+    public get grid(): Cell[][] {
         return this._grid;
     }
 
