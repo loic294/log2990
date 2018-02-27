@@ -14,7 +14,7 @@ export class DifficultyComponent implements OnInit {
     private difficulties: Array<Difficulty>;
 
     public constructor( private difficultyService: DifficultyService  ) {
-        this._selectedDifficulty = Difficulty.Normal;
+        this._selectedDifficulty = null;
         this.difficulties = [
             Difficulty.Easy,
             Difficulty.Normal,
