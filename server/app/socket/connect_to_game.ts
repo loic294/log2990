@@ -46,8 +46,12 @@ export default (socket: Socket) => {
             socket.to(room).emit("second_player_joined", value);
         }
 
-        socket.on("highligth_cell", (content: string) => {
-            socket.to(room).emit("highligth_cell_in_color", content);
+        socket.on("sync_word", (content: string) => {
+            socket.to(room).emit("receive_word", content);
+        });
+
+        socket.on("send_validation", (content: string) => {
+            socket.to(room).emit("push_validation", content);
         });
 
         socket.on("disconnect", async () => {
