@@ -29,7 +29,6 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 import {MatProgressSpinnerModule} from "@angular/material";
 import { DifficultyService } from "./difficulty.service/difficulty.service";
->>>>>>> 51e96e12aaf95419048e6b014781b87e30228775
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
@@ -43,10 +42,8 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         CluesComponent,
         AdminComponent,
         ModeComponent,
-<<<<<<< HEAD
         AdminComponent,
         TrackCreationComponent,
-=======
         ModeDialogComponent
     ],
     entryComponents: [
