@@ -38,27 +38,25 @@ describe("GridService", () => {
         expect(service.isLetter("{")).toBe(false);
     });
 
-    it("Word clue shoud be validated after entering 'clue'", () => {
-        service.word = new Word("clue", "", [0, 0], Orientation.vertical, 0);
+    it("Word 'hey' shoud be validated after entering 'hey'", () => {
+        service.word = new Word("hey", "", [0, 0], Orientation.vertical, 0);
         const elem: HTMLElement = document.createElement("div");
-        service.validateWord("clue", elem);
+        service.validateWord("hey", elem);
         expect(service.word.isValidated).toBe(true);
         expect(service.grid[0][0].validated).toBe(true);
         expect(service.grid[1][0].validated).toBe(true);
         expect(service.grid[2][0].validated).toBe(true);
-        expect(service.grid[3][0].validated).toBe(true);
     });
 
-    it("Word clue shoud not be validated after entering 'oops'", () => {
-        service.word = new Word("clue", "", [0, 0], Orientation.vertical, 0);
+    it("Word 'hey' shoud not be validated after entering 'oop'", () => {
+        service.word = new Word("hey", "", [0, 0], Orientation.vertical, 0);
         const elem: HTMLElement = document.createElement("div");
 
-        service.validateWord("oops", elem);
+        service.validateWord("oop", elem);
         expect(service.word.isValidated).toBe(false);
         expect(service.grid[0][0].validated).toBe(false);
         expect(service.grid[1][0].validated).toBe(false);
         expect(service.grid[2][0].validated).toBe(false);
-        expect(service.grid[3][0].validated).toBe(false);
     });
 
 });
