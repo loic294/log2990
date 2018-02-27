@@ -20,7 +20,7 @@ export class SocketService {
     private _updateUserConnected: Observable<boolean>;
     private _userConnected: Subject<boolean> = new Subject<boolean>();
 
-    private _updateHighligthCell: Observable<string>;
+    private _updateHighlightCell: Observable<string>;
     private _highlightCell: Subject<string> = new Subject<string>();
 
     private _updateWordValidated: Observable<string>;
@@ -39,7 +39,7 @@ export class SocketService {
         this._selectedMode = "";
         this._showGames = false;
         this._updateUserConnected = this._userConnected.asObservable();
-        this._updateHighligthCell = this._highlightCell.asObservable();
+        this._updateHighlightCell = this._highlightCell.asObservable();
         this._updateWordValidated = this._wordToValidate.asObservable();
         this.initializeSocket();
 
@@ -69,8 +69,8 @@ export class SocketService {
         return this._updateUserConnected;
     }
 
-    public get cellToHighligh(): Observable<string> {
-        return this._updateHighligthCell;
+    public get cellToHighlight(): Observable<string> {
+        return this._updateHighlightCell;
     }
 
     public get wordIsValidated(): Observable<string> {
@@ -112,7 +112,7 @@ export class SocketService {
         if (mode === "Two Players") {
             const gameId: string = this.player;
             const difficulty: String = this.difficulty;
-            this._socket.emit("create_game", JSON.stringify({ gameId, difficulty}));
+            this._socket.emit("create_game", JSON.stringify({ gameId, difficulty }));
             this.joinGame(gameId);
         }
     }
@@ -129,11 +129,11 @@ export class SocketService {
     }
 
     public syncWord(word: Word): void {
-        this._socket.emit("sync_word", JSON.stringify({word}));
+        this._socket.emit("sync_word", JSON.stringify({ word }));
     }
 
     public sendValidation(word: Word): void {
-        this._socket.emit("send_validation", JSON.stringify({word}));
+        this._socket.emit("send_validation", JSON.stringify({ word }));
     }
 
 }

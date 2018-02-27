@@ -36,7 +36,7 @@ export class GridService {
                 this._word = _wordFromClue, this.selectCaseFromService(_wordFromClue);
             });
 
-        this.socketService.cellToHighligh.subscribe(
+        this.socketService.cellToHighlight.subscribe(
             (data: string) => {
                 const { word }: { word: Word } = JSON.parse(data);
                 const selectedWord: Word = CLUES.find((w: Word) => word !== null && w.index === word.index);
