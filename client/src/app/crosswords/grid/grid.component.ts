@@ -2,7 +2,7 @@
 
 import { Component, OnInit } from "@angular/core";
 
-import { Case } from "../../../../../common/grid/case";
+import { Cell } from "../../../../../common/grid/case";
 import { GridService } from "../../grid.service/grid.service";
 
 /** TEMPORARY MOCKED CONTENT
@@ -33,11 +33,11 @@ export class GridComponent implements OnInit {
 
     public constructor( private _gridService: GridService) {}
 
-    public updateGrid(event: KeyboardEvent, c: Case): void {
+    public updateGrid(event: KeyboardEvent, c: Cell): void {
         this._gridService.updateGrid(event, c);
     }
 
-    public selectCaseFromGrid(c: Case): void {
+    public selectCaseFromGrid(c: Cell): void {
         this._gridService.selectCaseFromGrid(c);
     }
 

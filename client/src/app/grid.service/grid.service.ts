@@ -3,7 +3,7 @@
 
 import { Injectable } from "@angular/core";
 import { GRID } from "../mock-grid";
-import { Case } from "../../../../common/grid/case";
+import { Cell } from "../../../../common/grid/case";
 import { Observable } from "rxjs/Observable";
 import { of } from "rxjs/observable/of";
 import Word, { Orientation } from "../../../../common/lexical/word";
@@ -17,8 +17,8 @@ const BACK_SPACE_KEY_CODE: number = 8;
 @Injectable()
 export class GridService {
 
-    private _grid: Array<Array<Case>>;
-    private _selectedWord: Case;
+    private _grid: Array<Array<Cell>>;
+    private _selectedWord: Cell;
     private _word: Word;
     private _otherWord: Word;
     private _gridTools: GridTools;
@@ -115,7 +115,7 @@ export class GridService {
         }
     }
 
-    public selectCaseFromGrid(c: Case): void {
+    public selectCaseFromGrid(c: Cell): void {
 
         const tempWord: Word = this.findWordStart(c.x, c.y);
         this._wordService.selectWordFromGrid(tempWord);
@@ -136,7 +136,7 @@ export class GridService {
 
     private wordHighligth(): void {
         this._gridTools.setGrid(this._grid);
-        this._gridTools.iterateWord(this._word, (x: number, y: number, cellTemp: Case, cell: number) => {
+        this._gridTools.iterateWord(this._word, (x: number, y: number, cellTemp: Cell, cell: number) => {
             this._grid[cellTemp.x][cellTemp.y].select();
             if (cellTemp.char === "-") { return true; }
 
@@ -144,7 +144,7 @@ export class GridService {
         });
     }
 
-    public updateGrid(event: KeyboardEvent, c: Case): Observable<Array<Array<Case>>> {
+    public updateGrid(event: KeyboardEvent, c: Cell): Observable<Array<Array<Cell>>> {
 
         if (event.keyCode === BACK_SPACE_KEY_CODE) {
             if (c.char === "") {
@@ -164,7 +164,7 @@ export class GridService {
         return of(this._grid);
     }
 
-    private erasePrevious(c: Case): void {
+    private erasePrevious(c: Cell): void {
 
         if (this.isHorizontal() && (c.y !== this._word.col)) {
             if (this._grid[c.x][c.y - 1].validated) {
@@ -186,7 +186,7 @@ export class GridService {
         let wordEntered: string = "";
         this.isHorizontal() ? wordStart = this._word.col : wordStart = this._word.row;
 
-        this._gridTools.iterateWord(this._word, (x: number, y: number, cellTemp: Case, cell: number) => {
+        this._gridTools.iterateWord(this._word, (x: number, y: number, cellTemp: Cell, cell: number) => {
             this._grid[x][y].unselect();
             if (cell === wordStart) {
                 this._selectedWord = cellTemp;
@@ -222,7 +222,7 @@ export class GridService {
         this._grid = GRID.map((row: string) => {
             const strings: Array<string> = row.split(" ");
 
-            return strings.map((c: string) => new Case(c));
+            return strings.map((c: string) => new Cell(c));
         });
 
         this._gridTools.iterateGrid(this._grid, (row: number, col: number) => {
@@ -241,7 +241,7 @@ export class GridService {
         return this._word.orientation === Orientation.horizontal;
     }
 
-    public get grid(): Array<Array<Case>> {
+    public get grid(): Array<Array<Cell>> {
         return this._grid;
     }
 

@@ -2,7 +2,7 @@
 // tslint:disable:no-suspicious-comment
 
 import { Injectable } from "@angular/core";
-import { Case } from "../../../../common/grid/case";
+import { Cell } from "../../../../common/grid/case";
 import Word, { Orientation } from "../../../../common/lexical/word";
 
 import CLUES from "../mock-words";
@@ -12,11 +12,11 @@ export class GridTools {
 
     private _row: number;
     private _col: number;
-    private _grid: Array<Array<Case>>;
+    private _grid: Array<Array<Cell>>;
 
     public constructor() {}
 
-    public iterateGrid(grid: Array<Array<Case>>, fct: Function): void {
+    public iterateGrid(grid: Array<Array<Cell>>, fct: Function): void {
         for (let i: number = 0; i < grid.length; i++) {
             for (let j: number = 0; j < grid[i].length; j++) {
                 fct(i, j);
@@ -27,7 +27,7 @@ export class GridTools {
     public iterateWord(word: Word, fct: Function): void {
         const start: number = word.orientation === Orientation.horizontal ? word.col : word.row;
         for (let cell: number = start; cell < start + word.length; cell++) {
-            const cellTemp: Case = word.orientation === Orientation.horizontal ? this._grid[word.row][cell] : this._grid[cell][word.col];
+            const cellTemp: Cell = word.orientation === Orientation.horizontal ? this._grid[word.row][cell] : this._grid[cell][word.col];
 
             if (fct(cellTemp.x, cellTemp.y, cellTemp, cell, stop)) {
                 break;
@@ -49,7 +49,7 @@ export class GridTools {
         this._col = col;
     }
 
-    public setGrid(grid: Array<Array<Case>>): void {
+    public setGrid(grid: Array<Array<Cell>>): void {
         this._grid = grid;
     }
 
