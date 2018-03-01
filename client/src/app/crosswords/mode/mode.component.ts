@@ -4,13 +4,8 @@ import { IGameModel } from "./../../../../../server/app/models/game";
 import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
 
 @Component({
-<<<<<<< HEAD
     selector: "app-mode-component-mode",
     templateUrl: "mode.component.mode.html",
-=======
-    selector: "app-mode-component",
-    templateUrl: "mode.component.html",
->>>>>>> correction pour bug lors du reconnomage de Case à Cell
     styleUrls: ["./mode.component.css"]
   })
   export class ModeDialogComponent {
