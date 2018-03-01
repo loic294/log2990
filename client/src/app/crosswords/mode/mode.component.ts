@@ -45,6 +45,23 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
         });
     }
 
+    public disconnectDialog(): void {
+        console.log("disconnected-------");
+        this.dialog.open(DisconnectedDialogComponent, {
+            width: "500px",
+            height: "250px",
+            data: {  }
+        });
+    }
+
+    private isUserDisconnected(): void {
+        this.socketService.isOpponentDisconnected.subscribe( (opponentDisconnected: boolean) => {
+            if (opponentDisconnected) {
+                this.disconnectDialog();
+            }
+        });
+    }
+
     private waitingConnection(): void {
         this.socketService.isUserConnected.subscribe( (userConnected: boolean) => {
             if (userConnected) {
