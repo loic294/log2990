@@ -22,12 +22,29 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
         public dialog: MatDialog,
         @Inject(MAT_DIALOG_DATA) public data: {}) {
             this.waitingConnection();
+            this.isUserDisconnected();
             dialogRef.disableClose = true;
-
         }
 
     public closeDialog(): void {
         this.dialogRef.close();
+    }
+
+    public disconnectDialog(): void {
+        console.log("disconnected-------");
+        this.dialog.open(DisconnectedDialogComponent, {
+            width: "500px",
+            height: "250px",
+            data: {  }
+        });
+    }
+
+    private isUserDisconnected(): void {
+        this.socketService.isOpponentDisconnected.subscribe( (opponentDisconnected: boolean) => {
+            if (opponentDisconnected) {
+                this.disconnectDialog();
+            }
+        });
     }
 
     private waitingConnection(): void {
@@ -110,6 +127,32 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     public joinGame(gameId: string): void {
         this.socketService.joinGame(gameId);
     }
+}
+
+@Component({
+    selector: "mode.component.disconnected",
+    templateUrl: "./mode.component.disconnected.html",
+    styleUrls: ["./mode.component.css"]
+  })
+  export class DisconnectedDialogComponent{
+
+      public constructor(
+        public dialog: MatDialog,
+        private dialogRef: MatDialogRef<ModeComponent>
+      ) {
+        this.dialogRef.disableClose = true;
+      }
+
+      public openModeDialog(): void{
+        this.dialog.open(ModeDialogComponent, {
+            width: "500px",
+            height: "75%",
+            data: {  }
+        });
+      }
+
+      public ngOnInit(): void {}
+
 }
 
 @Component({
