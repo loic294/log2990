@@ -2,7 +2,7 @@
 
 import { Component, OnInit } from "@angular/core";
 
-import { Cell } from "../../../../../common/grid/case";
+import { Cell } from "../../../../../common/grid/cell";
 import { GridService } from "../../grid.service/grid.service";
 
 /** TEMPORARY MOCKED CONTENT

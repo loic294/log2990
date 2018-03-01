@@ -54,7 +54,8 @@ export default (socket: Socket) => {
             socket.to(room).emit("push_validation", content);
         });
 
-        socket.on("disconnect", async () => {
+        socket.on("disconnect", async (content: boolean) => {
+            socket.to(room).emit("opponent_disconnected", true);
             await game.remove();
         });
     });

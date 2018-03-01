@@ -16,6 +16,9 @@ export class CrosswordComponent implements OnInit {
       public _socketService: SocketService
     ) { }
 
+  public opponnentName(){ 
+      return this._socketService.player;
+  }
   public unselect(): void {
       this._wordService.selectWordFromClue(null);
       this._wordService.selectWordFromGrid(null);
