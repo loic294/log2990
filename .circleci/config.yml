@@ -23,15 +23,17 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run: |
+      - run:
+        - name: Install packages in server
+        - command: |
           cd server
           npm i
-          cd ..
 
-      - run: |
+      - run:
+        - name: Install  packages in client
+        - command: |
           cd client
           npm i
-          cd ..
 
       - save_cache:
           paths:
