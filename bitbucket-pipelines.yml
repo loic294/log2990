@@ -8,7 +8,7 @@ image: node:8.9.4
 pipelines:
   default:
     - step:
-        name: Server build and test
+        name: Server test
         caches:
           - node
         script:
@@ -19,7 +19,7 @@ pipelines:
     - step:
         name: Server run lint
         caches:
-          - node
+          -node
         script:
           - cd server
           - npm run lint
@@ -40,17 +40,6 @@ pipelines:
         script:
           - cd client
           - npm run lint
-    - step:
-        name: Client build and test
-        caches: 
-          - nodeclient
-          - node
-        script:
-        - cd client
-        - npm --version
-        - npm install
-        - npm run-script build
-        - npm test
 definitions:
   caches:
     node: server/node_modules

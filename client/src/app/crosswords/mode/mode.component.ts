@@ -46,7 +46,6 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     }
 
     public disconnectDialog(): void {
-        console.log("disconnected-------");
         this.dialog.open(DisconnectedDialogComponent, {
             width: "500px",
             height: "250px",
