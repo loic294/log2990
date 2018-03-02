@@ -8,7 +8,6 @@ jobs:
     docker:
       # specify the version you desire here
       - image: circleci/node:8.9.4
-      
 
     working_directory: ~/
 
@@ -38,14 +37,12 @@ jobs:
       - save_cache:
           paths:
             - client/node_modules
-          key:
-            - v1-dependencies-{{ checksum "client/package.json" }}
+          key: v1-dependencies-{{ checksum "client/package.json" }}
       
       - save_cache:
           paths:
             - server/node_modules
-          key:
-            - v1-dependencies-{{ checksum "server/package.json" }}
+          key: v1-dependencies-{{ checksum "server/package.json" }}
 
       - run:
           name: Server test
