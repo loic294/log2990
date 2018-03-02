@@ -8,7 +8,7 @@ image: node:8.9.4
 pipelines:
   default:
     - step:
-        name: Server build and test
+        name: Server test
         caches:
           - node
         script: # Modify the commands below to build your repository.
@@ -16,9 +16,15 @@ pipelines:
           - npm --version
           - npm install
           - npm test
+    - step:
+        name: Server run lint
+        caches:
+          -node
+        script:
+          - cd server
           - npm run lint
     - step:
-        name: Client build and test
+        name: Client build
         caches: 
           - nodeclient
           - node
@@ -27,7 +33,13 @@ pipelines:
         - npm --version
         - npm install
         - npm run-script build
-        - npm test
+    - step:
+        name: Client run lint
+        caches:
+          - nodeclient
+        script:
+          - cd client
+          - npm run lint
 definitions:
   caches:
     node: server/node_modules
