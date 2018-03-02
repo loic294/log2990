@@ -7,6 +7,7 @@
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
+    "pipeline": "ng test --watch=false",
     "lint": "ng lint --type-check --format stylish --fix"
   },
   "private": true,
