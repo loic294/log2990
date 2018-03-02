@@ -1,22 +1,14 @@
-<<<<<<< HEAD
 #pipeline config
 #
 #WARNING: Does NOT ..... I REPEAT ..... does NOT BUILD server
 #
 
-=======
-# This is a sample build configuration for JavaScript.
-# Check our guides at https://confluence.atlassian.com/x/14UWN for more examples.
-# Only use spaces to indent your .yml configuration.
-# -----
-# You can specify a custom docker image from Docker Hub as your build environment.
->>>>>>> pipeline config
 image: node:8.9.4
 
 pipelines:
   default:
     - step:
-        name: Server build and test
+        name: Server test
         caches:
           - node
         script:
@@ -57,7 +49,7 @@ pipelines:
           - cd client
           - npm run lint
     - step:
-        name: Client build and test
+        name: Client build
         caches: 
           - nodeclient
           - node
@@ -66,7 +58,13 @@ pipelines:
         - npm --version
         - npm install
         - npm run-script build
-        - npm test
+    - step:
+        name: Client run lint
+        caches:
+          - nodeclient
+        script:
+          - cd client
+          - npm run lint
 definitions:
   caches:
     node: server/node_modules
