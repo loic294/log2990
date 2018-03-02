@@ -15,17 +15,14 @@ pipelines:
           - cd server
           - npm --version
           - npm install
-          - npm run-script build
           - npm test
           - npm run lint
     - step:
         name: Client build and test
         caches: 
           - nodeclient
+          - node
         script:
-        - cd server
-        - npm install
-        - cd ..
         - cd client
         - npm --version
         - npm install
