@@ -74,7 +74,7 @@ export class RenderService {
         this.loadSkybox();
     }
 
-    private getAspectRatio(): number {
+    public getAspectRatio(): number {
         return this.container.clientWidth / this.container.clientHeight;
     }
 
