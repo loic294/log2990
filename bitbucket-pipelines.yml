@@ -48,7 +48,14 @@ pipelines:
         script:
           - cd client
           - npm run lint
+    - step:
+      name: Client build and test
+      caches: nodeClient
+      script:
+        - cd client
+        - npm install
+        - ng build
 definitions:
   caches:
     node: server/node_modules
-    nodeclient: client/node_modules
+    nodeClient: client/node_modules
