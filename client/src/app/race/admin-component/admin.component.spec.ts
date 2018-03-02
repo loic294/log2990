@@ -2,7 +2,7 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
-import { APP_BASE_HREF } from "@angular/common"
+import { APP_BASE_HREF } from "@angular/common";
 import { SocketIoModule, SocketIoConfig } from "ng-socket-io";
 
 import { AdminComponent } from "./admin.component";

@@ -1,3 +1,4 @@
+// tslint:disable:no-magic-numbers no-floating-promises
 import { TestBed, async } from "@angular/core/testing";
 import { Socket, SocketIoConfig } from "ng-socket-io";
 import { WordService } from "../word.service/word.service";
