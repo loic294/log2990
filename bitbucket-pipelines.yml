@@ -22,6 +22,9 @@ pipelines:
         caches: 
           - nodeclient
         script:
+        - cd server
+        - npm install
+        - cd ..
         - cd client
         - npm --version
         - npm install
