@@ -8,6 +8,7 @@ module.exports = function (config) {
     plugins: [
       require('karma-jasmine'),
      // require('karma-chrome-launcher'),
+      // require('karma-phantomjs-launcher'),
       require('karma-phantomjs-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage-istanbul-reporter'),
@@ -29,12 +30,12 @@ module.exports = function (config) {
     reporters: ['progress', 'kjhtml'],
     port: 9876,
     colors: true,
-    logLevel: config.LOG_INFO,
+    logLevel: 'debug',
     autoWatch: false,
     browsers: ['PhantomJS'],
     singleRun: true,
     phantomjsLauncher: {
-        exitOnResourceError: true
+        exitOnResourceError: false
     }
   });
 };

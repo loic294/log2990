@@ -58,7 +58,7 @@ describe("AdminComponent", () => {
             GridService,
             DifficultyService,
             {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: true}},
-            {provide: APP_BASE_HREF, useValue : '/' }
+            {provide: APP_BASE_HREF, useValue : "/" }
         ],
     })
     .compileComponents();
