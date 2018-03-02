@@ -12,4 +12,6 @@ describe("RenderService", () => {
     it("should be created", inject([RenderService], (service: RenderService) => {
         expect(service).toBeTruthy();
     }));
+
+    it("should change views properly");
 });
