@@ -33,20 +33,20 @@ export default class InputManagerService {
     private keyDownCommands: CommandKeyDict[];
     private keyUpCommands: CommandKeyDict[];
 
-    public init(car: Car, renderer: RenderService): void {
+    public init(renderer: RenderService): void {
         this.keyDownCommands = [
-            {keyCode: ACCELERATE_KEYCODE, command: new AccelerateDownCarCommand(car)},
-            {keyCode: LEFT_KEYCODE, command: new LeftDownCarCommand(car)},
-            {keyCode: RIGHT_KEYCODE, command: new RightDownCarCommand(car)},
-            {keyCode: BRAKE_KEYCODE, command: new BrakeDownCarCommand(car)},
+            {keyCode: ACCELERATE_KEYCODE, command: new AccelerateDownCarCommand(renderer.car)},
+            {keyCode: LEFT_KEYCODE, command: new LeftDownCarCommand(renderer.car)},
+            {keyCode: RIGHT_KEYCODE, command: new RightDownCarCommand(renderer.car)},
+            {keyCode: BRAKE_KEYCODE, command: new BrakeDownCarCommand(renderer.car)},
             {keyCode: CHANGE_VIEW_KEYCODE, command: new ChangeCameraViewCommand(renderer)}
         ];
 
         this.keyUpCommands = [
-            {keyCode: ACCELERATE_KEYCODE, command: new AccelerateUpCarCommand(car)},
-            {keyCode: LEFT_KEYCODE, command: new ReleaseUpCarCommand(car)},
-            {keyCode: RIGHT_KEYCODE, command: new ReleaseUpCarCommand(car)},
-            {keyCode: BRAKE_KEYCODE, command: new BrakeUpCarCommand(car)}
+            {keyCode: ACCELERATE_KEYCODE, command: new AccelerateUpCarCommand(renderer.car)},
+            {keyCode: LEFT_KEYCODE, command: new ReleaseUpCarCommand(renderer.car)},
+            {keyCode: RIGHT_KEYCODE, command: new ReleaseUpCarCommand(renderer.car)},
+            {keyCode: BRAKE_KEYCODE, command: new BrakeUpCarCommand(renderer.car)}
         ];
     }
 
