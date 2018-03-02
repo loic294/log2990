@@ -23,14 +23,14 @@ jobs:
           - v1-dependencies-
 
       - run:
-        - name: Install packages in server
-        - command: |
+        name: Install packages in server
+        command: |
           cd server
           npm i
 
       - run:
-        - name: Install  packages in client
-        - command: |
+        name: Install  packages in client
+        command: |
           cd client
           npm i
 
