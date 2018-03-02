@@ -75,4 +75,9 @@ jobs:
           command: |
             cd client
             npm run lint
-        
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
