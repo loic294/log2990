@@ -1,7 +1,6 @@
 import AbsCamera , { CameraConstants } from "./ICamera";
-import { Vector3, OrthographicCamera } from "three";
+import { OrthographicCamera } from "three";
 import { RenderService } from "../render-service/render.service";
-import { Car } from "../car/car";
 
 export default class TopDownCamera extends AbsCamera {
 
@@ -9,8 +8,10 @@ export default class TopDownCamera extends AbsCamera {
         super(renderer);
 
         this._camera = new OrthographicCamera(
-            CameraConstants.FIELD_OF_VIEW,
-            renderer.getAspectRatio(),
+            CameraConstants.INITIAL_CAMERA_POSITION_Y * renderer.getAspectRatio() / -2,
+            CameraConstants.INITIAL_CAMERA_POSITION_Y * renderer.getAspectRatio() / 2,
+            CameraConstants.INITIAL_CAMERA_POSITION_Y / 2,
+            CameraConstants.INITIAL_CAMERA_POSITION_Y / -2,
             CameraConstants.NEAR_CLIPPING_PLANE,
             CameraConstants.FAR_CLIPPING_PLANE
         );
@@ -19,10 +20,13 @@ export default class TopDownCamera extends AbsCamera {
     public onResize(): void {
         const camera: OrthographicCamera = this._camera as OrthographicCamera;
 
+        camera.left = CameraConstants.INITIAL_CAMERA_POSITION_Y * this.renderer.getAspectRatio() / -2;
+        camera.right = CameraConstants.INITIAL_CAMERA_POSITION_Y * this.renderer.getAspectRatio() / 2;
+
         camera.updateProjectionMatrix();
     }
 
-    public follow(carMeshPosition: Vector3): void {
+    public follow(): void {
         this._camera.position.x = this.renderer.car.meshPosition.x;
         this._camera.position.z = this.renderer.car.meshPosition.z;
     }

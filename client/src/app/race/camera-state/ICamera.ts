@@ -14,7 +14,7 @@ export default abstract class AbsCamera {
 
     public constructor(protected renderer: RenderService) {  }
 
-    public abstract follow(carMeshPosition: Vector3): void;
+    public abstract follow(): void;
 
     public abstract onResize(): void;
 
