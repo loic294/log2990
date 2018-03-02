@@ -18,7 +18,6 @@ export class SocketService {
     private _showGames: boolean;
     private _wordCount: number;
 
-
     private _updateUserConnected: Observable<boolean>;
     private _userConnected: Subject<boolean> = new Subject<boolean>();
 
