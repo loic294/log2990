@@ -13,7 +13,7 @@ export class DifficultyService {
     }
 
     public get difficulty(): Observable<Difficulty> {
-        return this._difficulty;
+        return this._difficult;
     }
 
     public selectDifficulty(diff: Difficulty): void {
