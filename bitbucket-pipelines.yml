@@ -19,7 +19,7 @@ pipelines:
     - step:
         name: Server run lint
         caches:
-          -node
+          - node
         script:
           - cd server
           - npm run lint
