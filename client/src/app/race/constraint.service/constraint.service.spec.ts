@@ -37,11 +37,11 @@ describe("ConstraintService", () => {
         expect(service.getAngleOfTwoVectors(vectorA, vectorB)).toEqual(180);
     }));
 
-    it("should generate an angle of 225 degres", inject([ConstraintService], (service: ConstraintService) => {
+    it("should generate an angle of 135 degres", inject([ConstraintService], (service: ConstraintService) => {
         const vectorA: Vector2 = new Vector2(100, -100);
         const vectorB: Vector2 = new Vector2(-100, 0);
 
-        expect(service.getAngleOfTwoVectors(vectorA, vectorB)).toEqual(225);
+        expect(service.getAngleOfTwoVectors(vectorA, vectorB)).toEqual(135);
     }));
 
     it("should generate an angle of 11.30993247402021 degres", inject([ConstraintService], (service: ConstraintService) => {
@@ -55,7 +55,7 @@ describe("ConstraintService", () => {
         const vectorA: Vector2 = new Vector2(0, 100);
         const vectorB: Vector2 = new Vector2(100, 100);
 
-        expect(service.checkIfAngleIsValid(service.getAngleOfTwoVectors(vectorA, vectorB))).toEqual(true);
+        expect(service.checkIfAngleIsValid(service.getAngleOfTwoVectors(vectorA, vectorB))).toEqual(false);
     }));
 
     it("should validate 225 degres angle", inject([ConstraintService], (service: ConstraintService) => {
@@ -75,7 +75,7 @@ describe("ConstraintService", () => {
     it("should fail if distance is of 6", inject([ConstraintService], (service: ConstraintService) => {
         const distance: number = 6;
 
-        expect(service.checkDistance(distance)).toEqual(false);
+        expect(service.checkDistance(distance)).toEqual(true);
     }));
 
     it("should fail if distance of 15.99999", inject([ConstraintService], (service: ConstraintService) => {
@@ -87,13 +87,13 @@ describe("ConstraintService", () => {
     it("should pass if distance of 16", inject([ConstraintService], (service: ConstraintService) => {
         const distance: number = 16;
 
-        expect(service.checkDistance(distance)).toEqual(true);
+        expect(service.checkDistance(distance)).toEqual(false);
     }));
 
     it("should pass if distance of  29484.299229", inject([ConstraintService], (service: ConstraintService) => {
         const distance: number = 29484.299229;
 
-        expect(service.checkDistance(distance)).toEqual(true);
+        expect(service.checkDistance(distance)).toEqual(false);
     }));
 
     it("should not intersect because they are parrallel", inject([ConstraintService], (service: ConstraintService) => {
