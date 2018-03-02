@@ -12,7 +12,6 @@ jobs:
     working_directory: ~/
 
     steps:
-      - checkout
 
       # Download and cache dependencies
       - restore_cache:
