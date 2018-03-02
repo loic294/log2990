@@ -46,8 +46,9 @@ pipelines:
           - nodeclient
         script:
         - cd client
+        - npm --version
         - npm install
-        - ng build
+        - npm run-script build
 definitions:
   caches:
     node: server/node_modules
