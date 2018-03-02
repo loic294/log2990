@@ -1,7 +1,6 @@
 #pipeline config
 #
 #WARNING: Does NOT ..... I REPEAT ..... does NOT BUILD server
-#WARNING: Does NOT ..... I REPEAT ..... does NOT run TEST on client
 #
 
 image: node:8.9.4
