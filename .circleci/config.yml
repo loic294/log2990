@@ -8,9 +8,6 @@ jobs:
     docker:
       # specify the version you desire here
       - image: circleci/node:8.9.4
-      
-
-    working_directory: ~/
 
     steps:
       - checkout
@@ -23,57 +20,53 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run: |
-          cd server
-          npm i
-          cd ..
+      - run:
+          name: Install packages in server
+          working_directory: server
+          command: npm i
 
-      - run: |
-          cd client
-          npm i
-          cd ..
+      - run:
+          name: Install packages in client
+          working_directory: client
+          command: npm i
 
       - save_cache:
           paths:
             - client/node_modules
-          key:
-            - v1-dependencies-{{ checksum "client/package.json" }}
+          key: v1-dependencies-{{ checksum "client/package.json" }}
       
       - save_cache:
           paths:
             - server/node_modules
-          key:
-            - v1-dependencies-{{ checksum "server/package.json" }}
+          key: v1-dependencies-{{ checksum "server/package.json" }}
 
       - run:
           name: Server test
-          command: |
-            cd server
-            npm --version
-            npm test
+          working_directory: server
+          command: npm test
 
       - run:
           name: Server run lint
-          command: |
-            cd server
-            npm run lint
+          working_directory: server
+          command: npm run lint
 
       - run:
           name: Client build
-          command: |
-            cd client
-            npm --version
-            npm run-script build
+          working_directory: client
+          command: npm run-script build
 
       - run:
           name: Client run tests
-          command: |
-            cd client
-            npm run-script pipeline
+          working_directory: client
+          command: npm run-script pipeline
 
       - run:
           name: Client run tests
-          command: |
-            cd client
-            npm run lint
-        
+          working_directory: client
+          command: npm run lint
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
