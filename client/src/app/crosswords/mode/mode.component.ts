@@ -31,7 +31,6 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     }
 
     public disconnectDialog(): void {
-        console.log("disconnected-------");
         this.dialog.open(DisconnectedDialogComponent, {
             width: "500px",
             height: "250px",
@@ -134,7 +133,7 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     templateUrl: "./mode.component.disconnected.html",
     styleUrls: ["./mode.component.css"]
   })
-  export class DisconnectedDialogComponent{
+  export class DisconnectedDialogComponent {
 
       public constructor(
         public dialog: MatDialog,
@@ -143,7 +142,7 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
         this.dialogRef.disableClose = true;
       }
 
-      public openModeDialog(): void{
+      public openModeDialog(): void {
         this.dialog.open(ModeDialogComponent, {
             width: "500px",
             height: "75%",

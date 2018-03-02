@@ -39,9 +39,10 @@ export class CrosswordComponent implements OnInit {
       return this._userScore;
   }
 
-  public get opponnentName(): string {
-      return this._opponentName;
+  public opponnentName(): string {
+      return this._socketService.player;
   }
+
   public unselect(): void {
       this._wordService.selectWordFromClue(null);
       this._wordService.selectWordFromGrid(null);
