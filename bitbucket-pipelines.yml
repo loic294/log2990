@@ -13,6 +13,7 @@ pipelines:
           - node
         script: # Modify the commands below to build your repository.
           - cd server
+          - npm --version
           - npm install
           - npm test
           - npm run lint
@@ -22,8 +23,9 @@ pipelines:
           - nodeclient
         script:
         - cd client
+        - npm --version
         - npm install
-        - ng build
+        - npm run-script build
 definitions:
   caches:
     node: server/node_modules
