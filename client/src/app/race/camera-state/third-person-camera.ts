@@ -1,5 +1,5 @@
 import AbsCamera, { CameraConstants } from "./ICamera";
-import { Vector3, PerspectiveCamera } from "three";
+import { PerspectiveCamera } from "three";
 import { RenderService } from "../render-service/render.service";
 
 export default class ThirdPersonCamera extends AbsCamera {
@@ -17,9 +17,10 @@ export default class ThirdPersonCamera extends AbsCamera {
     public onResize(): void {
         const camera: PerspectiveCamera = this._camera as PerspectiveCamera;
 
+        camera.aspect = this.renderer.getAspectRatio();
         camera.updateProjectionMatrix();
     }
 
-    public follow(carMeshPosition: Vector3): void {
+    public follow(): void {
     }
 }
