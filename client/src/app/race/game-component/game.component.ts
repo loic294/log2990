@@ -41,7 +41,7 @@ export class GameComponent implements AfterViewInit {
             .initialize(this.containerRef.nativeElement)
             .then(/* do nothing */)
             .catch((err) => console.error(err));
-        this.inputManager.init(this.car);
+        this.inputManager.init(this.renderService);
     }
 
     public get car(): Car {
