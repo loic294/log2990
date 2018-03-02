@@ -26,7 +26,7 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
         }
 
     public closeDialog(): void {
-      this.dialogRef.close();
+        this.dialog.closeAll();
     }
 
     public disconnectDialog(): void {
