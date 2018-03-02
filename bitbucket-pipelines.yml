@@ -35,6 +35,14 @@ pipelines:
         - npm install
         - npm run-script build
     - step:
+        name: Client run tests
+        caches:
+          - nodeclient
+          - node
+        script:
+          - cd client
+          - npm run-script pipeline
+    - step:
         name: Client run lint
         caches:
           - nodeclient
