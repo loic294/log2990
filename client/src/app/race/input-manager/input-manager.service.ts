@@ -8,11 +8,14 @@ import RightDownCarCommand from "./CarCommands/RightDownCarCommand";
 import BrakeDownCarCommand from "./CarCommands/BrakeDownCarCommand";
 import ReleaseUpCarCommand from "./CarCommands/ReleaseUpCarCommand";
 import BrakeUpCarCommand from "./CarCommands/BrakeUpCarCommand";
+import ChangeCameraViewCommand from "./CameraCommands/ChangeCameraViewCommand";
+import { RenderService } from "../render-service/render.service";
 
 const ACCELERATE_KEYCODE: number = 87;  // w
 const LEFT_KEYCODE: number = 65;        // a
 const BRAKE_KEYCODE: number = 83;       // s
 const RIGHT_KEYCODE: number = 68;       // d
+const CHANGE_VIEW_KEYCODE: number = 81; // q
 
 interface CommandKeyDict {
     command: AbsCommand;
@@ -30,12 +33,13 @@ export default class InputManagerService {
     private keyDownCommands: CommandKeyDict[];
     private keyUpCommands: CommandKeyDict[];
 
-    public init(car: Car): void {
+    public init(car: Car, renderer: RenderService): void {
         this.keyDownCommands = [
             {keyCode: ACCELERATE_KEYCODE, command: new AccelerateDownCarCommand(car)},
             {keyCode: LEFT_KEYCODE, command: new LeftDownCarCommand(car)},
             {keyCode: RIGHT_KEYCODE, command: new RightDownCarCommand(car)},
-            {keyCode: BRAKE_KEYCODE, command: new BrakeDownCarCommand(car)}
+            {keyCode: BRAKE_KEYCODE, command: new BrakeDownCarCommand(car)},
+            {keyCode: CHANGE_VIEW_KEYCODE, command: new ChangeCameraViewCommand(renderer)}
         ];
 
         this.keyUpCommands = [
