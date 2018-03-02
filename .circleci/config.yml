@@ -4,80 +4,80 @@
 #
 version: 2
 jobs:
-	build:
-		docker:
-			# specify the version you desire here
-			- image: circleci/node:8.9.4
+  build:
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:8.9.4
 
-		working_directory: ~/
+    working_directory: ~/
 
-		steps:
-			- checkout
+    steps:
+      - checkout
 
-			# Download and cache dependencies
-			- restore_cache:
-					keys:
-					- v1-dependencies-{{ checksum "client/package.json" }}
-					- v1-dependencies-{{ checksum "server/package.json" }}
-					# fallback to using the latest cache if no exact match is found
-					- v1-dependencies-
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "client/package.json" }}
+          - v1-dependencies-{{ checksum "server/package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
 
-			- run:
-				name: Install packages in server
-				command: |
-					cd server
-					npm i
-					npm --version
+      - run:
+        name: Install packages in server
+        command: |
+          cd server
+          npm i
+          npm --version
 
-			- run:
-				name: Install packages in client
-				command: |
-					cd client
-					npm i
-					npm --version
+      - run:
+        name: Install packages in client
+        command: |
+          cd client
+          npm i
+          npm --version
 
-			- save_cache:
-					paths:
-						- client/node_modules
-					key: v1-dependencies-{{ checksum "client/package.json" }}
-			
-			- save_cache:
-					paths:
-						- server/node_modules
-					key: v1-dependencies-{{ checksum "server/package.json" }}
+      - save_cache:
+          paths:
+            - client/node_modules
+          key: v1-dependencies-{{ checksum "client/package.json" }}
+      
+      - save_cache:
+          paths:
+            - server/node_modules
+          key: v1-dependencies-{{ checksum "server/package.json" }}
 
-			- run:
-					name: Server test
-					command: |
-						cd server
-						npm test
+      - run:
+          name: Server test
+          command: |
+            cd server
+            npm test
 
-			- run:
-					name: Server run lint
-					command: |
-						cd server
-						npm run lint
+      - run:
+          name: Server run lint
+          command: |
+            cd server
+            npm run lint
 
-			- run:
-					name: Client build
-					command: |
-						cd client
-						npm run-script build
+      - run:
+          name: Client build
+          command: |
+            cd client
+            npm run-script build
 
-			- run:
-					name: Client run tests
-					command: |
-						cd client
-						npm run-script pipeline
+      - run:
+          name: Client run tests
+          command: |
+            cd client
+            npm run-script pipeline
 
-			- run:
-					name: Client run tests
-					command: |
-						cd client
-						npm run lint
+      - run:
+          name: Client run tests
+          command: |
+            cd client
+            npm run lint
 
 workflows:
-	version: 2
-	build_and_test:
-		jobs:
-			- build
+  version: 2
+  build_and_test:
+    jobs:
+      - build
