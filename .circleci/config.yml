@@ -27,12 +27,14 @@ jobs:
         command: |
           cd server
           npm i
+          npm --version
 
       - run:
-        name: Install  packages in client
+        name: Install packages in client
         command: |
           cd client
           npm i
+          npm --version
 
       - save_cache:
           paths:
@@ -48,7 +50,6 @@ jobs:
           name: Server test
           command: |
             cd server
-            npm --version
             npm test
 
       - run:
@@ -61,7 +62,6 @@ jobs:
           name: Client build
           command: |
             cd client
-            npm --version
             npm run-script build
 
       - run:
