@@ -15,7 +15,6 @@ pipelines:
           - cd server
           - npm --version
           - npm install
-          - npm run-script build
           - npm test
     - step:
         name: Server run lint
@@ -55,9 +54,6 @@ pipelines:
           - nodeclient
           - node
         script:
-        - cd server
-        - npm install
-        - cd ..
         - cd client
         - npm --version
         - npm install
