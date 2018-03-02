@@ -9,9 +9,8 @@ jobs:
       # specify the version you desire here
       - image: circleci/node:8.9.4
 
-    working_directory: ~/
-
     steps:
+      - checkout
 
       # Download and cache dependencies
       - restore_cache:
