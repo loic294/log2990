@@ -17,7 +17,6 @@ export class SocketService {
     private _games: IGameModel[];
     private _showGames: boolean;
 
-
     private _updateUserConnected: Observable<boolean>;
     private _userConnected: Subject<boolean> = new Subject<boolean>();
 
