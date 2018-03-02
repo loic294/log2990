@@ -25,12 +25,12 @@ jobs:
       - run:
         name: Install packages in server
         working_directory: server
-        command: npm i && npm --version
+        command: npm i
 
       - run:
         name: Install packages in client
         working_directory: client
-        command: npm i && npm --version
+        command: npm i
 
       - save_cache:
           paths:
