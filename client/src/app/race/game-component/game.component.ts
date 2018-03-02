@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, ElementRef, ViewChild, HostListener } from "@angular/core";
 import { RenderService } from "../render-service/render.service";
-import { Car } from "../car/car";
 import InputManagerService, { Release } from "../input-manager/input-manager.service";
 
 @Component({
@@ -42,9 +41,5 @@ export class GameComponent implements AfterViewInit {
             .then(/* do nothing */)
             .catch((err) => console.error(err));
         this.inputManager.init(this.renderService);
-    }
-
-    public get car(): Car {
-        return this.renderService.car;
     }
 }

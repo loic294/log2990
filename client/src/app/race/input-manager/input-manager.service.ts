@@ -1,4 +1,3 @@
-import { Car } from "../car/car";
 import { Injectable } from "@angular/core";
 import AbsCommand from "./AbsCommand";
 import AccelerateDownCarCommand from "./CarCommands/AccelerateDownCarCommand";
