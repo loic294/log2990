@@ -8,7 +8,6 @@ import { AppComponent } from "./app.component";
 import { GameComponent } from "./race/game-component/game.component";
 
 import { RenderService } from "./race/render-service/render.service";
-import { BasicService } from "./basic.service";
 import { WordService } from "./word.service/word.service";
 
 import { DifficultyComponent } from "./crosswords/difficulty/difficulty.component";
@@ -42,8 +41,7 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         ModeComponent,
         ModeDialogComponent,
         HomeComponent,
-        TrackCreationComponent,
-        ModeDialogComponent
+        TrackCreationComponent
     ],
     entryComponents: [
         ModeDialogComponent
@@ -61,7 +59,6 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
     ],
     providers: [
         RenderService,
-        BasicService,
         WordService,
         GridService,
         SocketService,
