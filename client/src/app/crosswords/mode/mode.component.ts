@@ -10,9 +10,9 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
   })
   export class ModeDialogComponent {
 
-    public showDifficulty: boolean = true;
-    public showNameInput: boolean = true;
-    public showStartSoloGame: boolean = true;
+    public showDifficulty: boolean = false;
+    public showNameInput: boolean = false;
+    public showStartSoloGame: boolean = false;
     public waitingForPlayer: boolean = false;
 
     public constructor (
@@ -58,7 +58,7 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     }
 
     public startSoloGame(): boolean {
-        if (this.selectedMode === "Single Player" && !this.showNameInput) {
+        if (this.selectedMode === "Single Player" && this.showNameInput) {
             return true;
         }
 
@@ -66,11 +66,11 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     }
 
     public isDifficultySelected(): boolean {
-       return this.showNameInput = false;
+       return this.showNameInput = true;
     }
 
     public isMultiPlayer(): boolean {
-        if (!this.showNameInput && this.selectedMode === "Two Players") {
+        if (this.showNameInput && this.selectedMode === "Two Players") {
             return true;
         }
 
@@ -95,7 +95,7 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     }
 
     public onSelect(mode: string): void {
-        this.showDifficulty = false;
+        this.showDifficulty = true;
 
         return this.socketService.onSelect(mode);
 
@@ -153,7 +153,7 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
       public ngOnInit(): void {}
 
 }
-
+// tslint:disable max-classes-per-file
 @Component({
     selector: "app-mode",
     templateUrl: "./mode.component.html",
