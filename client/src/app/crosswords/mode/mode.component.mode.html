@@ -7,7 +7,7 @@
       </button>
     </div>
   
-    <div class="input-row" [hidden]="showDifficulty">
+    <div class="input-row" [hidden]="!showDifficulty">
       <app-difficulty (click)="isDifficultySelected()"></app-difficulty>
     </div>
   
