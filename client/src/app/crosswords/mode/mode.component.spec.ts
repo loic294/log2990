@@ -22,10 +22,10 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
   })
 export class FakeTestDialogModule {}
 
-describe("ModeDialogComponent", () => {
+describe("ModeComponent", () => {
     let component: ModeComponent;
     let fixture: ComponentFixture<ModeComponent>;
-
+    let dialog: ModeDialogComponent;
     beforeEach(async (() => {
         TestBed.configureTestingModule({
             imports: [
@@ -49,10 +49,25 @@ describe("ModeDialogComponent", () => {
         fixture = TestBed.createComponent(ModeComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
+        dialog = component.dialog.open(ModeDialogComponent).componentInstance;
     });
 
     it("should create", () => {
         expect(component).toBeTruthy();
+    });
+
+    it("should have an open dialog", () => {
+        expect(ModeDialogComponent).toBeTruthy();
+    });
+
+    it("should show two modes of play, single and two players", () => {
+
+        const modes: string [] = dialog.modes;
+
+        const expected: string[] = ["Single Player", "Two Players"];
+
+        expect(modes).toEqual(expected);
+
     });
 
 });
