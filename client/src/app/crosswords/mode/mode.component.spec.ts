@@ -26,6 +26,7 @@ describe("ModeComponent", () => {
     let component: ModeComponent;
     let fixture: ComponentFixture<ModeComponent>;
     let dialog: ModeDialogComponent;
+
     beforeEach(async (() => {
         TestBed.configureTestingModule({
             imports: [
@@ -63,11 +64,63 @@ describe("ModeComponent", () => {
     it("should show two modes of play, single and two players", () => {
 
         const modes: string [] = dialog.modes;
-
         const expected: string[] = ["Single Player", "Two Players"];
 
         expect(modes).toEqual(expected);
 
     });
 
+    it("should not show difficulty options if mode option is not selected", () => {
+
+        expect(dialog.showDifficulty).toBeFalsy();
+
+    });
+
+    it("should not show name input if mode option is not selected", () => {
+
+        expect(dialog.showNameInput).toBeFalsy();
+
+    });
+
+    it("should not show Start Game if mode option is not selected", () => {
+
+        expect(dialog.showStartSoloGame).toBeFalsy();
+
+    });
+
+    it("should not show games if mode option is not selected", () => {
+
+        expect(dialog.showGames).toBeFalsy();
+
+    });
+
+    it("should show difficulties upon Single Player selection", () => {
+
+        dialog.onSelect("Single Player");
+        expect(dialog.showDifficulty).toBeTruthy();
+
+    });
+
+    it("should show show difficulties upon Two Player selection", () => {
+
+        dialog.onSelect("Two Players");
+        expect(dialog.showDifficulty).toBeTruthy();
+
+    });
+
+    it("should wait for player upon Two players game creation", () => {
+
+        const mode: string = "Two Players";
+
+        dialog.createGame(mode);
+        expect(dialog.waitingForPlayer).toBeTruthy();
+
+    });
+
+    it("should display available games upon Two players game join", () => {
+
+        dialog.toggleShowGames();
+        expect(dialog.showGames).toBeTruthy();
+
+    });
 });
