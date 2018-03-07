@@ -153,7 +153,7 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
       public ngOnInit(): void {}
 
 }
-
+// tslint:disable max-classes-per-file
 @Component({
     selector: "app-mode",
     templateUrl: "./mode.component.html",
