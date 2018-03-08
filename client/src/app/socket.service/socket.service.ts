@@ -29,8 +29,8 @@ export class SocketService {
     private _updateOpponentDisconnected: Observable<boolean>;
     private _opponentDisconnected: Subject<boolean> = new Subject<boolean>();
 
-    private _updateOpponentName: Observable<string>;
-    private _opponentName: Subject<string> = new Subject<string>();
+    private _updateOpponentName: Observable<string>; 
+    private _opponentName: Subject<string> = new Subject<string>(); 
 
     public constructor(
         private _socket: Socket,
@@ -68,9 +68,13 @@ export class SocketService {
             this._wordToValidate.next(data);
         });
 
-        this._socket.on("second_player_joined", (data: string) => {
+        this._socket.on("second_player_joined", (data: IGameModel) => {
             this._userConnected.next(true);
-            this._opponentName.next(data);
+            if ( this.player === data.players[0]) {
+                this._opponentName.next(data.players[1].toString());
+            } else {
+                this._opponentName.next(data.players[0].toString());
+            }
         });
         this._socket.on("second_player_connected", (data: IGameModel) => {
             this._userConnected.next(true);
@@ -85,6 +89,7 @@ export class SocketService {
     public get opponentName(): Observable<string> {
         return this._updateOpponentName;
     }
+
     public get isOpponentDisconnected(): Observable<boolean> {
         return this._updateOpponentDisconnected;
     }

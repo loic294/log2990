@@ -9,7 +9,7 @@ interface DataReceived {
 const joinFirstPlayer: Function = async (socket: Socket, game: IGameModel, room: string, value: string): Promise<void> => {
     socket.join(room);
 
-    await Game.findOneAndUpdate({ name: game.name}, { players: [value] });
+    await Game.findOneAndUpdate({ name: game.name}, { players: [value] }, {new: true});
     socket.emit("connected_to_game", JSON.stringify({
         game
     }));
@@ -18,19 +18,17 @@ const joinFirstPlayer: Function = async (socket: Socket, game: IGameModel, room:
 const joinSecondPlayer: Function = async (socket: Socket, game: IGameModel, room: string, value: string): Promise<void> => {
     socket.join(room);
 
-    const dbGame: IGameModel = await Game.findOne({
-        name: game.name
-    });
-    dbGame.players.push(value);
-    await dbGame.save();
+    game = await Game.findOneAndUpdate({ name: game.name}, { players: [game.players[0], value] }, {new: true});
 
-    socket.emit("second_player_connected", game);
+    socket.server.in(room).emit("second_player_joined", game);
 
+    socket.emit("connected_to_game", JSON.stringify({
+        game
+    }));
     // SEND CONNECTED TO OTHER PLAYER
 };
 
 export default (socket: Socket) => {
-
     socket.on("connect_to_game", async (data: string) => {
         const { gameId: room, value }: DataReceived = JSON.parse(data);
         const game: IGameModel = await Game.findOne({
@@ -41,7 +39,6 @@ export default (socket: Socket) => {
             joinFirstPlayer(socket, game, room, value);
         } else if (game.players.length === 1) {
             joinSecondPlayer(socket, game, room, value);
-            socket.to(room).emit("second_player_joined", value);
         }
 
         socket.on("sync_word", (content: string) => {
