@@ -24,9 +24,7 @@ const joinSecondPlayer: Function = async (socket: Socket, game: IGameModel, room
     dbGame.players.push(value);
     await dbGame.save();
 
-    socket.emit("connected_to_game", JSON.stringify({
-        game: dbGame
-    }));
+    socket.emit("second_player_connected", game);
 
     // SEND CONNECTED TO OTHER PLAYER
 };
