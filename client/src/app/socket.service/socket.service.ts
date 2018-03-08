@@ -160,6 +160,9 @@ export class SocketService {
         return this._updateOpponentName;
     }
 
+    public get opponentName(): Observable<string> {
+        return this._updateOpponentName;
+    }
     public get isOpponentDisconnected(): Observable<boolean> {
         return this._updateOpponentDisconnected;
     }
