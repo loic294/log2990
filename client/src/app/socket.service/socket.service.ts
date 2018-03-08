@@ -30,8 +30,8 @@ export class SocketService {
     private _updateOpponentDisconnected: Observable<boolean>;
     private _opponentDisconnected: Subject<boolean> = new Subject<boolean>();
 
-    private _updateOpponentName: Observable<string>; 
-    private _opponentName: Subject<string> = new Subject<string>(); 
+    private _updateOpponentName: Observable<string>;
+    private _opponentName: Subject<string> = new Subject<string>();
 
     private _updateUserScore: Observable<number>;
     private _userScore: Subject<number> = new Subject<number>();
