@@ -22,5 +22,4 @@ export default abstract class AbsCamera {
         this._camera.position.set(0, CameraConstants.INITIAL_CAMERA_POSITION_Y, 0);
         this._camera.lookAt(carPosition);
     }
-
 }
