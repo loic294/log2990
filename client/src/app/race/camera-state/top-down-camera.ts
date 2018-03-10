@@ -15,6 +15,8 @@ export default class TopDownCamera extends AbsCamera {
             CameraConstants.NEAR_CLIPPING_PLANE,
             CameraConstants.FAR_CLIPPING_PLANE
         );
+        this._camera.position.set(0, CameraConstants.INITIAL_CAMERA_POSITION_Y, 0);
+        this._camera.lookAt(renderer.car.position);
     }
 
     public onResize(): void {
