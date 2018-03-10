@@ -22,5 +22,8 @@ export default class ThirdPersonCamera extends AbsCamera {
     }
 
     public follow(): void {
+        this._camera.position.x = this.renderer.car.meshPosition.x - CameraConstants.DISTANCE_BEHIND_FACTOR * this.renderer.car.direction.x;
+        this._camera.position.z = this.renderer.car.meshPosition.z - CameraConstants.DISTANCE_BEHIND_FACTOR * this.renderer.car.direction.z;
+        this._camera.lookAt(this.renderer.car.meshPosition);
     }
 }
