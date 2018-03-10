@@ -12,6 +12,8 @@ export default class ThirdPersonCamera extends AbsCamera {
             CameraConstants.NEAR_CLIPPING_PLANE,
             CameraConstants.FAR_CLIPPING_PLANE
         );
+        this._camera.position.set(0, CameraConstants.THIRD_PERSON_HEIGHT, 0);
+
     }
 
     public onResize(): void {
