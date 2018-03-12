@@ -3,7 +3,9 @@
   <div class="row" *ngFor="let clue of clues" (click)="onSelect(clue)">
     <div *ngIf="clue.orientation===1">
       <div class="clue" [class.selected]="this._selectedClue == clue">
-        <span class="index">{{clue.index+1}}</span> {{ clue.desc }}
+        <span class="index">{{clue.index+1}}</span> 
+        <span *ngIf = "cheatMode">{{ clue.name }}</span>
+        <span *ngIf = "!cheatMode">{{clue.desc}}</span> 
       </div>
     </div>
   </div>
@@ -11,8 +13,11 @@
   <div class="row" *ngFor="let clue of clues" (click)="onSelect(clue)">
     <div *ngIf="clue.orientation===0">
       <div class="clue" [class.selected]="this._selectedClue == clue">
-					<span class="index">{{clue.index+1}}</span> {{ clue.desc }}
+          <span class="index">{{clue.index+1}}</span> 
+          <span *ngIf = "cheatMode">{{ clue.name }}</span>
+          <span *ngIf = "!cheatMode">{{clue.desc}}</span> 
       </div>
     </div>
   </div>
 </div>
+<button (click)= "switchCheatMode()">Cheat Mode</button>
