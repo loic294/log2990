@@ -129,7 +129,7 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
 }
 
 @Component({
-    selector: "mode.component.disconnected",
+    selector: "app-mode-component-disconnected",
     templateUrl: "./mode.component.disconnected.html",
     styleUrls: ["./mode.component.css"]
   })
@@ -149,8 +149,6 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
             data: {  }
         });
       }
-
-      public ngOnInit(): void {}
 
 }
 // tslint:disable max-classes-per-file
