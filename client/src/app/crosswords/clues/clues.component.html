@@ -4,8 +4,8 @@
     <div *ngIf="clue.orientation===1">
       <div class="clue" [class.selected]="this._selectedClue == clue">
         <span class="index">{{clue.index+1}}</span> 
-        <span *ngIf = "cheatMode">{{ clue.name }}</span>
-        <span *ngIf = "!cheatMode">{{clue.desc}}</span> 
+        <span *ngIf = "cheatMode; else description">{{ clue.name }}</span>
+        <ng-template #description><span>{{clue.desc}}</span></ng-template>
       </div>
     </div>
   </div>
@@ -14,8 +14,8 @@
     <div *ngIf="clue.orientation===0">
       <div class="clue" [class.selected]="this._selectedClue == clue">
           <span class="index">{{clue.index+1}}</span> 
-          <span *ngIf = "cheatMode">{{ clue.name }}</span>
-          <span *ngIf = "!cheatMode">{{clue.desc}}</span> 
+          <span *ngIf = "cheatMode; else description">{{ clue.name }}</span>
+          <ng-template #description><span>{{clue.desc}}</span></ng-template>
       </div>
     </div>
   </div>
