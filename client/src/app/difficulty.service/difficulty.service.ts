@@ -16,7 +16,7 @@ export class DifficultyService {
         return this._difficulty;
     }
 
-    public selectDifficulty(diff: Difficulty): void {
-        this._difficultySubject.next(diff);
+    public selectDifficulty(difficulty: Difficulty): void {
+        this._difficultySubject.next(difficulty);
     }
 }
