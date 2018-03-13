@@ -3,7 +3,7 @@
 
 import { Injectable } from "@angular/core";
 import { GRID } from "../mock-grid";
-import { Cell } from "../../../../common/grid/case";
+import { Cell } from "../../../../common/grid/cell";
 import { Observable } from "rxjs/Observable";
 import { of } from "rxjs/observable/of";
 import Word, { Orientation } from "../../../../common/lexical/word";
