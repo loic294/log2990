@@ -2,9 +2,9 @@ import { Injectable } from "@angular/core";
 import { Socket } from "ng-socket-io";
 import { Observable } from "rxjs/Observable";
 import { Subject } from "rxjs/Subject";
-import { IGameModel } from "./../../../../server/app/models/game";
-import { difficultyName } from "../../../../common/grid/difficulties";
-import Word from "../../../../common/lexical/word";
+import { IGameModel } from "./../../../../../server/app/models/game";
+import { difficultyName } from "../../../../../common/grid/difficulties";
+import Word from "../../../../../common/lexical/word";
 import { DifficultyService } from "./../difficulty.service/difficulty.service";
 @Injectable()
 export class SocketService {

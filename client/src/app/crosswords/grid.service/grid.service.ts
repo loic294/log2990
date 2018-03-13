@@ -3,10 +3,10 @@
 
 import { Injectable } from "@angular/core";
 import { GRID } from "../mock-grid";
-import { Cell } from "../../../../common/grid/cell";
+import { Cell } from "../../../../../common/grid/cell";
 import { Observable } from "rxjs/Observable";
 import { of } from "rxjs/observable/of";
-import Word, { Orientation } from "../../../../common/lexical/word";
+import Word, { Orientation } from "../../../../../common/lexical/word";
 import { GridTools } from "./grid.tools";
 
 import { WordService } from "../word.service/word.service";
