@@ -54,8 +54,8 @@ export class RenderService {
 
     private update(): void {
         const timeSinceLastFrame: number = Date.now() - this.lastDate;
-        this._stateCamera.follow();
         this._car.update(timeSinceLastFrame);
+        this._stateCamera.follow();
         this.lastDate = Date.now();
     }
 
