@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/Observable";
 import { Subject } from "rxjs/Subject";
-import { Difficulty } from "./../../../../common/grid/difficulties";
+import { Difficulty } from "../../../../../common/grid/difficulties";
 
 @Injectable()
 export class DifficultyService {

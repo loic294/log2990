@@ -2,8 +2,8 @@
 // tslint:disable:no-suspicious-comment
 
 import { Injectable } from "@angular/core";
-import { Cell } from "../../../../common/grid/cell";
-import Word, { Orientation } from "../../../../common/lexical/word";
+import { Cell } from "../../../../../common/grid/cell";
+import Word, { Orientation } from "../../../../../common/lexical/word";
 
 import CLUES from "../mock-words";
 
