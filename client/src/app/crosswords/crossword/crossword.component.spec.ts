@@ -10,13 +10,13 @@ import { CrosswordComponent } from "./crossword.component";
 import { CluesComponent } from "../clues/clues.component";
 import { DifficultyComponent } from "../difficulty/difficulty.component";
 import { GridComponent } from "../grid/grid.component";
-import { WordService } from "../../word.service/word.service";
+import { WordService } from "../word.service/word.service";
 import { ModeComponent, ModeDialogComponent } from "../mode/mode.component";
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatProgressSpinnerModule} from "@angular/material";
-import { SocketService } from "../../socket.service/socket.service";
-import { GridService } from "../../grid.service/grid.service";
-import { DifficultyService } from "../../difficulty.service/difficulty.service";
+import { SocketService } from "../socket.service/socket.service";
+import { GridService } from "../grid.service/grid.service";
+import { DifficultyService } from "../difficulty.service/difficulty.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
