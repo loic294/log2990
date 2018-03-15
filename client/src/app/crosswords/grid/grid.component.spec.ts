@@ -4,10 +4,10 @@ import { FormsModule } from "@angular/forms";
 import { SocketIoModule, SocketIoConfig } from "ng-socket-io";
 
 import { GridComponent } from "./grid.component";
-import { WordService } from "../../word.service/word.service";
-import { SocketService } from "../../socket.service/socket.service";
-import { GridService } from "../../grid.service/grid.service";
-import { DifficultyService } from "../../difficulty.service/difficulty.service";
+import { WordService } from "../word.service/word.service";
+import { SocketService } from "../socket.service/socket.service";
+import { GridService } from "../grid.service/grid.service";
+import { DifficultyService } from "../difficulty.service/difficulty.service";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
