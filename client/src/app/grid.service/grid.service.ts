@@ -17,7 +17,6 @@ export class GridService {
     private _grid: Array<Array<Cell>>;
     private _selectedWord: Cell;
     private _word: Word;
-    private _otherWord: Word;
     private _gridTools: GridTools;
 
     public constructor(
