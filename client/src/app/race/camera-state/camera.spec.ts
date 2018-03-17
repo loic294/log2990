@@ -9,7 +9,7 @@ describe("ThirdPersonCamera", () => {
 
     beforeEach((done: () => void) => {
         renderer = new RenderService();
-        renderer.car.init().then(() => done());
+        renderer.car.init().then(() => done()).catch((err: Error) => console.error(err));
     });
 
     it("should be a proper distance behind upon creation.",  () => {
