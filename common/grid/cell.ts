@@ -2,6 +2,7 @@ export class Cell {
 
     public wordIndexes: Array<number>;
     public isOtherPlayer: boolean;
+    public isValidatedByOther: boolean;
 
     public constructor(
         private _char: string = "-",
@@ -12,7 +13,7 @@ export class Cell {
         private _black: boolean = false) {
 
         this.wordIndexes = [];
-        // this.isOtherPlayer = false;
+        this.isOtherPlayer = false;
 	}
 
     public set char(c: string) {

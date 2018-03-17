@@ -59,10 +59,10 @@
 	font-size: 10px;
 }
 
-.other-player-horizontal.start{
+.other-player.start{
     border-left: solid lightblue 3px;
 }
-.other-player-horizontal{
+.other-player{
     border-top: solid lightblue 3px;
     border-bottom: solid lightblue 3px;
 }
