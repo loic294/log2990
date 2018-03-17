@@ -7,9 +7,9 @@ import { CameraConstants } from "./AbsCamera";
 describe("ThirdPersonCamera", () => {
     let renderer: RenderService;
 
-    beforeEach(async() => {
+    beforeEach((done: () => void) => {
         renderer = new RenderService();
-        await renderer.car.init();
+        renderer.car.init().then(() => done());
     });
 
     it("should be a proper distance behind upon creation.",  () => {
