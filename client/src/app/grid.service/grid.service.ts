@@ -20,7 +20,6 @@ export class GridService {
     private _grid: Array<Array<Cell>>;
     private _selectedWord: Cell;
     private _word: Word;
-    private _otherWord: Word;
     private _gridTools: GridTools;
 
     public constructor(
@@ -65,12 +64,6 @@ export class GridService {
     public selectOtherPlayerWord(w: Word): void {
 
         this._gridTools.setGrid(this._grid);
-
-        if (this._otherWord) {
-            this._gridTools.iterateWord(this._otherWord, (row: number, col: number) => {
-                this._grid[row][col].isOtherPlayer = false;
-            });
-        }
 
         this._otherWord = w;
         if (w) {
