@@ -1,6 +1,6 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { Difficulty, difficultyName } from "../../../../../common/grid/difficulties";
-import { DifficultyService } from "./../difficulty.service/difficulty.service";
+import { DifficultyService } from "./../../difficulty.service/difficulty.service";
 
 @Component({
     selector: "app-difficulty",
@@ -8,7 +8,7 @@ import { DifficultyService } from "./../difficulty.service/difficulty.service";
     styleUrls: ["./difficulty.component.css"]
 })
 
-export class DifficultyComponent {
+export class DifficultyComponent implements OnInit {
 
     private _selectedDifficulty: Difficulty;
     private difficulties: Array<Difficulty>;
@@ -22,10 +22,12 @@ export class DifficultyComponent {
         ];
     }
 
-    public onSelect(difficuty: Difficulty): void {
-        this._selectedDifficulty = difficuty;
-        this.difficultyService.selectDifficulty(difficuty);
+    public onSelect(diff: Difficulty): void {
+        this._selectedDifficulty = diff;
+        this.difficultyService.selectDifficulty(diff);
     }
+
+    public ngOnInit(): void {}
 
     public get selectedDifficulty(): Difficulty {
         return this._selectedDifficulty;

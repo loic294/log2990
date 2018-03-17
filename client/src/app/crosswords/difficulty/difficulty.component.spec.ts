@@ -4,9 +4,9 @@ import { SocketIoModule, SocketIoConfig } from "ng-socket-io";
 
 import { DifficultyComponent } from "./difficulty.component";
 import { Difficulty } from "../../../../../common/grid/difficulties";
-import { DifficultyService } from "./../difficulty.service/difficulty.service";
-import { SocketService } from "../socket.service/socket.service";
-import { GridService } from "../grid.service/grid.service";
+import { DifficultyService } from "./../../difficulty.service/difficulty.service";
+import { SocketService } from "../../socket.service/socket.service";
+import { GridService } from "../../grid.service/grid.service";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
