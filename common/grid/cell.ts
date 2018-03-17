@@ -12,7 +12,7 @@ export class Cell {
         private _black: boolean = false) {
 
         this.wordIndexes = [];
-        this.isOtherPlayer = false;
+        // this.isOtherPlayer = false;
 	}
 
     public set char(c: string) {
