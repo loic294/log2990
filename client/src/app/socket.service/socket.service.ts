@@ -26,6 +26,12 @@ export class SocketService {
     private _updateWordValidated: Observable<string>;
     private _wordToValidate: Subject<string> = new Subject<string>();
 
+    private _updateOpponentDisconnected: Observable<boolean>;
+    private _opponentDisconnected: Subject<boolean> = new Subject<boolean>();
+
+    private _updateOpponentName: Observable<string>;
+    private _opponentName: Subject<string> = new Subject<string>();
+
     public constructor(
         private _socket: Socket,
         private difficultyService: DifficultyService
@@ -41,6 +47,8 @@ export class SocketService {
         this._updateUserConnected = this._userConnected.asObservable();
         this._updateHighligthCell = this._highlightCell.asObservable();
         this._updateWordValidated = this._wordToValidate.asObservable();
+        this._updateOpponentDisconnected = this._opponentDisconnected.asObservable();
+        this._updateOpponentName = this._opponentName.asObservable();
         this.initializeSocket();
 
     }
@@ -60,9 +68,26 @@ export class SocketService {
             this._wordToValidate.next(data);
         });
 
-        this._socket.on("second_player_joined", (data: boolean) => {
+        this._socket.on("second_player_joined", (data: IGameModel) => {
             this._userConnected.next(true);
+            if ( this.player === data.players[0]) {
+                this._opponentName.next(data.players[1].toString());
+            } else {
+                this._opponentName.next(data.players[0].toString());
+            }
         });
+
+        this._socket.on("opponent_disconnected", (data: boolean) => {
+            this._opponentDisconnected.next(true);
+        });
+    }
+
+    public get opponentName(): Observable<string> {
+        return this._updateOpponentName;
+    }
+
+    public get isOpponentDisconnected(): Observable<boolean> {
+        return this._updateOpponentDisconnected;
     }
 
     public get isUserConnected(): Observable<boolean> {

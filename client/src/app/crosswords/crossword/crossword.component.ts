@@ -10,12 +10,19 @@ import { SocketService } from "../../socket.service/socket.service";
   providers: [ WordService ]
 })
 export class CrosswordComponent implements OnInit {
-
+  private _opponentName: string;
   public constructor(
       public _wordService: WordService,
       public _socketService: SocketService
-    ) { }
+    ) {
+        this._socketService.opponentName.subscribe((data) => {
+            this._opponentName = data;
+        });
+     }
 
+  public get opponnentName(): string {
+      return this._opponentName;
+  }
   public unselect(): void {
       this._wordService.selectWordFromClue(null);
       this._wordService.selectWordFromGrid(null);

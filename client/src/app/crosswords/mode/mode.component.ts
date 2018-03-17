@@ -4,15 +4,15 @@ import { IGameModel } from "./../../../../../server/app/models/game";
 import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
 
 @Component({
-    selector: "app-mode-component-popup",
-    templateUrl: "mode.component.popup.html",
+    selector: "app-mode-component-mode",
+    templateUrl: "mode.component.mode.html",
     styleUrls: ["./mode.component.css"]
   })
   export class ModeDialogComponent {
 
-    public showDifficulty: boolean = true;
-    public showNameInput: boolean = true;
-    public showStartSoloGame: boolean = true;
+    public showDifficulty: boolean = false;
+    public showNameInput: boolean = false;
+    public showStartSoloGame: boolean = false;
     public waitingForPlayer: boolean = false;
 
     public constructor (
@@ -21,10 +21,28 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
         public dialog: MatDialog,
         @Inject(MAT_DIALOG_DATA) public data: {}) {
             this.waitingConnection();
+            this.isUserDisconnected();
+            dialogRef.disableClose = true;
         }
 
     public closeDialog(): void {
-      this.dialogRef.close();
+        this.dialog.closeAll();
+    }
+
+    public disconnectDialog(): void {
+        this.dialog.open(DisconnectedDialogComponent, {
+            width: "500px",
+            height: "250px",
+            data: {  }
+        });
+    }
+
+    private isUserDisconnected(): void {
+        this.socketService.isOpponentDisconnected.subscribe( (opponentDisconnected: boolean) => {
+            if (opponentDisconnected) {
+                this.disconnectDialog();
+            }
+        });
     }
 
     private waitingConnection(): void {
@@ -40,7 +58,7 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     }
 
     public startSoloGame(): boolean {
-        if (this.selectedMode === "Single Player" && !this.showNameInput) {
+        if (this.selectedMode === "Single Player" && this.showNameInput) {
             return true;
         }
 
@@ -48,11 +66,11 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     }
 
     public isDifficultySelected(): boolean {
-       return this.showNameInput = false;
+       return this.showNameInput = true;
     }
 
     public isMultiPlayer(): boolean {
-        if (!this.showNameInput && this.selectedMode === "Two Players") {
+        if (this.showNameInput && this.selectedMode === "Two Players") {
             return true;
         }
 
@@ -77,7 +95,7 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     }
 
     public onSelect(mode: string): void {
-        this.showDifficulty = false;
+        this.showDifficulty = true;
 
         return this.socketService.onSelect(mode);
 
@@ -111,6 +129,30 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
 }
 
 @Component({
+    selector: "app-mode-component-disconnected",
+    templateUrl: "./mode.component.disconnected.html",
+    styleUrls: ["./mode.component.css"]
+  })
+  export class DisconnectedDialogComponent {
+
+      public constructor(
+        public dialog: MatDialog,
+        private dialogRef: MatDialogRef<ModeComponent>
+      ) {
+        this.dialogRef.disableClose = true;
+      }
+
+      public openModeDialog(): void {
+        this.dialog.open(ModeDialogComponent, {
+            width: "500px",
+            height: "75%",
+            data: {  }
+        });
+      }
+
+}
+// tslint:disable max-classes-per-file
+@Component({
     selector: "app-mode",
     templateUrl: "./mode.component.html",
     styleUrls: ["./mode.component.css"]
@@ -123,7 +165,7 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
 
           this.dialog.open(ModeDialogComponent, {
               width: "500px",
-              height: "500px",
+              height: "75%",
               data: {  }
           });
 
