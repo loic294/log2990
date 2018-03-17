@@ -1,4 +1,4 @@
-import { Cell } from "../../../../common/grid/case";
+import { Cell } from "../../../../common/grid/cell";
 import Word from "../../../../common/lexical/word";
 import Constraint from "./constraint";
 import axios from "axios";

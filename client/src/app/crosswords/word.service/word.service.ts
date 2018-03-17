@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/Observable";
 import { Subject } from "rxjs/Subject";
-import Word from "../../../../common/lexical/word";
+import Word from "../../../../../common/lexical/word";
 
 @Injectable()
 export class WordService {
