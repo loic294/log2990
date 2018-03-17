@@ -1,5 +1,5 @@
 // tslint:disable:no-magic-numbers
-import Word, { Orientation } from "../../../../common/lexical/word";
+import Word, { Orientation } from "../../../common/lexical/word";
 
 /** TEMPORARY MOCKED CONTENT
  *

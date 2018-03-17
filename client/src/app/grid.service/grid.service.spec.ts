@@ -4,7 +4,7 @@ import { Socket, SocketIoConfig } from "ng-socket-io";
 import { WordService } from "../word.service/word.service";
 import { SocketService } from "../socket.service/socket.service";
 import { GridService } from "./grid.service";
-import Word, { Orientation } from "../../../../../common/lexical/word";
+import Word, { Orientation } from "../../../../common/lexical/word";
 import { DifficultyService } from "./../difficulty.service/difficulty.service";
 
 describe("GridService", () => {
