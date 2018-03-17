@@ -1,4 +1,4 @@
-import AbsCamera, { CameraConstants } from "./ICamera";
+import AbsCamera, { CameraConstants } from "./AbsCamera";
 import { PerspectiveCamera } from "three";
 import { RenderService } from "../render-service/render.service";
 

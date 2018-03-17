@@ -5,7 +5,7 @@ MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, BoxGeometry }
 import { Car } from "../car/car";
 import TopDownCamera from "../camera-state/top-down-camera";
 import ThirdPersonCamera from "../camera-state/third-person-camera";
-import AbsCamera from "../camera-state/ICamera";
+import AbsCamera from "../camera-state/AbsCamera";
 
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 1;
