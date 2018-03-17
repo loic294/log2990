@@ -7,10 +7,15 @@ module.exports = function (config) {
     frameworks: ['jasmine', '@angular/cli'],
     plugins: [
       require('karma-jasmine'),
-      require('karma-chrome-launcher'),
+     // require('karma-chrome-launcher'),
+      // require('karma-phantomjs-launcher'),
+      require('karma-phantomjs-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage-istanbul-reporter'),
       require('@angular/cli/plugins/karma')
+    ],
+    files: [
+        './node_modules/phantomjs-polyfill/bind-polyfill.js'
     ],
     client:{
       clearContext: false // leave Jasmine Spec Runner output visible in browser
@@ -25,9 +30,12 @@ module.exports = function (config) {
     reporters: ['progress', 'kjhtml'],
     port: 9876,
     colors: true,
-    logLevel: config.LOG_INFO,
-    autoWatch: true,
-    browsers: ['Chrome'],
-    singleRun: false
+    logLevel: 'debug',
+    autoWatch: false,
+    browsers: ['PhantomJS'],
+    singleRun: true,
+    phantomjsLauncher: {
+        exitOnResourceError: false
+    }
   });
 };

@@ -1,14 +1,23 @@
 // tslint:disable:no-floating-promises
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { SocketIoModule, SocketIoConfig } from "ng-socket-io";
+
 import { DifficultyComponent } from "./difficulty.component";
 import { Difficulty } from "../../../../../common/grid/difficulties";
+import { DifficultyService } from "./../../difficulty.service/difficulty.service";
+import { SocketService } from "../../socket.service/socket.service";
+import { GridService } from "../../grid.service/grid.service";
+
+const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
 describe("DifficultyComponent", () => {
     let component: DifficultyComponent;
     let fixture: ComponentFixture<DifficultyComponent>;
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [DifficultyComponent]
+            imports: [SocketIoModule.forRoot(config)],
+            declarations: [DifficultyComponent],
+            providers: [DifficultyService, SocketService, GridService]
         }).compileComponents();
     }));
 
@@ -20,7 +29,6 @@ describe("DifficultyComponent", () => {
 
     it("Should create DifficultyComponent", () => {
         expect(component).toBeTruthy();
-        expect(component.selectedDifficulty).toBe(Difficulty.Easy);
     });
 
     it("Should display Easy", () => {
