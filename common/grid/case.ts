@@ -67,4 +67,12 @@ export class Cell {
         return this._black;
     }
 
+    public setBlack(black : boolean) : void {
+        this._black = black;
+    }
+
+    public getValidatedValue(): string {
+        return this._char;
+    }
+
 }
