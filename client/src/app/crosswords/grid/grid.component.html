@@ -4,16 +4,17 @@
       <div class="col" *ngFor="let case of row;">
 					<input 
 						[disabled]="case.validated" 
-						class="square" 
+            class="square"
 						[ngModel]="case.char" 
 						(keypress)="updateGrid($event, case)" 
 						(keyup)="updateGrid($event, case)"
 						maxlength="1" 
           	[class.selected]="case.selected()"
             [class.is-black]="case.char === '-'"  
-            [class.other-player]="case.isOtherPlayer"    
+            [class.other-player]="case.isOtherPlayer"
           	(click)=selectCaseFromGrid(case)
-						id={{case.id}}  />
+            id={{case.id}}
+            />
 					<div class="indexes">
 						<div class="small-index" *ngFor="let index of case.wordIndexes">
 							{{index}}

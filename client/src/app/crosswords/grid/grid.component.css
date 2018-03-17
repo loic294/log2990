@@ -20,7 +20,6 @@
 }
 .square.selected{
     background-color: #aaa;
-    
 }
 
 .square.is-black {
@@ -43,7 +42,11 @@
 }
 
 .col input:disabled {
-    background-color: #41D63B;
+    background: red;
+}
+
+.col input:disabled.me{
+    background: red;
 }
 
 .indexes {
@@ -56,10 +59,14 @@
 	font-size: 10px;
 }
 
-.other-player{
-    background-color: #6EAEC9; 
+.other-player-horizontal.start{
+    border-left: solid lightblue 3px;
+}
+.other-player-horizontal{
+    border-top: solid lightblue 3px;
+    border-bottom: solid lightblue 3px;
 }
 
 .col input:disabled.other-player{
-    background-color: #3BD674; 
+    background-color: lightblue; 
 }
