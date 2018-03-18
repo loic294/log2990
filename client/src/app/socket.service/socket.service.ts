@@ -9,7 +9,6 @@ import { DifficultyService } from "./../difficulty.service/difficulty.service";
 @Injectable()
 export class SocketService {
 
-    // private input: String;
     public _player: string = "";
     private _difficulty: String;
     private _modes: string[];
@@ -32,6 +31,14 @@ export class SocketService {
     private _updateOpponentName: Observable<string>;
     private _opponentName: Subject<string> = new Subject<string>();
 
+    private _updateUserScore: Observable<number>;
+    private _userScore: Subject<number> = new Subject<number>();
+    private _userScoreCount: number;
+
+    private _updateOpponentScore: Observable<number>;
+    private _opponentScore: Subject<number> = new Subject<number>();
+    private _opponentScoreCount: number;
+
     public constructor(
         private _socket: Socket,
         private difficultyService: DifficultyService
@@ -39,20 +46,26 @@ export class SocketService {
         this.difficultyService.difficulty.subscribe((diff) => {
             this._difficulty = difficultyName(diff);
         });
-
+        this._opponentScoreCount = 1;
+        this._userScoreCount = 1;
         this._games = [];
         this._modes = ["Single Player", "Two Players"];
         this._selectedMode = "";
         this._showGames = false;
         this._updateUserConnected = this._userConnected.asObservable();
         this._updateHighligthCell = this._highlightCell.asObservable();
+        this._updateUserScore = this._userScore.asObservable();
+        this._updateOpponentScore = this._opponentScore.asObservable();
         this._updateWordValidated = this._wordToValidate.asObservable();
         this._updateOpponentDisconnected = this._opponentDisconnected.asObservable();
         this._updateOpponentName = this._opponentName.asObservable();
         this.initializeSocket();
 
     }
-
+    // **************************************************************************************************
+    // **************************************************************************************************
+    // **************************************************************************************************
+    // tslint:disable-next-line:max-func-body-length
     public initializeSocket(): void {
         this._socket.connect();
 
@@ -65,7 +78,10 @@ export class SocketService {
         });
 
         this._socket.on("push_validation", (data: string): void => {
+
+            this._opponentScore.next(this._opponentScoreCount++);
             this._wordToValidate.next(data);
+
         });
 
         this._socket.on("second_player_joined", (data: IGameModel) => {
@@ -80,6 +96,14 @@ export class SocketService {
         this._socket.on("opponent_disconnected", (data: boolean) => {
             this._opponentDisconnected.next(true);
         });
+    }
+
+    public get opponentScore(): Observable<number> {
+        return this._updateOpponentScore;
+    }
+
+    public get userScore(): Observable<number> {
+        return this._updateUserScore;
     }
 
     public get opponentName(): Observable<string> {
@@ -159,6 +183,7 @@ export class SocketService {
 
     public sendValidation(word: Word): void {
         this._socket.emit("send_validation", JSON.stringify({word}));
+        this._userScore.next(this._userScoreCount++);
     }
 
 }
