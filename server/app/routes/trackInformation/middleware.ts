@@ -1,12 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import Track, { ITrackInfo } from "../../models/trackInfo";
+import { Query } from "mongoose";
 
 const ERR_500: number = 500;
 
 export const obtainTracks: (req: Request, res: Response, next: NextFunction) => Promise<void> =
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
-        const track: ITrackInfo[] = await Track.find({name: "gab", type: "facile"},
+        const requestedTrack: string = req.query["name"];
+        const track: ITrackInfo[] = await Track.find({name: requestedTrack},
                                                      {_id: 0, name: 1, type: 1, description: 1, timesPlayed: 1});
         try {
             res.json(track[0]);
