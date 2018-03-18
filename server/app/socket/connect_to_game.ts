@@ -1,7 +1,6 @@
 // tslint:disable:await-promise
 import Game, {IGameModel} from "../models/game";
 import { Socket } from "./socket.io-types";
-
 interface DataReceived {
     gameId: string;
     value: string;
@@ -54,7 +53,27 @@ const validation: Function = async (socket: Socket, data: string, game: IGameMod
 
 };
 
+const pointFirstPlayer: Function = async (socket: Socket, game: IGameModel, room: string): Promise<void> => {
+    socket.join(room);
+
+    game = await Game.findOneAndUpdate({ name: game.name}, { players: [game.score[0], game.score[0]++] }, {new: true});
+};
+
+const pointSecondPlayer: Function = async (socket: Socket, game: IGameModel, room: string): Promise<void> => {
+    socket.join(room);
+
+    game = await Game.findOneAndUpdate({ name: game.name}, { players: [game.score[1], game.score[0]++] }, {new: true});
+};
+
+// **********************************************************************************************************************
+// **********************************************************************************************************************
+// **********************************************************************************************************************
+// tslint:disable-next-line:max-func-body-length ************************************************************************
 export default (socket: Socket) => {
+    // ******************************************************************************************************************
+    // ******************************************************************************************************************
+    // ******************************************************************************************************************
+    // tslint:disable-next-line:max-func-body-length ********************************************************************
     socket.on("connect_to_game", async (data: string) => {
         const { gameId: room, value }: DataReceived = JSON.parse(data);
         const game: IGameModel = await Game.findOne({

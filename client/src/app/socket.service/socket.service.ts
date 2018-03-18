@@ -160,6 +160,14 @@ export class SocketService {
         return this._updateOpponentName;
     }
 
+    public get opponentScore(): Observable<number> {
+        return this._updateOpponentScore;
+    }
+
+    public get userScore(): Observable<number> {
+        return this._updateUserScore;
+    }
+
     public get opponentName(): Observable<string> {
         return this._updateOpponentName;
     }
