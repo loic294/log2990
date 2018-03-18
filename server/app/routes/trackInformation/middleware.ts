@@ -6,7 +6,7 @@ const ERR_500: number = 500;
 export const obtainTracks: (req: Request, res: Response, next: NextFunction) => Promise<void> =
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
-        const track: ITrackInfo[] = await Track.find({name: "trackName", type: "trackType"},
+        const track: ITrackInfo[] = await Track.find({name: "gab", type: "facile"},
                                                      {_id: 0, name: 1, type: 1, description: 1, timesPlayed: 1});
         try {
             res.json(track[0]);
@@ -19,10 +19,10 @@ export const saveTrack: (req: Request, res: Response, next: NextFunction) => Pro
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
         const track: ITrackInfo = new Track({
-            name: "trackName",
-            type: "trackType",
-            description: "a track",
-            timesPlayed: 0
+            name: req.body["name"],
+            type: req.body["type"],
+            description: req.body["description"],
+            timesPlayed: req.body["timesPlayed"]
         });
         await track.save();
 
