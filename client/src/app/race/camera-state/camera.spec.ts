@@ -1,3 +1,5 @@
+// tslint:disable:no-floating-promises
+
 import { TestBed, ComponentFixture, async } from "@angular/core/testing";
 import { RenderService } from "../render-service/render.service";
 import { GameComponent } from "../game-component/game.component";
