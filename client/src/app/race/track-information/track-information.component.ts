@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Http, Response } from "@angular/http";
 
-import { ITrackInfo } from "../../../../../server/app/models/trackInfo";
+// import { ITrackInfo } from "../../../../../server/app/models/trackInfo";
 // import * as TrackInformationService from "../../../../../server/app/services/trackInformation/trackInformation";
 
 @Component({
@@ -11,25 +11,25 @@ import { ITrackInfo } from "../../../../../server/app/models/trackInfo";
 })
 export class TrackInformationComponent implements OnInit {
 
-    private _tracks: Array<ITrackInfo>;
+    // private _tracks: Array<ITrackInfo>;
 
     public constructor(private http: Http) {
-        this._tracks = new Array();
+        // this._tracks = new Array();
      }
 
     public updateTracks(): void {
-        let tracks: Object[] = new Array();
-        this.http.get("/").subscribe((res: Response) => {
-            tracks = res.json();
-            // console.log(tracks);
+        const tracks: Object[] = new Array();
+        this.http.get("localhost:3000/race/tracks").subscribe((res: Response) => {
+            tracks.push(res.json());
+            // console.log(track);
         });
     }
 
-    public putTrack(): void {
-        this.http.post("/tracks/new", "gabbbb");
-    }
+    /*public putTrack(): void {
+        this.http.post("localhost:3000/race/tracks", "gabbbb");
+    }*/
 
-    public getTrackInfo(trackName: String): ITrackInfo {
+    /*public getTrackInfo(trackName: String): ITrackInfo {
         this.updateTracks();
 
         let returnTrack: ITrackInfo;
@@ -42,9 +42,9 @@ export class TrackInformationComponent implements OnInit {
         }
 
         return returnTrack;
-    }
+    }*/
 
-    public getTrackList(): Array<String> {
+    /*public getTrackList(): Array<String> {
         this.updateTracks();
 
         const trackNames: Array<String> = new Array();
@@ -54,7 +54,7 @@ export class TrackInformationComponent implements OnInit {
         }
 
         return trackNames;
-    }
+    }*/
 
     public ngOnInit(): void {
     }

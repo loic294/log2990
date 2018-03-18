@@ -26,6 +26,7 @@ import {TrackCreationComponent} from "./race/track-creation/track-creation.compo
 import {MatProgressSpinnerModule} from "@angular/material";
 import { DifficultyService } from "./difficulty.service/difficulty.service";
 import { HomeComponent } from "./home/home.component";
+import { TrackInformationComponent } from "./race/track-information/track-information.component";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
@@ -41,7 +42,8 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         ModeComponent,
         ModeDialogComponent,
         HomeComponent,
-        TrackCreationComponent
+        TrackCreationComponent,
+        TrackInformationComponent
     ],
     entryComponents: [
         ModeDialogComponent
