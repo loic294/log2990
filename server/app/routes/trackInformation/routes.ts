@@ -8,5 +8,6 @@ export default {
         middleware: [
             trackInfo.obtainTracks
         ]
-    }]
+    },
+             { method: "POST", path: "/tracks", middleware: [ trackInfo.saveTrack ] }]
 };
