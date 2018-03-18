@@ -13,6 +13,7 @@ import CLUES from "../../mock-words";
 export class CluesComponent implements OnInit {
     private _clues: Array<Word>;
     private _selectedClue: Word;
+    private _cheatMode: boolean;
 
     public constructor(public _wordService: WordService) {
         this._clues = CLUES;
@@ -54,6 +55,14 @@ export class CluesComponent implements OnInit {
                 }
             }
         }
+    }
+
+    public switchCheatMode(): void {
+        this._cheatMode = !this._cheatMode;
+    }
+
+    public get cheatMode(): boolean {
+        return this._cheatMode;
     }
 
     public ngOnInit(): void {
