@@ -1,11 +1,15 @@
 import { Request, Response, NextFunction } from "express";
+<<<<<<< HEAD
 import Track, { ITrackInfo } from "../../models/trackInfo";
+=======
+>>>>>>> 9278d1d65793fd789f4d94e156bbcf060598b2d1
 
 const ERR_500: number = 500;
 
 export const obtainTracks: (req: Request, res: Response, next: NextFunction) => Promise<void> =
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
+<<<<<<< HEAD
         const track: ITrackInfo[] = await Track.find({name: "trackName", type: "trackType"},
                                                      {_id: 0, name: 1, type: 1, description: 1, timesPlayed: 1});
         try {
@@ -28,6 +32,10 @@ export const saveTrack: (req: Request, res: Response, next: NextFunction) => Pro
 
         try {
             res.send("Hello POST!");
+=======
+        try {
+            res.send("Hello World!");
+>>>>>>> 9278d1d65793fd789f4d94e156bbcf060598b2d1
         } catch (err) {
             res.status(ERR_500).send(err.message);
         }
