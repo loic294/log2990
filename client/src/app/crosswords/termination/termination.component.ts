@@ -17,7 +17,7 @@ enum Type {
   export class TerminationDialogComponent {
     private _dialogType: Number;
     public constructor (
-        private socketService: SocketService,
+        // private socketService: SocketService,
         public dialogRef: MatDialogRef<TerminationComponent>,
         public dialog: MatDialog,
         @Inject(MAT_DIALOG_DATA) public data: Type) {
