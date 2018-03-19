@@ -6,7 +6,7 @@ import { IGameModel } from "./../../../../server/app/models/game";
 import { difficultyName } from "../../../../common/grid/difficulties";
 import Word from "../../../../common/lexical/word";
 import { DifficultyService } from "./../difficulty.service/difficulty.service";
-import { SubtractEquation } from "three";
+
 @Injectable()
 export class SocketService {
 
@@ -99,9 +99,6 @@ export class SocketService {
             }
         });
 
-        this._socket.on("push_gridValidation", (data: boolean) => {
-            this._gridValidated.next(true);
-        });
         this._socket.on("opponent_disconnected", (data: boolean) => {
             this._opponentDisconnected.next(true);
         });
@@ -203,7 +200,6 @@ export class SocketService {
     public setWordCount(wordCount: number): void {
         this._wordCount = wordCount;
         if (this._wordCount === 0) {
-            // this._socket.emit("send_gridValidation", true);
             this._gridValidated.next(true);
         }
     }
