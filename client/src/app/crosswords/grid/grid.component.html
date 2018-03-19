@@ -12,7 +12,8 @@
 						maxlength="1" 
           	[class.selected]="case.selected()"
             [class.is-black]="case.char === '-'"  
-          	(click)=selectCaseFromGrid(case)
+            (click)=selectCaseFromGrid(case)
+            [class.other-player] = "case.isOtherPlayer"
             id={{case.id}}
             />
 					<div class="indexes">
