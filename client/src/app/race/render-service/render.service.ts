@@ -19,6 +19,7 @@ enum CAMERA_VIEW {
 
 @Injectable()
 export class RenderService {
+
     private _cameraView: number;
     private _stateCamera: AbsCamera;
     private container: HTMLDivElement;
@@ -78,6 +79,10 @@ export class RenderService {
             this._stateCamera = new ThirdPersonCamera(this);
             this._cameraView = CAMERA_VIEW.THIRD_PERSON;
         }
+    }
+
+    public zoom(isPositive: boolean): void {
+        this._stateCamera.zoom(isPositive);
     }
 
     public getAspectRatio(): number {
