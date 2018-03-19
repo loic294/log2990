@@ -26,6 +26,7 @@ import {TrackCreationComponent} from "./race/track-creation/track-creation.compo
 import {MatProgressSpinnerModule} from "@angular/material";
 import { DifficultyService } from "./difficulty.service/difficulty.service";
 import { HomeComponent } from "./home/home.component";
+import { TerminationComponent, TerminationDialogComponent } from "./crosswords/termination/termination.component";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
@@ -42,12 +43,14 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         ModeDialogComponent,
         HomeComponent,
         TrackCreationComponent,
-        ModeDialogComponent,
-        DisconnectedDialogComponent
+        DisconnectedDialogComponent,
+        TerminationComponent,
+        TerminationDialogComponent
     ],
     entryComponents: [
         ModeDialogComponent,
-        DisconnectedDialogComponent
+        DisconnectedDialogComponent,
+        TerminationDialogComponent
     ],
     imports: [
         BrowserModule,
