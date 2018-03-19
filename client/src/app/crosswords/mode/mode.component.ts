@@ -104,7 +104,6 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
 
     public createGame(mode: string): void {
         this.socketService.createGame(mode);
-        console.log("creaste");
         this.waitingForPlayer = true;
     }
 
@@ -131,8 +130,6 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
           });
 
       }
-
-
 
       public ngOnInit(): void {}
 

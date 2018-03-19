@@ -44,6 +44,9 @@ export class SocketService {
     private _updateGridValidated: Observable<boolean>;
     private _gridValidated: Subject<boolean> = new Subject<boolean>();
 
+    private _updateRequestRematch: Observable<string>;
+    private _requestRematch: Subject<string> = new Subject<string>();
+
     public constructor(
         private _socket: Socket,
         private difficultyService: DifficultyService
@@ -65,6 +68,7 @@ export class SocketService {
         this._updateOpponentDisconnected = this._opponentDisconnected.asObservable();
         this._updateOpponentName = this._opponentName.asObservable();
         this._updateGridValidated = this._gridValidated.asObservable();
+        this._updateRequestRematch = this._requestRematch.asObservable();
         this.initializeSocket();
 
     }
@@ -103,6 +107,14 @@ export class SocketService {
             this._opponentDisconnected.next(true);
         });
 
+        this._socket.on("rematch_invitation", (data: string) => {
+            this._requestRematch.next(data);
+        });
+
+    }
+
+    public requestRematch(): Observable<string> {
+        return this._updateRequestRematch;
     }
 
     public userScoreCount(): number {
@@ -213,6 +225,20 @@ export class SocketService {
 
     public getWordCount(): number {
         return this._wordCount;
+    }
+
+    public sendRequestRematch(): void {
+        console.log("sending request");
+        console.log(this.player);
+        this.createGame(this.selectedMode);
+        this._socket.emit("request_rematch", this.player);
+        // this._requestRematch.next(this.player);
+    }
+
+    public acceptRequestRematch(gameID: string): void {
+        console.log("accepting request");
+        console.log(gameID);
+        this.joinGame(gameID);
     }
 
 }
