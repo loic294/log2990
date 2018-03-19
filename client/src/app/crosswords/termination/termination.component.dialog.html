@@ -1,36 +1,41 @@
-<div class="waiting-connection" *ngIf="dialogType() === 0">
-  <h2 class="disconnected">Opponent left the game</h2>
-  <h1>You have won!</h1>
-  <button (click)="openModeDialog()">Play again</button>
+<div class="waiting-connection">
+  <div *ngIf="dialogType() === 0">
+    <h2 class="disconnected">Opponent left the game</h2>
+    <h1>You have won!</h1>
+    <button (click)="openModeDialog()">Play again</button>
+  </div>
+
+  <div *ngIf="dialogType() === 1">
+    <h2 class="disconnected">Congratulations!</h2>
+    <h1>You completed the grid</h1>
+
+    <button (click)="createSoloGame()">Play again</button>
+  </div>
+
+  <div *ngIf="dialogType() === 2">
+    <h2 class="disconnected">WIN!</h2>
+    <h1>You won the game!</h1>
+    <button (click)="requestRematch()">Ask opponent to play again</button>
+    <button (click)="openModeDialog()">Play new game</button>
+
+
+  </div>
+
+  <div *ngIf="dialogType() === 3">
+    <h2 class="disconnected">You lost...</h2>
+    <h1>Try again?</h1>
+    <button (click)="requestRematch()">Ask opponent to play again</button>
+    <button (click)="openModeDialog()">Play new game</button>
+
+  </div>
+
+  <div *ngIf="showRematchOffer">
+    <h1> {{opponentID}} wants to play again</h1>
+    <button (click)="acceptRematchOffer()">Accept</button>
+  </div>
+
+
   <a routerLink="">
     <button (click)="closeDialog()">Main menu</button>
   </a>
-</div>
-
-<div class="waiting-connection" *ngIf="dialogType() === 1">
-  <h2 class="disconnected">Congratulations!</h2>
-  <h1>You completed the grid</h1>
-
-  <button (click)="createSoloGame()">Play again</button>
-  <a routerLink="">
-  <button (click)="closeDialog()">Main menu</button>
-  </a>
-</div>
-
-<div class="waiting-connection" *ngIf="dialogType() === 2">
-  <h2 class="disconnected">WIN!</h2>
-  <h1>You won the game!</h1>
-  <button (click)="openModeDialog()">Ask opponent to play again</button>
-  <button (click)="openModeDialog()">Play new game</button>
-  <button (click)="openModeDialog()">Main menu</button>
-  
-  
-</div>
-
-<div class="waiting-connection" *ngIf="dialogType() === 3">
-  <h2 class="disconnected">You lost...</h2>
-  <h1>Try again?</h1>
-  <button (click)="openModeDialog()">Ask opponent to play again</button>
-  <button (click)="openModeDialog()">Play new game</button>
-  <button (click)="openModeDialog()">Main menu</button>
 </div>
