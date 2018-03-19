@@ -41,3 +41,16 @@ export const saveTrack: (req: Request, res: Response, next: NextFunction) => Pro
             res.status(ERR_500).send(err.message);
         }
 };
+
+export const deleteTrack: (req: Request, res: Response, next: NextFunction) => Promise<void> =
+async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+
+    const requestedTrack: string = req.query["name"];
+    await Track.remove({name: requestedTrack});
+
+    try {
+        res.send("Hello DELETE!");
+    } catch (err) {
+        res.status(ERR_500).send(err.message);
+    }
+};
