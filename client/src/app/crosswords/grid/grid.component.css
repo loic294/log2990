@@ -42,11 +42,7 @@
 }
 
 .col input:disabled {
-    background: red;
-}
-
-.col input:disabled.me{
-    background: red;
+    background: greenyellow;
 }
 
 .indexes {
@@ -62,11 +58,11 @@
 .other-player.start{
     border-left: solid lightblue 3px;
 }
-.other-player{
+/*.other-player{
     border-top: solid lightblue 3px;
     border-bottom: solid lightblue 3px;
-}
+}*/
 
-.col input:disabled.other-player{
+.validateOther{
     background-color: lightblue; 
 }

@@ -14,7 +14,16 @@ export class Cell {
 
         this.wordIndexes = [];
         this.isOtherPlayer = false;
+        this.isValidatedByOther = false;
 	}
+    public get validatedByOther(): boolean {
+        return this.isValidatedByOther;
+    }
+    
+    public validateOther(): void {
+        this.isValidatedByOther = true;
+       
+    }
 
     public set char(c: string) {
         this._char = c;

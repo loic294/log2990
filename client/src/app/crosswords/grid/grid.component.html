@@ -3,7 +3,8 @@
     <div class="row" *ngFor="let row of _gridService.grid;">
       <div class="col" *ngFor="let case of row;">
 					<input 
-						[disabled]="case.validated" 
+            [disabled]="case.validated" 
+            [class.validateOther]="case.validatedByOther"
             class="square"
 						[ngModel]="case.char" 
 						(keypress)="updateGrid($event, case)" 
@@ -11,7 +12,6 @@
 						maxlength="1" 
           	[class.selected]="case.selected()"
             [class.is-black]="case.char === '-'"  
-            [class.other-player]="case.isOtherPlayer"
           	(click)=selectCaseFromGrid(case)
             id={{case.id}}
             />

@@ -66,11 +66,11 @@ export class GridService {
 
         this._gridTools.setGrid(this._grid);
 
-        // if (this._otherWord) {
-        //     this._gridTools.iterateWord(this._otherWord, (row: number, col: number) => {
-        //         this._grid[row][col].isOtherPlayer = false;
-        //     });
-        // }
+        if (this._otherWord) {
+             this._gridTools.iterateWord(this._otherWord, (row: number, col: number) => {
+                this._grid[row][col].isOtherPlayer = false;
+           });
+        }
 
         this._otherWord = w;
         if (w) {
@@ -91,9 +91,12 @@ export class GridService {
             });
         }
         while (i < word.length) {
-            this._grid[tempX][tempY].validate();
+            if (!isOther) {
+                this._grid[tempX][tempY].validate();
+            }
             if (isOther) {
                 this._grid[tempX][tempY].isOtherPlayer = true;
+                this._grid[tempX][tempY].validateOther();
                 this._grid[tempX][tempY].char = word.name[i];
             }
             word.orientation === Orientation.horizontal ? tempY++ : tempX++;
