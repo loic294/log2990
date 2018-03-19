@@ -1,8 +1,6 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { SocketService } from "../../socket.service/socket.service";
 import { IGameModel } from "./../../../../../server/app/models/game";
-import { Observable } from "rxjs/Observable";
-import { Subject } from "rxjs/Subject";
 import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
 
 @Component({
@@ -18,10 +16,7 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     public waitingForPlayer: boolean = false;
     public scoreOpponent: number = 0;
 
-    private _updateGridValidated: Observable<number>;
-    private _gridValidated: Subject<number> = new Subject<number>();
-
-    private _test: number;
+    private _wordCount: number;
 
     public constructor (
         private socketService: SocketService,
@@ -30,31 +25,11 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
         @Inject(MAT_DIALOG_DATA) public data: {}) {
             this.waitingConnection();
             this.isUserDisconnected();
+            this.waitingGridValidation();
             dialogRef.disableClose = true;
-            this._updateGridValidated = this._gridValidated.asObservable();
 
-            this.socketService.gridValidation.subscribe((validation: number) => {
-            // this._test = validation;
-            console.log("modecomponent", this._test);
-            console.log("gridValidate", this._updateGridValidated);
-
-            this._gridValidated.next(validation);
-            });
-
-            console.log(this.socketService.gridTest());
         }
 
-    // public updateWordCount(count: number): Number {
-    //     console.log(count);
-
-    //     return this._test = this.socketService.gridTest();
-    // }
-
-    public get gridValidation(): Observable<number> {
-            console.log("gridValidate", this._updateGridValidated);
-
-            return this._updateGridValidated;
-    }
     public closeDialog(): void {
         this.dialog.closeAll();
     }
@@ -67,6 +42,14 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
         });
     }
 
+    private waitingGridValidation(): void {
+        this.socketService.gridValidated.subscribe((gridValidated: boolean) => {
+            if (gridValidated) {
+                console.log("WOOOOOOOOO");
+                this.disconnectDialog();
+            }
+        });
+    }
     private isUserDisconnected(): void {
         this.socketService.isOpponentDisconnected.subscribe( (opponentDisconnected: boolean) => {
             if (opponentDisconnected) {

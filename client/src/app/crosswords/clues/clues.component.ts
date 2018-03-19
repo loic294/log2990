@@ -22,10 +22,9 @@ export class CluesComponent implements OnInit {
         private socketService: SocketService
     ) {
         this._clues = CLUES;
-        this._wordCount = this._clues.length;
-        console.log("*****1");
-        this.socketService.gridValidated(this._wordCount);
-        // this._wordCount = 2;
+        // this._wordCount = this._clues.length;
+        this._wordCount = 2; // FOR TESTING PURPOSES
+        this.socketService.setWordCount(this._wordCount);
         this._selectedClue = null;
     }
 
@@ -48,10 +47,6 @@ export class CluesComponent implements OnInit {
     }
 
     private foundWord(item: Word, position: Word): boolean {
-        if (this._wordCount-- === 0) {
-            
-        }
-        console.log(this._wordCount);
         return (item.col === position.col &&
             item.row === position.row &&
             item.orientation === position.orientation &&
