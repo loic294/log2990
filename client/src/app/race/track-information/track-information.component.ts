@@ -26,7 +26,7 @@ export class TrackInformationComponent implements OnInit {
 
     public getTrackInfo( trackName: String ): void {
         this.http.get("http://localhost:3000/race/tracks?name=" + trackName).subscribe((res: Response) => {
-            console.log(res);
+            // console.log(res);
         });
     }
 
@@ -34,7 +34,7 @@ export class TrackInformationComponent implements OnInit {
 
         const body: Object = {name: trackName, type: trackType, description: trackDesc, timesPlayed: played};
         this.http.post("http://localhost:3000/race/tracks", body).subscribe((res: Response) => {
-            console.log(res);
+            // console.log(res);
         });
     }
 
