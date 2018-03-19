@@ -16,61 +16,18 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     public waitingForPlayer: boolean = false;
     public scoreOpponent: number = 0;
 
-    // private _wordCount: number;
-
     public constructor (
         private socketService: SocketService,
         public dialogRef: MatDialogRef<ModeComponent>,
         public dialog: MatDialog,
         @Inject(MAT_DIALOG_DATA) public data: {}) {
             this.waitingConnection();
-            this.isUserDisconnected();
-            // this.waitingGridValidation();
             dialogRef.disableClose = true;
 
         }
 
     public closeDialog(): void {
         this.dialog.closeAll();
-    }
-
-    public disconnectDialog(): void {
-        this.dialog.open(DisconnectedDialogComponent, {
-            width: "500px",
-            height: "250px",
-            data: {  }
-        });
-    }
-
-    // private waitingGridValidation(): void {
-    //     this.socketService.gridValidated.subscribe((gridValidated: boolean) => {
-    //         if (gridValidated) {
-    //             this.disconnectDialog();
-    //         }
-    //     });
-    // }
-    private isUserDisconnected(): void {
-        this.socketService.isOpponentDisconnected.subscribe( (opponentDisconnected: boolean) => {
-            if (opponentDisconnected) {
-                this.disconnectDialog();
-            }
-        });
-    }
-
-    public disconnectDialog(): void {
-        this.dialog.open(DisconnectedDialogComponent, {
-            width: "500px",
-            height: "250px",
-            data: {  }
-        });
-    }
-
-    private isUserDisconnected(): void {
-        this.socketService.isOpponentDisconnected.subscribe( (opponentDisconnected: boolean) => {
-            if (opponentDisconnected) {
-                this.disconnectDialog();
-            }
-        });
     }
 
     private waitingConnection(): void {
@@ -156,32 +113,6 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
 
 }
 
-@Component({
-    selector: "mode.component.disconnected",
-    templateUrl: "./mode.component.disconnected.html",
-    styleUrls: ["./mode.component.css"]
-  })
-  export class DisconnectedDialogComponent {
-
-      public constructor(
-        public dialog: MatDialog,
-        private dialogRef: MatDialogRef<ModeComponent>
-      ) {
-        this.dialogRef.disableClose = true;
-      }
-
-      public openModeDialog(): void {
-        this.dialog.open(ModeDialogComponent, {
-            width: "500px",
-            height: "75%",
-            data: {  }
-        });
-      }
-
-      public ngOnInit(): void {}
-
-}
-// tslint:disable max-classes-per-file
 @Component({
     selector: "app-mode",
     templateUrl: "./mode.component.html",
