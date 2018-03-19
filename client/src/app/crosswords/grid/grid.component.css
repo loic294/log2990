@@ -58,10 +58,11 @@
 .other-player.start{
     border-left: solid lightblue 3px;
 }
-/*.other-player{
-    border-top: solid lightblue 3px;
-    border-bottom: solid lightblue 3px;
-}*/
+.other-player{
+    background-color: yellow;
+    /*border-top: solid lightblue 3px;
+    border-bottom: solid lightblue 3px;*/
+}
 
 .validateOther{
     background-color: lightblue; 
