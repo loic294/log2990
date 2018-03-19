@@ -53,6 +53,9 @@ export class SocketService {
     private _updateAcceptRematch: Observable<boolean>;
     private _acceptRematch: Subject<boolean> = new Subject<boolean>();
 
+    private _updateGridValidation: Observable<number>;
+    private _gridValidation: Subject<number> = new Subject<number>();
+
     public constructor(
         private _socket: Socket,
         private difficultyService: DifficultyService
@@ -77,6 +80,7 @@ export class SocketService {
         this._updateRequestRematch = this._requestRematch.asObservable();
         this._updateRequestModeMenu = this._requestModeMenu.asObservable();
         this._updateAcceptRematch = this._acceptRematch.asObservable();
+        this._updateGridValidation = this._gridValidation.asObservable();
         this.initializeSocket();
 
     }
@@ -113,10 +117,6 @@ export class SocketService {
 
         this._socket.on("opponent_disconnected", (data: boolean) => {
             this._opponentDisconnected.next(true);
-        });
-
-        this._socket.on("rematch_invitation", (data: string) => {
-            this._requestRematch.next(data);
         });
 
         this._socket.on("rematch_accepted", (data: boolean) => {
@@ -156,16 +156,8 @@ export class SocketService {
         return this._updateUserScore;
     }
 
-    public get opponentName(): Observable<string> {
-        return this._updateOpponentName;
-    }
-
-    public get opponentScore(): Observable<number> {
-        return this._updateOpponentScore;
-    }
-
-    public get userScore(): Observable<number> {
-        return this._updateUserScore;
+    public get gridValidation(): Observable<number> {
+        return this._updateGridValidation;
     }
 
     public get opponentName(): Observable<string> {
@@ -272,5 +264,9 @@ export class SocketService {
     public sendRequestModeMenu(): void {
         this._requestModeMenu.next(true);
     }
+
+    // public gridTest(): Number {
+    //     return this.test;
+    // }
 
 }

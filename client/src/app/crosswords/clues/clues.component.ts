@@ -30,7 +30,6 @@ export class CluesComponent implements OnInit {
 
     public onSelect(clue: Word): void {
         if (!clue.isValidated) {
-            console.log("validated");
             this._selectedClue = clue;
             this._wordService.selectWordFromClue(this._selectedClue);
         } else {
