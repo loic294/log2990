@@ -105,6 +105,13 @@ export class SocketService {
 
     }
 
+    public userScoreCount(): number {
+        return this._userScoreCount;
+    }
+
+    public opponentScoreCount(): number {
+        return this._opponentScoreCount;
+    }
     public get gridValidated(): Observable<boolean> {
         return this._updateGridValidated;
     }

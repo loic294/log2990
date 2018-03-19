@@ -1,4 +1,4 @@
-<div class="waiting-connection" *ngIf="">
+<div class="waiting-connection" *ngIf="dialogType() === 0">
   <h2 class="disconnected">Opponent left the game</h2>
   <h1>You have won!</h1>
   <button (click)="openModeDialog()">Play again</button>

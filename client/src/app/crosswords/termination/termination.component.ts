@@ -15,7 +15,7 @@ enum Type {
     styleUrls: ["./termination.component.css"]
   })
   export class TerminationDialogComponent {
-    private _dialogType: string;
+    private _dialogType: Number;
     public constructor (
         private socketService: SocketService,
         public dialogRef: MatDialogRef<TerminationComponent>,
@@ -24,14 +24,15 @@ enum Type {
 
             dialogRef.disableClose = true;
             this._dialogType = data;
-            console.log(this._dialogType);
-
         }
 
     public closeDialog(): void {
         this.dialog.closeAll();
     }
 
+    public dialogType(): Number {
+        return this._dialogType;
+    }
 
   }
 @Component({
@@ -55,7 +56,7 @@ export class TerminationComponent implements OnInit {
         this.dialog.open(TerminationDialogComponent, {
             width: "500px",
             height: "250px",
-            data: { type }
+            data: type
         });
     }
 
@@ -70,7 +71,21 @@ export class TerminationComponent implements OnInit {
     private waitingGridValidation(): void {
             this.socketService.gridValidated.subscribe((gridValidated: boolean) => {
                 if (gridValidated) {
-                    this.openDialog("validated");
+                    switch (this.socketService.selectedMode) {
+                        case "Single Player":
+                            this.openDialog(Type.soloGridValidated);
+                            break;
+                        case "Two Players":
+                            if (this.socketService.opponentScoreCount() > this.socketService.userScoreCount()) {
+                                this.openDialog(Type.multiPlayerLoss);
+                            } else {
+                                this.openDialog(Type.multiPlayerWin);
+                            }
+                            break;
+                        default:
+                            break;
+
+                    }
                 }
             });
     }

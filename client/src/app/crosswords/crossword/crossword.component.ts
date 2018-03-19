@@ -28,6 +28,7 @@ export class CrosswordComponent implements OnInit {
         this._socketService.userScore.subscribe((data) => {
             this._userScore = data;
         });
+
      }
 
   public get scoreOpponent(): number {
