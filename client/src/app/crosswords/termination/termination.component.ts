@@ -16,7 +16,8 @@ enum Type {
   })
   export class TerminationDialogComponent {
     private _dialogType: Number;
-    public waitingForPlayer: boolean = false;
+    public showRematchOffer: boolean = false;
+    public opponentID: string;
     public constructor (
         private socketService: SocketService,
         public dialogRef: MatDialogRef<TerminationComponent>,
@@ -25,6 +26,7 @@ enum Type {
 
             dialogRef.disableClose = true;
             this._dialogType = data;
+            this.rematchOffer();
         }
 
     public closeDialog(): void {
@@ -35,9 +37,6 @@ enum Type {
         return this._dialogType;
     }
 
-    public isWaitingForPlayer(): boolean {
-        return this.waitingForPlayer;
-    }
 
     public createSoloGame(): void {
         // **************************************************************************************************************
@@ -50,9 +49,22 @@ enum Type {
         // **************************************************************************************************************
         this.closeDialog();
     }
-    public createGame(): void {
-        this.socketService.createGame("Multi Players");
-        this.waitingForPlayer = true;
+
+    public requestRematch(): void {
+        console.log("lol");
+        this.socketService.sendRequestRematch();
+    }
+
+    public rematchOffer(): void {
+        this.socketService.requestRematch().subscribe( (gameID: string) => {
+            this.showRematchOffer = true;
+            this.opponentID = gameID;
+       });
+    }
+
+    public acceptRematchOffer(): void {
+        this.socketService.acceptRequestRematch(this.opponentID);
+        this.closeDialog();
     }
 
     public joinGame(gameId: string): void {
@@ -80,7 +92,7 @@ export class TerminationComponent implements OnInit {
     public openDialog(type: Type): void {
         this.dialog.open(TerminationDialogComponent, {
             width: "500px",
-            height: "250px",
+            height: "350px",
             data: type
         });
     }
