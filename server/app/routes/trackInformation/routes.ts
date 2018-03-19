@@ -9,5 +9,6 @@ export default {
             trackInfo.obtainTracks
         ]
     },
-             { method: "POST", path: "/tracks", middleware: [ trackInfo.saveTrack ] }]
+             { method: "POST", path: "/tracks", middleware: [ trackInfo.saveTrack ] },
+             {method: "DELETE", path: "/tracks", middleware: [ trackInfo.deleteTrack ] }]
 };
