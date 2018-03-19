@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import Track, { ITrackInfo } from "../../models/trackInfo";
-import { Query } from "mongoose";
 
 const ERR_500: number = 500;
 
@@ -8,13 +7,21 @@ export const obtainTracks: (req: Request, res: Response, next: NextFunction) => 
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
         const requestedTrack: string = req.query["name"];
-        const track: ITrackInfo[] = await Track.find({name: requestedTrack},
-                                                     {_id: 0, name: 1, type: 1, description: 1, timesPlayed: 1});
-        try {
-            res.json(track[0]);
-        } catch (err) {
-            res.status(ERR_500).send(err.message);
+        let tracks: ITrackInfo[];
+
+        if (requestedTrack === "all") {
+            tracks = await Track.find({}, {_id: 0, name: 1, type: 1, description: 1, timesPlayed: 1});
+            const trackNames: String[] = new Array();
+            for (const track of tracks) {
+                trackNames.push(track.name);
+            }
+            res.json(trackNames);
+        } else {
+            tracks = await Track.find({name: requestedTrack},
+                                      {_id: 0, name: 1, type: 1, description: 1, timesPlayed: 1});
+            res.json(tracks);
         }
+
 };
 
 export const saveTrack: (req: Request, res: Response, next: NextFunction) => Promise<void> =

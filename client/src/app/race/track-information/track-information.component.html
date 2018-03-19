@@ -1,2 +1,9 @@
 
-<button (click)="updateTracks()">update Tracks</button>
+<button (click)="getTracksList()">update Tracks</button>
+<button (click)="getTrackInfo('joo')">get gab</button>
+<button (click)="putTrack('joo','t','d',666)">put gabriel</button>
+
+  <li *ngFor="let track of this._tracks">
+    {{track}}
+  </li>
+
