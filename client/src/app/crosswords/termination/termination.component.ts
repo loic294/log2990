@@ -30,6 +30,7 @@ enum Type {
         this.dialog.closeAll();
     }
 
+
     public dialogType(): Number {
         return this._dialogType;
     }
