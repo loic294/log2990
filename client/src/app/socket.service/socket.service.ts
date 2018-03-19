@@ -114,9 +114,6 @@ export class SocketService {
             }
         });
 
-        this._socket.on("push_gridValidation", (data: boolean) => {
-            this._gridValidated.next(true);
-        });
         this._socket.on("opponent_disconnected", (data: boolean) => {
             this._opponentDisconnected.next(true);
         });
