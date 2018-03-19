@@ -16,7 +16,7 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     public waitingForPlayer: boolean = false;
     public scoreOpponent: number = 0;
 
-    private _wordCount: number;
+    // private _wordCount: number;
 
     public constructor (
         private socketService: SocketService,
@@ -25,7 +25,7 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
         @Inject(MAT_DIALOG_DATA) public data: {}) {
             this.waitingConnection();
             this.isUserDisconnected();
-            this.waitingGridValidation();
+            // this.waitingGridValidation();
             dialogRef.disableClose = true;
 
         }
@@ -42,14 +42,13 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
         });
     }
 
-    private waitingGridValidation(): void {
-        this.socketService.gridValidated.subscribe((gridValidated: boolean) => {
-            if (gridValidated) {
-                console.log("WOOOOOOOOO");
-                this.disconnectDialog();
-            }
-        });
-    }
+    // private waitingGridValidation(): void {
+    //     this.socketService.gridValidated.subscribe((gridValidated: boolean) => {
+    //         if (gridValidated) {
+    //             this.disconnectDialog();
+    //         }
+    //     });
+    // }
     private isUserDisconnected(): void {
         this.socketService.isOpponentDisconnected.subscribe( (opponentDisconnected: boolean) => {
             if (opponentDisconnected) {
@@ -193,7 +192,6 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
       public constructor(
           public dialog: MatDialog
       ) {
-
           this.dialog.open(ModeDialogComponent, {
               width: "500px",
               height: "75%",

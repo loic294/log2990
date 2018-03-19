@@ -68,10 +68,6 @@ export default (socket: Socket) => {
             socket.to(room).emit("push_validation", content);
         });
 
-        socket.on("send_gridValidation", (content: boolean) => {
-            socket.to(room).emit("push_gridValidation", content);
-        });
-
         socket.on("disconnect", async (content: boolean) => {
             socket.to(room).emit("opponent_disconnected", true);
             await game.remove();
