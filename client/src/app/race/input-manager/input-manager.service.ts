@@ -9,12 +9,15 @@ import ReleaseUpCarCommand from "./CarCommands/ReleaseUpCarCommand";
 import BrakeUpCarCommand from "./CarCommands/BrakeUpCarCommand";
 import ChangeCameraViewCommand from "./CameraCommands/ChangeCameraViewCommand";
 import { RenderService } from "../render-service/render.service";
+import ZoomCameraCommand from "./CameraCommands/ZoomCameraCommand";
 
 const ACCELERATE_KEYCODE: number = 87;  // w
 const LEFT_KEYCODE: number = 65;        // a
 const BRAKE_KEYCODE: number = 83;       // s
 const RIGHT_KEYCODE: number = 68;       // d
 const CHANGE_VIEW_KEYCODE: number = 81; // q
+const ZOOM_IN: number = 187; // = (+)
+const ZOOM_OUT: number = 189; // -
 
 interface CommandKeyDict {
     command: AbsCommand;
@@ -38,7 +41,9 @@ export default class InputManagerService {
             {keyCode: LEFT_KEYCODE, command: new LeftDownCarCommand(renderer.car)},
             {keyCode: RIGHT_KEYCODE, command: new RightDownCarCommand(renderer.car)},
             {keyCode: BRAKE_KEYCODE, command: new BrakeDownCarCommand(renderer.car)},
-            {keyCode: CHANGE_VIEW_KEYCODE, command: new ChangeCameraViewCommand(renderer)}
+            {keyCode: CHANGE_VIEW_KEYCODE, command: new ChangeCameraViewCommand(renderer)},
+            {keyCode: ZOOM_IN, command: new ZoomCameraCommand(renderer, true)},
+            {keyCode: ZOOM_OUT, command: new ZoomCameraCommand(renderer, false)}
         ];
 
         this.keyUpCommands = [
