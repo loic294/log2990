@@ -16,8 +16,9 @@ enum Type {
   })
   export class TerminationDialogComponent {
     private _dialogType: Number;
+    public waitingForPlayer: boolean = false;
     public constructor (
-        // private socketService: SocketService,
+        private socketService: SocketService,
         public dialogRef: MatDialogRef<TerminationComponent>,
         public dialog: MatDialog,
         @Inject(MAT_DIALOG_DATA) public data: Type) {
@@ -30,9 +31,21 @@ enum Type {
         this.dialog.closeAll();
     }
 
-
     public dialogType(): Number {
         return this._dialogType;
+    }
+
+    public isWaitingForPlayer(): boolean {
+        return this.waitingForPlayer;
+    }
+
+    public createGame(): void {
+        this.socketService.createGame("Multi Players");
+        this.waitingForPlayer = true;
+    }
+
+    public joinGame(gameId: string): void {
+        this.socketService.joinGame(gameId);
     }
 
   }
