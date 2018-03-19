@@ -39,6 +39,17 @@ enum Type {
         return this.waitingForPlayer;
     }
 
+    public createSoloGame(): void {
+        // **************************************************************************************************************
+        // tslint:disable-next-line:no-suspicious-comment
+        // TODO @berj @cbm @lobel
+        // Was not implemented because Grid generation is missing.
+        // Implementation will need to be based on a function that
+        // request a new generation
+        // this.socketService.difficulty;
+        // **************************************************************************************************************
+        this.closeDialog();
+    }
     public createGame(): void {
         this.socketService.createGame("Multi Players");
         this.waitingForPlayer = true;
