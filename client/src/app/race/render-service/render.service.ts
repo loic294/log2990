@@ -1,11 +1,12 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import { WebGLRenderer, Scene, AmbientLight,
-MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, BoxGeometry } from "three";
+MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, BoxGeometry, PlaneGeometry, Texture } from "three";
 import { Car } from "../car/car";
 import TopDownCamera from "../camera-state/top-down-camera";
 import ThirdPersonCamera from "../camera-state/third-person-camera";
 import AbsCamera from "../camera-state/AbsCamera";
+import { PI_OVER_2 } from "../../constants";
 
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 1;
@@ -68,6 +69,16 @@ export class RenderService {
         await this._car.init();
         this.scene.add(this._car);
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
+
+        const texture: Texture = new TextureLoader().load( "../../../assets/track/track.jpg" );
+        // tslint:disable-next-line
+        const geometry: PlaneGeometry = new PlaneGeometry( 100, 100, 32 );
+        const material: MeshBasicMaterial = new MeshBasicMaterial( {map: texture , side: DoubleSide} );
+        const plane: Mesh = new Mesh( geometry, material );
+
+        plane.rotateX(PI_OVER_2);
+        this.scene.add(plane);
+
         this.loadSkybox();
     }
 
