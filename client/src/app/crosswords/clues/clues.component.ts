@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { SocketService } from "../../socket.service/socket.service";
 import Word from "../../../../../common/lexical/word";
 
 import { WordService } from "../../word.service/word.service";
@@ -12,16 +13,23 @@ import CLUES from "../../mock-words";
 })
 export class CluesComponent implements OnInit {
     private _clues: Array<Word>;
+    private _wordCount: number;
     private _selectedClue: Word;
 
-    public constructor(public _wordService: WordService) {
+    public constructor(
+        public _wordService: WordService,
+        private socketService: SocketService
+    ) {
         this._clues = CLUES;
+        this._wordCount = this._clues.length;
+        console.log("*****1");
+        this.socketService.gridValidated(this._wordCount);
+        // this._wordCount = 2;
         this._selectedClue = null;
     }
 
     public onSelect(clue: Word): void {
         if (!clue.isValidated) {
-            console.log("validated");
             this._selectedClue = clue;
             this._wordService.selectWordFromClue(this._selectedClue);
         } else {
@@ -39,7 +47,10 @@ export class CluesComponent implements OnInit {
     }
 
     private foundWord(item: Word, position: Word): boolean {
-
+        if (this._wordCount-- === 0) {
+            
+        }
+        console.log(this._wordCount);
         return (item.col === position.col &&
             item.row === position.row &&
             item.orientation === position.orientation &&

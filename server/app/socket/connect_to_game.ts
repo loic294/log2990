@@ -1,7 +1,7 @@
 // tslint:disable:await-promise
 import Game, {IGameModel} from "../models/game";
 import { Socket } from "./socket.io-types";
-import { Socket } from "net";
+
 interface DataReceived {
     gameId: string;
     value: string;

@@ -39,6 +39,9 @@ export class SocketService {
     private _opponentScore: Subject<number> = new Subject<number>();
     private _opponentScoreCount: number;
 
+    private _updateGridValidation: Observable<number>;
+    private _gridValidation: Subject<number> = new Subject<number>();
+
     public constructor(
         private _socket: Socket,
         private difficultyService: DifficultyService
@@ -59,6 +62,7 @@ export class SocketService {
         this._updateWordValidated = this._wordToValidate.asObservable();
         this._updateOpponentDisconnected = this._opponentDisconnected.asObservable();
         this._updateOpponentName = this._opponentName.asObservable();
+        this._updateGridValidation = this._gridValidation.asObservable();
         this.initializeSocket();
 
     }
@@ -96,6 +100,16 @@ export class SocketService {
         this._socket.on("opponent_disconnected", (data: boolean) => {
             this._opponentDisconnected.next(true);
         });
+
+        // this._socket.on("grid_validated", (validation: number) => {
+        //     console.log("*******2");
+        //     this._gridValidation.next(validation);
+        // });
+
+    }
+
+    public get gridValidation(): Observable<number> {
+        return this._updateGridValidation;
     }
 
     public get opponentScore(): Observable<number> {
@@ -184,6 +198,18 @@ export class SocketService {
     public sendValidation(word: Word): void {
         this._socket.emit("send_validation", JSON.stringify({word}));
         this._userScore.next(this._userScoreCount++);
+    }
+
+    public test: number;
+
+    public gridValidated(validated: number): void {
+        console.log("************2");
+        this.test = validated;
+        this._socket.emit("grid_validated", validated);
+    }
+
+    public gridTest(): Number {
+        return this.test;
     }
 
 }

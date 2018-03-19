@@ -2,7 +2,9 @@
   <h2>Vertical</h2>
   <div class="row" *ngFor="let clue of clues" (click)="onSelect(clue)">
     <div *ngIf="clue.orientation===1">
-      <div class="clue" [class.selected]="this._selectedClue == clue">
+      <div class="clue" 
+        [class.selected]="this._selectedClue == clue"
+        [class.disabled]="clue.isValidated">
         <span class="index">{{clue.index+1}}</span> {{ clue.desc }}
       </div>
     </div>
