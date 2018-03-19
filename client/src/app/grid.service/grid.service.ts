@@ -85,6 +85,10 @@ export class GridService {
         let tempX: number = word.row;
         let tempY: number = word.col;
         let i: number = 0;
+
+        this.socketService.setWordCount(this.socketService.getWordCount() - 1);
+        console.log(this.socketService.getWordCount());
+
         if (!word) {
             this._gridTools.iterateWord(word, (row: number, col: number) => {
                 this._grid[row][col].isOtherPlayer = false;
