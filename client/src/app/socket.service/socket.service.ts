@@ -6,7 +6,6 @@ import { IGameModel } from "./../../../../server/app/models/game";
 import { difficultyName } from "../../../../common/grid/difficulties";
 import Word from "../../../../common/lexical/word";
 import { DifficultyService } from "./../difficulty.service/difficulty.service";
-
 @Injectable()
 export class SocketService {
 
@@ -115,6 +114,9 @@ export class SocketService {
             }
         });
 
+        this._socket.on("push_gridValidation", (data: boolean) => {
+            this._gridValidated.next(true);
+        });
         this._socket.on("opponent_disconnected", (data: boolean) => {
             this._opponentDisconnected.next(true);
         });
@@ -259,6 +261,7 @@ export class SocketService {
     public acceptRequestRematch(gameID: string): void {
         this.joinGame(gameID);
         this._socket.emit("accept_rematch", gameID);
+        this._gridValidated.next(true);
     }
 
     public sendRequestModeMenu(): void {
