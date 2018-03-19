@@ -10,7 +10,8 @@
 <div class="waiting-connection" *ngIf="dialogType() === 1">
   <h2 class="disconnected">Congratulations!</h2>
   <h1>You completed the grid</h1>
-  <button (click)="openModeDialog()">Play again</button>
+
+  <button (click)="createSoloGame()">Play again</button>
   <a routerLink="">
   <button (click)="closeDialog()">Main menu</button>
   </a>
@@ -19,7 +20,7 @@
 <div class="waiting-connection" *ngIf="dialogType() === 2">
   <h2 class="disconnected">WIN!</h2>
   <h1>You won the game!</h1>
-  <button (click)="openModeDialog()">Play again</button>
+  <button (click)="openModeDialog()">Ask opponent to play again</button>
   <button (click)="openModeDialog()">Play new game</button>
   <button (click)="openModeDialog()">Main menu</button>
   
@@ -29,5 +30,7 @@
 <div class="waiting-connection" *ngIf="dialogType() === 3">
   <h2 class="disconnected">You lost...</h2>
   <h1>Try again?</h1>
-  <button (click)="openModeDialog()">Play again</button>
+  <button (click)="openModeDialog()">Ask opponent to play again</button>
+  <button (click)="openModeDialog()">Play new game</button>
+  <button (click)="openModeDialog()">Main menu</button>
 </div>
