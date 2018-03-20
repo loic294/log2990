@@ -240,7 +240,6 @@ export class SocketService {
     public sendRequestRematch(): void {
         this.createGame(this.selectedMode);
         this._socket.emit("request_rematch", this.player);
-        // this._requestRematch.next(this.player);
     }
 
     public acceptRequestRematch(gameID: string): void {
@@ -248,8 +247,6 @@ export class SocketService {
     }
 
     public sendRequestModeMenu(): void {
-        console.log("4");
-        
         this._requestModeMenu.next(true);
     }
 

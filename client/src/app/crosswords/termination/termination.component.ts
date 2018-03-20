@@ -17,6 +17,7 @@ enum Type {
   export class TerminationDialogComponent {
     private _dialogType: Number;
     public showRematchOffer: boolean = false;
+    public showWaitingRematchOffer: boolean = false;
     public opponentID: string;
 
     public constructor (
@@ -51,7 +52,7 @@ enum Type {
     }
 
     public requestRematch(): void {
-        this.showRematchOffer = true;
+        this.showWaitingRematchOffer = true;
         this.socketService.sendRequestRematch();
     }
 
@@ -68,7 +69,6 @@ enum Type {
     }
 
     public openModeDialog(): void {
-        console.log("1");
         this.closeDialog();
         this.socketService.sendRequestModeMenu();
     }
