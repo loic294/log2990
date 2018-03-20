@@ -102,6 +102,9 @@ export class GridService {
                 this._grid[tempX][tempY].validateOther();
                 this._grid[tempX][tempY].char = word.name[i];
             }
+            if (this._grid[tempX][tempY].isValidatedByOther && this._grid[tempX][tempY].validated) {
+                this._grid[tempX][tempY].isShared();
+            }
             word.orientation === Orientation.horizontal ? tempY++ : tempX++;
             i++;
         }
