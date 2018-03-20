@@ -1,8 +1,6 @@
 
 import axios, { AxiosResponse } from "axios";
 
-import { ITrackInfo } from "../../models/trackInfo";
-
 export class TrackInformationService {
 
     public async getTracksList(): Promise<String> {

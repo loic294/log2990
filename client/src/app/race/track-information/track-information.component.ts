@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 
 import { ITrackInfo } from "../../../../../server/app/models/trackInfo";
 import { TrackInformationService } from "../../../../../server/app/services/trackInformation/trackInformationService";
@@ -8,7 +8,7 @@ import { TrackInformationService } from "../../../../../server/app/services/trac
     templateUrl: "./track-information.component.html",
     styleUrls: ["./track-information.component.css"]
 })
-export class TrackInformationComponent {
+export class TrackInformationComponent implements OnInit {
 
     private _tracks: Array<String>;
     private _currentTrack: ITrackInfo;
@@ -25,25 +25,33 @@ export class TrackInformationComponent {
         this._timePlayed = 0;
     }
 
-    public getTracksList(): void {
+    private getTracksList(): void {
         this._trackInfo.getTracksList().then((data) => {
             this._tracks = JSON.parse(data.toString());
         });
     }
 
-    public getTrackInfo(): void {
-        this._trackInfo.getTrackInfo(this._name).then((data) => {
-            this._currentTrack = JSON.parse(data.toString());
+    public getTrackInfo(trackName: String): void {
+        this._trackInfo.getTrackInfo(trackName).then((data) => {
+            const tempArray: Array<ITrackInfo> = JSON.parse(data.toString());
+            this._currentTrack = tempArray[0];
         });
     }
 
     public putTrack(): void {
         const track: Object = {name: this._name, type: this._type, description: this._description, timesPlayed: this._timePlayed};
         this._trackInfo.putTrack(track);
+        this.getTracksList();
     }
 
     public deleteTrack(): void {
-        this._trackInfo.deleteTrack(this._name);
+        this._trackInfo.deleteTrack(this._currentTrack.name);
+        this._currentTrack = null;
+        this.getTracksList();
+    }
+
+    public ngOnInit(): void {
+        this.getTracksList();
     }
 
 }
