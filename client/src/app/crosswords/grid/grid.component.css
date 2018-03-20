@@ -44,8 +44,8 @@
     z-index: -1; */
 }
 
-.col input:disabled {
-    background: greenyellow;
+.validate {
+    background: greenyellow !important;
 }
 
 .indexes {
@@ -74,5 +74,15 @@
 
 
 .validateOther{
-    background-color: lightblue; 
+    background: lightblue; 
+}
+
+.sharedValidation {
+    background: repeating-linear-gradient(
+        45deg,
+        lightblue,
+        lightblue 5px,
+        greenyellow 5px,
+        greenyellow 10px
+      ) !important; 
 }

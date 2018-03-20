@@ -3,6 +3,7 @@ export class Cell {
     public wordIndexes: Array<number>;
     public isOtherPlayer: boolean;
     public isValidatedByOther: boolean;
+    public shared: boolean;
 
     public constructor(
         private _char: string = "-",
@@ -16,7 +17,13 @@ export class Cell {
         this.wordIndexes = [];
         this.isOtherPlayer = false;
         this.isValidatedByOther = false;
-	}
+    }
+    public isShared(): void {
+        this.shared = true;
+    }
+    public get sharedValidation(): boolean{
+        return this.shared;
+    }
     public get validatedByOther(): boolean {
         return this.isValidatedByOther;
     }

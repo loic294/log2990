@@ -3,8 +3,10 @@
     <div class="row" *ngFor="let row of _gridService.grid;" >
       <div class="col" *ngFor="let case of row;">
 					<input 
-            [disabled]="case.validated" 
+            [disabled]="case.validated || case.validatedByOther" 
+            [class.validate]="case.validated"
             [class.validateOther]="case.validatedByOther"
+            [class.sharedValidation]= "case.sharedValidation"
             class="square"
 						[ngModel]="case.char" 
 						(keypress)="updateGrid($event, case)" 
