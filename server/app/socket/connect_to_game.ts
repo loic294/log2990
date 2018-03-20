@@ -1,4 +1,3 @@
-// tslint:disable:await-promise
 import Game, {IGameModel} from "../models/game";
 import { Socket } from "./socket.io-types";
 
@@ -28,44 +27,33 @@ const joinSecondPlayer: Function = async (socket: Socket, game: IGameModel, room
     }));
 };
 
-const pointFirstPlayer: Function = async (socket: Socket, game: IGameModel, room: string): Promise<void> => {
-    socket.join(room);
+const rematch: Function = async (socket: Socket, data: string, game: IGameModel): Promise<void> => {
+        const { gameId: room }: DataReceived = JSON.parse(data);
 
-    game = await Game.findOneAndUpdate({ name: game.name}, { players: [game.score[0], game.score[0]++] }, {new: true});
-};
+        socket.on("request_rematch", async (content: string) => {
+            socket.to(room).emit("rematch_invitation", content);
+        });
 
-const pointSecondPlayer: Function = async (socket: Socket, game: IGameModel, room: string): Promise<void> => {
-    socket.join(room);
+        socket.on("accept_rematch", async (content: string) => {
+            socket.to(room).emit("rematch_accepted", content);
+        });
 
-    game = await Game.findOneAndUpdate({ name: game.name}, { players: [game.score[1], game.score[0]++] }, {new: true});
 };
 
 const validation: Function = async (socket: Socket, data: string, game: IGameModel): Promise<void> => {
-        const { gameId: room }: DataReceived = JSON.parse(data);
-        socket.on("sync_word", (content: string) => {
-            socket.to(room).emit("receive_word", content);
-        });
+    const { gameId: room }: DataReceived = JSON.parse(data);
 
-        socket.on("send_validation", (content: string) => {
-            socket.to(room).emit("push_validation", content);
-        });
+    socket.on("sync_word", (content: string) => {
+        socket.to(room).emit("receive_word", content);
+    });
 
-        socket.on("disconnect", async (content: boolean) => {
-            socket.to(room).emit("opponent_disconnected", true);
-            await game.remove();
-        });
+    socket.on("send_validation", (content: string) => {
+        socket.to(room).emit("push_validation", content);
+    });
 
-    };
+};
 
-// **********************************************************************************************************************
-// **********************************************************************************************************************
-// **********************************************************************************************************************
-// tslint:disable-next-line:max-func-body-length ************************************************************************
 export default (socket: Socket) => {
-    // ******************************************************************************************************************
-    // ******************************************************************************************************************
-    // ******************************************************************************************************************
-    // tslint:disable-next-line:max-func-body-length ********************************************************************
     socket.on("connect_to_game", async (data: string) => {
         const { gameId: room, value }: DataReceived = JSON.parse(data);
         const game: IGameModel = await Game.findOne({
@@ -77,35 +65,14 @@ export default (socket: Socket) => {
             joinSecondPlayer(socket, game, room, value);
         }
 
+        socket.on("disconnect", async (content: boolean) => {
+            socket.to(room).emit("opponent_disconnected", true);
+            await game.remove();
+        });
+
+        rematch(socket, data);
+
         validation(socket, data);
 
-        // socket.on("sync_word", (content: string) => {
-        //     socket.to(room).emit("receive_word", content);
-        // });
-
-        // socket.on("send_validation", (content: string) => {
-        //     socket.to(room).emit("push_validation", content);
-        // });
-
-        // socket.on("disconnect", async (content: boolean) => {
-        //     socket.to(room).emit("opponent_disconnected", true);
-        //     await game.remove();
-        // });
-
-        socket.on("request_rematch", async (content: string) => {
-            socket.to(room).emit("rematch_invitation", content);
-        });
-
-        socket.on("accept_rematch", async (content: string) => {
-            socket.to(room).emit("rematch_accepted", content);
-        });
-
-        socket.on("word_validated", async (content: string) => {
-            if (content === "player1") {
-                pointFirstPlayer(socket, game, room);
-            } else if (content === "player2") {
-                pointSecondPlayer(socket, game, room);
-            }
-        });
     });
 };
