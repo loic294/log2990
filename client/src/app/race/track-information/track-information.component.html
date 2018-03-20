@@ -1,6 +1,8 @@
 
-<button (click)="getTracksList()">get tracks</button>
-<button (click)="getTrackInfo('gab')">get gab</button>
+<button (click)="getTracksList()">get gabs</button>
+<button (click)="getTrackInfo('Nic')">get gab</button>
+<button (click)="putTrack('Nic','t','d',8)">put gab</button>
+<button (click)="deleteTrack('Gab')">delete gab</button>
 
 
   <li *ngFor="let track of this._tracks">

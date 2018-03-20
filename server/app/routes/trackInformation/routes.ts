@@ -10,5 +10,5 @@ export default {
         ]
     },
              { method: "POST", path: "/tracks", middleware: [ trackInfo.saveTrack ] },
-             {method: "DELETE", path: "/tracks", middleware: [ trackInfo.deleteTrack ] }]
+             { method: "DELETE", path: "/tracks", middleware: [ trackInfo.deleteTrack ] }]
 };
