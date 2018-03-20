@@ -115,6 +115,7 @@ export class GridService {
             this._gridTools.iterateGrid(this._grid, (row: number, col: number) => {
                 if (this._grid[row][col].selected) {
                     this._grid[row][col].unselect();
+                    this._grid[row][col].startUnselect();
                 }
             });
         }
@@ -199,8 +200,10 @@ export class GridService {
 
         this._gridTools.iterateWord(this._word, (x: number, y: number, cellTemp: Cell, cell: number) => {
             this._grid[x][y].unselect();
+            this._grid[x][y].startUnselect();
             if (cell === wordStart) {
                 this._selectedWord = cellTemp;
+                this._grid[x][y].startSelect();
             }
             this._grid[cellTemp.x][cellTemp.y].select();
             if (cellTemp.char === "" || cell === wordStart + this._word.length - 1) {
