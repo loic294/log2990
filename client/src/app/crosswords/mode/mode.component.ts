@@ -119,27 +119,19 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     styleUrls: ["./mode.component.css"]
   })
   export class ModeComponent implements OnInit {
-    private a: boolean = false;
 
     public constructor(
           public dialog: MatDialog,
           private _socketService: SocketService
       ) {
-          this.welcome();
+          this.openDialog();
           this.receiveRequestForModeMenu();
 
-      }
-    private welcome(): void {
-        if (this.a === false) {
-            this.openDialog();
-        }
-        this.a = true;
       }
 
     private receiveRequestForModeMenu(): void {
         this._socketService.requestModeMenu.subscribe( (requestModeMenu: boolean) => {
             if (requestModeMenu) {
-        console.log("2");
         this.openDialog();
             }
        });
