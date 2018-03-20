@@ -22,12 +22,13 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
         public dialog: MatDialog,
         @Inject(MAT_DIALOG_DATA) public data: {}) {
             this.waitingConnection();
+            // this.receiveRequestForModeMenu();
             dialogRef.disableClose = true;
 
         }
 
     public closeDialog(): void {
-        this.dialog.closeAll();
+        this.dialogRef.close();
     }
 
     private waitingConnection(): void {
@@ -110,7 +111,6 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     public joinGame(gameId: string): void {
         this.socketService.joinGame(gameId);
     }
-
 }
 
 @Component({
@@ -119,18 +119,40 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     styleUrls: ["./mode.component.css"]
   })
   export class ModeComponent implements OnInit {
+    private a: boolean = false;
 
-      public constructor(
-          public dialog: MatDialog
+    public constructor(
+          public dialog: MatDialog,
+          private _socketService: SocketService
       ) {
-          this.dialog.open(ModeDialogComponent, {
-              width: "500px",
-              height: "75%",
-              data: {  }
-          });
+          this.welcome();
+          this.receiveRequestForModeMenu();
 
       }
+    private welcome(): void {
+        if (this.a === false) {
+            this.openDialog();
+        }
+        this.a = true;
+      }
 
-      public ngOnInit(): void {}
+    private receiveRequestForModeMenu(): void {
+        this._socketService.requestModeMenu.subscribe( (requestModeMenu: boolean) => {
+            if (requestModeMenu) {
+        console.log("2");
+        this.openDialog();
+            }
+       });
+    }
+
+    private openDialog(): void {
+        this.dialog.open(ModeDialogComponent, {
+            width: "500px",
+            height: "75%",
+            data: {  }
+        });
+    }
+
+    public ngOnInit(): void { }
 
 }
