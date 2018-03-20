@@ -3,17 +3,7 @@ import axios, { AxiosResponse } from "axios";
 
 export class TrackInformationService {
 
-    public async getTracksList(): Promise<String> {
-        try {
-            const response: AxiosResponse = await axios.get("http://localhost:3000/race/tracks?name=all");
-
-            return JSON.stringify(response.data);
-        } catch (err) {
-            throw err;
-        }
-    }
-
-    public async getTrackInfo(trackName: String): Promise<String> {
+    public async getTracks(trackName: String): Promise<String> {
         try {
             const response: AxiosResponse = await axios.get("http://localhost:3000/race/tracks?name=" + trackName);
 
@@ -23,17 +13,18 @@ export class TrackInformationService {
         }
     }
 
-    public putTrack(track: Object): void {
+    public async putTrack(track: Object): Promise<void> {
         try {
-            axios.post("http://localhost:3000/race/tracks", track);
+            await axios.post("http://localhost:3000/race/tracks", track);
+
         } catch (err) {
             throw err;
         }
     }
 
-    public deleteTrack(trackName: String): void {
+    public async deleteTrack(trackName: String): Promise<void> {
         try {
-            axios.delete("http://localhost:3000/race/tracks?name=" + trackName);
+            await axios.delete("http://localhost:3000/race/tracks?name=" + trackName);
         } catch (err) {
             throw err;
         }

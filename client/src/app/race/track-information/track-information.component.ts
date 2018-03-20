@@ -15,39 +15,65 @@ export class TrackInformationComponent implements OnInit {
     private _name: String;
     private _type: String;
     private _description: String;
-    private _timePlayed: number;
+    private _timesPlayed: number;
 
     public constructor(private _trackInfo: TrackInformationService) {
         this._tracks = new Array();
         this._name = "";
         this._type = "";
         this._description = "";
-        this._timePlayed = 0;
+        this._timesPlayed = 0;
     }
 
-    private getTracksList(): void {
-        this._trackInfo.getTracksList().then((data) => {
+    public getTracksList(): void {
+        this._trackInfo.getTracks("all").then((data) => {
             this._tracks = JSON.parse(data.toString());
         });
     }
 
     public getTrackInfo(trackName: String): void {
-        this._trackInfo.getTrackInfo(trackName).then((data) => {
+        this._trackInfo.getTracks(trackName).then((data) => {
             const tempArray: Array<ITrackInfo> = JSON.parse(data.toString());
             this._currentTrack = tempArray[0];
         });
     }
 
     public putTrack(): void {
-        const track: Object = {name: this._name, type: this._type, description: this._description, timesPlayed: this._timePlayed};
-        this._trackInfo.putTrack(track);
-        this.getTracksList();
+        const track: Object = {name: this._name, type: this._type, description: this._description, timesPlayed: this._timesPlayed};
+        this._trackInfo.putTrack(track).then(() => {
+            this.getTracksList();
+        });
     }
 
     public deleteTrack(): void {
-        this._trackInfo.deleteTrack(this._currentTrack.name);
-        this._currentTrack = null;
-        this.getTracksList();
+        this._trackInfo.deleteTrack(this._currentTrack.name).then(() => {
+            this._currentTrack = null;
+            this.getTracksList();
+        });
+    }
+
+    public set name(name: String) {
+        this._name = name;
+    }
+
+    public set type(type: String) {
+        this._type = type;
+    }
+
+    public set description(description: String) {
+        this._description = description;
+    }
+
+    public set timesPlayed(timesPlayed: number) {
+        this._timesPlayed = timesPlayed;
+    }
+
+    public get currentTrack(): ITrackInfo {
+        return this._currentTrack;
+    }
+
+    public get tracks(): Array<String> {
+        return this._tracks;
     }
 
     public ngOnInit(): void {
