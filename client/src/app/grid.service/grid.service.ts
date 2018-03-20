@@ -1,6 +1,3 @@
-/* tslint:disable:no-shadowed-variable */
-// tslint:disable:no-suspicious-comment
-
 import { Injectable } from "@angular/core";
 import { GRID } from "../mock-grid";
 import { Cell } from "../../../../common/grid/cell";
@@ -12,7 +9,7 @@ import { GridTools } from "./grid.tools";
 import { WordService } from "../word.service/word.service";
 import { SocketService } from "../socket.service/socket.service";
 import CLUES from "../mock-words";
-const BACK_SPACE_KEY_CODE: number = 8;
+import { BACK_SPACE_KEY_CODE } from "../constants";
 
 @Injectable()
 export class GridService {
@@ -78,7 +75,6 @@ export class GridService {
         (w.orientation === 0) ? wordStart = w.col : wordStart = w.row;
 
         if (w) {
-
             this._gridTools.iterateWord(w, (row: number, col: number, cellTemp: Cell, cell: number) => {
                 this._grid[row][col].isOtherPlayer = true;
                 if (cell === wordStart) {
@@ -86,7 +82,6 @@ export class GridService {
                 }
             });
         }
-
     }
 
     public applyValidation(word: Word, isOther: boolean = false): void {
@@ -103,11 +98,10 @@ export class GridService {
         }
         while (i < word.length) {
             if (!isOther) {
-                this._grid[tempX][tempY].validate();
+                this._gridTools.validationByPlayer(tempX, tempY);
             }
             if (isOther) {
-                this._grid[tempX][tempY].isOtherPlayer = true;
-                this._grid[tempX][tempY].validateOther();
+                this._gridTools.validationByOtherPlayer(tempX, tempY);
                 this._grid[tempX][tempY].char = word.name[i];
             }
             if (this._grid[tempX][tempY].isValidatedByOther && this._grid[tempX][tempY].validated) {
