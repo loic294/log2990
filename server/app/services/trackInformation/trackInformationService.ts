@@ -11,7 +11,7 @@ export class TrackInformationService {
 
             return response.data;
         } catch (err) {
-            throw(err);
+            throw err;
         }
     }
 
@@ -21,7 +21,7 @@ export class TrackInformationService {
 
             return response.data;
         } catch (err) {
-            throw(err);
+            throw err;
         }
     }
 
@@ -30,7 +30,15 @@ export class TrackInformationService {
             const body: Object = { name: track.name, type: track.type, description: track.description, timesPlayed: track.timesPlayed };
             axios.post("http://localhost:3000/race/tracks", body);
         } catch (err) {
-            throw(err);
+            throw err;
+        }
+    }
+
+    public deleteTrack(trackName: String): void {
+        try {
+            axios.delete("http://localhost:3000/race/tracks?name=" + trackName);
+        } catch (err) {
+            throw err;
         }
     }
 
