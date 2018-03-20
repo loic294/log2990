@@ -20,7 +20,7 @@
     background-color: rgba(0,0,0,0);
 }
 .square.selected{
-    background-color: #aaa;
+    /* background-color: #aaa; */
 }
 
 .square.is-black {
