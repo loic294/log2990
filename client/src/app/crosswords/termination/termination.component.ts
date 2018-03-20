@@ -51,7 +51,7 @@ enum Type {
     }
 
     public requestRematch(): void {
-        console.log("lol");
+        this.showRematchOffer = true;
         this.socketService.sendRequestRematch();
     }
 
@@ -70,8 +70,8 @@ enum Type {
     public joinGame(gameId: string): void {
         this.socketService.joinGame(gameId);
     }
-
   }
+
 @Component({
   selector: "app-termination",
   templateUrl: "./termination.component.html",
@@ -92,7 +92,7 @@ export class TerminationComponent implements OnInit {
     public openDialog(type: Type): void {
         this.dialog.open(TerminationDialogComponent, {
             width: "500px",
-            height: "350px",
+            height: "450px",
             data: type
         });
     }

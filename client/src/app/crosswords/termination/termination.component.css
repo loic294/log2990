@@ -19,10 +19,11 @@
 
 .spinner {
     position: relative;
-    min-height: 360px; 
+    min-height: 36px; 
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 10px;
 }
 
 .players {
