@@ -1,3 +1,4 @@
+// tslint:disable:await-promise
 import Game, {IGameModel} from "../models/game";
 import { Socket } from "./socket.io-types";
 
