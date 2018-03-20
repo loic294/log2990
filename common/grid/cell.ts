@@ -12,7 +12,8 @@ export class Cell {
         private _isSelected: boolean = false,
         private _isValidated: boolean = false,
         private _black: boolean = false,
-        private _isStartOfSelected: boolean = false) {
+        private _isStartOfSelected: boolean = false,
+        private _isStartSelectedByOther: boolean = false) {
 
         this.wordIndexes = [];
         this.isOtherPlayer = false;
@@ -21,6 +22,7 @@ export class Cell {
     public isShared(): void {
         this.shared = true;
     }
+
     public get sharedValidation(): boolean{
         return this.shared;
     }
@@ -53,6 +55,18 @@ export class Cell {
         return this._isSelected;
     }
 
+    public startSelectByOther(): void {
+        this._isStartSelectedByOther = true;
+    }
+
+    public startUnselectByOther(): void {
+        this._isStartSelectedByOther = false;
+    }
+
+    public startSelectedByOther(): boolean {
+        return this._isStartSelectedByOther;
+    }
+    
     public startSelect(): void {
         this._isStartOfSelected = true;
     }
