@@ -1,8 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+// tslint:disable
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { TerminationComponent } from './termination.component';
+import { TerminationComponent } from "./termination.component";
 
-describe('TerminationComponent', () => {
+describe("TerminationComponent", () => {
   let component: TerminationComponent;
   let fixture: ComponentFixture<TerminationComponent>;
 
@@ -19,7 +20,7 @@ describe('TerminationComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });
