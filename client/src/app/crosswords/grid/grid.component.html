@@ -19,7 +19,7 @@
             id={{case.id}}
             />
           <div *ngIf="case.startOfSelected()">
-           <div class="border" style="height: 50px; width: 200px;">
+           <div class="border" [ngStyle]="highligthStyle()">
            </div>
           </div>
 
