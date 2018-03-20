@@ -50,6 +50,7 @@ export class GridService {
             (data: string) => {
                 const { word }: { word: Word } = JSON.parse(data);
                 const selectedWord: Word = CLUES.find((w: Word) => word !== null && w.index === word.index);
+                selectedWord.isValidated = true;
                 this.applyValidation(selectedWord, true);
             });
     }
