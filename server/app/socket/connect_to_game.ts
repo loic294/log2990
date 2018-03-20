@@ -40,6 +40,23 @@ const pointSecondPlayer: Function = async (socket: Socket, game: IGameModel, roo
     game = await Game.findOneAndUpdate({ name: game.name}, { players: [game.score[1], game.score[0]++] }, {new: true});
 };
 
+const validation: Function = async (socket: Socket, data: string, game: IGameModel): Promise<void> => {
+        const { gameId: room }: DataReceived = JSON.parse(data);
+        socket.on("sync_word", (content: string) => {
+            socket.to(room).emit("receive_word", content);
+        });
+
+        socket.on("send_validation", (content: string) => {
+            socket.to(room).emit("push_validation", content);
+        });
+
+        socket.on("disconnect", async (content: boolean) => {
+            socket.to(room).emit("opponent_disconnected", true);
+            await game.remove();
+        });
+
+    };
+
 // **********************************************************************************************************************
 // **********************************************************************************************************************
 // **********************************************************************************************************************
@@ -60,18 +77,20 @@ export default (socket: Socket) => {
             joinSecondPlayer(socket, game, room, value);
         }
 
-        socket.on("sync_word", (content: string) => {
-            socket.to(room).emit("receive_word", content);
-        });
+        validation(socket, data);
 
-        socket.on("send_validation", (content: string) => {
-            socket.to(room).emit("push_validation", content);
-        });
+        // socket.on("sync_word", (content: string) => {
+        //     socket.to(room).emit("receive_word", content);
+        // });
 
-        socket.on("disconnect", async (content: boolean) => {
-            socket.to(room).emit("opponent_disconnected", true);
-            await game.remove();
-        });
+        // socket.on("send_validation", (content: string) => {
+        //     socket.to(room).emit("push_validation", content);
+        // });
+
+        // socket.on("disconnect", async (content: boolean) => {
+        //     socket.to(room).emit("opponent_disconnected", true);
+        //     await game.remove();
+        // });
 
         socket.on("request_rematch", async (content: string) => {
             socket.to(room).emit("rematch_invitation", content);
