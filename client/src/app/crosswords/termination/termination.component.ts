@@ -77,7 +77,6 @@ enum Type {
 
     private receiveAcceptRematch(): void {
         this.socketService.acceptRematch().subscribe( (accepted: boolean) => {
-            console.log("1");
             if (accepted) {
                 this.closeDialog();
             }

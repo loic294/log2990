@@ -120,7 +120,6 @@ export class SocketService {
         });
 
         this._socket.on("rematch_accepted", (data: boolean) => {
-            console.log("4");
             this._acceptRematch.next(true);
         });
 
@@ -256,7 +255,6 @@ export class SocketService {
     public acceptRequestRematch(gameID: string): void {
         this.joinGame(gameID);
         this._socket.emit("accept_rematch", gameID);
-        console.log("2");
     }
 
     public sendRequestModeMenu(): void {
