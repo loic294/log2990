@@ -77,6 +77,10 @@ export default (socket: Socket) => {
             socket.to(room).emit("rematch_invitation", content);
         });
 
+        socket.on("accept_rematch", async (content: string) => {
+            socket.to(room).emit("rematch_accepted", content);
+        });
+
         socket.on("word_validated", async (content: string) => {
             if (content === "player1") {
                 pointFirstPlayer(socket, game, room);
