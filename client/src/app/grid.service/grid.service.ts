@@ -30,6 +30,14 @@ export class GridService {
         this.initServicesListeners();
     }
 
+    public wordLength(): number {
+        return this._word.length;
+    }
+
+    public isVertical(): Boolean {
+        return this._word.orientation === Orientation.vertical;
+    }
+
     private initServicesListeners(): void {
         this._wordService.wordFromClue.subscribe(
             (_wordFromClue: Word) => {
