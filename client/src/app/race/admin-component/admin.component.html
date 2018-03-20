@@ -7,8 +7,9 @@
   <h4>Games</h4>
 
   <ul>
-    <a *ngFor="let game of games" routerLink="/admin/{{game.id}}" routerLinkActive="active" [class.active]="id == game.id">
-      <li>{{game.name}}</li>
+    <a routerLink="/admin/{{game.id}}" routerLinkActive="active" [class.active]="id == game.id">
+      <input [ngModel]="game.name">
+      <input [ngModel]="game.description">
     </a>
   </ul>
 
@@ -21,9 +22,6 @@
   <div *ngIf="id">
     <h1>Edit game</h1>
 		<app-track-creation></app-track-creation>
-    <div>
-      <button routerLink="/admin" (click)="deleteGame(id)">Delete game</button>
-    </div>
   </div>
   
 </div>
