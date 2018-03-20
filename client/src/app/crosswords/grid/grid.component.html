@@ -14,13 +14,18 @@
 						maxlength="1" 
             [class.is-black]="case.char === '-'"
             (click)=selectCaseFromGrid(case)
-            [class.other-player] = "case.isOtherPlayer"
+
             id={{case.id}}
             />
-            
+            <!-- [class.other-player] = "case.isOtherPlayer" -->
           <div *ngIf="case.startOfSelected()">
            <div class="border" [ngStyle]="highligthStyle()">
            </div>
+          </div>
+
+          <div *ngIf="case.startSelectedByOther()">
+              <div class="border" [ngStyle]="highligthStyleOtherPlayer()">
+              </div>
           </div>
 
 					<div class="indexes">

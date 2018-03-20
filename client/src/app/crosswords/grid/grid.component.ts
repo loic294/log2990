@@ -58,6 +58,23 @@ export class GridComponent implements OnInit {
 
         return styles;
     }
-    
+
+    public highligthStyleOtherPlayer(): {} {
+        const cellHeigth: number = 50;
+        const wordTotal: number = this._gridService.wordLengthOther() * cellHeigth;
+        let formatedNumber: string;
+        formatedNumber = wordTotal.toString();
+        formatedNumber += "px";
+
+        // tslint:disable-next-line:no-unnecessary-local-variable
+        const styles: {} = {
+            "height": !this._gridService.isVerticalOther() ? "50px" : formatedNumber,
+            "width": this._gridService.isVerticalOther() ? "50px" : formatedNumber,
+            "border-color": "blue"
+          };
+
+        return styles;
+    }
+
     public ngOnInit(): void {}
 }

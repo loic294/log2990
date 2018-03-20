@@ -37,8 +37,16 @@ export class GridService {
         return this._word.length;
     }
 
+    public wordLengthOther(): number {
+        return this._otherWord.length;
+    }
+
     public isVertical(): Boolean {
         return this._word.orientation === Orientation.vertical;
+    }
+
+    public isVerticalOther(): Boolean {
+        return this._otherWord.orientation === Orientation.vertical;
     }
 
     private initServicesListeners(): void {
@@ -77,13 +85,24 @@ export class GridService {
         if (this._otherWord) {
              this._gridTools.iterateWord(this._otherWord, (row: number, col: number) => {
                 this._grid[row][col].isOtherPlayer = false;
+                this._grid[row][col].startUnselectByOther();
            });
         }
 
         this._otherWord = w;
+        let wordStart: number = 0;
+        (w.orientation === 0) ? wordStart = w.col : wordStart = w.row;
+        console.log(wordStart);
         if (w) {
-            this._gridTools.iterateWord(w, (row: number, col: number) => {
+
+            this._gridTools.iterateWord(w, (row: number, col: number, cellTemp: Cell, cell: number) => {
                 this._grid[row][col].isOtherPlayer = true;
+                console.log(wordStart);
+                console.log(cell);
+                if (cell === wordStart) {
+                    this._grid[row][col].startSelectByOther();
+                    console.log( this._grid[row][col].startSelectByOther());
+                }
             });
         }
 
