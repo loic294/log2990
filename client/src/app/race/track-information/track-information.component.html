@@ -1,8 +1,12 @@
 
-<button (click)="getTracksList()">get gabs</button>
-<button (click)="getTrackInfo('Nic')">get gab</button>
-<button (click)="putTrack('Nic','t','d',8)">put gab</button>
-<button (click)="deleteTrack('Gab')">delete gab</button>
+<input [(ngModel)]="_name" placeholder="name">
+<input [(ngModel)]="_type" placeholder="type">
+<input [(ngModel)]="_description" placeholder="description">
+
+<button (click)="getTracksList()">get tracks</button>
+<button (click)="getTrackInfo()">get track</button>
+<button (click)="putTrack()">save track</button>
+<button (click)="deleteTrack()">delete track</button>
 
 
   <li *ngFor="let track of this._tracks">

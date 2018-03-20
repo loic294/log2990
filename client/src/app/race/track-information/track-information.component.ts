@@ -1,8 +1,7 @@
 import { Component } from "@angular/core";
 
 import { ITrackInfo } from "../../../../../server/app/models/trackInfo";
-import { TrackInformationService } from "../../../../../server/app/services/trackInformation/trackInformationService"; // axios cote serveur
-// import { TrackInformationService } from "../track-services/track-information.service";  // http cote client
+import { TrackInformationService } from "../../../../../server/app/services/trackInformation/trackInformationService";
 
 @Component({
     selector: "app-track-information",
@@ -13,34 +12,38 @@ export class TrackInformationComponent {
 
     private _tracks: Array<String>;
     private _currentTrack: ITrackInfo;
+    private _name: String;
+    private _type: String;
+    private _description: String;
+    private _timePlayed: number;
 
     public constructor(private _trackInfo: TrackInformationService) {
         this._tracks = new Array();
+        this._name = "";
+        this._type = "";
+        this._description = "";
+        this._timePlayed = 0;
     }
 
     public getTracksList(): void {
         this._trackInfo.getTracksList().then((data) => {
-            this._tracks = data;
+            this._tracks = JSON.parse(data.toString());
         });
     }
 
-    public getTrackInfo(trackName: String): void {
-       this._trackInfo.getTrackInfo(trackName).then((data) => {
-            const temp: String[] = data;
-            this._currentTrack = {name: temp[0].name, type: temp[0].type,
-                                  description: temp[0].description, timesPlayed: temp[0].timesPlayed};
-            console.log(this._currentTrack);
+    public getTrackInfo(): void {
+        this._trackInfo.getTrackInfo(this._name).then((data) => {
+            this._currentTrack = JSON.parse(data.toString());
         });
-
     }
 
-    public putTrack(trackName: String, trackType: String, trackDesc: String, played: Number): void {
-        const track: ITrackInfo = {name: trackName, type: trackType, description: trackDesc, timesPlayed: played};
+    public putTrack(): void {
+        const track: Object = {name: this._name, type: this._type, description: this._description, timesPlayed: this._timePlayed};
         this._trackInfo.putTrack(track);
     }
 
-    public deleteTrack(trackName: String): void {
-        this._trackInfo.deleteTrack(trackName);
+    public deleteTrack(): void {
+        this._trackInfo.deleteTrack(this._name);
     }
 
 }

@@ -46,7 +46,11 @@ export const deleteTrack: (req: Request, res: Response, next: NextFunction) => P
 async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
     const requestedTrack: string = req.query["name"];
-    await Track.remove({name: requestedTrack});
+    if (requestedTrack === "all") {
+        await Track.remove({});
+    } else {
+        await Track.remove({name: requestedTrack});
+    }
 
     try {
         res.send("Hello DELETE!");
