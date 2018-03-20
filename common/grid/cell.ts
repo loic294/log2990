@@ -22,6 +22,7 @@ export class Cell {
     public isShared(): void {
         this.shared = true;
     }
+
     public get sharedValidation(): boolean{
         return this.shared;
     }

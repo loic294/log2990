@@ -30,12 +30,12 @@ export class GridService {
         this.initServicesListeners();
     }
 
-    public wordLength(): number {
-        return this._word.length;
-    }
-
     public isVertical(): Boolean {
         return this._word.orientation === Orientation.vertical;
+    }
+
+    public isVerticalOther(): Boolean {
+        return this._otherWord.orientation === Orientation.vertical;
     }
 
     private initServicesListeners(): void {
