@@ -18,6 +18,7 @@ enum Type {
     private _dialogType: Number;
     public showRematchOffer: boolean = false;
     public opponentID: string;
+
     public constructor (
         private socketService: SocketService,
         public dialogRef: MatDialogRef<TerminationComponent>,
@@ -36,7 +37,6 @@ enum Type {
     public dialogType(): Number {
         return this._dialogType;
     }
-
 
     public createSoloGame(): void {
         // **************************************************************************************************************
@@ -121,7 +121,6 @@ export class TerminationComponent implements OnInit {
                             break;
                         default:
                             break;
-
                     }
                 }
             });
