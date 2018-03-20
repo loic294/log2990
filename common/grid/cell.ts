@@ -10,7 +10,8 @@ export class Cell {
         private _y: number = 0,
         private _isSelected: boolean = false,
         private _isValidated: boolean = false,
-        private _black: boolean = false) {
+        private _black: boolean = false,
+        private _isStartOfSelected: boolean = false) {
 
         this.wordIndexes = [];
         this.isOtherPlayer = false;
@@ -43,6 +44,18 @@ export class Cell {
 
     public selected(): boolean {
         return this._isSelected;
+    }
+
+    public startSelect(): void {
+        this._isStartOfSelected = true;
+    }
+
+    public startUnselect(): void {
+        this._isStartOfSelected = false;
+    }
+    
+    public startOfSelected(): boolean {
+        return this._isStartOfSelected;
     }
 
     public get x(): number {
