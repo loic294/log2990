@@ -2,27 +2,39 @@ import { Request, Response, NextFunction } from "express";
 import Track, { ITrackInfo } from "../../models/trackInfo";
 
 const ERR_500: number = 500;
+let promise: Promise<void>;
 
 export const obtainTracks: (req: Request, res: Response, next: NextFunction) => Promise<void> =
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
         const requestedTrack: string = req.query["name"];
+
+        const trackNames: String[] = new Array();
         let tracks: ITrackInfo[];
 
-        if (requestedTrack === "all") {
-            tracks = await Track.find({}, {_id: 0, name: 1, type: 1, description: 1, timesPlayed: 1});
-            const trackNames: String[] = new Array();
-            for (const track of tracks) {
-                trackNames.push(track.name);
-            }
-            res.json(trackNames);
-        } else {
-            tracks = await Track.find({name: requestedTrack},
-                                      {_id: 0, name: 1, type: 1, description: 1, timesPlayed: 1});
-            res.json(tracks);
-        }
+        try {
+            if (requestedTrack === "all") {
+                promise = Track.find({}, { _id: 0, name: 1, type: 1, description: 1, timesPlayed: 1 })
+                    .then((results: ITrackInfo[]) => {
+                        tracks = results;
+                        for (const track of tracks) {
+                            trackNames.push(track.name);
+                        }
+                        res.json(trackNames);
+                    });
+            } else {
+                promise = Track.find({ name: requestedTrack },
+                                     { _id: 0, name: 1, type: 1, description: 1, timesPlayed: 1 })
+                    .then((results: ITrackInfo[]) => {
+                        tracks = results;
+                        res.json(tracks);
+                    });
 
-};
+            }
+        } catch (err) {
+            throw err;
+        }
+    };
 
 export const saveTrack: (req: Request, res: Response, next: NextFunction) => Promise<void> =
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -40,21 +52,18 @@ export const saveTrack: (req: Request, res: Response, next: NextFunction) => Pro
         } catch (err) {
             res.status(ERR_500).send(err.message);
         }
-};
+    };
 
 export const deleteTrack: (req: Request, res: Response, next: NextFunction) => Promise<void> =
-async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
-    const requestedTrack: string = req.query["name"];
-    if (requestedTrack === "all") {
-        await Track.remove({});
-    } else {
-        await Track.remove({name: requestedTrack});
-    }
+        const requestedTrack: string = req.query["name"];
 
-    try {
-        res.send("Hello DELETE!");
-    } catch (err) {
-        res.status(ERR_500).send(err.message);
-    }
-};
+        promise = (requestedTrack === "all") ? Track.remove({}).then() : Track.remove({ name: requestedTrack }).then();
+
+        try {
+            res.send("Hello DELETE!");
+        } catch (err) {
+            res.status(ERR_500).send(err.message);
+        }
+    };
