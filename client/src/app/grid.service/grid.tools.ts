@@ -66,8 +66,6 @@ export class GridTools {
             }
         }
 
-        this._grid[this._row][this._col].startSelect();
-
         return new Word("", "", [this._row, this._col], tempOrientation, 0, false);
     }
 
