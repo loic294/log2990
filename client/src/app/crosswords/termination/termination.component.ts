@@ -29,6 +29,7 @@ enum Type {
             dialogRef.disableClose = true;
             this._dialogType = data;
             this.rematchOffer();
+            this.receiveAcceptRematch();
         }
 
     public closeDialog(): void {
@@ -49,6 +50,7 @@ enum Type {
         // this.socketService.difficulty;
         // **************************************************************************************************************
         this.closeDialog();
+
     }
 
     public requestRematch(): void {
@@ -71,6 +73,15 @@ enum Type {
     public openModeDialog(): void {
         this.closeDialog();
         this.socketService.sendRequestModeMenu();
+    }
+
+    private receiveAcceptRematch(): void {
+        this.socketService.acceptRematch().subscribe( (accepted: boolean) => {
+            console.log("1");
+            if (accepted) {
+                this.closeDialog();
+            }
+        });
     }
 
     public joinGame(gameId: string): void {

@@ -22,7 +22,6 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
         public dialog: MatDialog,
         @Inject(MAT_DIALOG_DATA) public data: {}) {
             this.waitingConnection();
-            // this.receiveRequestForModeMenu();
             dialogRef.disableClose = true;
 
         }
