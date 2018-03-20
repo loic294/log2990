@@ -1,5 +1,5 @@
 import { Camera } from "three";
-import { RenderService } from "../render-service/render.service";
+import { Car } from "../car/car";
 
 export namespace CameraConstants {
     export const FAR_CLIPPING_PLANE: number = 100000;
@@ -8,16 +8,17 @@ export namespace CameraConstants {
 
 export default abstract class AbsCamera {
     protected _camera: Camera;
+    protected _car: Car;
 
-    public constructor(protected renderer: RenderService) {  }
+    public constructor(aspectRatio: number, car: Car) {  }
 
-    public getCamera(): Camera {
+    public get camera(): Camera {
         return this._camera;
     }
 
     public abstract follow(): void;
 
-    public abstract onResize(): void;
+    public abstract onResize(aspectRatio: number): void;
 
     public abstract zoom(isPositive: boolean): void;
 }

@@ -1,6 +1,6 @@
 import AbsCamera, { CameraConstants } from "./AbsCamera";
 import { OrthographicCamera } from "three";
-import { RenderService } from "../render-service/render.service";
+import { Car } from "../car/car";
 
 const DISTANCE_VARIATION: number = 0.98;
 const MAX_ZOOM_FACTOR: number = 2;
@@ -9,33 +9,34 @@ const INITIAL_HEIGHT: number = 25;
 
 export default class TopDownCamera extends AbsCamera {
 
-    public constructor(renderer: RenderService) {
-        super(renderer);
+    public constructor(aspectRatio: number, car: Car) {
+        super(aspectRatio, car);
 
         this._camera = new OrthographicCamera(
-            INITIAL_HEIGHT * renderer.getAspectRatio() / -2,
-            INITIAL_HEIGHT * renderer.getAspectRatio() / 2,
+            INITIAL_HEIGHT * aspectRatio / -2,
+            INITIAL_HEIGHT * aspectRatio / 2,
             INITIAL_HEIGHT / 2,
             INITIAL_HEIGHT / -2,
             CameraConstants.NEAR_CLIPPING_PLANE,
             CameraConstants.FAR_CLIPPING_PLANE
         );
-        this._camera.position.set(0, INITIAL_HEIGHT, 0);
-        this._camera.lookAt(renderer.car.position);
+        this._car = car;
+        this._camera.position.set(car.meshPosition.x, INITIAL_HEIGHT, car.meshPosition.z);
+        this._camera.lookAt(car.meshPosition);
     }
 
-    public onResize(): void {
+    public onResize(aspectRatio: number): void {
         const camera: OrthographicCamera = this._camera as OrthographicCamera;
 
-        camera.left = INITIAL_HEIGHT * this.renderer.getAspectRatio() / -2;
-        camera.right = INITIAL_HEIGHT * this.renderer.getAspectRatio() / 2;
+        camera.left = INITIAL_HEIGHT * aspectRatio / -2;
+        camera.right = INITIAL_HEIGHT * aspectRatio / 2;
 
         camera.updateProjectionMatrix();
     }
 
     public follow(): void {
-        this._camera.position.x = this.renderer.car.meshPosition.x;
-        this._camera.position.z = this.renderer.car.meshPosition.z;
+        this._camera.position.x = this._car.meshPosition.x;
+        this._camera.position.z = this._car.meshPosition.z;
     }
 
     public zoom(isPositive: boolean): void {

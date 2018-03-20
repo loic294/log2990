@@ -1,6 +1,6 @@
 import AbsCamera, { CameraConstants } from "./AbsCamera";
 import { PerspectiveCamera } from "three";
-import { RenderService } from "../render-service/render.service";
+import { Car } from "../car/car";
 
 const FIELD_OF_VIEW: number = 70;
 const INITIAL_HEIGHT: number = 3;
@@ -14,29 +14,30 @@ export default class ThirdPersonCamera extends AbsCamera {
 
     private distanceFactor: number;
 
-    public constructor(renderer: RenderService) {
-        super(renderer);
+    public constructor(aspectRatio: number, car: Car) {
+        super(aspectRatio, car);
         this._camera = new PerspectiveCamera(
             FIELD_OF_VIEW,
-            renderer.getAspectRatio(),
+            aspectRatio,
             CameraConstants.NEAR_CLIPPING_PLANE,
             CameraConstants.FAR_CLIPPING_PLANE
         );
+        this._car = car;
         this. distanceFactor = INTIAL_DISTANCE_FACTOR;
         this._camera.position.set(0, INITIAL_HEIGHT, 0);
     }
 
-    public onResize(): void {
+    public onResize(aspectRatio: number): void {
         const camera: PerspectiveCamera = this._camera as PerspectiveCamera;
 
-        camera.aspect = this.renderer.getAspectRatio();
+        camera.aspect = aspectRatio;
         camera.updateProjectionMatrix();
     }
 
     public follow(): void {
-        this._camera.position.x = this.renderer.car.meshPosition.x - this.distanceFactor * this.renderer.car.direction.x;
-        this._camera.position.z = this.renderer.car.meshPosition.z - this.distanceFactor * this.renderer.car.direction.z;
-        this._camera.lookAt(this.renderer.car.meshPosition);
+        this._camera.position.x = this._car.meshPosition.x - this.distanceFactor * this._car.direction.x;
+        this._camera.position.z = this._car.meshPosition.z - this.distanceFactor * this._car.direction.z;
+        this._camera.lookAt(this._car.meshPosition);
     }
 
     public zoom(isPositive: boolean): void {
