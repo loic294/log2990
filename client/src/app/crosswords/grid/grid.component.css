@@ -39,7 +39,9 @@
 
 .col input:focus{
     outline: none;
-    border: 3px solid black;
+    /* border: 3px solid black; */
+    /* background: lightslategray;
+    z-index: -1; */
 }
 
 .col input:disabled {
@@ -56,13 +58,11 @@
 	font-size: 10px;
 }
 
-.other-player.start{
-    border-left: solid lightblue 3px;
-}
 .other-player{
-    background-color: yellow;
-    /*border-top: solid lightblue 3px;
-    border-bottom: solid lightblue 3px;*/
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 4px solid blue;
 }
 
 .border{
@@ -71,6 +71,7 @@
     left: 0;
     border: 4px solid red;
 }
+
 
 .validateOther{
     background-color: lightblue; 
