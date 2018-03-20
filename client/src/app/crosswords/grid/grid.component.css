@@ -41,8 +41,8 @@
     border: 3px solid black;
 }
 
-.col input:disabled {
-    background: greenyellow;
+.validate {
+    background: greenyellow !important;
 }
 
 .indexes {
@@ -65,5 +65,5 @@
 }
 
 .validateOther{
-    background-color: lightblue; 
+    background: lightblue; 
 }
