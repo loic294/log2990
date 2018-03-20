@@ -67,6 +67,12 @@ enum Type {
         this.closeDialog();
     }
 
+    public openModeDialog(): void {
+        console.log("1");
+        this.closeDialog();
+        this.socketService.sendRequestModeMenu();
+    }
+
     public joinGame(gameId: string): void {
         this.socketService.joinGame(gameId);
     }
