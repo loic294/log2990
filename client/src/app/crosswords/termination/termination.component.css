@@ -1,0 +1,63 @@
+.hide {
+    display: none;
+}
+
+.align {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    height: 60px;
+}
+
+.waiting-connection {
+    text-align: center;
+}
+
+.players-container {
+    padding: 20px 0;
+}
+
+.spinner {
+    position: relative;
+    min-height: 36px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.players {
+    background-color: #f1f1f1;
+    padding: 20px 30px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.players button {
+    background-color: #ccc;
+}
+
+.players button:hover {
+    background-color: #0099dd;
+}
+
+input {
+    width: 100%;
+    border: 2px solid #ddd;
+    margin: 10px 0;
+    padding: 8px 16px;
+    border-radius: 6px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #0099dd;
+}
+
+.disconnected {
+    color: red
+}

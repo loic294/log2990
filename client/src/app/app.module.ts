@@ -17,7 +17,7 @@ import { CluesComponent } from "./crosswords/clues/clues.component";
 import { AppRoutingModule } from "./app-routing.module";
 import { GridService } from "./grid.service/grid.service";
 import { SocketIoModule, SocketIoConfig } from "ng-socket-io";
-import { ModeComponent, ModeDialogComponent, DisconnectedDialogComponent } from "./crosswords/mode/mode.component";
+import { ModeComponent, ModeDialogComponent } from "./crosswords/mode/mode.component";
 import { SocketService } from "./socket.service/socket.service";
 import { AdminComponent } from "./race/admin-component/admin.component";
 import {MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS} from "@angular/material/dialog";
@@ -26,6 +26,7 @@ import {TrackCreationComponent} from "./race/track-creation/track-creation.compo
 import {MatProgressSpinnerModule} from "@angular/material";
 import { DifficultyService } from "./difficulty.service/difficulty.service";
 import { HomeComponent } from "./home/home.component";
+import { TerminationComponent, TerminationDialogComponent } from "./crosswords/termination/termination.component";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
@@ -42,12 +43,12 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         ModeDialogComponent,
         HomeComponent,
         TrackCreationComponent,
-        ModeDialogComponent,
-        DisconnectedDialogComponent
+        TerminationComponent,
+        TerminationDialogComponent
     ],
     entryComponents: [
         ModeDialogComponent,
-        DisconnectedDialogComponent
+        TerminationDialogComponent
     ],
     imports: [
         BrowserModule,

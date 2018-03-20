@@ -6,16 +6,17 @@ import { IGameModel } from "./../../../../server/app/models/game";
 import { difficultyName } from "../../../../common/grid/difficulties";
 import Word from "../../../../common/lexical/word";
 import { DifficultyService } from "./../difficulty.service/difficulty.service";
+
 @Injectable()
 export class SocketService {
 
-    // private input: String;
     public _player: string = "";
     private _difficulty: String;
     private _modes: string[];
     private _selectedMode: string;
     private _games: IGameModel[];
     private _showGames: boolean;
+    private _wordCount: number;
 
     private _updateUserConnected: Observable<boolean>;
     private _userConnected: Subject<boolean> = new Subject<boolean>();
@@ -32,6 +33,20 @@ export class SocketService {
     private _updateOpponentName: Observable<string>;
     private _opponentName: Subject<string> = new Subject<string>();
 
+    private _updateUserScore: Observable<number>;
+    private _userScore: Subject<number> = new Subject<number>();
+    private _userScoreCount: number;
+
+    private _updateOpponentScore: Observable<number>;
+    private _opponentScore: Subject<number> = new Subject<number>();
+    private _opponentScoreCount: number;
+
+    private _updateGridValidated: Observable<boolean>;
+    private _gridValidated: Subject<boolean> = new Subject<boolean>();
+
+    private _updateRequestRematch: Observable<string>;
+    private _requestRematch: Subject<string> = new Subject<string>();
+
     public constructor(
         private _socket: Socket,
         private difficultyService: DifficultyService
@@ -39,20 +54,28 @@ export class SocketService {
         this.difficultyService.difficulty.subscribe((diff) => {
             this._difficulty = difficultyName(diff);
         });
-
+        this._opponentScoreCount = 1;
+        this._userScoreCount = 1;
         this._games = [];
         this._modes = ["Single Player", "Two Players"];
         this._selectedMode = "";
         this._showGames = false;
         this._updateUserConnected = this._userConnected.asObservable();
         this._updateHighligthCell = this._highlightCell.asObservable();
+        this._updateUserScore = this._userScore.asObservable();
+        this._updateOpponentScore = this._opponentScore.asObservable();
         this._updateWordValidated = this._wordToValidate.asObservable();
         this._updateOpponentDisconnected = this._opponentDisconnected.asObservable();
         this._updateOpponentName = this._opponentName.asObservable();
+        this._updateGridValidated = this._gridValidated.asObservable();
+        this._updateRequestRematch = this._requestRematch.asObservable();
         this.initializeSocket();
 
     }
-
+    // **************************************************************************************************
+    // **************************************************************************************************
+    // **************************************************************************************************
+    // tslint:disable-next-line:max-func-body-length
     public initializeSocket(): void {
         this._socket.connect();
 
@@ -65,7 +88,10 @@ export class SocketService {
         });
 
         this._socket.on("push_validation", (data: string): void => {
+
+            this._opponentScore.next(this._opponentScoreCount++);
             this._wordToValidate.next(data);
+
         });
 
         this._socket.on("second_player_joined", (data: IGameModel) => {
@@ -80,6 +106,34 @@ export class SocketService {
         this._socket.on("opponent_disconnected", (data: boolean) => {
             this._opponentDisconnected.next(true);
         });
+
+        this._socket.on("rematch_invitation", (data: string) => {
+            this._requestRematch.next(data);
+        });
+
+    }
+
+    public requestRematch(): Observable<string> {
+        return this._updateRequestRematch;
+    }
+
+    public userScoreCount(): number {
+        return this._userScoreCount;
+    }
+
+    public opponentScoreCount(): number {
+        return this._opponentScoreCount;
+    }
+    public get gridValidated(): Observable<boolean> {
+        return this._updateGridValidated;
+    }
+
+    public get opponentScore(): Observable<number> {
+        return this._updateOpponentScore;
+    }
+
+    public get userScore(): Observable<number> {
+        return this._updateUserScore;
     }
 
     public get opponentName(): Observable<string> {
@@ -159,6 +213,32 @@ export class SocketService {
 
     public sendValidation(word: Word): void {
         this._socket.emit("send_validation", JSON.stringify({word}));
+        this._userScore.next(this._userScoreCount++);
+    }
+
+    public setWordCount(wordCount: number): void {
+        this._wordCount = wordCount;
+        if (this._wordCount === 0) {
+            this._gridValidated.next(true);
+        }
+    }
+
+    public getWordCount(): number {
+        return this._wordCount;
+    }
+
+    public sendRequestRematch(): void {
+        console.log("sending request");
+        console.log(this.player);
+        this.createGame(this.selectedMode);
+        this._socket.emit("request_rematch", this.player);
+        // this._requestRematch.next(this.player);
+    }
+
+    public acceptRequestRematch(gameID: string): void {
+        console.log("accepting request");
+        console.log(gameID);
+        this.joinGame(gameID);
     }
 
 }

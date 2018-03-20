@@ -1,6 +1,7 @@
 // tslint:disable:await-promise
 import Game, {IGameModel} from "../models/game";
 import { Socket } from "./socket.io-types";
+
 interface DataReceived {
     gameId: string;
     value: string;
@@ -25,16 +26,34 @@ const joinSecondPlayer: Function = async (socket: Socket, game: IGameModel, room
     socket.emit("connected_to_game", JSON.stringify({
         game
     }));
-    // SEND CONNECTED TO OTHER PLAYER
 };
 
+const pointFirstPlayer: Function = async (socket: Socket, game: IGameModel, room: string): Promise<void> => {
+    socket.join(room);
+
+    game = await Game.findOneAndUpdate({ name: game.name}, { players: [game.score[0], game.score[0]++] }, {new: true});
+};
+
+const pointSecondPlayer: Function = async (socket: Socket, game: IGameModel, room: string): Promise<void> => {
+    socket.join(room);
+
+    game = await Game.findOneAndUpdate({ name: game.name}, { players: [game.score[1], game.score[0]++] }, {new: true});
+};
+
+// **********************************************************************************************************************
+// **********************************************************************************************************************
+// **********************************************************************************************************************
+// tslint:disable-next-line:max-func-body-length ************************************************************************
 export default (socket: Socket) => {
+    // ******************************************************************************************************************
+    // ******************************************************************************************************************
+    // ******************************************************************************************************************
+    // tslint:disable-next-line:max-func-body-length ********************************************************************
     socket.on("connect_to_game", async (data: string) => {
         const { gameId: room, value }: DataReceived = JSON.parse(data);
         const game: IGameModel = await Game.findOne({
             name: room
         });
-
         if (game.players.length === 0) {
             joinFirstPlayer(socket, game, room, value);
         } else if (game.players.length === 1) {
@@ -52,6 +71,18 @@ export default (socket: Socket) => {
         socket.on("disconnect", async (content: boolean) => {
             socket.to(room).emit("opponent_disconnected", true);
             await game.remove();
+        });
+
+        socket.on("request_rematch", async (content: string) => {
+            socket.to(room).emit("rematch_invitation", content);
+        });
+
+        socket.on("word_validated", async (content: string) => {
+            if (content === "player1") {
+                pointFirstPlayer(socket, game, room);
+            } else if (content === "player2") {
+                pointSecondPlayer(socket, game, room);
+            }
         });
     });
 };
