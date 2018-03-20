@@ -4,8 +4,7 @@ import { Component, OnInit } from "@angular/core";
 
 import { Cell } from "../../../../../common/grid/cell";
 import { GridService } from "../../grid.service/grid.service";
-import { Orientation } from "../../../../../common/lexical/word";
-import { NgStyle } from "@angular/common";
+import { CELL_HEIGTH } from "../../constants";
 
 /** TEMPORARY MOCKED CONTENT
    * Example table
@@ -43,37 +42,29 @@ export class GridComponent implements OnInit {
         this._gridService.selectCaseFromGrid(c);
     }
 
+    private highligthLength(wordLength: number): string {
+        const wordTotal: number = wordLength * CELL_HEIGTH;
+
+        return wordTotal.toString() + "px";
+    }
+
     public highligthStyle(): {} {
-        const cellHeigth: number = 50;
-        const wordTotal: number = this._gridService.wordLength() * cellHeigth;
-        let formatedNumber: string;
-        formatedNumber = wordTotal.toString();
-        formatedNumber += "px";
+        const wordLength: number = this._gridService.wordLength();
 
-        // tslint:disable-next-line:no-unnecessary-local-variable
-        const styles: {} = {
-            "height": !this._gridService.isVertical() ? "50px" : formatedNumber,
-            "width": this._gridService.isVertical() ? "50px" : formatedNumber
+        return {
+            "height": this._gridService.isHorizontal() ?  CELL_HEIGTH + "px" : this.highligthLength(wordLength),
+            "width": !this._gridService.isHorizontal() ? CELL_HEIGTH + "px" :  this.highligthLength(wordLength)
           };
-
-        return styles;
     }
 
     public highligthStyleOtherPlayer(): {} {
-        const cellHeigth: number = 50;
-        const wordTotal: number = this._gridService.wordLengthOther() * cellHeigth;
-        let formatedNumber: string;
-        formatedNumber = wordTotal.toString();
-        formatedNumber += "px";
+        const wordLength: number = this._gridService.wordLengthOther();
 
-        // tslint:disable-next-line:no-unnecessary-local-variable
-        const styles: {} = {
-            "height": !this._gridService.isVerticalOther() ? "50px" : formatedNumber,
-            "width": this._gridService.isVerticalOther() ? "50px" : formatedNumber,
+        return {
+            "height": this._gridService.isHorizontalOther() ? CELL_HEIGTH + "px" : this.highligthLength(wordLength),
+            "width": !this._gridService.isHorizontalOther() ? CELL_HEIGTH + "px" : this.highligthLength(wordLength),
             "border-color": "blue"
           };
-
-        return styles;
     }
 
     public ngOnInit(): void {}
