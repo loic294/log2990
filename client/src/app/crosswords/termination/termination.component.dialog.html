@@ -15,7 +15,15 @@
   <div *ngIf="dialogType() === 2">
     <h2 class="disconnected">WIN!</h2>
     <h1>You won the game!</h1>
+    <div *ngIf="!showRematchOffer">
     <button (click)="requestRematch()">Ask opponent to play again</button>
+    </div>
+    <div *ngIf="showRematchOffer">
+        <h2>Waiting for {{opponentID}} response</h2>
+        <div class="spinner">
+            <mat-spinner color="warn"></mat-spinner>
+        </div>
+    </div>
     <button (click)="openModeDialog()">Play new game</button>
 
 
@@ -23,16 +31,19 @@
 
   <div *ngIf="dialogType() === 3">
     <h2 class="disconnected">You lost...</h2>
-    <h1>Try again?</h1>
-    <button (click)="requestRematch()">Ask opponent to play again</button>
+    <div *ngIf="!showRematchOffer">
+        <h1>Try again?</h1>        
+        <button (click)="requestRematch()">Ask opponent to play again</button>
+    </div>
+    <div *ngIf="showRematchOffer">
+        <h1> {{opponentID}} wants to play again</h1>
+        <button (click)="acceptRematchOffer()">Accept</button>
+    </div>
     <button (click)="openModeDialog()">Play new game</button>
 
   </div>
 
-  <div *ngIf="showRematchOffer">
-    <h1> {{opponentID}} wants to play again</h1>
-    <button (click)="acceptRematchOffer()">Accept</button>
-  </div>
+  
 
 
   <a routerLink="">
