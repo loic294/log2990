@@ -3,6 +3,8 @@ import { Component, OnInit } from "@angular/core";
 import { ITrackInfo } from "../../../../../server/app/models/trackInfo";
 import { TrackInformationService } from "../../../../../server/app/services/trackInformation/trackInformationService";
 
+let promise: Promise<void>;
+
 @Component({
     selector: "app-track-information",
     templateUrl: "./track-information.component.html",
@@ -26,13 +28,13 @@ export class TrackInformationComponent implements OnInit {
     }
 
     public getTracksList(): void {
-        this._trackInfo.getTracks("all").then((data) => {
+        promise = this._trackInfo.getTracks("all").then((data) => {
             this._tracks = JSON.parse(data.toString());
         });
     }
 
     public getTrackInfo(trackName: String): void {
-        this._trackInfo.getTracks(trackName).then((data) => {
+        promise = this._trackInfo.getTracks(trackName).then((data) => {
             const tempArray: Array<ITrackInfo> = JSON.parse(data.toString());
             this._currentTrack = tempArray[0];
         });
@@ -40,13 +42,13 @@ export class TrackInformationComponent implements OnInit {
 
     public putTrack(): void {
         const track: Object = {name: this._name, type: this._type, description: this._description, timesPlayed: this._timesPlayed};
-        this._trackInfo.putTrack(track).then(() => {
+        promise = this._trackInfo.putTrack(track).then(() => {
             this.getTracksList();
         });
     }
 
     public deleteTrack(): void {
-        this._trackInfo.deleteTrack(this._currentTrack.name).then(() => {
+        promise = this._trackInfo.deleteTrack(this._currentTrack.name).then(() => {
             this._currentTrack = null;
             this.getTracksList();
         });
