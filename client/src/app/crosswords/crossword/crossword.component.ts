@@ -42,7 +42,6 @@ export class CrosswordComponent implements OnInit {
   public get opponnentName(): string {
       return this._opponentName;
   }
-
   public unselect(): void {
       this._wordService.selectWordFromClue(null);
       this._wordService.selectWordFromGrid(null);

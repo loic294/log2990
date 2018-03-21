@@ -26,11 +26,6 @@
                 [ngStyle]="highligthStyleOtherPlayer()">
           </div>
 
-          <div *ngIf="case.startSelectedByOther()">
-              <div class="border" [ngStyle]="highligthStyleOtherPlayer()">
-              </div>
-          </div>
-
 					<div class="indexes">
 						<div class="small-index" *ngFor="let index of case.wordIndexes">
               {{index}}   
