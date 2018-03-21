@@ -113,32 +113,6 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
 }
 
 @Component({
-    selector: "mode.component.disconnected",
-    templateUrl: "./mode.component.disconnected.html",
-    styleUrls: ["./mode.component.css"]
-  })
-  export class DisconnectedDialogComponent {
-
-      public constructor(
-        public dialog: MatDialog,
-        private dialogRef: MatDialogRef<ModeComponent>
-      ) {
-        this.dialogRef.disableClose = true;
-      }
-
-      public openModeDialog(): void {
-        this.dialog.open(ModeDialogComponent, {
-            width: "500px",
-            height: "75%",
-            data: {  }
-        });
-      }
-
-      public ngOnInit(): void {}
-
-}
-// tslint:disable max-classes-per-file
-@Component({
     selector: "app-mode",
     templateUrl: "./mode.component.html",
     styleUrls: ["./mode.component.css"]

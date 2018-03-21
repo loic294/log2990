@@ -5,14 +5,18 @@
       <div class="clue" 
         [class.selected]="this._selectedClue == clue"
         [class.disabled]="clue.isValidated">
-        <span class="index">{{clue.index+1}}</span> {{ clue.desc }}
+        <span class="index">{{clue.index+1}}</span>
+        <span *ngIf = "cheatMode; else description">{{ clue.name }}</span>
+        <ng-template #description><span>{{clue.desc}}</span></ng-template>
       </div>
     </div>
   </div>
   <h2>Horizontal</h2>
   <div class="row" *ngFor="let clue of clues" (click)="onSelect(clue)">
     <div *ngIf="clue.orientation===0">
-      <div class="clue" [class.selected]="this._selectedClue == clue">
+      <div class="clue" 
+          [class.selected]="this._selectedClue == clue"
+          [class.disabled]="clue.isValidated">
           <span class="index">{{clue.index+1}}</span>
           <span *ngIf = "cheatMode; else description">{{ clue.name }}</span>
           <ng-template #description><span>{{clue.desc}}</span></ng-template>
