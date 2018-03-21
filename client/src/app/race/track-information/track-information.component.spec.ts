@@ -14,7 +14,9 @@ describe("TrackInformationComponent", () => {
             declarations: [TrackInformationComponent],
             providers: [TrackInformationService]
         })
-            .compileComponents();
+            .compileComponents().catch((error) => {
+                throw error;
+            });
     }));
 
     beforeEach(() => {

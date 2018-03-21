@@ -51,6 +51,8 @@ export class TrackCreationComponent implements AfterViewInit {
     public getTracksList(): void {
         this._trackService.getTracks("all").then((data) => {
             this._tracks = JSON.parse(data.toString());
+        }).catch((error) => {
+            throw error;
         });
     }
 
@@ -58,6 +60,8 @@ export class TrackCreationComponent implements AfterViewInit {
         this._trackService.deleteTrack(this._track.name).then(() => {
             this.startNewTrack();
             this.getTracksList();
+        }).catch((error) => {
+            throw error;
         });
     }
 
@@ -80,6 +84,8 @@ export class TrackCreationComponent implements AfterViewInit {
             }
             this._dotCommand.connectToFirst();
             this._dotCommand.complete();
+        }).catch((error) => {
+            throw error;
         });
     }
 
@@ -99,6 +105,8 @@ export class TrackCreationComponent implements AfterViewInit {
             this.separateVertice();
             this._trackService.putTrack(this._track).then(() => {
                 this.getTracksList();
+            }).catch((error) => {
+                throw error;
             });
         }
     }

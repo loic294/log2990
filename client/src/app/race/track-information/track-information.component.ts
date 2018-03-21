@@ -29,6 +29,8 @@ export class TrackInformationComponent implements OnInit {
     public getTracksList(): void {
         this._trackInfo.getTracks("all").then((data) => {
             this._tracks = JSON.parse(data.toString());
+        }).catch((error) => {
+            throw error;
         });
     }
 
@@ -36,6 +38,8 @@ export class TrackInformationComponent implements OnInit {
         this._trackInfo.getTracks(trackName).then((data) => {
             const tempArray: Array<ITrackInfo> = JSON.parse(data.toString());
             this._currentTrack = tempArray[0];
+        }).catch((error) => {
+            throw error;
         });
     }
 
@@ -44,6 +48,8 @@ export class TrackInformationComponent implements OnInit {
                                timesPlayed: this._timesPlayed, vertice: this._vertice};
         this._trackInfo.putTrack(track).then(() => {
             this.getTracksList();
+        }).catch((error) => {
+            throw error;
         });
     }
 
@@ -51,6 +57,8 @@ export class TrackInformationComponent implements OnInit {
         this._trackInfo.deleteTrack(this._currentTrack.name).then(() => {
             this._currentTrack = null;
             this.getTracksList();
+        }).catch((error) => {
+            throw error;
         });
     }
 

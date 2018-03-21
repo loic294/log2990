@@ -1,4 +1,4 @@
-
+// tslint:disable:await-promise
 import axios from "axios";
 import { ITrack } from "../../models/trackInfo";
 
