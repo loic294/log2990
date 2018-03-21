@@ -21,8 +21,7 @@ export const obtainTracks: (req: Request, res: Response, next: NextFunction) => 
                                       {_id: 0, name: 1, type: 1, description: 1, timesPlayed: 1, vertice: 1}).exec();
             res.json(tracks);
         }
-
-};
+    };
 
 export const saveTrack: (req: Request, res: Response, next: NextFunction) => Promise<void> =
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -41,7 +40,7 @@ export const saveTrack: (req: Request, res: Response, next: NextFunction) => Pro
         } catch (err) {
             res.status(ERR_500).send(err.message);
         }
-};
+    };
 
 export const deleteTrack: (req: Request, res: Response, next: NextFunction) => Promise<void> =
 async (req: Request, res: Response, next: NextFunction): Promise<void> => {
