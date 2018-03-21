@@ -96,17 +96,17 @@ export class GridTools {
         return constraint.test(element);
     }
 
-    public validationByOtherPlayer(tempX: number, tempY: number): void {
-        this._grid[tempX][tempY].isOtherPlayer = true;
-        this._grid[tempX][tempY].validateOther();
-        this._grid[tempX][tempY].startUnselect();
-        this._grid[tempX][tempY].startUnselectByOther();
+    public validationByOtherPlayer(grid: Array<Array<Cell>>, tempX: number, tempY: number): void {
+        grid[tempX][tempY].isOtherPlayer = true;
+        grid[tempX][tempY].validateOther();
+        grid[tempX][tempY].startUnselect();
+        grid[tempX][tempY].startUnselectByOther();
     }
 
-    public validationByPlayer(tempX: number, tempY: number): void {
-        this._grid[tempX][tempY].validate();
-        this._grid[tempX][tempY].startUnselect();
-        this._grid[tempX][tempY].startUnselectByOther();
+    public validationByPlayer(grid: Array<Array<Cell>>, tempX: number, tempY: number): void {
+        grid[tempX][tempY].validate();
+        grid[tempX][tempY].startUnselect();
+        grid[tempX][tempY].startUnselectByOther();
     }
 
 }

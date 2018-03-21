@@ -107,10 +107,10 @@ export class GridService {
         }
         while (i < word.length) {
             if (!isOther) {
-                this._gridTools.validationByPlayer(tempX, tempY);
+                this._gridTools.validationByPlayer(this._grid, tempX, tempY);
             }
             if (isOther) {
-                this._gridTools.validationByOtherPlayer(tempX, tempY);
+                this._gridTools.validationByOtherPlayer(this._grid, tempX, tempY);
                 this._grid[tempX][tempY].char = word.name[i];
             }
             if (this._grid[tempX][tempY].isValidatedByOther && this._grid[tempX][tempY].validated) {
