@@ -16,6 +16,7 @@ export class TrackInformationComponent implements OnInit {
     private _type: String;
     private _description: String;
     private _timesPlayed: number;
+    private _vertice: Array<Array<Number>>;
 
     public constructor(private _trackInfo: TrackInformationService) {
         this._tracks = new Array();
@@ -39,7 +40,8 @@ export class TrackInformationComponent implements OnInit {
     }
 
     public putTrack(): void {
-        const track: Object = {name: this._name, type: this._type, description: this._description, timesPlayed: this._timesPlayed};
+        const track: Object = {name: this._name, type: this._type, description: this._description,
+                               timesPlayed: this._timesPlayed, vertice: this._vertice};
         this._trackInfo.putTrack(track).then(() => {
             this.getTracksList();
         });
@@ -66,6 +68,10 @@ export class TrackInformationComponent implements OnInit {
 
     public set timesPlayed(timesPlayed: number) {
         this._timesPlayed = timesPlayed;
+    }
+
+    public set vertice(vertice: Array<Array<Number>>) {
+        this._vertice = vertice;
     }
 
     public get currentTrack(): ITrackInfo {

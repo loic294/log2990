@@ -1,19 +1,20 @@
 
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
+import { ITrack } from "../../models/trackInfo";
 
 export class TrackInformationService {
 
     public async getTracks(trackName: String): Promise<String> {
         try {
-            const response: AxiosResponse = await axios.get("http://localhost:3000/race/tracks?name=" + trackName);
+            const { data }: { data: Array<ITrack> } = await axios.get("http://localhost:3000/race/tracks?name=" + trackName);
 
-            return JSON.stringify(response.data);
+            return JSON.stringify(data);
         } catch (err) {
             throw err;
         }
     }
 
-    public async putTrack(track: Object): Promise<void> {
+    public async putTrack(track: ITrack): Promise<void> {
         try {
             await axios.post("http://localhost:3000/race/tracks", track);
 

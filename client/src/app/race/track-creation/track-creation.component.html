@@ -7,9 +7,21 @@
   (mouseup)="onKeyUp($event)"></div>
   <div>
     <button (click)="save()">save track</button>
+    <button (click)="startNewTrack()">start new track</button>
+    <button (click)="deleteTrack()">delete track</button>
   </div>
   <div *ngIf="_isSaved">
     track is saved!
   </div>
+<div>
+    <div><span>name: </span><input [(ngModel)]="_track.name"></div>
+    <div><span>type: </span><input [(ngModel)]="_track.type"></div>
+    <div><span>description: </span><input [(ngModel)]="_track.description"></div>
+    <div><span>times played: </span>{{_track.timesPlayed}}</div>
+</div>
 
-
+<div>
+    <li *ngFor="let track of _tracks">
+      <button (click)="getTrackInfo(track)">{{track}}</button>
+    </li>
+  </div>

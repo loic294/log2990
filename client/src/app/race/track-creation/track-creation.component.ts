@@ -1,6 +1,8 @@
 import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from "@angular/core";
 import { OrthographicCamera, WebGLRenderer, Scene, Vector3, Color } from "three";
 import { DotCommand } from "../DotCommand";
+import { TrackInformationService } from "../../../../../server/app/services/trackInformation/trackInformationService";
+import { ITrack, ITrackInfo } from "../../../../../server/app/models/trackInfo";
 
 const FAR_CLIPPING_PLANE: number = 10000;
 const NEAR_CLIPPING_PLANE: number = 1;
@@ -24,14 +26,61 @@ export class TrackCreationComponent implements AfterViewInit {
     private _renderer: THREE.WebGLRenderer;
     private _dotCommand: DotCommand;
     private _isSaved: boolean;
+    private _tracks: Array<String>;
+
+    public _track: ITrack;
 
     @ViewChild("container")
     private container: ElementRef;
 
-    public constructor() {
+    public constructor(private _trackService: TrackInformationService) {
+        this._track = {name: "", type: "", description: "", timesPlayed: 0, vertice: new Array()};
         this._scene = new Scene();
         this._renderer = new WebGLRenderer();
         this._isSaved = false;
+    }
+
+    public startNewTrack(): void {
+        while (this._dotCommand.getVertices().length !== 0) {
+            this._dotCommand.remove();
+        }
+        this._track = {name: "", type: "", description: "", timesPlayed: 0, vertice: new Array()};
+        this._isSaved = false;
+    }
+
+    public getTracksList(): void {
+        this._trackService.getTracks("all").then((data) => {
+            this._tracks = JSON.parse(data.toString());
+        });
+    }
+
+    public deleteTrack(): void {
+        this._trackService.deleteTrack(this._track.name).then(() => {
+            this.startNewTrack();
+            this.getTracksList();
+        });
+    }
+
+    private separateVertice(): void {
+        const trackVertices: Array<Array<number>> = new Array();
+        for (const vertex of this._dotCommand.getVertices()) {
+            trackVertices.push(new Array<number>(vertex.position.x, vertex.position.y, vertex.position.z));
+        }
+        this._track.vertice = trackVertices;
+    }
+
+    public getTrackInfo(trackName: String): void {
+        this.startNewTrack();
+        this._trackService.getTracks(trackName).then((data) => {
+            const tempArray: Array<ITrackInfo> = JSON.parse(data.toString());
+            this._track = tempArray[0];
+        }).then(() => {
+            for (const vertex of this._track.vertice) {
+                this._dotCommand.addObjects(new Vector3(vertex[0], vertex[1], vertex[2]));
+            }
+            this._dotCommand.connectToFirst();
+            this._dotCommand.complete();
+        });
     }
 
     public save(): void {
@@ -45,6 +94,13 @@ export class TrackCreationComponent implements AfterViewInit {
         }
 
         this._isSaved = (trackIsValid && this._dotCommand.getTrackIsCompleted());
+
+        if (this._isSaved) {
+            this.separateVertice();
+            this._trackService.putTrack(this._track).then(() => {
+                this.getTracksList();
+            });
+        }
     }
 
     @HostListener("window:resize", ["$event"])
@@ -112,6 +168,8 @@ export class TrackCreationComponent implements AfterViewInit {
 
         this._renderer.render(this._scene, this._camera);
         this._dotCommand = new DotCommand(this._scene, this._renderer, this._camera);
+
+        this.getTracksList();
     }
 
     private getWindowSize(): Array<number> {
@@ -131,6 +189,10 @@ export class TrackCreationComponent implements AfterViewInit {
 
     public isSaved(): boolean {
         return this._isSaved;
+    }
+
+    public getTracks(): Array<String> {
+        return this._tracks;
     }
 
 }
