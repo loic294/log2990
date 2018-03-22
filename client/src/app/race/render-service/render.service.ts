@@ -1,22 +1,28 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
-import { PerspectiveCamera, WebGLRenderer, Scene, AmbientLight,
-MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, BoxGeometry } from "three";
+import { WebGLRenderer, Scene, AmbientLight,
+MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, BoxGeometry, PlaneGeometry, Texture } from "three";
 import { Car } from "../car/car";
+import TopDownCamera from "../camera-state/top-down-camera";
+import ThirdPersonCamera from "../camera-state/third-person-camera";
+import AbsCamera from "../camera-state/AbsCamera";
+import { PI_OVER_2 } from "../../constants";
 
-const FAR_CLIPPING_PLANE: number = 100000;
-const NEAR_CLIPPING_PLANE: number = 1;
-const FIELD_OF_VIEW: number = 70;
-
-const INITIAL_CAMERA_POSITION_Y: number = 25;
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 1;
 
 const SIZE_SKYBOX: number = 10000;
 
+enum CAMERA_VIEW {
+    TOP_DOWN = 0,
+    THIRD_PERSON = 1
+}
+
 @Injectable()
 export class RenderService {
-    private camera: PerspectiveCamera;
+
+    private _cameraView: number;
+    private _stateCamera: AbsCamera;
     private container: HTMLDivElement;
     private _car: Car;
     private renderer: WebGLRenderer;
@@ -50,31 +56,47 @@ export class RenderService {
 
     private update(): void {
         const timeSinceLastFrame: number = Date.now() - this.lastDate;
-        this.camera.position.x = this._car.meshPosition.x;
-        this.camera.position.z = this._car.meshPosition.z;
         this._car.update(timeSinceLastFrame);
+        this._stateCamera.follow();
         this.lastDate = Date.now();
     }
 
     private async createScene(): Promise<void> {
         this.scene = new Scene();
-
-        this.camera = new PerspectiveCamera(
-            FIELD_OF_VIEW,
-            this.getAspectRatio(),
-            NEAR_CLIPPING_PLANE,
-            FAR_CLIPPING_PLANE
-        );
+        this._stateCamera = new ThirdPersonCamera(this);
+        this._cameraView = CAMERA_VIEW.THIRD_PERSON;
 
         await this._car.init();
-        this.camera.position.set(0, INITIAL_CAMERA_POSITION_Y, 0);
-        this.camera.lookAt(this._car.position);
         this.scene.add(this._car);
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
+
+        const texture: Texture = new TextureLoader().load( "../../../assets/track/track.jpg" );
+        // tslint:disable-next-line
+        const geometry: PlaneGeometry = new PlaneGeometry( 100, 100, 32 );
+        const material: MeshBasicMaterial = new MeshBasicMaterial( {map: texture , side: DoubleSide} );
+        const plane: Mesh = new Mesh( geometry, material );
+
+        plane.rotateX(PI_OVER_2);
+        this.scene.add(plane);
+
         this.loadSkybox();
     }
 
-    private getAspectRatio(): number {
+    public changeCamera(): void {
+        if (this._cameraView === CAMERA_VIEW.THIRD_PERSON ) {
+            this._stateCamera = new TopDownCamera(this);
+            this._cameraView = CAMERA_VIEW.TOP_DOWN;
+        } else {
+            this._stateCamera = new ThirdPersonCamera(this);
+            this._cameraView = CAMERA_VIEW.THIRD_PERSON;
+        }
+    }
+
+    public zoom(isPositive: boolean): void {
+        this._stateCamera.zoom(isPositive);
+    }
+
+    public getAspectRatio(): number {
         return this.container.clientWidth / this.container.clientHeight;
     }
 
@@ -91,13 +113,12 @@ export class RenderService {
     private render(): void {
         requestAnimationFrame(() => this.render());
         this.update();
-        this.renderer.render(this.scene, this.camera);
+        this.renderer.render(this.scene, this._stateCamera.getCamera());
         this.stats.update();
     }
 
     public onResize(): void {
-        this.camera.aspect = this.getAspectRatio();
-        this.camera.updateProjectionMatrix();
+        this._stateCamera.onResize();
         this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
     }
 
