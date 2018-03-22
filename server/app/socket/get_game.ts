@@ -6,8 +6,7 @@ export default (socket: Socket) => {
     socket.on("get_games", async (difficulty: String): Promise<void> => {
         const games: IGameModel[] = await Game.find({
             $and: [
-                {"players.0": { "$exists": true }},
-                {"players.1": { "$exists": false }},
+                {"players": {"$size": 1}},
                 {"difficulty": {"$eq": difficulty}
             }]
         });

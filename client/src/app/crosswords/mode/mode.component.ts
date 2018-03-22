@@ -4,16 +4,17 @@ import { IGameModel } from "./../../../../../server/app/models/game";
 import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
 
 @Component({
-    selector: "app-mode-component-popup",
-    templateUrl: "mode.component.popup.html",
+    selector: "app-mode-component-mode",
+    templateUrl: "mode.component.mode.html",
     styleUrls: ["./mode.component.css"]
   })
   export class ModeDialogComponent {
 
-    public showDifficulty: boolean = true;
-    public showNameInput: boolean = true;
-    public showStartSoloGame: boolean = true;
+    public showDifficulty: boolean = false;
+    public showNameInput: boolean = false;
+    public showStartSoloGame: boolean = false;
     public waitingForPlayer: boolean = false;
+    public scoreOpponent: number = 0;
 
     public constructor (
         private socketService: SocketService,
@@ -21,10 +22,12 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
         public dialog: MatDialog,
         @Inject(MAT_DIALOG_DATA) public data: {}) {
             this.waitingConnection();
+            dialogRef.disableClose = true;
+
         }
 
     public closeDialog(): void {
-      this.dialogRef.close();
+        this.dialogRef.close();
     }
 
     private waitingConnection(): void {
@@ -40,7 +43,7 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     }
 
     public startSoloGame(): boolean {
-        if (this.selectedMode === "Single Player" && !this.showNameInput) {
+        if (this.selectedMode === "Single Player" && this.showNameInput) {
             return true;
         }
 
@@ -48,11 +51,11 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     }
 
     public isDifficultySelected(): boolean {
-       return this.showNameInput = false;
+       return this.showNameInput = true;
     }
 
     public isMultiPlayer(): boolean {
-        if (!this.showNameInput && this.selectedMode === "Two Players") {
+        if (this.showNameInput && this.selectedMode === "Two Players") {
             return true;
         }
 
@@ -77,7 +80,7 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     }
 
     public onSelect(mode: string): void {
-        this.showDifficulty = false;
+        this.showDifficulty = true;
 
         return this.socketService.onSelect(mode);
 
@@ -107,7 +110,6 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     public joinGame(gameId: string): void {
         this.socketService.joinGame(gameId);
     }
-
 }
 
 @Component({
@@ -117,18 +119,31 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
   })
   export class ModeComponent implements OnInit {
 
-      public constructor(
-          public dialog: MatDialog
+    public constructor(
+          public dialog: MatDialog,
+          private _socketService: SocketService
       ) {
-
-          this.dialog.open(ModeDialogComponent, {
-              width: "500px",
-              height: "500px",
-              data: {  }
-          });
+          this.openDialog();
+          this.receiveRequestForModeMenu();
 
       }
 
-      public ngOnInit(): void {}
+    private receiveRequestForModeMenu(): void {
+        this._socketService.requestModeMenu.subscribe( (requestModeMenu: boolean) => {
+            if (requestModeMenu) {
+        this.openDialog();
+            }
+       });
+    }
+
+    private openDialog(): void {
+        this.dialog.open(ModeDialogComponent, {
+            width: "500px",
+            height: "75%",
+            data: {  }
+        });
+    }
+
+    public ngOnInit(): void { }
 
 }

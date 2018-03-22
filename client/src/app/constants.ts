@@ -4,5 +4,6 @@ export const MIN_TO_SEC: number = 60;
 export const MS_TO_SECONDS: number = 1000;
 export const GRAVITY: number = -9.81;
 export const RAD_TO_DEG: number = STRAIGHT_ANGLE_DEG / Math.PI;
-// tslint:disable-next-line:no-magic-numbers
+export const CELL_HEIGTH: number = 50;
 export const PI_OVER_2: number = Math.PI / 2;
+export const BACK_SPACE_KEY_CODE: number = 8;

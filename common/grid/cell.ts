@@ -2,6 +2,8 @@ export class Cell {
 
     public wordIndexes: Array<number>;
     public isOtherPlayer: boolean;
+    public isValidatedByOther: boolean;
+    public shared: boolean;
 
     public constructor(
         private _char: string = "-",
@@ -9,11 +11,29 @@ export class Cell {
         private _y: number = 0,
         private _isSelected: boolean = false,
         private _isValidated: boolean = false,
-        private _black: boolean = false) {
+        private _black: boolean = false,
+        private _isStartOfSelected: boolean = false,
+        private _isStartSelectedByOther: boolean = false) {
 
         this.wordIndexes = [];
         this.isOtherPlayer = false;
-	}
+        this.isValidatedByOther = false;
+    }
+    public isShared(): void {
+        this.shared = true;
+    }
+
+    public get sharedValidation(): boolean{
+        return this.shared;
+    }
+    public get validatedByOther(): boolean {
+        return this.isValidatedByOther;
+    }
+    
+    public validateOther(): void {
+        this.isValidatedByOther = true;
+       
+    }
 
     public set char(c: string) {
         this._char = c;
@@ -33,6 +53,30 @@ export class Cell {
 
     public selected(): boolean {
         return this._isSelected;
+    }
+
+    public startSelectByOther(): void {
+        this._isStartSelectedByOther = true;
+    }
+
+    public startUnselectByOther(): void {
+        this._isStartSelectedByOther = false;
+    }
+
+    public startSelectedByOther(): boolean {
+        return this._isStartSelectedByOther;
+    }
+    
+    public startSelect(): void {
+        this._isStartOfSelected = true;
+    }
+
+    public startUnselect(): void {
+        this._isStartOfSelected = false;
+    }
+    
+    public startOfSelected(): boolean {
+        return this._isStartOfSelected;
     }
 
     public get x(): number {
