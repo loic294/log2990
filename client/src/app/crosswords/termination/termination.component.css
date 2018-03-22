@@ -1,0 +1,40 @@
+.hide {
+    display: none;
+}
+
+.align {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    height: 60px;
+}
+
+.waiting-connection {
+    text-align: center;
+}
+
+.players-container {
+    padding: 20px 0;
+}
+
+.spinner {
+    position: relative;
+    min-height: 36px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+button {
+    margin-top: 20px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #0099dd;
+}
+
+.dialog {
+    color: red
+}

@@ -1,24 +1,37 @@
 <div>
-  <div class="grid">
-    <div class="row" *ngFor="let row of _gridService.grid;">
+  <div class="grid" >
+    <div class="row" *ngFor="let row of _gridService.grid;" >
       <div class="col" *ngFor="let case of row;">
 					<input 
-						[disabled]="case.validated" 
-						class="square" 
+            [disabled]="case.validated || case.validatedByOther" 
+            [class.validate]="case.validated"
+            [class.validateOther]="case.validatedByOther"
+            [class.sharedValidation]= "case.sharedValidation"
+            class="square"
 						[ngModel]="case.char" 
 						(keypress)="updateGrid($event, case)" 
 						(keyup)="updateGrid($event, case)"
 						maxlength="1" 
-          	[class.selected]="case.selected()"
-            [class.is-black]="case.char === '-'"  
-            [class.other-player]="case.isOtherPlayer"    
-          	(click)=selectCaseFromGrid(case)
-						id={{case.id}}  />
+            [class.is-black]="case.char === '-'"
+            (click)=selectCaseFromGrid(case)
+            id={{case.id}}
+            />
+
+          <div *ngIf="case.startOfSelected()" 
+                class="border" 
+                [ngStyle]="highligthStyle(false)">
+          </div>
+          <div *ngIf="case.startSelectedByOther()" 
+                class="border" 
+                [ngStyle]="highligthStyle(true)">
+          </div>
+
 					<div class="indexes">
 						<div class="small-index" *ngFor="let index of case.wordIndexes">
-							{{index}}
+              {{index}}   
 						</div>
-					</div>
+          </div>
+          
       </div>
     </div>
   </div>

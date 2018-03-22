@@ -1,9 +1,6 @@
-/* tslint:disable:no-shadowed-variable */
-// tslint:disable:no-suspicious-comment
-
 import { Injectable } from "@angular/core";
 import { GRID } from "../mock-grid";
-import { Cell } from "../../../../common/grid/case";
+import { Cell } from "../../../../common/grid/cell";
 import { Observable } from "rxjs/Observable";
 import { of } from "rxjs/observable/of";
 import Word, { Orientation } from "../../../../common/lexical/word";
@@ -12,7 +9,7 @@ import { GridTools } from "./grid.tools";
 import { WordService } from "../word.service/word.service";
 import { SocketService } from "../socket.service/socket.service";
 import CLUES from "../mock-words";
-const BACK_SPACE_KEY_CODE: number = 8;
+import { BACK_SPACE_KEY_CODE } from "../constants";
 
 @Injectable()
 export class GridService {
@@ -53,6 +50,7 @@ export class GridService {
             (data: string) => {
                 const { word }: { word: Word } = JSON.parse(data);
                 const selectedWord: Word = CLUES.find((w: Word) => word !== null && w.index === word.index);
+                selectedWord.isValidated = true;
                 this.applyValidation(selectedWord, true);
             });
     }
@@ -67,29 +65,48 @@ export class GridService {
         this._gridTools.setGrid(this._grid);
 
         if (this._otherWord) {
-            this._gridTools.iterateWord(this._otherWord, (row: number, col: number) => {
+             this._gridTools.iterateWord(this._otherWord, (row: number, col: number) => {
                 this._grid[row][col].isOtherPlayer = false;
-            });
+                this._grid[row][col].startUnselectByOther();
+           });
         }
 
         this._otherWord = w;
+        let wordStart: number = 0;
+        w.orientation === 0 ? wordStart = w.col : wordStart = w.row;
+
         if (w) {
-            this._gridTools.iterateWord(w, (row: number, col: number) => {
+            this._gridTools.iterateWord(w, (row: number, col: number, cellTemp: Cell, cell: number) => {
                 this._grid[row][col].isOtherPlayer = true;
+                if (cell === wordStart) {
+                    this._grid[row][col].startSelectByOther();
+                }
             });
         }
-
     }
 
     public applyValidation(word: Word, isOther: boolean = false): void {
         let tempX: number = word.row;
         let tempY: number = word.col;
         let i: number = 0;
+
+        this.socketService.setWordCount(this.socketService.getWordCount() - 1);
+
+        if (!word) {
+            this._gridTools.iterateWord(word, (row: number, col: number) => {
+                this._grid[row][col].isOtherPlayer = false;
+            });
+        }
         while (i < word.length) {
-            this._grid[tempX][tempY].validate();
+            if (!isOther) {
+                this._gridTools.validationByPlayer(this._grid, tempX, tempY);
+            }
             if (isOther) {
-                this._grid[tempX][tempY].isOtherPlayer = true;
+                this._gridTools.validationByOtherPlayer(this._grid, tempX, tempY);
                 this._grid[tempX][tempY].char = word.name[i];
+            }
+            if (this._grid[tempX][tempY].isValidatedByOther && this._grid[tempX][tempY].validated) {
+                this._grid[tempX][tempY].isShared();
             }
             word.orientation === Orientation.horizontal ? tempY++ : tempX++;
             i++;
@@ -104,6 +121,7 @@ export class GridService {
             this._gridTools.iterateGrid(this._grid, (row: number, col: number) => {
                 if (this._grid[row][col].selected) {
                     this._grid[row][col].unselect();
+                    this._grid[row][col].startUnselect();
                 }
             });
         }
@@ -166,7 +184,7 @@ export class GridService {
 
     private erasePrevious(c: Cell): void {
 
-        if (this.isHorizontal() && (c.y !== this._word.col)) {
+        if (this.isHorizontal(false) && (c.y !== this._word.col)) {
             if (this._grid[c.x][c.y - 1].validated) {
                 this.erasePrevious(this._grid[c.x][c.y - 1]);
             } else {
@@ -184,12 +202,14 @@ export class GridService {
     private findEndWrittenWord(): void {
         let wordStart: number = 0;
         let wordEntered: string = "";
-        this.isHorizontal() ? wordStart = this._word.col : wordStart = this._word.row;
+        this.isHorizontal(false) ? wordStart = this._word.col : wordStart = this._word.row;
 
         this._gridTools.iterateWord(this._word, (x: number, y: number, cellTemp: Cell, cell: number) => {
             this._grid[x][y].unselect();
+            this._grid[x][y].startUnselect();
             if (cell === wordStart) {
                 this._selectedWord = cellTemp;
+                this._grid[x][y].startSelect();
             }
             this._grid[cellTemp.x][cellTemp.y].select();
             if (cellTemp.char === "" || cell === wordStart + this._word.length - 1) {
@@ -237,8 +257,14 @@ export class GridService {
 
     }
 
-    private isHorizontal(): boolean {
-        return this._word.orientation === Orientation.horizontal;
+    public wordLength(isOther: boolean): number {
+        return isOther ? this._otherWord.length : this._word.length;
+    }
+
+    public isHorizontal(isOther: boolean): boolean {
+        return isOther ?
+                this._otherWord.orientation === Orientation.horizontal
+                : this._word.orientation === Orientation.horizontal;
     }
 
     public get grid(): Array<Array<Cell>> {
@@ -256,5 +282,4 @@ export class GridService {
     public get gridTools(): GridTools {
         return this._gridTools;
     }
-
 }

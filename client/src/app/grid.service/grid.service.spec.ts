@@ -40,13 +40,13 @@ describe("GridService", () => {
     });
 
     it("Word 'hey' shoud be validated after entering 'hey'", () => {
-        service.word = new Word("hey", "", [0, 0], Orientation.vertical, 0);
+        service.word = new Word("hey", "", [0, 0], Orientation.horizontal, 0);
         const elem: HTMLElement = document.createElement("div");
         service.validateWord("hey", elem);
         expect(service.word.isValidated).toBe(true);
         expect(service.grid[0][0].validated).toBe(true);
-        expect(service.grid[1][0].validated).toBe(true);
-        expect(service.grid[2][0].validated).toBe(true);
+        expect(service.grid[0][1].validated).toBe(true);
+        expect(service.grid[0][2].validated).toBe(true);
     });
 
     it("Word 'hey' shoud not be validated after entering 'oop'", () => {
