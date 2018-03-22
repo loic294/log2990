@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "tsc && concurrently --kill-others \"tsc -w \" \"nodemon --require dotenv/config out/server/app/server.js\" ",
-    "start-test": "tsc && concurrently --kill-others \"tsc -w \" \"node --require dotenv/config out/server/app/server.js\" ",
+    "build": "tsc && concurrently --kill-others \"tsc\" \"nodemon --require dotenv/config out/server/app/server.js\" ",
     "lint": "tslint --project tsconfig.json \"./app/**/*.ts\" --format stylish --fix",
     "test": "mocha -r ts-node/register app/**/*.spec.ts",
     "tsc": "tsc",
@@ -35,6 +35,7 @@
     "mongoose": "^5.0.7",
     "morgan": "^1.7.0",
     "nodemon": "^1.11.0",
+    "npm": "^5.7.1",
     "reflect-metadata": "^0.1.10",
     "serve-favicon": "~2.3.0",
     "session": "^0.1.0",

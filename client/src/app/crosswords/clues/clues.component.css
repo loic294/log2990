@@ -15,6 +15,10 @@
 	background-color: #ccc;
 }
 
+.clue.disabled {
+    text-decoration: line-through;
+}
+
 .index {
 	font-weight: 900;
 }
