@@ -15,7 +15,7 @@ export class TrackInformationComponent implements OnInit {
 
     public constructor(private _trackInfo: TrackInformationService) {}
 
-    public getTracksList(): void {
+    public async getTracksList(): Promise<void> {
         this._trackInfo.getTracks("all").then((data) => {
             this._tracks = JSON.parse(data.toString());
         }).catch((error) => {
@@ -23,7 +23,7 @@ export class TrackInformationComponent implements OnInit {
         });
     }
 
-    public getTrackInfo(trackName: String): void {
+    public async getTrackInfo(trackName: String): Promise<void> {
         this._trackInfo.getTracks(trackName).then((data) => {
             const tempArray: Array<ITrack> = JSON.parse(data.toString());
             this._currentTrack = tempArray[0];
@@ -41,7 +41,9 @@ export class TrackInformationComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.getTracksList();
+        this.getTracksList().catch((error) => {
+            throw error;
+        });
     }
 
 }

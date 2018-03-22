@@ -29,18 +29,27 @@ describe("TrackInformationComponent", () => {
         expect(component).toBeTruthy();
     });
 
-    it("should load list of track names containing test1 and test2.", async () => {
-        await component.getTracksList();
-        expect(component.tracks[0]).toBe("test1");
-        expect(component.tracks[1]).toBe("test2");
+    it("should load list of track names containing test1 and test2.", () => {
+        component.getTracksList().then(() => {
+            expect(component.tracks[0]).toBe("test1");
+            expect(component.tracks[1]).toBe("test2");
+        }).catch((error) => {
+            throw error;
+        });
     });
 
-    it("should load track 'test1' informations correctly.", async () => {
-        await component.getTrackInfo("test1");
-        expect(component.track.name).toBe("test1");
-        expect(component.track.type).toBe("test track");
-        expect(component.track.description).toBe("this track is for unit testing");
-        expect(component.track.timesPlayed).toBe(0);
+    it("should load track 'test1' informations correctly.", () => {
+        component.getTrackInfo("test1")
+            .then(() => {
+                expect(component.track.name).toBe("test1");
+                expect(component.track.type).toBe("test track");
+                expect(component.track.description).toBe("this track is for unit testing");
+                expect(component.track.timesPlayed).toBe(0);
+            })
+            .catch((error) => {
+                throw error;
+            });
+
     });
 
 });
