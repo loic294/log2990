@@ -70,17 +70,21 @@ export class TrackCreationComponent implements AfterViewInit {
         this._track.vertice = trackVertices;
     }
 
+    private loadTrack(): void {
+        for (const vertex of this._track.vertice) {
+                this._dotCommand.addObjects(new Vector3(vertex[0], vertex[1], vertex[2]));
+            }
+        this._dotCommand.connectToFirst();
+        this._dotCommand.complete();
+    }
+
     public getTrackInfo(trackName: String): void {
         this.startNewTrack();
         this._trackService.getTracks(trackName).then((data) => {
             const tempArray: Array<ITrackInfo> = JSON.parse(data.toString());
             this._track = tempArray[0];
         }).then(() => {
-            for (const vertex of this._track.vertice) {
-                this._dotCommand.addObjects(new Vector3(vertex[0], vertex[1], vertex[2]));
-            }
-            this._dotCommand.connectToFirst();
-            this._dotCommand.complete();
+            this.loadTrack();
         }).catch((error) => {
             throw error;
         });
@@ -175,7 +179,7 @@ export class TrackCreationComponent implements AfterViewInit {
     public ngAfterViewInit(): void {
 
         this._camera = new OrthographicCamera(CAMERA_DISTANCE * ASPECT / - 2, CAMERA_DISTANCE * ASPECT / 2,
-            CAMERA_DISTANCE / 2, CAMERA_DISTANCE / - 2, NEAR_CLIPPING_PLANE, FAR_CLIPPING_PLANE);
+                                              CAMERA_DISTANCE / 2, CAMERA_DISTANCE / - 2, NEAR_CLIPPING_PLANE, FAR_CLIPPING_PLANE);
         this._camera.position.set(0, CAMERA_DISTANCE, 0);
         this._camera.lookAt(new Vector3(0, 0, 0));
 
