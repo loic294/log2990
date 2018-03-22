@@ -1,15 +1,9 @@
-<input [(ngModel)]="_name" placeholder="name">
-<input [(ngModel)]="_type" placeholder="type">
-<input [(ngModel)]="_description" placeholder="description">
-
-<button (click)="putTrack()">save track</button>
 
 <div *ngIf="_currentTrack">
   <div><span>name: </span>{{_currentTrack.name}}</div>
   <div><span>type: </span>{{_currentTrack.type}}</div>
   <div><span>description: </span>{{_currentTrack.description}}</div>
   <div><span>times played: </span>{{_currentTrack.timesPlayed}}</div>
-  <button (click)="deleteTrack()">delete track</button>
 </div>
 
 <div>
