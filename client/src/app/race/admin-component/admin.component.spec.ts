@@ -22,6 +22,7 @@ import { SocketService } from "../../socket.service/socket.service";
 import { GridService } from "../../grid.service/grid.service";
 import { DifficultyService } from "../../difficulty.service/difficulty.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import { TerminationComponent, TerminationDialogComponent } from "../../crosswords/termination/termination.component";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
@@ -50,7 +51,9 @@ describe("AdminComponent", () => {
         AdminComponent,
         TrackCreationComponent,
         GameComponent,
-        HomeComponent
+        HomeComponent,
+        TerminationComponent,
+        TerminationDialogComponent
         ],
       providers: [
             WordService,
