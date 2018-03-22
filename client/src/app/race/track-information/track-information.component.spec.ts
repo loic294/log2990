@@ -29,14 +29,18 @@ describe("TrackInformationComponent", () => {
         expect(component).toBeTruthy();
     });
 
-    /*it("should POST and GET new track named track1 and its informations", () => {
-        // const  tempObject: Object = {name: "track1", type: "type1", description: "desc1", timesPlayed: 0};
-        component.name = "track1";
-        component.type = "type1";
-        component.description = "desc1";
-        component.timesPlayed = 0;
-        component.putTrack();
-        component.getTracksList();
-        expect(component.tracks[0]).toBe("track1");
-    });*/
+    it("should load list of track names containing test1 and test2.", async () => {
+        await component.getTracksList();
+        expect(component.tracks[0]).toBe("test1");
+        expect(component.tracks[1]).toBe("test2");
+    });
+
+    it("should load track 'test1' informations correctly.", async () => {
+        await component.getTrackInfo("test1");
+        expect(component.track.name).toBe("test1");
+        expect(component.track.type).toBe("test track");
+        expect(component.track.description).toBe("this track is for unit testing");
+        expect(component.track.timesPlayed).toBe(0);
+    });
+
 });

@@ -13,9 +13,7 @@ export class TrackInformationComponent implements OnInit {
     private _tracks: Array<String>;
     private _currentTrack: ITrack;
 
-    public constructor(private _trackInfo: TrackInformationService) {
-        this._tracks = new Array();
-    }
+    public constructor(private _trackInfo: TrackInformationService) {}
 
     public getTracksList(): void {
         this._trackInfo.getTracks("all").then((data) => {
@@ -32,6 +30,14 @@ export class TrackInformationComponent implements OnInit {
         }).catch((error) => {
             throw error;
         });
+    }
+
+    public get tracks(): Array<String> {
+        return this._tracks;
+    }
+
+    public get track(): ITrack {
+        return this._currentTrack;
     }
 
     public ngOnInit(): void {

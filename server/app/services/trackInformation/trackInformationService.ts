@@ -1,4 +1,6 @@
 // tslint:disable:await-promise
+// lint rule await-promise incompatible avec Axios
+// DISABLE temporaire --> parler au charges
 import axios from "axios";
 import { ITrack } from "../../models/trackInfo";
 

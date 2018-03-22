@@ -56,13 +56,10 @@ export class TrackCreationComponent implements AfterViewInit {
         });
     }
 
-    public deleteTrack(): void {
-        this._trackService.deleteTrack(this._track.name).then(() => {
-            this.startNewTrack();
-            this.getTracksList();
-        }).catch((error) => {
-            throw error;
-        });
+    public async deleteTrack(): Promise<void> {
+        await this._trackService.deleteTrack(this._track.name);
+        this.startNewTrack();
+        this.getTracksList();
     }
 
     private separateVertice(): void {
@@ -89,7 +86,7 @@ export class TrackCreationComponent implements AfterViewInit {
         });
     }
 
-    public save(): void {
+    public async save(): Promise<void> {
         let trackIsValid: boolean = true;
         const errorColor: Color = new Color(COLOR_LINE_ERROR);
 
@@ -103,11 +100,8 @@ export class TrackCreationComponent implements AfterViewInit {
 
         if (this._isSaved) {
             this.separateVertice();
-            this._trackService.putTrack(this._track).then(() => {
-                this.getTracksList();
-            }).catch((error) => {
-                throw error;
-            });
+            await this._trackService.putTrack(this._track);
+            this.getTracksList();
         }
     }
 
