@@ -31,4 +31,12 @@ export class TrackInformationService {
         }
     }
 
+    public async patchTrack(trackName: String, newInformation: ITrack): Promise<void> {
+        try {
+            await axios.patch("http://localhost:3000/race/tracks?name=" + trackName, newInformation);
+        } catch (err) {
+            throw err;
+        }
+    }
+
 }

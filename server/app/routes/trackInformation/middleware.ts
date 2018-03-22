@@ -27,7 +27,6 @@ export const saveTrack: (req: Request, res: Response, next: NextFunction) => Pro
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
         const track: ITrackInfo = new Track({
-            id: req.body["id"],
             name: req.body["name"],
             type: req.body["type"],
             description: req.body["description"],
@@ -55,6 +54,30 @@ async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
     try {
         res.send("Hello DELETE!");
+    } catch (err) {
+        res.status(ERR_500).send(err.message);
+    }
+};
+
+export const patchTrack: (req: Request, res: Response, next: NextFunction) => Promise<void> =
+async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+
+    const requestedTrack: string = req.query["name"];
+    const trackAttributes: ITrackInfo = new Track({
+        name: req.body["name"],
+        type: req.body["type"],
+        description: req.body["description"],
+        timesPlayed: req.body["timesPlayed"],
+        vertice: req.body["vertice"]
+    });
+
+    await Track.update({name: requestedTrack}, {$set: {name: trackAttributes.name, type: trackAttributes.type,
+                                                       description: trackAttributes.description,
+                                                       timesPlayed: trackAttributes.timesPlayed,
+                                                       vertice: trackAttributes.vertice}}).exec();
+
+    try {
+        res.send("Hello PATCH!");
     } catch (err) {
         res.status(ERR_500).send(err.message);
     }
