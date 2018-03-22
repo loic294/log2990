@@ -84,10 +84,7 @@ export class SocketService {
         this.initializeSocket();
 
     }
-    // **************************************************************************************************
-    // **************************************************************************************************
-    // **************************************************************************************************
-    // tslint:disable-next-line:max-func-body-length
+
     public initializeSocket(): void {
         this._socket.connect();
 
@@ -100,19 +97,11 @@ export class SocketService {
         });
 
         this._socket.on("push_validation", (data: string): void => {
-
-            this._opponentScore.next(this._opponentScoreCount++);
-            this._wordToValidate.next(data);
-
+           this.pushValidation(data);
         });
 
         this._socket.on("second_player_joined", (data: IGameModel) => {
-            this._userConnected.next(true);
-            if ( this.player === data.players[0]) {
-                this._opponentName.next(data.players[1].toString());
-            } else {
-                this._opponentName.next(data.players[0].toString());
-            }
+           this.secondPlayerJoined(data);
         });
 
         this._socket.on("opponent_disconnected", (data: boolean) => {
@@ -126,7 +115,20 @@ export class SocketService {
         this._socket.on("rematch_accepted", (data: boolean) => {
             this._acceptRematch.next(true);
         });
+    }
 
+    private pushValidation(data: string): void {
+        this._opponentScore.next(this._opponentScoreCount++);
+        this._wordToValidate.next(data);
+    }
+
+    private secondPlayerJoined(data: IGameModel): void {
+        this._userConnected.next(true);
+        if ( this.player === data.players[0]) {
+            this._opponentName.next(data.players[1].toString());
+        } else {
+            this._opponentName.next(data.players[0].toString());
+        }
     }
 
     public acceptRematch(): Observable<boolean> {
@@ -269,9 +271,5 @@ export class SocketService {
     public sendRequestModeMenu(): void {
         this._requestModeMenu.next(true);
     }
-
-    // public gridTest(): Number {
-    //     return this.test;
-    // }
 
 }

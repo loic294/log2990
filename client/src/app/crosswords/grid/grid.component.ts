@@ -48,22 +48,15 @@ export class GridComponent implements OnInit {
         return wordTotal.toString() + "px";
     }
 
-    public highligthStyle(): {} {
-        const wordLength: number = this._gridService.wordLength();
+    public highligthStyle(isOther: boolean): {} {
+        const wordLength: number = this._gridService.wordLength(isOther);
+        let color: string;
+        isOther ? color = "blue" : color = "red";
 
         return {
-            "height": this._gridService.isHorizontal() ?  CELL_HEIGTH + "px" : this.highligthLength(wordLength),
-            "width": !this._gridService.isHorizontal() ? CELL_HEIGTH + "px" :  this.highligthLength(wordLength)
-          };
-    }
-
-    public highligthStyleOtherPlayer(): {} {
-        const wordLength: number = this._gridService.wordLengthOther();
-
-        return {
-            "height": this._gridService.isHorizontalOther() ? CELL_HEIGTH + "px" : this.highligthLength(wordLength),
-            "width": !this._gridService.isHorizontalOther() ? CELL_HEIGTH + "px" : this.highligthLength(wordLength),
-            "border-color": "blue"
+            "height": this._gridService.isHorizontal(isOther) ?  CELL_HEIGTH + "px" : this.highligthLength(wordLength),
+            "width": !this._gridService.isHorizontal(isOther) ? CELL_HEIGTH + "px" :  this.highligthLength(wordLength),
+            "border-color": color
           };
     }
 

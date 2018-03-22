@@ -19,11 +19,11 @@
 
           <div *ngIf="case.startOfSelected()" 
                 class="border" 
-                [ngStyle]="highligthStyle()">
+                [ngStyle]="highligthStyle(false)">
           </div>
           <div *ngIf="case.startSelectedByOther()" 
                 class="border" 
-                [ngStyle]="highligthStyleOtherPlayer()">
+                [ngStyle]="highligthStyle(true)">
           </div>
 
 					<div class="indexes">

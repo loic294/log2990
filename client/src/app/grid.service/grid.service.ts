@@ -30,14 +30,6 @@ export class GridService {
         this.initServicesListeners();
     }
 
-    public isVertical(): Boolean {
-        return this._word.orientation === Orientation.vertical;
-    }
-
-    public isVerticalOther(): Boolean {
-        return this._otherWord.orientation === Orientation.vertical;
-    }
-
     private initServicesListeners(): void {
         this._wordService.wordFromClue.subscribe(
             (_wordFromClue: Word) => {
@@ -81,7 +73,7 @@ export class GridService {
 
         this._otherWord = w;
         let wordStart: number = 0;
-        (w.orientation === 0) ? wordStart = w.col : wordStart = w.row;
+        w.orientation === 0 ? wordStart = w.col : wordStart = w.row;
 
         if (w) {
             this._gridTools.iterateWord(w, (row: number, col: number, cellTemp: Cell, cell: number) => {
@@ -192,7 +184,7 @@ export class GridService {
 
     private erasePrevious(c: Cell): void {
 
-        if (this.isHorizontal() && (c.y !== this._word.col)) {
+        if (this.isHorizontal(false) && (c.y !== this._word.col)) {
             if (this._grid[c.x][c.y - 1].validated) {
                 this.erasePrevious(this._grid[c.x][c.y - 1]);
             } else {
@@ -210,7 +202,7 @@ export class GridService {
     private findEndWrittenWord(): void {
         let wordStart: number = 0;
         let wordEntered: string = "";
-        this.isHorizontal() ? wordStart = this._word.col : wordStart = this._word.row;
+        this.isHorizontal(false) ? wordStart = this._word.col : wordStart = this._word.row;
 
         this._gridTools.iterateWord(this._word, (x: number, y: number, cellTemp: Cell, cell: number) => {
             this._grid[x][y].unselect();
@@ -265,20 +257,14 @@ export class GridService {
 
     }
 
-    public wordLength(): number {
-        return this._word.length;
+    public wordLength(isOther: boolean): number {
+        return isOther ? this._otherWord.length : this._word.length;
     }
 
-    public wordLengthOther(): number {
-        return this._otherWord.length;
-    }
-
-    public isHorizontalOther(): Boolean {
-        return this._otherWord.orientation === Orientation.horizontal;
-    }
-
-    public isHorizontal(): boolean {
-        return this._word.orientation === Orientation.horizontal;
+    public isHorizontal(isOther: boolean): boolean {
+        return isOther ?
+                this._otherWord.orientation === Orientation.horizontal
+                : this._word.orientation === Orientation.horizontal;
     }
 
     public get grid(): Array<Array<Cell>> {
