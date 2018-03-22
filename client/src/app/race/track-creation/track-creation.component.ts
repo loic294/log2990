@@ -34,7 +34,7 @@ export class TrackCreationComponent implements AfterViewInit {
     private container: ElementRef;
 
     public constructor(private _trackService: TrackInformationService) {
-        this._track = {name: "", type: "", description: "", timesPlayed: 0, vertice: new Array()};
+        this._track = { name: "", type: "", description: "", timesPlayed: 0, vertice: new Array() };
         this._scene = new Scene();
         this._renderer = new WebGLRenderer();
         this._isSaved = false;
@@ -44,7 +44,7 @@ export class TrackCreationComponent implements AfterViewInit {
         while (this._dotCommand.getVertices().length !== 0) {
             this._dotCommand.remove();
         }
-        this._track = {name: "", type: "", description: "", timesPlayed: 0, vertice: new Array()};
+        this._track = { name: "", type: "", description: "", timesPlayed: 0, vertice: new Array() };
         this._isSaved = false;
     }
 
@@ -86,6 +86,23 @@ export class TrackCreationComponent implements AfterViewInit {
         });
     }
 
+    private async sendToDb(): Promise<void> {
+        let isNewTrack: boolean = true;
+
+        for (const name of this._tracks) {
+            if (name === this._track.name) {
+                isNewTrack = false;
+                break;
+            }
+        }
+
+        if (isNewTrack) {
+            await this._trackService.putTrack(this._track);
+        } else {
+            await this._trackService.patchTrack(this._track.name, this._track);
+        }
+    }
+
     public async save(): Promise<void> {
         let trackIsValid: boolean = true;
         const errorColor: Color = new Color(COLOR_LINE_ERROR);
@@ -100,7 +117,7 @@ export class TrackCreationComponent implements AfterViewInit {
 
         if (this._isSaved) {
             this.separateVertice();
-            await this._trackService.putTrack(this._track);
+            await this.sendToDb();
             this.getTracksList();
         }
     }
@@ -158,7 +175,7 @@ export class TrackCreationComponent implements AfterViewInit {
     public ngAfterViewInit(): void {
 
         this._camera = new OrthographicCamera(CAMERA_DISTANCE * ASPECT / - 2, CAMERA_DISTANCE * ASPECT / 2,
-                                              CAMERA_DISTANCE / 2, CAMERA_DISTANCE / - 2, NEAR_CLIPPING_PLANE, FAR_CLIPPING_PLANE);
+            CAMERA_DISTANCE / 2, CAMERA_DISTANCE / - 2, NEAR_CLIPPING_PLANE, FAR_CLIPPING_PLANE);
         this._camera.position.set(0, CAMERA_DISTANCE, 0);
         this._camera.lookAt(new Vector3(0, 0, 0));
 
