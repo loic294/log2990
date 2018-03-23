@@ -1,14 +1,11 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
-import { PerspectiveCamera, WebGLRenderer, Scene, AmbientLight,
-MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, BoxGeometry } from "three";
+import { WebGLRenderer, Scene, AmbientLight,
+MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, BoxGeometry, PlaneGeometry, Texture } from "three";
 import { Car } from "../car/car";
+import { PI_OVER_2 } from "../../constants";
+import { CameraService } from "../camera-service/camera.service";
 
-const FAR_CLIPPING_PLANE: number = 100000;
-const NEAR_CLIPPING_PLANE: number = 1;
-const FIELD_OF_VIEW: number = 70;
-
-const INITIAL_CAMERA_POSITION_Y: number = 25;
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 1;
 
@@ -16,7 +13,7 @@ const SIZE_SKYBOX: number = 10000;
 
 @Injectable()
 export class RenderService {
-    private _camera: PerspectiveCamera;
+
     private _container: HTMLDivElement;
     private _car: Car;
     private _renderer: WebGLRenderer;
@@ -24,11 +21,7 @@ export class RenderService {
     private _stats: Stats;
     private _lastDate: number;
 
-    public get car(): Car {
-        return this._car;
-    }
-
-    public constructor() {
+    public constructor(private _cameraService: CameraService) {
         this._car = new Car();
     }
 
@@ -50,31 +43,32 @@ export class RenderService {
 
     private update(): void {
         const timeSinceLastFrame: number = Date.now() - this._lastDate;
-        this._camera.position.x = this._car.meshPosition.x;
-        this._camera.position.z = this._car.meshPosition.z;
         this._car.update(timeSinceLastFrame);
+        this._cameraService.follow();
         this._lastDate = Date.now();
     }
 
     private async createScene(): Promise<void> {
         this._scene = new Scene();
 
-        this._camera = new PerspectiveCamera(
-            FIELD_OF_VIEW,
-            this.getAspectRatio(),
-            NEAR_CLIPPING_PLANE,
-            FAR_CLIPPING_PLANE
-        );
-
         await this._car.init();
-        this._camera.position.set(0, INITIAL_CAMERA_POSITION_Y, 0);
-        this._camera.lookAt(this._car.position);
-        this._scene.add(this._car);
-        this._scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
+        this.scene.add(this._car);
+        this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
+
+        this._cameraService.initialize( this._car, this.getAspectRatio());
+
+        const texture: Texture = new TextureLoader().load( "../../../assets/track/track.jpg" );
+        // tslint:disable-next-line:no-magic-numbers (temporary plane)
+        const geometry: PlaneGeometry = new PlaneGeometry( 100, 100, 32 );
+        const material: MeshBasicMaterial = new MeshBasicMaterial( {map: texture , side: DoubleSide} );
+        const temporaryPlane: Mesh = new Mesh( geometry, material );
+
+        temporaryPlane.rotateX(PI_OVER_2);
+        this.scene.add(temporaryPlane);
         this.loadSkybox();
     }
 
-    private getAspectRatio(): number {
+    public getAspectRatio(): number {
         return this._container.clientWidth / this._container.clientHeight;
     }
 
@@ -91,14 +85,13 @@ export class RenderService {
     private render(): void {
         requestAnimationFrame(() => this.render());
         this.update();
-        this._renderer.render(this._scene, this._camera);
+        this.renderer.render(this.scene, this._cameraService.camera);
         this._stats.update();
     }
 
     public onResize(): void {
-        this._camera.aspect = this.getAspectRatio();
-        this._camera.updateProjectionMatrix();
-        this._renderer.setSize(this._container.clientWidth, this._container.clientHeight);
+        this._cameraService.onResize(this.getAspectRatio());
+        this.renderer.setSize(this._container.clientWidth, this._container.clientHeight);
     }
 
     private loadSkybox(): void {
@@ -126,10 +119,18 @@ export class RenderService {
     }
 
     public get camera(): THREE.Camera {
-        return this._camera;
+        return this._cameraService.camera;
     }
 
     public get scene(): THREE.Scene {
         return this._scene;
+    }
+
+    public get car(): Car {
+        return this._car;
+    }
+
+    public get cameraService(): CameraService {
+        return this._cameraService;
     }
 }

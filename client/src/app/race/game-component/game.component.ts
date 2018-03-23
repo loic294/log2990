@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, ElementRef, ViewChild, HostListener, OnInit } from "@angular/core";
 import { RenderService } from "../render-service/render.service";
-import { Car } from "../car/car";
 import InputManagerService, { Release } from "../input-manager/input-manager.service";
 import { ITrack } from "../../../../../server/app/models/trackInfo";
 import { CommunicationService } from "../communicationService";
 import { DotCommand } from "../DotCommand";
 import { Vector3 } from "three";
+import { CameraService } from "../camera-service/camera.service";
 
 @Component({
     moduleId: module.id,
@@ -14,7 +14,8 @@ import { Vector3 } from "three";
     styleUrls: ["./game.component.css"],
     providers: [
         RenderService,
-        InputManagerService
+        InputManagerService,
+        CameraService
     ]
 })
 
@@ -42,23 +43,17 @@ export class GameComponent implements AfterViewInit, OnInit {
         this.inputManager.handleKey(event, Release.Up);
     }
 
-    public ngAfterViewInit(): void {
-        this.renderService
-            .initialize(this.containerRef.nativeElement)
-            .then(/* do nothing */)
-            .catch((err) => console.error(err));
-        this.inputManager.init(this.car);
-        this._dotCommand = new DotCommand(this.renderService.scene, this.renderService.renderer, this.renderService.camera);
+    public async ngAfterViewInit(): Promise<void> {
+        await this.renderService
+            .initialize(this.containerRef.nativeElement);
+
+        this.inputManager.init(this.renderService);
     }
 
     public ngOnInit(): void {
         this._trackCommunication.track.subscribe((_track) => {
             this.loadTrack(_track);
         });
-    }
-
-    public get car(): Car {
-        return this.renderService.car;
     }
 
     public loadTrack(track: ITrack): void {
