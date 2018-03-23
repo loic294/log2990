@@ -45,9 +45,7 @@ export const wordDefinition: (req: Request, res: Response, next: NextFunction) =
 export const wordAndDefinition: (req: Request, res: Response, next: NextFunction) => Promise<void> =
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
-    const { criteria } = req.params;
-    const { common } = req.params;
-    const { level } = req.params;
+    const { criteria, common, level } = req.params;
 
     const lexicalService: LexicalService = new LexicalService();
 

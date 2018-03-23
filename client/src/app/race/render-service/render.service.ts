@@ -14,12 +14,12 @@ const SIZE_SKYBOX: number = 10000;
 @Injectable()
 export class RenderService {
 
-    private container: HTMLDivElement;
+    private _container: HTMLDivElement;
     private _car: Car;
-    private renderer: WebGLRenderer;
-    private scene: THREE.Scene;
-    private stats: Stats;
-    private lastDate: number;
+    private _renderer: WebGLRenderer;
+    private _scene: THREE.Scene;
+    private _stats: Stats;
+    private _lastDate: number;
 
     public constructor(private _cameraService: CameraService) {
         this._car = new Car();
@@ -27,7 +27,7 @@ export class RenderService {
 
     public async initialize(container: HTMLDivElement): Promise<void> {
         if (container) {
-            this.container = container;
+            this._container = container;
         }
 
         await this.createScene();
@@ -36,20 +36,25 @@ export class RenderService {
     }
 
     private initStats(): void {
-        this.stats = new Stats();
-        this.stats.dom.style.position = "absolute";
-        this.container.appendChild(this.stats.dom);
+        this._stats = new Stats();
+        this._stats.dom.style.position = "absolute";
+        this._container.appendChild(this._stats.dom);
     }
 
     private update(): void {
-        const timeSinceLastFrame: number = Date.now() - this.lastDate;
+        const timeSinceLastFrame: number = Date.now() - this._lastDate;
         this._car.update(timeSinceLastFrame);
+<<<<<<< HEAD
         this._cameraService.followCar();
         this.lastDate = Date.now();
+=======
+        this._cameraService.follow();
+        this._lastDate = Date.now();
+>>>>>>> 5d3a5e95a4a1d289ce5ef3433040f7551c2d3e44
     }
 
     private async createScene(): Promise<void> {
-        this.scene = new Scene();
+        this._scene = new Scene();
 
         await this._car.init();
         this.scene.add(this._car);
@@ -69,16 +74,16 @@ export class RenderService {
     }
 
     public getAspectRatio(): number {
-        return this.container.clientWidth / this.container.clientHeight;
+        return this._container.clientWidth / this._container.clientHeight;
     }
 
     private startRenderingLoop(): void {
-        this.renderer = new WebGLRenderer();
-        this.renderer.setPixelRatio(devicePixelRatio);
-        this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+        this._renderer = new WebGLRenderer();
+        this._renderer.setPixelRatio(devicePixelRatio);
+        this._renderer.setSize(this._container.clientWidth, this._container.clientHeight);
 
-        this.lastDate = Date.now();
-        this.container.appendChild(this.renderer.domElement);
+        this._lastDate = Date.now();
+        this._container.appendChild(this._renderer.domElement);
         this.render();
     }
 
@@ -86,12 +91,12 @@ export class RenderService {
         requestAnimationFrame(() => this.render());
         this.update();
         this.renderer.render(this.scene, this._cameraService.camera);
-        this.stats.update();
+        this._stats.update();
     }
 
     public onResize(): void {
         this._cameraService.onResize(this.getAspectRatio());
-        this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+        this.renderer.setSize(this._container.clientWidth, this._container.clientHeight);
     }
 
     private loadSkybox(): void {
@@ -111,7 +116,19 @@ export class RenderService {
         const skyboxTexture: MultiMaterial = new MultiMaterial(sidesOfSkybox);
         const skybox: Mesh = new Mesh(skyboxGeometry, skyboxTexture);
 
-        this.scene.add(skybox);
+        this._scene.add(skybox);
+    }
+
+    public get renderer(): WebGLRenderer {
+        return this._renderer;
+    }
+
+    public get camera(): THREE.Camera {
+        return this._cameraService.camera;
+    }
+
+    public get scene(): THREE.Scene {
+        return this._scene;
     }
 
     public get car(): Car {

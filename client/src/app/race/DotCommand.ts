@@ -35,7 +35,7 @@ export class DotCommand {
     public constructor(
         private _scene: THREE.Scene,
         private _renderer: THREE.WebGLRenderer,
-        private _camera: THREE.OrthographicCamera
+        private _camera: THREE.Camera
     ) {
         this._trackIsCompleted = false;
         this._vertices = new Array<Object3D>();
@@ -47,12 +47,16 @@ export class DotCommand {
     public add(event: MouseEvent): void {
         if (!this.detectObjectsAtMouse(event) && !this._trackIsCompleted) {
             const relativeDotPosition: Vector3 = this.findRelativePosition(event);
-            const sphereMesh: Mesh = this.createSphere(relativeDotPosition);
-            this._scene.add(sphereMesh);
-            this._vertices.push(sphereMesh);
-            this.updateEdges();
-            this.validateTrack();
+            this.addObjects(relativeDotPosition);
         }
+    }
+
+    public addObjects(relativeDotPosition: Vector3): void {
+        const sphereMesh: Mesh = this.createSphere(relativeDotPosition);
+        this._scene.add(sphereMesh);
+        this._vertices.push(sphereMesh);
+        this.updateEdges();
+        this.validateTrack();
     }
 
     private updateEdges(): void {
@@ -103,7 +107,7 @@ export class DotCommand {
         return foundCircle;
     }
 
-    private connectToFirst(): void {
+    public connectToFirst(): void {
         const lineMat: LineBasicMaterial = new LineBasicMaterial({ color: COLOR_LINE, linewidth: 8 });
         const lineGeo: THREE.Geometry = new Geometry();
 
@@ -209,12 +213,12 @@ export class DotCommand {
 
         let count: number = 0;
         for (const edge of this._edges) {
-            edge.material.color =  new Color(count++ > 0 ? COLOR_LINE : COLOR_FIRST_LINE);
+            edge.material.color = new Color(count++ > 0 ? COLOR_LINE : COLOR_FIRST_LINE);
             edge.material.needsUpdate = true;
         }
 
         for (const fail of fails) {
-            this._edges[fail].material.color =  new Color(COLOR_LINE_ERROR);
+            this._edges[fail].material.color = new Color(COLOR_LINE_ERROR);
             this._edges[fail].material.needsUpdate = true;
         }
 
@@ -226,6 +230,10 @@ export class DotCommand {
 
     public getTrackIsCompleted(): boolean {
         return this._trackIsCompleted;
+    }
+
+    public complete(): void {
+        this._trackIsCompleted = true;
     }
 
     public getVertices(): Array<Object3D> {
