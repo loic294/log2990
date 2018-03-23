@@ -8,8 +8,8 @@ export class TrackInformation {
 
     public constructor(private _trackService: TrackInformationService = new TrackInformationService()) {}
 
-    public async getTracksList(): Promise<void> {
-        await this._trackService.getTracks("all").then((data) => {
+    public getTracksList(): void {
+        this._trackService.getTracks("all").then((data) => {
             this._trackNames = JSON.parse(data.toString());
         }).catch((error) => {
             throw error;

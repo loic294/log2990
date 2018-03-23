@@ -74,7 +74,7 @@ export class TrackCreationComponent implements AfterViewInit {
         this.loadTrack();
     }
 
-    private async sendToDb(): Promise<void> {
+    private sendToDb(): void {
         let isNewTrack: boolean = true;
 
         for (const name of this._trackInformation.tracks) {
@@ -85,9 +85,9 @@ export class TrackCreationComponent implements AfterViewInit {
         }
 
         if (isNewTrack) {
-            await this._trackInformation.putTrack();
+            this._trackInformation.putTrack().catch((error) => { throw error; });
         } else {
-            await this._trackInformation.patchTrack();
+            this._trackInformation.patchTrack().catch((error) => { throw error; });
         }
     }
 
