@@ -2,8 +2,9 @@
 
 import { Component, OnInit } from "@angular/core";
 
-import { Cell } from "../../../../../common/grid/case";
+import { Cell } from "../../../../../common/grid/cell";
 import { GridService } from "../../grid.service/grid.service";
+import { CELL_HEIGTH } from "../../constants";
 
 /** TEMPORARY MOCKED CONTENT
    * Example table
@@ -39,6 +40,24 @@ export class GridComponent implements OnInit {
 
     public selectCaseFromGrid(c: Cell): void {
         this._gridService.selectCaseFromGrid(c);
+    }
+
+    private highligthLength(wordLength: number): string {
+        const wordTotal: number = wordLength * CELL_HEIGTH;
+
+        return wordTotal.toString() + "px";
+    }
+
+    public highligthStyle(isOther: boolean): {} {
+        const wordLength: number = this._gridService.wordLength(isOther);
+        let color: string;
+        isOther ? color = "blue" : color = "red";
+
+        return {
+            "height": this._gridService.isHorizontal(isOther) ?  CELL_HEIGTH + "px" : this.highligthLength(wordLength),
+            "width": !this._gridService.isHorizontal(isOther) ? CELL_HEIGTH + "px" :  this.highligthLength(wordLength),
+            "border-color": color
+          };
     }
 
     public ngOnInit(): void {}

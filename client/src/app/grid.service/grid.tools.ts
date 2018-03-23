@@ -1,8 +1,5 @@
-/* tslint:disable:no-shadowed-variable */
-// tslint:disable:no-suspicious-comment
-
 import { Injectable } from "@angular/core";
-import { Cell } from "../../../../common/grid/case";
+import { Cell } from "../../../../common/grid/cell";
 import Word, { Orientation } from "../../../../common/lexical/word";
 
 import CLUES from "../mock-words";
@@ -97,6 +94,19 @@ export class GridTools {
         const constraint: RegExp = /^[a-z]+$/i;
 
         return constraint.test(element);
+    }
+
+    public validationByOtherPlayer(grid: Array<Array<Cell>>, tempX: number, tempY: number): void {
+        grid[tempX][tempY].isOtherPlayer = true;
+        grid[tempX][tempY].validateOther();
+        grid[tempX][tempY].startUnselect();
+        grid[tempX][tempY].startUnselectByOther();
+    }
+
+    public validationByPlayer(grid: Array<Array<Cell>>, tempX: number, tempY: number): void {
+        grid[tempX][tempY].validate();
+        grid[tempX][tempY].startUnselect();
+        grid[tempX][tempY].startUnselectByOther();
     }
 
 }

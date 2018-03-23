@@ -14,6 +14,7 @@ export default (socket: Socket) => {
             name: room,
             createdAt: new Date(),
             players: [],
+            score: [0, 0],
             difficulty: difficulty
         });
         await game.save();
