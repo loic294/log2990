@@ -10,8 +10,6 @@ enum CAMERA_VIEW {
     THIRD_PERSON = 1
 }
 
-// Est-ce que je suis mieux de créé les cam au début?
-
 @Injectable()
 export class CameraService {
 
