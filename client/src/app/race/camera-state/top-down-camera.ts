@@ -39,10 +39,13 @@ export default class TopDownCamera extends AbsCamera {
         this._camera.position.z = this._car.meshPosition.z;
     }
 
+    private areLimitsExceeded(isZoomPositive: boolean, zoom: number): boolean {
+        return isZoomPositive ? zoom > MIN_ZOOM_FACTOR : zoom < MAX_ZOOM_FACTOR;
+    }
+
     public zoom(isPositive: boolean): void {
         const camera: OrthographicCamera = this._camera as OrthographicCamera;
-        if ((camera.zoom > MIN_ZOOM_FACTOR || isPositive) &&
-            (camera.zoom < MAX_ZOOM_FACTOR || !isPositive)) {
+        if (this.areLimitsExceeded(isPositive, camera.zoom)) {
 
             camera.zoom *= (isPositive ? 1 / DISTANCE_VARIATION : DISTANCE_VARIATION);
             camera.updateProjectionMatrix();

@@ -40,10 +40,12 @@ export default class ThirdPersonCamera extends AbsCamera {
         this._camera.lookAt(this._car.meshPosition);
     }
 
+    private areLimitsExceeded(isZoomPositive: boolean): boolean {
+        return isZoomPositive ? this.distanceFactor > MIN_DISTANCE_FACTOR : this.distanceFactor < MAX_DISTANCE_FACTOR;
+    }
+
     public zoom(isPositive: boolean): void {
-        // Vérifier la nécessité de modifier la hauteur de la cam
-        if (( this.distanceFactor > MIN_DISTANCE_FACTOR || !isPositive ) &&
-            ( this.distanceFactor < MAX_DISTANCE_FACTOR || isPositive ) ) {
+        if (this.areLimitsExceeded(isPositive)) {
             this.distanceFactor += (isPositive ? -1 : 1) * DISTANCE_VARIATION;
             this._camera.position.y += (isPositive ? -1 : 1) * HEIGHT_VARIATION;
         }

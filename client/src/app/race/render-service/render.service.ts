@@ -58,14 +58,13 @@ export class RenderService {
         this._cameraService.initialize( this._car, this.getAspectRatio());
 
         const texture: Texture = new TextureLoader().load( "../../../assets/track/track.jpg" );
-        // tslint:disable-next-line
+        // tslint:disable-next-line:no-magic-numbers (temporary plane)
         const geometry: PlaneGeometry = new PlaneGeometry( 100, 100, 32 );
         const material: MeshBasicMaterial = new MeshBasicMaterial( {map: texture , side: DoubleSide} );
-        const plane: Mesh = new Mesh( geometry, material );
+        const temporaryPlane: Mesh = new Mesh( geometry, material );
 
-        plane.rotateX(PI_OVER_2);
-        this.scene.add(plane);
-
+        temporaryPlane.rotateX(PI_OVER_2);
+        this.scene.add(temporaryPlane);
         this.loadSkybox();
     }
 
