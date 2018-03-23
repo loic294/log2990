@@ -28,12 +28,13 @@ export class TrackInformationComponent implements OnInit {
         this._trackInfo.getTracks(trackName).then((data) => {
             const tempArray: Array<ITrack> = JSON.parse(data.toString());
             this._currentTrack = tempArray[0];
+            this.loadTrack();
         }).catch((error) => {
             throw error;
         });
     }
 
-    public loadTrack(): void {
+    private loadTrack(): void {
         this._trackCommunication.sendTrack(this._currentTrack);
     }
 

@@ -56,7 +56,12 @@ export class RenderService {
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
 
         this._cameraService.initialize( this._car, this.getAspectRatio());
+        this._cameraService.changeCamera();
+    }
 
+    public start(): void {
+
+        this._cameraService.changeCamera();
         const texture: Texture = new TextureLoader().load( "../../../assets/track/track.jpg" );
         // tslint:disable-next-line:no-magic-numbers (temporary plane)
         const geometry: PlaneGeometry = new PlaneGeometry( 100, 100, 32 );
