@@ -44,13 +44,8 @@ export class RenderService {
     private update(): void {
         const timeSinceLastFrame: number = Date.now() - this._lastDate;
         this._car.update(timeSinceLastFrame);
-<<<<<<< HEAD
         this._cameraService.followCar();
-        this.lastDate = Date.now();
-=======
-        this._cameraService.follow();
         this._lastDate = Date.now();
->>>>>>> 5d3a5e95a4a1d289ce5ef3433040f7551c2d3e44
     }
 
     private async createScene(): Promise<void> {
