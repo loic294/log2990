@@ -3,6 +3,7 @@ import { FormsModule } from "@angular/forms";
 
 import { TrackInformationComponent } from "./track-information.component";
 import { TrackInformationService } from "../../../../../server/app/services/trackInformation/trackInformationService";
+import { CommunicationService } from "../communicationService";
 
 describe("TrackInformationComponent", () => {
     let component: TrackInformationComponent;
@@ -12,7 +13,7 @@ describe("TrackInformationComponent", () => {
         TestBed.configureTestingModule({
             imports: [FormsModule],
             declarations: [TrackInformationComponent],
-            providers: [TrackInformationService]
+            providers: [TrackInformationService, CommunicationService]
         })
             .compileComponents().catch((error) => {
                 throw error;
