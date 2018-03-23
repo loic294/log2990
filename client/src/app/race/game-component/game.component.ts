@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, ViewChild, HostListener } from "@angular/core";
 import { RenderService } from "../render-service/render.service";
-import { Car } from "../car/car";
 import InputManagerService, { Release } from "../input-manager/input-manager.service";
+import { CameraService } from "../camera-service/camera.service";
 
 @Component({
     moduleId: module.id,
@@ -10,7 +10,8 @@ import InputManagerService, { Release } from "../input-manager/input-manager.ser
     styleUrls: ["./game.component.css"],
     providers: [
         RenderService,
-        InputManagerService
+        InputManagerService,
+        CameraService
     ]
 })
 
@@ -36,15 +37,10 @@ export class GameComponent implements AfterViewInit {
         this.inputManager.handleKey(event, Release.Up);
     }
 
-    public ngAfterViewInit(): void {
-        this.renderService
-            .initialize(this.containerRef.nativeElement)
-            .then(/* do nothing */)
-            .catch((err) => console.error(err));
-        this.inputManager.init(this.car);
-    }
+    public async ngAfterViewInit(): Promise<void> {
+        await this.renderService
+            .initialize(this.containerRef.nativeElement);
 
-    public get car(): Car {
-        return this.renderService.car;
+        this.inputManager.init(this.renderService);
     }
 }
