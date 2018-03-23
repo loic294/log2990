@@ -3,28 +3,11 @@
   <h1 class="title">Race admin panel</h1>
 </header>
 
-<nav id="nav">
-  <h4>Games</h4>
 
-  <ul>
-    <a *ngFor="let game of games" routerLink="/admin/{{game.id}}" routerLinkActive="active" [class.active]="id == game.id">
-      <li>{{game.name}}</li>
-    </a>
-  </ul>
-
-</nav>
-
-<div id="content">
-  <div *ngIf="!id">
-    Please select a game.
-  </div>
-  <div *ngIf="id">
+  <div routerLink="/admin">
     <h1>Edit game</h1>
 		<app-track-creation></app-track-creation>
-    <div>
-      <button routerLink="/admin" (click)="deleteGame(id)">Delete game</button>
-    </div>
+  
   </div>
   
-</div>
 
