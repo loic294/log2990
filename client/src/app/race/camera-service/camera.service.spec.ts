@@ -3,7 +3,7 @@ import { TestBed, inject } from "@angular/core/testing";
 import { CameraService } from "./camera.service";
 import { Car } from "../car/car";
 import { Engine } from "../car/engine";
-import { OrthographicCamera } from "three";
+import { OrthographicCamera, PerspectiveCamera } from "three";
 
 /* tslint:disable: no-magic-numbers */
 class MockEngine extends Engine {
@@ -176,5 +176,32 @@ describe("TopDownCamera", () => {
         cameraService.followCar();
 
         expect(camera.zoom).toBeLessThan(initialZoom);
+    }));
+});
+
+describe("Change camera", () => {
+    let car: Car;
+    const aspectRatio: number = 2.4;
+    beforeEach(async (done: () => void) => {
+        TestBed.configureTestingModule({
+            providers: [CameraService]
+        });
+        car = new Car(new MockEngine());
+        await car.init();
+        car.update(MS_BETWEEN_FRAMES);
+        done();
+    });
+
+    it("shoud change the type of the camera", inject([CameraService], (cameraService: CameraService) => {
+        cameraService.initialize(car, aspectRatio);
+        const isPerspectiveCamera: boolean = cameraService.camera instanceof PerspectiveCamera;
+        cameraService.changeCamera();
+        const isOrtographicCamera: boolean = cameraService.camera instanceof OrthographicCamera;
+        cameraService.changeCamera();
+        const isPerspectiveCameraAgain: boolean = cameraService.camera instanceof PerspectiveCamera;
+
+        expect(isPerspectiveCamera).toBeTruthy();
+        expect(isOrtographicCamera).toBeTruthy();
+        expect(isPerspectiveCameraAgain).toBeTruthy();
     }));
 });
