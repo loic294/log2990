@@ -27,7 +27,7 @@ export class CameraService {
         this._cameraView = CAMERA_VIEW.THIRD_PERSON;
     }
 
-    public follow(): void {
+    public followCar(): void {
         this._cameraState.follow();
     }
 
