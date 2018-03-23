@@ -35,7 +35,7 @@ export class DotCommand {
     public constructor(
         private _scene: THREE.Scene,
         private _renderer: THREE.WebGLRenderer,
-        private _camera: THREE.OrthographicCamera
+        private _camera: THREE.Camera
     ) {
         this._trackIsCompleted = false;
         this._vertices = new Array<Object3D>();

@@ -1,6 +1,10 @@
-import { AfterViewInit, Component, ElementRef, ViewChild, HostListener } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, ViewChild, HostListener, OnInit } from "@angular/core";
 import { RenderService } from "../render-service/render.service";
 import InputManagerService, { Release } from "../input-manager/input-manager.service";
+import { ITrack } from "../../../../../server/app/models/trackInfo";
+import { CommunicationService } from "../communicationService";
+import { DotCommand } from "../DotCommand";
+import { Vector3 } from "three";
 import { CameraService } from "../camera-service/camera.service";
 
 @Component({
@@ -15,12 +19,14 @@ import { CameraService } from "../camera-service/camera.service";
     ]
 })
 
-export class GameComponent implements AfterViewInit {
+export class GameComponent implements AfterViewInit, OnInit {
 
     @ViewChild("container")
     private containerRef: ElementRef;
+    private _dotCommand: DotCommand;
 
-    public constructor(private renderService: RenderService, private inputManager: InputManagerService) { }
+    public constructor(private renderService: RenderService, private inputManager: InputManagerService,
+                       public _trackCommunication: CommunicationService) { }
 
     @HostListener("window:resize", ["$event"])
     public onResize(): void {
@@ -43,4 +49,24 @@ export class GameComponent implements AfterViewInit {
 
         this.inputManager.init(this.renderService);
     }
+
+    public ngOnInit(): void {
+        this._trackCommunication.track.subscribe((_track) => {
+            this.loadTrack(_track);
+        });
+    }
+
+    public loadTrack(track: ITrack): void {
+        if (track !== undefined) {
+            while (this._dotCommand.getVertices().length !== 0) {
+                this._dotCommand.remove();
+            }
+            for (const vertex of track.vertice) {
+                this._dotCommand.addObjects(new Vector3(vertex[0], vertex[1], vertex[2]));
+            }
+            this._dotCommand.connectToFirst();
+            this._dotCommand.complete();
+        }
+    }
+
 }
