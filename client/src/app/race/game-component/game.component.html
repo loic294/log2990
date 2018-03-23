@@ -6,14 +6,26 @@
   </ul>
 </div>
 
-<div>
-  <br>
-  <br>
-  <br>
-  <br>
-  <div *ngIf="!_raceStarted">
-    <button (click)="start()">start race</button>
-    <app-track-information></app-track-information>
+
+<br>
+<br>
+<br>
+<br>
+
+<div *ngIf="!_raceStarted">
+
+  <button (click)="start()">start race</button>
+
+    <li *ngFor="let track of _trackInformation.tracks">
+      <button (click)="getTrackInfo(track)">{{track}}</button>
+    </li>
+    <br><br><br>
+  
+  <div *ngIf="_trackInformation.track">
+      <span>name: </span>{{_trackInformation.track.name}}<br>
+      <span>type: </span>{{_trackInformation.track.type}}<br>
+      <span>description: </span>{{_trackInformation.track.description}}<br>
+      <span>times played: </span>{{_trackInformation.track.timesPlayed}}<br>
   </div>
 
 </div>

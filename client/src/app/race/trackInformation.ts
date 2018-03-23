@@ -33,7 +33,6 @@ export class TrackInformation {
 
     public async patchTrack(): Promise<void> {
         await this._trackService.patchTrack(this._currentTrack.name, this._currentTrack);
-        this.getTrackInfo(this._currentTrack.name);
     }
 
     public async putTrack(): Promise<void> {
@@ -51,9 +50,5 @@ export class TrackInformation {
 
     public get track(): ITrack {
         return this._currentTrack;
-    }
-
-    public get vertice(): Array<Array<number>> {
-        return this._currentTrack.vertice;
     }
 }
