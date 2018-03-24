@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 
 import { ITrack } from "../../../../../server/app/models/trackInfo";
 import { TrackInformationService } from "../../../../../server/app/services/trackInformation/trackInformationService";
+import { CommunicationService } from "../communicationService";
 
 @Component({
     selector: "app-track-information",
@@ -13,7 +14,7 @@ export class TrackInformationComponent implements OnInit {
     private _tracks: Array<String>;
     private _currentTrack: ITrack;
 
-    public constructor(private _trackInfo: TrackInformationService) {}
+    public constructor(private _trackInfo: TrackInformationService, public _trackCommunication: CommunicationService) {}
 
     public async getTracksList(): Promise<void> {
         this._trackInfo.getTracks("all").then((data) => {
@@ -30,6 +31,10 @@ export class TrackInformationComponent implements OnInit {
         }).catch((error) => {
             throw error;
         });
+    }
+
+    public loadTrack(): void {
+        this._trackCommunication.sendTrack(this._currentTrack);
     }
 
     public get tracks(): Array<String> {

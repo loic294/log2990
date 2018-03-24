@@ -34,7 +34,7 @@ export class TrackCreationComponent implements AfterViewInit {
     private container: ElementRef;
 
     public constructor(private _trackService: TrackInformationService) {
-        this._track = {name: "", type: "", description: "", timesPlayed: 0, vertice: new Array()};
+        this._track = { name: "", type: "", description: "", timesPlayed: 0, vertice: new Array() };
         this._scene = new Scene();
         this._renderer = new WebGLRenderer();
         this._isSaved = false;
@@ -44,7 +44,7 @@ export class TrackCreationComponent implements AfterViewInit {
         while (this._dotCommand.getVertices().length !== 0) {
             this._dotCommand.remove();
         }
-        this._track = {name: "", type: "", description: "", timesPlayed: 0, vertice: new Array()};
+        this._track = { name: "", type: "", description: "", timesPlayed: 0, vertice: new Array() };
         this._isSaved = false;
     }
 
@@ -70,20 +70,41 @@ export class TrackCreationComponent implements AfterViewInit {
         this._track.vertice = trackVertices;
     }
 
+    private loadTrack(): void {
+        for (const vertex of this._track.vertice) {
+                this._dotCommand.addObjects(new Vector3(vertex[0], vertex[1], vertex[2]));
+            }
+        this._dotCommand.connectToFirst();
+        this._dotCommand.complete();
+    }
+
     public getTrackInfo(trackName: String): void {
         this.startNewTrack();
         this._trackService.getTracks(trackName).then((data) => {
             const tempArray: Array<ITrackInfo> = JSON.parse(data.toString());
             this._track = tempArray[0];
         }).then(() => {
-            for (const vertex of this._track.vertice) {
-                this._dotCommand.addObjects(new Vector3(vertex[0], vertex[1], vertex[2]));
-            }
-            this._dotCommand.connectToFirst();
-            this._dotCommand.complete();
+            this.loadTrack();
         }).catch((error) => {
             throw error;
         });
+    }
+
+    private async sendToDb(): Promise<void> {
+        let isNewTrack: boolean = true;
+
+        for (const name of this._tracks) {
+            if (name === this._track.name) {
+                isNewTrack = false;
+                break;
+            }
+        }
+
+        if (isNewTrack) {
+            await this._trackService.putTrack(this._track);
+        } else {
+            await this._trackService.patchTrack(this._track.name, this._track);
+        }
     }
 
     public async save(): Promise<void> {
@@ -100,7 +121,7 @@ export class TrackCreationComponent implements AfterViewInit {
 
         if (this._isSaved) {
             this.separateVertice();
-            await this._trackService.putTrack(this._track);
+            await this.sendToDb();
             this.getTracksList();
         }
     }
