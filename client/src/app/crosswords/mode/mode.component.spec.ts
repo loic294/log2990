@@ -1,12 +1,15 @@
 // tslint:disable:no-floating-promises
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { async, ComponentFixture, TestBed, inject } from "@angular/core/testing";
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { ClickOutsideModule } from "ng-click-outside";
+
 import { SocketIoModule, SocketIoConfig } from "ng-socket-io";
+// import { Observable } from "rxjs/Observable";
+import "rxjs/add/observable/of";
 
 import { DifficultyComponent } from "../difficulty/difficulty.component";
-import { ModeComponent, ModeDialogComponent } from "../mode/mode.component";
+import { ModeComponent, ModeDialogComponent, } from "../mode/mode.component";
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatProgressSpinnerModule} from "@angular/material";
 import { SocketService } from "../../socket.service/socket.service";
@@ -22,10 +25,11 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
   })
 export class FakeTestDialogModule {}
 
-describe("ModeComponent", () => {
+fdescribe("ModeComponent", () => {
     let component: ModeComponent;
     let fixture: ComponentFixture<ModeComponent>;
     let dialog: ModeDialogComponent;
+    let spy: jasmine.Spy;
 
     beforeEach(async (() => {
         TestBed.configureTestingModule({
@@ -53,6 +57,12 @@ describe("ModeComponent", () => {
         dialog = component.dialog.open(ModeDialogComponent).componentInstance;
     });
 
+    it("should display available games upon Two players game join", () => {
+
+    dialog.toggleShowGames();
+    expect(dialog.showGames).toBeTruthy();
+
+    });
     it("should create", () => {
         expect(component).toBeTruthy();
     });
@@ -108,19 +118,71 @@ describe("ModeComponent", () => {
 
     });
 
-    it("should wait for player upon Two players game creation", () => {
+    describe("Create a game for two players", () => {
+        it("should wait for player upon Two players game creation", () => {
 
-        const mode: string = "Two Players";
+            const mode: string = "Two Players";
 
-        dialog.createGame(mode);
-        expect(dialog.waitingForPlayer).toBeTruthy();
+            dialog.createGame(mode);
+            expect(dialog.waitingForPlayer).toBeTruthy();
 
+        });
+
+        it("should call the socketService createGame function",  inject([SocketService], (socketService: SocketService) => {
+
+            const mode: string = "Two Players";
+            spy = spyOn(socketService, "createGame");
+
+            dialog.createGame(mode);
+
+            expect(socketService.createGame).toHaveBeenCalled();
+
+        }));
+
+        it("should call the socketService joinGame function",  inject([SocketService], (socketService: SocketService) => {
+
+            const mode: string = "Two Players";
+            spy = spyOn(socketService, "joinGame");
+
+            dialog.createGame(mode);
+
+            expect(socketService.joinGame).toHaveBeenCalled();
+
+        }));
+
+        it("should call the socketService joinGame function",  inject([SocketService], (socketService: SocketService) => {
+
+            const mode: string = "Two Players";
+            spy = spyOn(socketService, "joinGame");
+
+            dialog.createGame(mode);
+
+            expect(socketService.joinGame).toHaveBeenCalled();
+
+        }));
     });
 
-    it("should display available games upon Two players game join", () => {
+    describe("Join a two player game", () => {
+        it("with game name 'test' should call socketService joinGame('test')",  inject([SocketService], (socketService: SocketService) => {
 
-        dialog.toggleShowGames();
-        expect(dialog.showGames).toBeTruthy();
+            const gameId: string = "test";
+            spy = spyOn(socketService, "joinGame");
 
+            dialog.joinGame(gameId);
+
+            expect(socketService.joinGame).toHaveBeenCalledWith("test");
+
+        }));
+
+        it("socketService isUserConnected should return true",  inject([SocketService], (socketService: SocketService) => {
+
+            const gameId: string = "test";
+            dialog.joinGame(gameId);
+            socketService.isUserConnected.subscribe((result) => {
+                expect(result).toEqual(true);
+            });
+
+        }));
     });
+
 });
