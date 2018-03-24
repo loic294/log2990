@@ -41,7 +41,7 @@ export enum Type {
     }
 
     public createSoloGame(): void {
-        // **************************************************************************************************************
+        // *************************************************************************************************************
         // tslint:disable-next-line:no-suspicious-comment
         // TODO @berj @cbm @lobel
         // Was not implemented because Grid generation is missing.
