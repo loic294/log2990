@@ -101,9 +101,9 @@ export class TrackCreationComponent implements AfterViewInit {
             }
         }
 
-        this._isSaved = (trackIsValid && this._dotCommand.getTrackIsCompleted());
+        this._isSaved = (trackIsValid && this._dotCommand.getTrackIsCompleted() && this._trackInformation.track.name !== "");
 
-        if (this._isSaved && this._trackInformation.track.name !== "") {
+        if (this._isSaved) {
             this.separateVertice();
             this.sendToDb();
         }
