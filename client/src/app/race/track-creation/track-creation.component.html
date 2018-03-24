@@ -1,27 +1,23 @@
-
-<div 
-	id="track"
-	#container
-	oncontextmenu="return false"
-	(mousedown)="onKeyDown($event)"
-  (mouseup)="onKeyUp($event)"></div>
-  <div>
-    <button (click)="save()">save track</button>
-    <button (click)="startNewTrack()">start new track</button>
-    <button (click)="deleteTrack()">delete track</button>
-  </div>
-  <div *ngIf="_isSaved">
-    track is saved!
-  </div>
+<div id="track" #container oncontextmenu="return false" (mousedown)="onKeyDown($event)" (mouseup)="onKeyUp($event)">
+</div>
 <div>
-    <div><span>name: </span><input [(ngModel)]="_track.name"></div>
-    <div><span>type: </span><input [(ngModel)]="_track.type"></div>
-    <div><span>description: </span><input [(ngModel)]="_track.description"></div>
-    <div><span>times played: </span>{{_track.timesPlayed}}</div>
+  <button (click)="save()">save track</button>
+  <button (click)="startNewTrack()">start new track</button>
+  <button (click)="deleteTrack()">delete track</button>
+</div>
+<div *ngIf="_isSaved">
+  track is saved!
 </div>
 
 <div>
-    <li *ngFor="let track of _tracks">
-      <button (click)="getTrackInfo(track)">{{track}}</button>
-    </li>
-  </div>
+  <div><span>name: </span><input [(ngModel)]="_trackInformation.track.name"></div>
+  <div><span>type: </span><input [(ngModel)]="_trackInformation.track.type"></div>
+  <div><span>description: </span><input [(ngModel)]="_trackInformation.track.description"></div>
+  <div><span>times played: </span>{{_trackInformation.track.timesPlayed}}</div>
+</div>
+
+<div>
+  <li *ngFor="let track of _trackInformation.tracks">
+    <button (click)="getTrackInfo(track)">{{track}}</button>
+  </li>
+</div>

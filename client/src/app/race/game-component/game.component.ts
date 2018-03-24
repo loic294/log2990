@@ -1,11 +1,10 @@
-import { AfterViewInit, Component, ElementRef, ViewChild, HostListener, OnInit } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, ViewChild, HostListener } from "@angular/core";
 import { RenderService } from "../render-service/render.service";
 import InputManagerService, { Release } from "../input-manager/input-manager.service";
-import { ITrack } from "../../../../../server/app/models/trackInfo";
-import { CommunicationService } from "../communicationService";
 import { DotCommand } from "../DotCommand";
 import { Vector3 } from "three";
 import { CameraService } from "../camera-service/camera.service";
+import { TrackInformation } from "../trackInformation";
 
 @Component({
     moduleId: module.id,
@@ -19,14 +18,21 @@ import { CameraService } from "../camera-service/camera.service";
     ]
 })
 
-export class GameComponent implements AfterViewInit, OnInit {
+export class GameComponent implements AfterViewInit {
 
     @ViewChild("container")
     private containerRef: ElementRef;
+    private _raceStarted: boolean;
+    private _trackLoaded: boolean;
+    private _trackInformation: TrackInformation;
     private _dotCommand: DotCommand;
 
-    public constructor(private renderService: RenderService, private inputManager: InputManagerService,
-                       public _trackCommunication: CommunicationService) { }
+    public constructor(private renderService: RenderService, private inputManager: InputManagerService) {
+        this._raceStarted = false;
+        this._trackLoaded = false;
+        this._trackInformation = new TrackInformation();
+        this._trackInformation.getTracksList();
+    }
 
     @HostListener("window:resize", ["$event"])
     public onResize(): void {
@@ -47,26 +53,36 @@ export class GameComponent implements AfterViewInit, OnInit {
         await this.renderService
             .initialize(this.containerRef.nativeElement);
 
-        this.inputManager.init(this.renderService);
     }
 
-    public ngOnInit(): void {
-        this._trackCommunication.track.subscribe((_track) => {
-            this.loadTrack(_track);
-        });
+    public start(): void {
+        if (this._trackLoaded) {
+            this.inputManager.init(this.renderService);
+            this.renderService.start();
+            this._raceStarted = true;
+        }
     }
 
-    public loadTrack(track: ITrack): void {
-        if (track !== undefined) {
+    private loadTrack(): void {
+        if (this._dotCommand !== undefined) {
             while (this._dotCommand.getVertices().length !== 0) {
                 this._dotCommand.remove();
             }
-            for (const vertex of track.vertice) {
-                this._dotCommand.addObjects(new Vector3(vertex[0], vertex[1], vertex[2]));
-            }
-            this._dotCommand.connectToFirst();
-            this._dotCommand.complete();
         }
+        this._dotCommand = new DotCommand(this.renderService.scene,
+                                          this.renderService.renderer,
+                                          this.renderService.camera);
+        for (const vertex of this._trackInformation.track.vertice) {
+            this._dotCommand.addObjects(new Vector3(vertex[0], vertex[1], vertex[2]));
+        }
+        this._dotCommand.connectToFirst();
+        this._dotCommand.complete();
+        this._trackLoaded = true;
+    }
+
+    public async getTrackInfo(trackName: String): Promise<void> {
+        await this._trackInformation.getTrackInfo(trackName);
+        this.loadTrack();
     }
 
 }
