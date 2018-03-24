@@ -17,7 +17,8 @@ export const obtainTracks: (req: Request, res: Response, next: NextFunction) => 
                 res.json(trackNames);
             } else {
                 tracks = await Track.find({ name: requestedTrack },
-                                          { _id: 0, name: 1, type: 1, description: 1, timesPlayed: 1, vertice: 1 }).exec();
+                                          { _id: 0, name: 1, type: 1, description: 1,
+                                            timesPlayed: 1, vertice: 1, completedTimes: 1 }).exec();
                 res.json(tracks);
             }
         } catch (error) {
@@ -35,7 +36,8 @@ export const saveTrack: (req: Request, res: Response, next: NextFunction) => Pro
                 type: req.body["type"],
                 description: req.body["description"],
                 timesPlayed: req.body["timesPlayed"],
-                vertice: req.body["vertice"]
+                vertice: req.body["vertice"],
+                completedTimes: req.body["completedTimes"]
             });
             await track.save();
             res.send("POST success.");
@@ -72,7 +74,8 @@ export const patchTrack: (req: Request, res: Response, next: NextFunction) => Pr
                 type: req.body["type"],
                 description: req.body["description"],
                 timesPlayed: req.body["timesPlayed"],
-                vertice: req.body["vertice"]
+                vertice: req.body["vertice"],
+                completedTimes: req.body["completedTimes"]
             });
 
             await Track.update({ name: requestedTrack }, {
@@ -80,7 +83,8 @@ export const patchTrack: (req: Request, res: Response, next: NextFunction) => Pr
                     name: trackAttributes.name, type: trackAttributes.type,
                     description: trackAttributes.description,
                     timesPlayed: trackAttributes.timesPlayed,
-                    vertice: trackAttributes.vertice
+                    vertice: trackAttributes.vertice,
+                    completedTimes: trackAttributes.completedTimes
                 }
             }).exec();
             res.send("PATCH success.");
