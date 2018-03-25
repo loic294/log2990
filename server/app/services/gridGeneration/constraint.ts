@@ -41,7 +41,7 @@ export default class Constraint {
     public removeConstrainedWord(word: Word): boolean {
         const index: number = this._constrainedWords.findIndex((constrainedWord: string) => word.name === constrainedWord);
 
-        if (index === -1 || !this.checkWordHasConstraint(word)) {
+        if (index === 1 || !this.checkWordHasConstraint(word)) {
             return false;
         } else {
             this._constrainedWords = this._constrainedWords.splice(1, index);
