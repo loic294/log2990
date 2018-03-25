@@ -57,21 +57,48 @@ export class GameComponent implements AfterViewInit {
 
     public start(): void {
         if (this._trackLoaded) {
+            this.loadTrack();
             this.inputManager.init(this.renderService);
             this.renderService.start();
             this._raceStarted = true;
         }
     }
 
-    private loadTrack(): void {
+    private clearScene(): void {
         if (this._dotCommand !== undefined) {
             while (this._dotCommand.getVertices().length !== 0) {
                 this._dotCommand.remove();
             }
         }
+    }
+
+    private loadTrack(): void {
+        this.clearScene();
+
+        this._dotCommand.addObjects(new Vector3(0, 0, 0));
+
+        const firstVertex: Array<number> = this._trackInformation.track.vertice[0];
+        let nextVertex: Array<number>;
+        let vertexIndex: number = 1;
+        while (vertexIndex !== this._trackInformation.track.vertice.length) {
+            nextVertex = this._trackInformation.track.vertice[vertexIndex];
+            this._dotCommand.addObjects(new Vector3(nextVertex[0] - firstVertex[0],
+                                                    nextVertex[1] - firstVertex[1],
+                                                    nextVertex[2] - firstVertex[2]));
+            vertexIndex++;
+        }
+
+        this._dotCommand.connectToFirst();
+        this._dotCommand.complete();
+    }
+
+    private showTrack(): void {
+        this.clearScene();
+
         this._dotCommand = new DotCommand(this.renderService.scene,
                                           this.renderService.renderer,
                                           this.renderService.camera);
+
         for (const vertex of this._trackInformation.track.vertice) {
             this._dotCommand.addObjects(new Vector3(vertex[0], vertex[1], vertex[2]));
         }
@@ -82,7 +109,7 @@ export class GameComponent implements AfterViewInit {
 
     public async getTrackInfo(trackName: String): Promise<void> {
         await this._trackInformation.getTrackInfo(trackName);
-        this.loadTrack();
+        this.showTrack();
     }
 
 }
