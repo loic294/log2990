@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from "@angular/core";
 import { SocketService } from "../../socket.service/socket.service";
 import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
 
-enum Type {
+export enum Type {
     disconnected = 0,
     soloGridValidated = 1,
     multiPlayerWin = 2,
@@ -41,7 +41,7 @@ enum Type {
     }
 
     public createSoloGame(): void {
-        // **************************************************************************************************************
+        // *************************************************************************************************************
         // tslint:disable-next-line:no-suspicious-comment
         // TODO @berj @cbm @lobel
         // Was not implemented because Grid generation is missing.
@@ -121,6 +121,14 @@ export class TerminationComponent implements OnInit {
         });
     }
 
+    private twoPlayersValidation(): void {
+        if (this.socketService.opponentScoreCount() > this.socketService.userScoreCount()) {
+            this.openDialog(Type.multiPlayerLoss);
+        } else {
+            this.openDialog(Type.multiPlayerWin);
+        }
+    }
+
     private waitingGridValidation(): void {
             this.socketService.gridValidated.subscribe((gridValidated: boolean) => {
                 if (gridValidated) {
@@ -129,11 +137,7 @@ export class TerminationComponent implements OnInit {
                             this.openDialog(Type.soloGridValidated);
                             break;
                         case "Two Players":
-                            if (this.socketService.opponentScoreCount() > this.socketService.userScoreCount()) {
-                                this.openDialog(Type.multiPlayerLoss);
-                            } else {
-                                this.openDialog(Type.multiPlayerWin);
-                            }
+                            this.twoPlayersValidation();
                             break;
                         default:
                             break;
