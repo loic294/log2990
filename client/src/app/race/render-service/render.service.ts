@@ -62,14 +62,14 @@ export class RenderService {
     public start(): void {
 
         this._cameraService.changeCamera();
-        const texture: Texture = new TextureLoader().load( "../../../assets/track/track.jpg" );
+        /*const texture: Texture = new TextureLoader().load( "../../../assets/track/track.jpg" );
         // tslint:disable-next-line:no-magic-numbers (temporary plane)
         const geometry: PlaneGeometry = new PlaneGeometry( 100, 100, 32 );
         const material: MeshBasicMaterial = new MeshBasicMaterial( {map: texture , side: DoubleSide} );
         const temporaryPlane: Mesh = new Mesh( geometry, material );
 
         temporaryPlane.rotateX(PI_OVER_2);
-        this.scene.add(temporaryPlane);
+        this.scene.add(temporaryPlane);*/
         this.loadSkybox();
     }
 
