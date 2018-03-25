@@ -25,7 +25,7 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
   })
 export class FakeTestDialogModule {}
 
-fdescribe("ModeComponent", () => {
+describe("ModeComponent", () => {
     let component: ModeComponent;
     let fixture: ComponentFixture<ModeComponent>;
     let dialog: ModeDialogComponent;
