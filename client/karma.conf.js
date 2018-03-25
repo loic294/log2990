@@ -1,15 +1,22 @@
 // Karma configuration file, see link for more information
 // https://karma-runner.github.io/1.0/config/configuration-file.html
 
+console.log('ENV', process.env.NODE_ENV)
+
+const isCI = process.env.NODE_ENV && process.env.NODE_ENV.includes('testing')
+let launcher = [require('karma-chrome-launcher')]
+
+if (isCI) {
+    launcher = [require('karma-phantomjs-launcher')]
+}
+
 module.exports = function (config) {
   config.set({
     basePath: '',
     frameworks: ['jasmine', '@angular/cli'],
     plugins: [
       require('karma-jasmine'),
-     // require('karma-chrome-launcher'),
-      // require('karma-phantomjs-launcher'),
-      require('karma-phantomjs-launcher'),
+      ...launcher,
       require('karma-jasmine-html-reporter'),
       require('karma-coverage-istanbul-reporter'),
       require('@angular/cli/plugins/karma')
@@ -31,9 +38,9 @@ module.exports = function (config) {
     port: 9876,
     colors: true,
     logLevel: 'debug',
-    autoWatch: false,
-    browsers: ['PhantomJS'],
-    singleRun: true,
+    autoWatch: !isCI,
+    browsers: isCI ? ['PhantomJS'] : ['Chrome'],
+    singleRun: isCI,
     phantomjsLauncher: {
         exitOnResourceError: false
     }
