@@ -12,7 +12,7 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
 import CLUES from "../../mock-words";
 
-fdescribe("CluesComponent", () => {
+describe("CluesComponent", () => {
   let component: CluesComponent;
   let fixture: ComponentFixture<CluesComponent>;
 
