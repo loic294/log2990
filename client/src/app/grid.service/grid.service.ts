@@ -156,9 +156,8 @@ export class GridService {
         this._gridTools.setGrid(this._grid);
         this._gridTools.iterateWord(this._word, (x: number, y: number, cellTemp: Cell, cell: number) => {
             this._grid[cellTemp.x][cellTemp.y].select();
-            if (cellTemp.char === "-") { return true; }
 
-            return false;
+            return cellTemp.char === "-";
         });
     }
 

@@ -15,4 +15,4 @@ export const difficultyName = (difficulty: Difficulty): string => {
 		default: 
 			return "Normal";
 	}
-}
+};

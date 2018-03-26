@@ -43,11 +43,8 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     }
 
     public startSoloGame(): boolean {
-        if (this.selectedMode === "Single Player" && this.showNameInput) {
-            return true;
-        }
+        return this.selectedMode === "Single Player" && this.showNameInput;
 
-        return false;
     }
 
     public isDifficultySelected(): boolean {
@@ -55,11 +52,8 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     }
 
     public isMultiPlayer(): boolean {
-        if (this.showNameInput && this.selectedMode === "Two Players") {
-            return true;
-        }
+        return this.showNameInput && this.selectedMode === "Two Players";
 
-        return false;
     }
 
     public get modes(): string[] {
