@@ -1,9 +1,8 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import { WebGLRenderer, Scene, AmbientLight,
-MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, BoxGeometry, PlaneGeometry, Texture } from "three";
+MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, BoxGeometry } from "three";
 import { Car } from "../car/car";
-import { PI_OVER_2 } from "../../constants";
 import { CameraService } from "../camera-service/camera.service";
 
 const WHITE: number = 0xFFFFFF;
@@ -60,16 +59,7 @@ export class RenderService {
     }
 
     public start(): void {
-
         this._cameraService.changeCamera();
-        /*const texture: Texture = new TextureLoader().load( "../../../assets/track/track.jpg" );
-        // tslint:disable-next-line:no-magic-numbers (temporary plane)
-        const geometry: PlaneGeometry = new PlaneGeometry( 100, 100, 32 );
-        const material: MeshBasicMaterial = new MeshBasicMaterial( {map: texture , side: DoubleSide} );
-        const temporaryPlane: Mesh = new Mesh( geometry, material );
-
-        temporaryPlane.rotateX(PI_OVER_2);
-        this.scene.add(temporaryPlane);*/
         this.loadSkybox();
     }
 

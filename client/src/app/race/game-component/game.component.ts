@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, ViewChild, HostListener } from "@
 import { RenderService } from "../render-service/render.service";
 import InputManagerService, { Release } from "../input-manager/input-manager.service";
 import { DotCommand } from "../DotCommand";
-import { Vector3, Object3D } from "three";
+import { Vector3 } from "three";
 import { CameraService } from "../camera-service/camera.service";
 import { TrackInformation } from "../trackInformation";
 import { TrackBuilder } from "../trackBuilder";
