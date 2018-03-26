@@ -23,7 +23,6 @@ export class CluesComponent implements OnInit {
     ) {
         this.clues = CLUES;
         this._wordCount = this._clues.length;
-        // this._wordCount = 2; // FOR TESTING PURPOSES
         this.socketService.setWordCount(this._wordCount);
         this._selectedClue = null;
     }

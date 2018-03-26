@@ -1,6 +1,3 @@
-.hide {
-    display: none;
-}
 
 .align {
     display: flex;
@@ -19,7 +16,7 @@
 
 .spinner {
     position: relative;
-    min-height: 36px; 
+    min-height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;

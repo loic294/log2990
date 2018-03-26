@@ -8,12 +8,13 @@ import { SocketIoModule, SocketIoConfig, Socket } from "ng-socket-io";
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatProgressSpinnerModule} from "@angular/material";
 
-import { TerminationComponent, TerminationDialogComponent, Type } from "./termination.component";
+import { TerminationComponent, TerminationDialogComponent } from "./termination.component";
 import { DifficultyComponent } from "../difficulty/difficulty.component";
 import { SocketService } from "../../socket.service/socket.service";
 import { DifficultyService } from "../../difficulty.service/difficulty.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import { Difficulty } from "../../../../../common/grid/difficulties";
+import { Type } from "../type"
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
