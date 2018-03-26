@@ -10,17 +10,12 @@ export const obtainTracks: (req: Request, res: Response, next: NextFunction) => 
 
             if (requestedTrack === "all") {
                 tracks = await Track.find({}, { _id: 0, name: 1 }).exec();
-                const trackNames: String[] = new Array();
-                for (const track of tracks) {
-                    trackNames.push(track.name);
-                }
-                res.json(trackNames);
             } else {
                 tracks = await Track.find({ name: requestedTrack },
                                           { _id: 0, name: 1, type: 1, description: 1,
                                             timesPlayed: 1, vertice: 1, completedTimes: 1 }).exec();
-                res.json(tracks);
             }
+            res.json(tracks);
         } catch (error) {
             throw error;
         }

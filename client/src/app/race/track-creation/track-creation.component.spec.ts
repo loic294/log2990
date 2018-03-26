@@ -144,7 +144,7 @@ describe("TrackCreationComponent", () => {
         expect(component.trackInformation.track.description).toBe("desc");
     });
 
-    it("should load track name 'test' and change trackLength after removing connecting edge.", () => {
+    it("should load track name 'test' and change number of objects in track after removing connecting edge.", () => {
         component.getTrackInfo("test");
         const nbSceneChildren: number = component.scene.children.length;
         component.dotCommand.remove();
