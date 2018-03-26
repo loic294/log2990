@@ -62,7 +62,7 @@ describe("GridService", () => {
         expect(gridService.grid[2][0].validated).toBe(false);
     });
 
-    fdescribe("Two player game", () => {
+    describe("Two player game", () => {
         it("player should see that other player selected 'word' from the grid but is not validated", () => {
             const otherWord: Word = gridService.word = new Word("word", "", [0, 0], Orientation.horizontal, 0);
 
