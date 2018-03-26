@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import GridGeneration from "../../services/gridGeneration/gridGeneration";
+import { selectGrid } from "./mock-grids";
 
 // Test lexical service
 export const generate: (req: Request, res: Response, next: NextFunction) => Promise<void> =
@@ -17,5 +18,12 @@ export const generate: (req: Request, res: Response, next: NextFunction) => Prom
         grid: grid.grid,
         words: grid.words
     });
+
+};
+
+export const mock: (req: Request, res: Response, next: NextFunction) => Promise<void> =
+    async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+
+    res.json({ grid: selectGrid() });
 
 };
