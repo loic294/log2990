@@ -11,8 +11,6 @@ export class GridTools {
     private _col: number;
     private _grid: Array<Array<Cell>>;
 
-    public constructor() {}
-
     public iterateGrid(grid: Array<Array<Cell>>, fct: Function): void {
         for (let i: number = 0; i < grid.length; i++) {
             for (let j: number = 0; j < grid[i].length; j++) {
