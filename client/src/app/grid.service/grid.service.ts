@@ -129,7 +129,7 @@ export class GridService {
         if (w != null) {
             this._grid[w.row][w.col].select();
             this.findEndWrittenWord();
-            this.wordHighligth();
+            this.wordHighlight();
         }
     }
 
@@ -152,7 +152,7 @@ export class GridService {
         return this._gridTools.findWordStart();
     }
 
-    private wordHighligth(): void {
+    private wordHighlight(): void {
         this._gridTools.setGrid(this._grid);
         this._gridTools.iterateWord(this._word, (x: number, y: number, cellTemp: Cell, cell: number) => {
             this._grid[cellTemp.x][cellTemp.y].select();
