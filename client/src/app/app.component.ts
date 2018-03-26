@@ -7,10 +7,7 @@ import { Component, OnInit } from "@angular/core";
 })
 export class AppComponent implements OnInit {
 
-    public constructor() { }
-
     public readonly title: string = "LOG2990";
     public message: string;
 
-    public ngOnInit(): void {}
 }

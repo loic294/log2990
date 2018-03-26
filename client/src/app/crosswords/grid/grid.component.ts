@@ -30,7 +30,7 @@ const grid: Array<String> = [
     providers: [ GridService ]
 })
 
-export class GridComponent implements OnInit {
+export class GridComponent {
 
     public constructor( private _gridService: GridService) {}
 
@@ -60,5 +60,4 @@ export class GridComponent implements OnInit {
           };
     }
 
-    public ngOnInit(): void {}
 }

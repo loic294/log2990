@@ -11,8 +11,6 @@ const MOCK_LARGEUR_PISTE: number = 3;
 @Injectable()
 export class ConstraintService {
 
-  public constructor() { }
-
   public converteToDegre(angle: number): number {
         if (angle < 0) { angle += TWO * Math.PI; }
 

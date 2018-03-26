@@ -87,7 +87,7 @@ import { Type } from "../type";
   templateUrl: "./termination.component.html",
   styleUrls: ["./termination.component.css"]
 })
-export class TerminationComponent implements OnInit {
+export class TerminationComponent {
 
     public constructor(
         public dialog: MatDialog,
@@ -139,7 +139,5 @@ export class TerminationComponent implements OnInit {
                 }
             });
     }
-
-    public ngOnInit(): void {}
 
 }

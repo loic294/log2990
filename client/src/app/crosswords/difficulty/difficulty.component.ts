@@ -8,7 +8,7 @@ import { DifficultyService } from "./../../difficulty.service/difficulty.service
     styleUrls: ["./difficulty.component.css"]
 })
 
-export class DifficultyComponent implements OnInit {
+export class DifficultyComponent {
 
     private _selectedDifficulty: Difficulty;
     private difficulties: Array<Difficulty>;
@@ -26,8 +26,6 @@ export class DifficultyComponent implements OnInit {
         this._selectedDifficulty = diff;
         this.difficultyService.selectDifficulty(diff);
     }
-
-    public ngOnInit(): void {}
 
     public get selectedDifficulty(): Difficulty {
         return this._selectedDifficulty;

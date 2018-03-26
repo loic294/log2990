@@ -111,7 +111,7 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     templateUrl: "./mode.component.html",
     styleUrls: ["./mode.component.css"]
   })
-  export class ModeComponent implements OnInit {
+  export class ModeComponent {
 
     public constructor(
           public dialog: MatDialog,
@@ -137,7 +137,5 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
             data: {  }
         });
     }
-
-    public ngOnInit(): void { }
 
 }
