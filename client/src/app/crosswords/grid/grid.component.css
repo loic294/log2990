@@ -39,7 +39,7 @@
 }
 
 .validate {
-    background: greenyellow !important;
+    background: lightcoral !important;
 }
 
 .indexes {
@@ -71,7 +71,7 @@
         45deg,
         lightblue,
         lightblue 5px,
-        greenyellow 5px,
-        greenyellow 10px
+        lightcoral 5px,
+        lightcoral 10px
       ) !important; 
 }

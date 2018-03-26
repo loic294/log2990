@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import { Express, Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction, Application } from "express";
 
 const asyncMiddleware: (fn: Function) => (req: Request, res: Response, next: NextFunction) => void = (fn: Function) =>
     (req: Request, res: Response, next: NextFunction) =>  {
@@ -7,7 +7,7 @@ const asyncMiddleware: (fn: Function) => (req: Request, res: Response, next: Nex
         .catch(next);
   };
 
-export default (app: Express) => {
+export default (app: Application) => {
 
     fs.readdirSync(__dirname).forEach((filename: string) => {
 
