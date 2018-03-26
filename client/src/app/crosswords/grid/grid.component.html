@@ -1,33 +1,33 @@
 <div>
   <div class="grid" >
     <div class="row" *ngFor="let row of _gridService.grid;" >
-      <div class="col" *ngFor="let case of row;">
+      <div class="col" *ngFor="let cell of row;">
 					<input 
-            [disabled]="case.validated || case.validatedByOther" 
-            [class.validate]="case.validated"
-            [class.validateOther]="case.validatedByOther"
-            [class.sharedValidation]= "case.sharedValidation"
+            [disabled]="cell.validated || cell.validatedByOther" 
+            [class.validate]="cell.validated"
+            [class.validateOther]="cell.validatedByOther"
+            [class.sharedValidation]= "cell.sharedValidation"
             class="square"
-						[ngModel]="case.char" 
-						(keypress)="updateGrid($event, case)" 
-						(keyup)="updateGrid($event, case)"
+						[ngModel]="cell.char" 
+						(keypress)="updateGrid($event, cell)" 
+						(keyup)="updateGrid($event, cell)"
 						maxlength="1" 
-            [class.is-black]="case.char === '-'"
-            (click)=selectCaseFromGrid(case)
-            id={{case.id}}
+            [class.is-black]="cell.char === '-'"
+            (click)=selectCellFromGrid(cell)
+            id={{cell.id}}
             />
 
-          <div *ngIf="case.startOfSelected()" 
+          <div *ngIf="cell.startOfSelected()" 
                 class="border" 
                 [ngStyle]="highlightStyle(false)">
           </div>
-          <div *ngIf="case.startSelectedByOther()" 
+          <div *ngIf="cell.startSelectedByOther()" 
                 class="border" 
                 [ngStyle]="highlightStyle(true)">
           </div>
 
 					<div class="indexes">
-						<div class="small-index" *ngFor="let index of case.wordIndexes">
+						<div class="small-index" *ngFor="let index of cell.wordIndexes">
               {{index}}   
 						</div>
           </div>

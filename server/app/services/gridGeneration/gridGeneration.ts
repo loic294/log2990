@@ -21,7 +21,7 @@ export default class GridGeneration {
         this._wordStack = [];
     }
 
-    public fillGridWithCases(size: number): Array<Array<Cell>> {
+    public fillGridWithCells(size: number): Array<Array<Cell>> {
         size = size > 0 ? size : this._DEFAULT_SIZE;
         this._grid = [];
 
