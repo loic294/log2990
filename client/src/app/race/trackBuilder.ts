@@ -10,34 +10,24 @@ const CIRCLE_SEGMENTS: number = 32;
 const PLANE_COLOR: number = 0x0055FF;
 
 export class TrackBuilder {
-    private _scene: THREE.Scene;
-    private _vertice: Array<Object3D>;
-    private _edges: Array<LineSegment>;
     private _circleGeometry: CircleGeometry;
     private _material: MeshBasicMaterial;
 
-    public constructor(scene: THREE.Scene, vertice: Array<Object3D>, edges: Array<LineSegment>) {
-        this._scene = scene;
-        this._vertice = vertice;
-        this._edges = edges;
+    public constructor(private _scene: THREE.Scene, private _vertice: Array<Object3D>, private _edges: Array<LineSegment>) {
         this._circleGeometry = new CircleGeometry(WIDTH / 2, CIRCLE_SEGMENTS);
         this._material = new MeshBasicMaterial({ color: PLANE_COLOR, side: DoubleSide });
     }
 
     public buildTrack(): void {
-        let lastVertex: Vector3;
+        let lastVertex: Vector3 = this._vertice[this._vertice.length - 1].position;
 
-        for (let i: number = 0; i < this._vertice.length; i++) {
+        for (const vertex of this._vertice) {
 
-            this.replaceSphere(this._vertice[i]);
+            this.replaceSphere(vertex);
 
-            if (i === 0) {
-                lastVertex = this._vertice[this._vertice.length - 1].position;
-            }
+            this.placePlane(lastVertex, vertex.position);
 
-            this.placePlane(lastVertex, this._vertice[i].position);
-
-            lastVertex = this._vertice[i].position;
+            lastVertex = vertex.position;
         }
 
         this.removeLines();
