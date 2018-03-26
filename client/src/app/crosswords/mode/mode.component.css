@@ -57,3 +57,7 @@ input:focus {
 .disconnected {
     color: red
 }
+
+.hide {
+    display: none;
+}
