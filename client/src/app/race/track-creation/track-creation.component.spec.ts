@@ -4,6 +4,8 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { TrackCreationComponent } from "./track-creation.component";
 import { Object3D, Line } from "three";
+import { TrackInformationService } from "../../../../../server/app/services/trackInformation/trackInformationService";
+import { TrackInformation } from "../trackInformation";
 
 describe("TrackCreationComponent", () => {
     let component: TrackCreationComponent;
@@ -11,9 +13,12 @@ describe("TrackCreationComponent", () => {
     let scene: THREE.Scene;
     let vertices: Array<Object3D>;
     let edges: Array<Line>;
+    let trackService: TrackInformationService;
+    let trackInfo: TrackInformation;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            providers: [TrackInformationService],
             imports: [FormsModule],
             declarations: [TrackCreationComponent]
         })
@@ -29,6 +34,8 @@ describe("TrackCreationComponent", () => {
         scene = component.scene;
         vertices = component.dotCommand.getVertices();
         edges = component.dotCommand.getEdges();
+        trackService = new TrackInformationService();
+        trackInfo = new TrackInformation();
     });
 
     it("should create", () => {
@@ -157,7 +164,7 @@ describe("TrackCreationComponent", () => {
         expect(component.scene.children.length).toBeGreaterThan(nbSceneChildren);
     });
 
-    it("should load track name 'test' and unsuccessfuly add new object", () => {
+    /*it("should load track name 'test' and unsuccessfuly add new object", () => {
         component.getTrackInfo("test");
         const nbSceneChildren: number = component.scene.children.length;
         const eventDown: MouseEvent = new MouseEvent("mousedown", { clientX: 200, clientY: 100 });
@@ -183,14 +190,19 @@ describe("TrackCreationComponent", () => {
         expect(component.trackInformation.tracks.length).toBe(numberOfTracks);
         component.getTrackInfo("test2");
         expect(component.trackInformation.track.description).toBe("new description");
-    });
+    });*/
 
-    it("should delete track name 'test2'", () => {
+    /*it("should delete track name 'test2'", () => {
         component.trackInformation.getTracksList();
         const numberOfTracks: number = component.trackInformation.tracks.length;
         component.getTrackInfo("test2");
         component.deleteTrack();
         expect(component.trackInformation.tracks.length).toBe(numberOfTracks - 1);
     });
+
+    it("should delete track name 'test2'", async () => {
+        await trackInfo.getTracksList();
+        expect(trackInfo.tracks.length).toBe(12414);
+    });*/
 
 });

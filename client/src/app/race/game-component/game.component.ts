@@ -124,4 +124,8 @@ export class GameComponent implements AfterViewInit {
         this.showTrack();
     }
 
+    public get trackInformation(): TrackInformation {
+        return this._trackInformation;
+    }
+
 }
