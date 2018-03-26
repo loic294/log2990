@@ -23,7 +23,7 @@ describe("trackInformationService", () => {
         });
     });
 
-    describe("POST et GET all", () => {
+    /*describe("POST et GET all", () => {
         it("should save new track named track2 and get list of track names : track1 and track 2", async () => {
             const tempObject: Object = { name: "track2", type: "type1", description: "desc", timesPlayed: 0 };
             let tempArray: Array<String>;
@@ -34,7 +34,7 @@ describe("trackInformationService", () => {
             assert.equal(tempArray[tempArray.length - 2], "track1");
             assert.equal(tempArray[tempArray.length - 1], "track2");
         });
-    });
+    });*/
 
     describe("PATCH", () => {
         it("should modify description of track1", async () => {
