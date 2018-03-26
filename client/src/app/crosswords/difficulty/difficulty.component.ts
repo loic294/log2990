@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { Difficulty, difficultyName } from "../../../../../common/grid/difficulties";
 import { DifficultyService } from "./../../difficulty.service/difficulty.service";
 

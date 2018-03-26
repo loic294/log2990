@@ -1,6 +1,6 @@
 /* tslint:disable:no-shadowed-variable */
 
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 
 import { Cell } from "../../../../../common/grid/cell";
 import { GridService } from "../../grid.service/grid.service";
