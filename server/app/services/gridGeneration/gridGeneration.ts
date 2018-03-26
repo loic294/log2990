@@ -122,22 +122,26 @@ export default class GridGeneration {
         let count: number = 0;
         let query: string = "";
 
-        for (let i: number = 0; i < word.length; i++) {
+        const wordStart: number = word.orientation === Orientation.horizontal ? word.position[1] : word.position[0];
+
+        for (let i: number = wordStart; i < wordStart + word.length; i++) {
             const subConstraint: SubConstraint = cosntraints.find((constraint: SubConstraint) => constraint.point[index] === i);
             // console.log('SUBCONSTRAINT', subConstraint)
 
             count += 1;
+            console.log('ADD COUNT', count, !!subConstraint, subConstraint && subConstraint.point)
 
             if (subConstraint !== undefined) {
-                const cellChar: string = grid[subConstraint.point[1]][subConstraint.point[0]].char;
+                const cellChar: string = grid[subConstraint.point[0]][subConstraint.point[1]].char;
+                console.log('CELL CHAR', cellChar)
                 if (cellChar !== "◽") {
-                    query += count > 1 ? `${count}${cellChar}` : `${cellChar}`;
+                    query += count > 1 ? `${count - 1}${cellChar}` : `${cellChar}`;
                     count = 0;
                 }
             }
 
 
-            if (i === word.length - 1) {
+            if (i === word.length - 1 && count > 0) {
                 query += `${count}`;
             }
 
@@ -151,17 +155,37 @@ export default class GridGeneration {
         let count: number = 0, row: number = word.position[0], col: number = word.position[1];
 
         do {
-            console.log(this.printGridWithWord(grid));
-            console.log(row, col, word.orientation);
-            grid[row][col].char = word.name[count];
+            if (word.name[count]) {
+                grid[row][col].char = word.name[count];
+            }
             word.orientation === Orientation.horizontal ? col += 1 : row += 1;
             count += 1;
         } while (count < word.length);
 
         console.log('ADDED', word.name);
-        console.log(this.printGridWithWord(grid));
+        // console.log(this.printGridWithWord(grid));
 
         return grid;
+    }
+
+    public shouldFindWord(grid: Array<Array<Cell>>, word: Constraint): boolean {
+
+        let count: number = 0, row: number = word.position[0], col: number = word.position[1];
+
+        console.log(this.printGridWithWord(grid));
+
+        while (count < word.length) {
+            word.orientation === Orientation.horizontal ? col += 1 : row += 1;
+            count += 1;
+            if (grid[row][col] && grid[row][col].char === "◽" && !grid[row][col].isBlack()) {
+                console.log("SHOULD ADD TO GRID", row, col, grid[row][col].char);
+
+                return true;
+            }
+        }
+
+
+        return true;
     }
 
     public async recursion(words: Array<Constraint>, wordIndex: number, cycle: number, grid: Array<Array<Cell>>): Promise<boolean> {
@@ -173,21 +197,25 @@ export default class GridGeneration {
             return false;
         }
 
-        const query: string = this.createWordSearchCondition(grid, word);
+        if (this.shouldFindWord(grid, word)) {
+            const query: string = this.createWordSearchCondition(grid, word);
 
-        const url: string = `http://localhost:3000/lexical/wordAndDefinition/${query}/common/easy`;
-        const { data: { lexicalResult } }: { data: { lexicalResult: Array<string>} } = await axios.get(url);
+            do {
+                const url: string = `http://localhost:3000/lexical/wordAndDefinition/${query}/common/easy`;
+                const { data: { lexicalResult } }: { data: { lexicalResult: Array<string>} } = await axios.get(url);
 
-        word.name = lexicalResult[0];
-        word.desc = lexicalResult[1];
+                word.name = lexicalResult[0];
+                word.desc = lexicalResult[1];
+            } while (word.name === "undefined");
 
-        grid = this.addWordToGrid(grid, word);
+            grid = this.addWordToGrid(grid, word);
+        }
 
         const gridFreeze: Array<Array<Cell>> = [...grid];
 
         cycle += 1;
         wordIndex += 1;
-        if (this.recursion(words, wordIndex, cycle, gridFreeze)) {
+        if (await this.recursion(words, wordIndex, cycle, gridFreeze)) {
             return false;
         }
 
@@ -197,9 +225,9 @@ export default class GridGeneration {
 
     public startRecursion(words: Array<Constraint>): void {
         this.recursion(words, 0, 0, this._grid).then(() => {
-            console.log('Recursion completed');
+            console.log("Recursion completed");
         })
-        .catch((err) => console.error(err));
+        .catch((err: Error) => console.error(err));
     }
 
     public intersects(word1: Constraint, word2: Constraint): Array<number> {
