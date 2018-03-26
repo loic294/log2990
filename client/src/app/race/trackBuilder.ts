@@ -35,19 +35,21 @@ export class TrackBuilder {
         const geometry: PlaneGeometry = new PlaneGeometry(1, 1);
         geometry.vertices = new Array();
 
-        geometry.vertices.push(new Vector3(line.userData.vertices[0].x - WIDTH / 2, 0, line.userData.vertices[0].z - WIDTH / 2));
-        geometry.vertices.push(new Vector3(line.userData.vertices[0].x + WIDTH / 2, 0, line.userData.vertices[0].z + WIDTH / 2));
-        geometry.vertices.push(new Vector3(line.userData.vertices[1].x - WIDTH / 2, 0, line.userData.vertices[1].z - WIDTH / 2));
-        geometry.vertices.push(new Vector3(line.userData.vertices[1].x + WIDTH / 2, 0, line.userData.vertices[1].z + WIDTH / 2));
+        if (line.userData.vertices[0].x - line.userData.vertices[1].x > 50 ||
+            line.userData.vertices[0].z - line.userData.vertices[1].z > 50) {
+                geometry.vertices.push(new Vector3(line.userData.vertices[0].x - WIDTH, 0, line.userData.vertices[0].z - WIDTH));
+                geometry.vertices.push(new Vector3(line.userData.vertices[0].x + WIDTH, 0, line.userData.vertices[0].z + WIDTH));
+                geometry.vertices.push(new Vector3(line.userData.vertices[1].x - WIDTH, 0, line.userData.vertices[1].z - WIDTH));
+                geometry.vertices.push(new Vector3(line.userData.vertices[1].x + WIDTH, 0, line.userData.vertices[1].z + WIDTH));
+            } else {
+                geometry.vertices.push(new Vector3(line.userData.vertices[0].x - WIDTH / 2, 0, line.userData.vertices[0].z - WIDTH / 2));
+                geometry.vertices.push(new Vector3(line.userData.vertices[0].x + WIDTH / 2, 0, line.userData.vertices[0].z + WIDTH / 2));
+                geometry.vertices.push(new Vector3(line.userData.vertices[1].x - WIDTH / 2, 0, line.userData.vertices[1].z - WIDTH / 2));
+                geometry.vertices.push(new Vector3(line.userData.vertices[1].x + WIDTH / 2, 0, line.userData.vertices[1].z + WIDTH / 2));
+            }
 
         const material: MeshBasicMaterial = new MeshBasicMaterial({ map: texture, side: DoubleSide });
         const temporaryPlane: Mesh = new Mesh(geometry, material);
-
-        console.log("vertex");
-        for (const i of geometry.vertices) {
-            console.log(i);
-        }
-
 
         this._scene.add(temporaryPlane);
     }
