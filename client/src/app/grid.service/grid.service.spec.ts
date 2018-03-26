@@ -111,6 +111,10 @@ describe("GridService", () => {
             expect(gridService.grid[0][2].validatedByOther).toBe(true);
             expect(gridService.grid[0][3].validatedByOther).toBe(true);
         });
+
+        it("should highlight other player's current selection in a different color", () => {
+
+        });
     });
 
 });
