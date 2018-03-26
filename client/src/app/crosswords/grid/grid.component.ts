@@ -38,8 +38,8 @@ export class GridComponent implements OnInit {
         this._gridService.updateGrid(event, c);
     }
 
-    public selectCaseFromGrid(c: Cell): void {
-        this._gridService.selectCaseFromGrid(c);
+    public selectCellFromGrid(c: Cell): void {
+        this._gridService.selectCellFromGrid(c);
     }
 
     private highlightLength(wordLength: number): string {
