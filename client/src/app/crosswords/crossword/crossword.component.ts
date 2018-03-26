@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 
 import { WordService } from "../../word.service/word.service";
 import { SocketService } from "../../socket.service/socket.service";
@@ -9,10 +9,11 @@ import { SocketService } from "../../socket.service/socket.service";
   styleUrls: ["./crossword.component.css"],
   providers: [ WordService ]
 })
-export class CrosswordComponent implements OnInit {
+export class CrosswordComponent {
   private _opponentName: string;
   private _opponentScore: number = 0;
   private _userScore: number = 0;
+
   public constructor(
       public _wordService: WordService,
       public _socketService: SocketService
@@ -49,9 +50,6 @@ export class CrosswordComponent implements OnInit {
 
   public get selectedMode(): string {
       return this._socketService.selectedMode;
-  }
-
-  public ngOnInit(): void {
   }
 
 }

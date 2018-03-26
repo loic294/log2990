@@ -23,7 +23,7 @@ export default class ThirdPersonCamera extends AbsCamera {
             CameraConstants.FAR_CLIPPING_PLANE
         );
         this._car = car;
-        this. distanceFactor = INTIAL_DISTANCE_FACTOR;
+        this.distanceFactor = INTIAL_DISTANCE_FACTOR;
         this._camera.position.set(0, INITIAL_HEIGHT, 0);
     }
 

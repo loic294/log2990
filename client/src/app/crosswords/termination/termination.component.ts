@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from "@angular/core";
+import { Component, Inject } from "@angular/core";
 import { SocketService } from "../../socket.service/socket.service";
 import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
 import { Type } from "../type";
@@ -87,7 +87,7 @@ import { Type } from "../type";
   templateUrl: "./termination.component.html",
   styleUrls: ["./termination.component.css"]
 })
-export class TerminationComponent implements OnInit {
+export class TerminationComponent {
 
     public constructor(
         public dialog: MatDialog,
@@ -139,7 +139,5 @@ export class TerminationComponent implements OnInit {
                 }
             });
     }
-
-    public ngOnInit(): void {}
 
 }
