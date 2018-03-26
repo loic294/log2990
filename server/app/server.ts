@@ -18,8 +18,10 @@ app.use(cors());
 app = routes(app);
 
 const server: Http2Server = require("http").Server(app);
-const io: SocketIOStatic = require("socket.io")(server);
+const io: SocketIO.Server = require("socket.io")(server);
 
+// C'est le type utilisé dans les example de la librairie.
+// tslint:disable-next-line:no-any
 io.on("connection", (socket: any) => {
     sockets(socket);
 });
