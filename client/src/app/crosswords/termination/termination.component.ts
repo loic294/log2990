@@ -1,13 +1,7 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { SocketService } from "../../socket.service/socket.service";
 import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
-
-export enum Type {
-    disconnected = 0,
-    soloGridValidated = 1,
-    multiPlayerWin = 2,
-    multiPlayerLoss = 3
-}
+import { Type } from "../type";
 
 @Component({
     selector: "app-termination-component-termination",

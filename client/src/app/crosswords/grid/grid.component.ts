@@ -4,7 +4,7 @@ import { Component, OnInit } from "@angular/core";
 
 import { Cell } from "../../../../../common/grid/cell";
 import { GridService } from "../../grid.service/grid.service";
-import { CELL_HEIGTH } from "../../constants";
+import { CELL_HEIGHT } from "../../constants";
 
 /** TEMPORARY MOCKED CONTENT
    * Example table
@@ -42,20 +42,20 @@ export class GridComponent implements OnInit {
         this._gridService.selectCaseFromGrid(c);
     }
 
-    private highligthLength(wordLength: number): string {
-        const wordTotal: number = wordLength * CELL_HEIGTH;
+    private highlightLength(wordLength: number): string {
+        const wordTotal: number = wordLength * CELL_HEIGHT;
 
         return wordTotal.toString() + "px";
     }
 
-    public highligthStyle(isOther: boolean): {} {
+    public highlightStyle(isOther: boolean): {} {
         const wordLength: number = this._gridService.wordLength(isOther);
         let color: string;
         isOther ? color = "blue" : color = "red";
 
         return {
-            "height": this._gridService.isHorizontal(isOther) ?  CELL_HEIGTH + "px" : this.highligthLength(wordLength),
-            "width": !this._gridService.isHorizontal(isOther) ? CELL_HEIGTH + "px" :  this.highligthLength(wordLength),
+            "height": this._gridService.isHorizontal(isOther) ?  CELL_HEIGHT + "px" : this.highlightLength(wordLength),
+            "width": !this._gridService.isHorizontal(isOther) ? CELL_HEIGHT + "px" :  this.highlightLength(wordLength),
             "border-color": color
           };
     }
