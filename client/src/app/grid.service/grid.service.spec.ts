@@ -41,7 +41,7 @@ describe("GridService", () => {
         expect(gridService.gridTools.isLetter("{")).toBe(false);
     });
 
-    it("Word 'hey' shoud be validated after entering 'hey'", () => {
+    it("Word 'hey' should be validated after entering 'hey'", () => {
         gridService.word = new Word("hey", "", [0, 0], Orientation.horizontal, 0);
         const elem: HTMLElement = document.createElement("div");
         gridService.validateWord("hey", elem);
@@ -51,7 +51,7 @@ describe("GridService", () => {
         expect(gridService.grid[0][2].validated).toBe(true);
     });
 
-    it("Word 'hey' shoud not be validated after entering 'oop'", () => {
+    it("Word 'hey' should not be validated after entering 'oop'", () => {
         gridService.word = new Word("hey", "", [0, 0], Orientation.vertical, 0);
         const elem: HTMLElement = document.createElement("div");
 
