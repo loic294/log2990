@@ -23,17 +23,17 @@ export class RenderService {
     private _scene: THREE.Scene;
     private _stats: Stats;
     private _lastDate: number;
-    private _npcs: Array<Car>;
+    private _bots: Array<Car>;
     private _aiService: AiService;
     private _trackLoaded: boolean;
 
     public constructor(private _cameraService: CameraService) {
         this._car = new Car();
-        this._npcs = [];
+        this._bots = [];
         this._trackLoaded = false;
 
         for (let i: number = 0; i < AMOUNT_OF_NPCS; i++) {
-            this._npcs[i] = new Car();
+            this._bots[i] = new Car();
         }
 
     }
@@ -70,8 +70,8 @@ export class RenderService {
         await this._car.init();
         this.scene.add(this._car);
         for (let i: number = 0; i < AMOUNT_OF_NPCS; i++) {
-            await this._npcs[i].init();
-            this.scene.add(this._npcs[i]);
+            await this._bots[i].init();
+            this.scene.add(this._bots[i]);
         }
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
 
@@ -150,8 +150,8 @@ export class RenderService {
         return this._cameraService;
     }
 
-    public get npcs(): Array<Car> {
-        return this._npcs;
+    public get bots(): Array<Car> {
+        return this._bots;
     }
 
     public set aiService(aiService: AiService) {
