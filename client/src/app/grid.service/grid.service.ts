@@ -35,7 +35,7 @@ export class GridService {
             (_wordFromClue: Word) => {
                 if (_wordFromClue) {
                     this._word = _wordFromClue;
-                    this.selectCaseFromService(_wordFromClue);
+                    this.selectCellFromService(_wordFromClue);
                 }
             });
 
@@ -55,7 +55,7 @@ export class GridService {
             });
     }
 
-    private selectCaseFromService(w: Word): void {
+    private selectCellFromService(w: Word): void {
         this.selectCells(w);
         this.socketService.syncWord(w);
     }
@@ -133,7 +133,7 @@ export class GridService {
         }
     }
 
-    public selectCaseFromGrid(c: Cell): void {
+    public selectCellFromGrid(c: Cell): void {
 
         const tempWord: Word = this.findWordStart(c.x, c.y);
         this._wordService.selectWordFromGrid(tempWord);
