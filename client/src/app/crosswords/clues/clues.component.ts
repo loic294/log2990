@@ -21,7 +21,7 @@ export class CluesComponent implements OnInit {
         public _wordService: WordService,
         private socketService: SocketService
     ) {
-        this._clues = CLUES;
+        this.clues = CLUES;
         this._wordCount = this._clues.length;
         // this._wordCount = 2; // FOR TESTING PURPOSES
         this.socketService.setWordCount(this._wordCount);
@@ -46,6 +46,9 @@ export class CluesComponent implements OnInit {
         return this._clues;
     }
 
+    public set clues(clues: Array<Word>) {
+        this._clues = clues;
+    }
     private foundWord(item: Word, position: Word): boolean {
         return (item.col === position.col &&
             item.row === position.row &&

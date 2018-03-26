@@ -84,6 +84,9 @@ export class SocketService {
         this.initializeSocket();
 
     }
+    public get socket(): Socket {
+        return this._socket;
+    }
 
     public initializeSocket(): void {
         this._socket.connect();

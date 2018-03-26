@@ -9,8 +9,9 @@ import { DifficultyService } from "./../difficulty.service/difficulty.service";
 
 describe("GridService", () => {
 
-    let service: GridService;
+    let gridService: GridService;
     const config: SocketIoConfig = { url: "http://localhost:4200", options: {} };
+    let socketService: SocketService;
 
     beforeEach(async(() => {
       TestBed.configureTestingModule({
@@ -20,44 +21,96 @@ describe("GridService", () => {
     }));
 
     beforeEach(() => {
-        service = new GridService(new WordService(), new SocketService(new Socket(config), new DifficultyService()));
+        socketService = new SocketService(new Socket(config), new DifficultyService());
+        gridService = new GridService(new WordService(), new SocketService(new Socket(config), new DifficultyService()));
     });
 
     it("'b' should be a letter", () => {
-        expect(service.gridTools.isLetter("b")).toBe(true);
+        expect(gridService.gridTools.isLetter("b")).toBe(true);
     });
 
     it("'B' should be a letter", () => {
-        expect(service.gridTools.isLetter("B")).toBe(true);
+        expect(gridService.gridTools.isLetter("B")).toBe(true);
     });
 
     it("'4' shouldn't be a letter", () => {
-        expect(service.gridTools.isLetter("4")).toBe(false);
+        expect(gridService.gridTools.isLetter("4")).toBe(false);
     });
 
     it("'{' shouldn't be a letter", () => {
-        expect(service.gridTools.isLetter("{")).toBe(false);
+        expect(gridService.gridTools.isLetter("{")).toBe(false);
     });
 
     it("Word 'hey' shoud be validated after entering 'hey'", () => {
-        service.word = new Word("hey", "", [0, 0], Orientation.horizontal, 0);
+        gridService.word = new Word("hey", "", [0, 0], Orientation.horizontal, 0);
         const elem: HTMLElement = document.createElement("div");
-        service.validateWord("hey", elem);
-        expect(service.word.isValidated).toBe(true);
-        expect(service.grid[0][0].validated).toBe(true);
-        expect(service.grid[0][1].validated).toBe(true);
-        expect(service.grid[0][2].validated).toBe(true);
+        gridService.validateWord("hey", elem);
+        expect(gridService.word.isValidated).toBe(true);
+        expect(gridService.grid[0][0].validated).toBe(true);
+        expect(gridService.grid[0][1].validated).toBe(true);
+        expect(gridService.grid[0][2].validated).toBe(true);
     });
 
     it("Word 'hey' shoud not be validated after entering 'oop'", () => {
-        service.word = new Word("hey", "", [0, 0], Orientation.vertical, 0);
+        gridService.word = new Word("hey", "", [0, 0], Orientation.vertical, 0);
         const elem: HTMLElement = document.createElement("div");
 
-        service.validateWord("oop", elem);
-        expect(service.word.isValidated).toBe(false);
-        expect(service.grid[0][0].validated).toBe(false);
-        expect(service.grid[1][0].validated).toBe(false);
-        expect(service.grid[2][0].validated).toBe(false);
+        gridService.validateWord("oop", elem);
+        expect(gridService.word.isValidated).toBe(false);
+        expect(gridService.grid[0][0].validated).toBe(false);
+        expect(gridService.grid[1][0].validated).toBe(false);
+        expect(gridService.grid[2][0].validated).toBe(false);
+    });
+
+    describe("Two player game", () => {
+        it("player should see that other player selected 'word' from the grid but is not validated", () => {
+            const otherWord: Word = gridService.word = new Word("word", "", [0, 0], Orientation.horizontal, 0);
+
+            gridService.selectOtherPlayerWord(otherWord);
+
+            expect(gridService.grid[0][0].isOtherPlayer).toBeTruthy();
+            expect(gridService.grid[0][1].isOtherPlayer).toBeTruthy();
+            expect(gridService.grid[0][2].isOtherPlayer).toBeTruthy();
+            expect(gridService.grid[0][3].isOtherPlayer).toBeTruthy();
+
+            expect(gridService.word.isValidated).toBeFalsy();
+        });
+
+        it("validated word 'test' should increment userscore'", () => {
+            let userScore: number = socketService.userScoreCount();
+
+            gridService.word = new Word("test", "", [0, 0], Orientation.horizontal, 0);
+            const elem: HTMLElement = document.createElement("div");
+
+            gridService.validateWord("test", elem);
+
+            expect(socketService.userScoreCount()).toEqual(userScore++);
+
+        });
+
+        it("other player validated word 'other' should increment opponentScore'", () => {
+            let opponentScore: number = socketService.opponentScoreCount();
+
+            gridService.word = new Word("other", "", [0, 0], Orientation.horizontal, 0);
+            const elem: HTMLElement = document.createElement("div");
+
+            gridService.validateWord("other", elem);
+
+            expect(socketService.opponentScoreCount()).toEqual(opponentScore++);
+
+        });
+
+        it("player should see validated word 'test' of other player", () => {
+            const isOther: boolean = true;
+            const wordFromOther: Word =  gridService.word = new Word("test", "", [0, 0], Orientation.horizontal, 0);
+
+            gridService.applyValidation(wordFromOther, isOther);
+
+            expect(gridService.grid[0][0].validatedByOther).toBe(true);
+            expect(gridService.grid[0][1].validatedByOther).toBe(true);
+            expect(gridService.grid[0][2].validatedByOther).toBe(true);
+            expect(gridService.grid[0][3].validatedByOther).toBe(true);
+        });
     });
 
 });
