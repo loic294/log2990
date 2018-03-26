@@ -6,6 +6,7 @@ import { Vector3 } from "three";
 import { CameraService } from "../camera-service/camera.service";
 import { TrackInformation } from "../trackInformation";
 import { TrackBuilder } from "../trackBuilder";
+import { AiService } from "../ai-service/ai.service";
 
 const SCALE_FACTOR: number = -10;
 
@@ -69,6 +70,8 @@ export class GameComponent implements AfterViewInit {
                                                                 this._dotCommand.getEdges());
             trackBuilder.buildTrack();
 
+            this.renderService.aiService = new AiService(trackBuilder, this.renderService.bots);
+            this.renderService.trackLoaded = true;
             this._raceStarted = true;
         }
     }
