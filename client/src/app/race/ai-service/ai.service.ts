@@ -50,22 +50,26 @@ export class AiService {
     }
 
     private distanceGreaterThanDistance(stage: Stage): boolean {
-        return this.distanceCarToPoint().length() >= this.lengthOfDistancePointToPoint() / stage;
+        return this.lengthOfDistanceCarToPoint() >= this.lengthOfDistancePointToPoint() / stage;
     }
 
     private switchLines(): void {
         this._pointIndex = this.nextPointIndex();
     }
 
+    private lengthOfDistanceCarToPoint(): number {
+        return Math.abs((this._currentCar.meshPosition.distanceTo(this.nextPointPosition())));
+    }
+
     private distanceCarToPoint(): Vector3 {
-        return (new Vector3().subVectors(this.nextPointPosition(), this._currentCar.meshPosition)).multiplyScalar(this.SCALE_FACTOR);
+        return (new Vector3().subVectors(this.nextPointPosition(), this._currentCar.meshPosition));
     }
 
     private lengthOfDistancePointToPoint(): number {
-        return (new Vector3().subVectors(this.nextPointPosition(), this.currentPointPosition())).multiplyScalar(this.SCALE_FACTOR).length();
+        return Math.abs((this.currentPointPosition().distanceTo(this.nextPointPosition())));
     }
 
-    private steering(): void { // Finish This.
+    private steering(): void {
         if (this.isToTheLeftOfLine()) {
             this.steerRight();
             console.log("STEERING RIGHT");
