@@ -1,4 +1,5 @@
-// tslint: disable: no-magic-numbers no-floating-promises
+// tslint:disable: no-magic-numbers
+// tslint:disable: no-floating-promises
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { TrackCreationComponent } from "./track-creation.component";
