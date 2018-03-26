@@ -4,11 +4,20 @@ import * as grid from "./middleware";
 
 export default {
     base: "/grid",
-    routes: [{
-        method: "GET",
-        path: "/",
-        middleware: [
-            grid.generate
-        ]
-    }]
+    routes: [
+        {
+            method: "GET",
+            path: "/",
+            middleware: [
+                grid.generate
+            ]
+        },
+        {
+            method: "GET",
+            path: "/mock",
+            middleware: [
+                grid.mock
+            ]
+        }
+    ]
 };
