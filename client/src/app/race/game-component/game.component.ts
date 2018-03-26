@@ -70,7 +70,7 @@ export class GameComponent implements AfterViewInit {
                                                                 this._dotCommand.getEdges());
             trackBuilder.buildTrack();
 
-            this.renderService.aiService = new AiService(trackBuilder, this.renderService.npcs, SCALE_FACTOR);
+            this.renderService.aiService = new AiService(trackBuilder, this.renderService.npcs);
             this.renderService.trackLoaded = true;
             this._raceStarted = true;
         }
