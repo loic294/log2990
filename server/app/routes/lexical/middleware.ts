@@ -33,9 +33,9 @@ export const wordDefinition: (req: Request, res: Response, next: NextFunction) =
 
     try {
         const result: string = await lexicalService.wordDefinition(level, word);
-        if (result === "No definitions") {
-            throw new Error("No definitions found");
-        }
+        // if (result === "No definitions") {
+        //     throw new Error("No definitions found");
+        // }
         res.json({ lexicalResult: result });
     } catch (err) {
         res.status(ERR_500).send(err.message);

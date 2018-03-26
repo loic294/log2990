@@ -3,6 +3,10 @@
 import { Cell } from "../../../../common/grid/case";
 import Word, { Orientation } from "../../../../common/lexical/word";
 // import Constraint from "./constraint";
+import axios from "axios";
+import {
+    checkIntersection
+  } from "line-intersect";
 
 export enum Difficulty {
     easy = 0,
@@ -10,8 +14,13 @@ export enum Difficulty {
     hard = 2
 }
 
-class Constraint extends Word {
-    public constraints: Array<Object>;
+interface SubConstraint {
+    wordIndex: number;
+    point: Array<number>;
+}
+
+export class Constraint extends Word {
+    public constraints: Array<SubConstraint>;
     public size: number;
 
     constructor(
@@ -38,16 +47,15 @@ class Constraint extends Word {
 }
 export default class GridGeneration {
     private _grid: Array<Array<Cell>>;
-    // private _constraintsArray: Array<Constraint>;
     private _wordStack: Array<Word>;
     private _DEFAULT_SIZE: number = 10;
     private _gridSize: number = this._DEFAULT_SIZE;
-    // private RANDOM_GENERATION: number = 0.7;
     private blackCellCount: number = 0;
     private maxBlackCells: number = 0.2;
 
+    private intersections: Array<Array<number>> = [];
+
     public constructor() {
-        // this._constraintsArray = [];
         this._wordStack = [];
     }
 
@@ -96,28 +104,121 @@ export default class GridGeneration {
         console.log(this.printGrid());
     }
 
-    public findIntersection(word1: Constraint, word2: Constraint): Array<number> {
-        for (let i: number = 0; i < word1.length; i++) {
-            if (i === word2.position[word1.orientation]) {
-                return [i, word2.position[word1.orientation]];
+    public createWordSearchCondition(grid: Array<Array<Cell>>, word: Constraint): string {
+
+        const index: number = word.orientation === Orientation.horizontal ? 1 : 0;
+        const cosntraints: Array<SubConstraint> = word.constraints.sort((a: SubConstraint, b: SubConstraint) => {
+            if (a.point[index] > b.point[index]) {
+                return 1;
             }
+            if (a.point[index] > b.point[index]) {
+                return 1;
+            }
+
+            return 0;
+        });
+
+
+        let count: number = 0;
+        let query: string = "";
+
+        for (let i: number = 0; i < word.length; i++) {
+            const subConstraint: SubConstraint = cosntraints.find((constraint: SubConstraint) => constraint.point[index] === i);
+            // console.log('SUBCONSTRAINT', subConstraint)
+
+            count += 1;
+
+            if (subConstraint !== undefined) {
+                const cellChar: string = grid[subConstraint.point[1]][subConstraint.point[0]].char;
+                if (cellChar !== "◽") {
+                    query += count > 1 ? `${count}${cellChar}` : `${cellChar}`;
+                    count = 0;
+                }
+            }
+
+
+            if (i === word.length - 1) {
+                query += `${count}`;
+            }
+
         }
 
-        return [];
+        return query;
     }
 
-    public intersects(word1: Constraint, word2: Constraint): boolean {
-        if (word1.orientation === word2.orientation) {
+    public addWordToGrid(grid: Array<Array<Cell>>, word: Constraint): Array<Array<Cell>> {
+
+        let count: number = 0, row: number = word.position[0], col: number = word.position[1];
+
+        do {
+            console.log(this.printGridWithWord(grid));
+            console.log(row, col, word.orientation);
+            grid[row][col].char = word.name[count];
+            word.orientation === Orientation.horizontal ? col += 1 : row += 1;
+            count += 1;
+        } while (count < word.length);
+
+        console.log('ADDED', word.name);
+        console.log(this.printGridWithWord(grid));
+
+        return grid;
+    }
+
+    public async recursion(words: Array<Constraint>, wordIndex: number, cycle: number, grid: Array<Array<Cell>>): Promise<boolean> {
+
+        console.log('CYCLE', cycle, wordIndex, grid[0][0].char);
+        const word: Constraint = words[wordIndex];
+
+        if (cycle > 20 || !word) {
             return false;
         }
 
-        // console.log("INSTERSECT 1", word1.position, word2.position, word1.length, word2.length)
-        // console.log(word1.position[0] <= word2.position[0] && word1.position[0] + word1.length >= word2.position[0]);
-        // console.log(word2.position[1] <= word1.position[1] && word2.position[1] + word2.length >= word1.position[1]);
-        // console.log("================");
+        const query: string = this.createWordSearchCondition(grid, word);
 
-        return word1.position[0] <= word2.position[0] && word1.position[0] + word1.length >= word2.position[0]
-            && word2.position[1] <= word1.position[1] && word2.position[1] + word2.length >= word1.position[1];
+        const url: string = `http://localhost:3000/lexical/wordAndDefinition/${query}/common/easy`;
+        const { data: { lexicalResult } }: { data: { lexicalResult: Array<string>} } = await axios.get(url);
+
+        word.name = lexicalResult[0];
+        word.desc = lexicalResult[1];
+
+        grid = this.addWordToGrid(grid, word);
+
+        const gridFreeze: Array<Array<Cell>> = [...grid];
+
+        cycle += 1;
+        wordIndex += 1;
+        if (this.recursion(words, wordIndex, cycle, gridFreeze)) {
+            return false;
+        }
+
+        return false;
+
+    }
+
+    public startRecursion(words: Array<Constraint>): void {
+        this.recursion(words, 0, 0, this._grid).then(() => {
+            console.log('Recursion completed');
+        })
+        .catch((err) => console.error(err));
+    }
+
+    public intersects(word1: Constraint, word2: Constraint): Array<number> {
+        if (word1.orientation === word2.orientation) {
+            return [];
+        }
+
+        const { point, type }: { point: { x: number, y: number }, type: string } = checkIntersection(
+            word1.position[1],
+            word1.position[0],
+            word1.orientation === Orientation.horizontal ? word1.position[1] + word1.length : word1.position[1],
+            word1.orientation === Orientation.vertical ? word1.position[0] + word1.length : word1.position[0],
+            word2.position[1],
+            word2.position[0],
+            word2.orientation === Orientation.horizontal ? word2.position[1] + word2.length : word2.position[1],
+            word2.orientation === Orientation.vertical ? word2.position[0] + word2.length : word2.position[0],
+        );
+
+        return type === "intersecting" ? [point.y, point.x] : []
     }
 
     public createConstraints(words: Array<Constraint>): void {
@@ -125,13 +226,30 @@ export default class GridGeneration {
 
         for (let first: number = 0; first < WORDS_COUNT; first++) {
             for (let second: number = first; second < WORDS_COUNT; second++) {
-                if (this.intersects(words[first], words[second])) {
-                    const intersection: Array<number> = this.findIntersection(words[first], words[second]);
-                    console.log('INTERSECTION', intersection)
-                    // console.log('INTERSECTS', words[first], words[second]);
+                const intersection: Array<number> = this.intersects(words[first], words[second]);
+                if (intersection.length > 0) {
+                    this.intersections.push(intersection);
+
+                    words[first].constraints.push({
+                        wordIndex: second,
+                        point: intersection
+                    });
+
+                    words[second].constraints.push({
+                        wordIndex: first,
+                        point: intersection
+                    });
+
                 }
             }
         }
+
+        console.log('WORDS WITH CONSTRAINTS', words.map(word => ({ position: word.position, size: word.size, orientation: word.orientation, constraints: word.constraints })));
+
+        console.log("WITH INTERSECTIONS");
+        console.log(this.printGrid());
+
+        this.startRecursion(words);
     }
 
     public findAllWordsSpaces(): void {
@@ -143,21 +261,21 @@ export default class GridGeneration {
             .filter((word: Constraint) => {
                 return word.size > 1;
             })
-            .sort(function (a: Constraint, b: Constraint): number {
+            .sort((a: Constraint, b: Constraint): number => {
                 if (a.size < b.size) {
                     return 1;
                 }
 
-                if (b.size > b.size) {
+                if (a.size > b.size) {
                     return -1;
                 }
 
                 return 0;
             });
 
-        console.log("ALL WORDS", allWords.map(
-            (word: Constraint) => ({ position: word.position, size: word.size, orientation: word.orientation }))
-        );
+        // console.log("ALL WORDS", allWords.map(
+        //     (word: Constraint) => ({ position: word.position, size: word.size, orientation: word.orientation }))
+        // );
 
         this.createConstraints(allWords);
     }
@@ -247,11 +365,27 @@ export default class GridGeneration {
         let output: string = "";
         this.traverseGrid((row: number, col: number) => {
             const cell: Cell = this._grid[row][col];
-            output += cell.isBlack() ? " ❌ " : ` ${cell.char} `;
+            const t: boolean = this.intersections.some((int: Array<number>) => cell.x === int[0] && cell.y === int[1])
+            output += cell.isBlack() ? " ❌ " : ` ${t ? "🔵" : cell.char} `;
             if (col === this._grid.length - 1) {
                 output += "\n";
             }
         });
+
+        return output;
+    }
+
+    public printGridWithWord(grid: Array<Array<Cell>>): String {
+        let output: string = "";
+        for (let row: number = 0; row < this.grid[0].length; row++) {
+            for (let col: number = 0; col < this.grid[0].length; col++) {
+                const cell: Cell = this.grid[row][col];
+                output += cell.isBlack() ? " ❌ " : ` ${cell.char} `;
+                if (col === this.grid.length - 1) {
+                    output += "\n";
+                }
+            }
+        }
 
         return output;
     }

@@ -33,6 +33,7 @@
     "express": "4.15.4",
     "express-session": "^1.15.6",
     "inversify": "^4.3.0",
+    "line-intersect": "^2.1.1",
     "mongoose": "^5.0.10",
     "morgan": "^1.7.0",
     "nodemon": "^1.11.0",
