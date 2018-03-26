@@ -8,31 +8,6 @@ export class Wheel {
     private _radius: number;
     private _frictionCoefficient: number;
 
-    public get angularVelocity(): number {
-        return this._angularVelocity;
-    }
-
-    public set angularVelocity(value: number) {
-        this._angularVelocity = value;
-    }
-
-    public get inertia(): number {
-        // tslint:disable-next-line:no-magic-numbers
-        return this._mass * this._radius * this._radius / 2;
-    }
-
-    public get radius(): number {
-        return this._radius;
-    }
-
-    public get frictionCoefficient(): number {
-        return this._frictionCoefficient;
-    }
-
-    public get mass(): number {
-        return this._mass;
-    }
-
     public constructor(
         mass: number = DEFAULT_WHEEL_MASS,
         radius: number = DEFAULT_WHEEL_RADIUS,
@@ -56,6 +31,31 @@ export class Wheel {
         this._radius = radius;
         this._frictionCoefficient = frictionCoefficient;
         this._angularVelocity = 0;
+    }
+
+    public get angularVelocity(): number {
+        return this._angularVelocity;
+    }
+
+    public set angularVelocity(value: number) {
+        this._angularVelocity = value;
+    }
+
+    public get inertia(): number {
+        // tslint:disable-next-line:no-magic-numbers
+        return this._mass * this._radius * this._radius / 2;
+    }
+
+    public get radius(): number {
+        return this._radius;
+    }
+
+    public get frictionCoefficient(): number {
+        return this._frictionCoefficient;
+    }
+
+    public get mass(): number {
+        return this._mass;
     }
 
     public update(speed: number): void {
