@@ -17,7 +17,6 @@ export default class LexicalService {
         WORDNIK_URL = `http://api.wordnik.com:80/v4/word.json/${word}/definitions?limit=200&${KEYS.WORDNIK_KEY}`;
         try {
             const response: AxiosResponse = await axios.get(WORDNIK_URL);
-
             return response.data;
         } catch (err) {
             throw err;
@@ -51,51 +50,44 @@ export default class LexicalService {
 
     private async filterDefinitions(word: string): Promise<Array<string>> {
         const definitions: string [] = [];
-        try {
-            const data: AxiosResponse = await this.baseDefinition(word);
-
-            for (const def in data) {
-                if (!(data[def].text).toLowerCase().includes(word.toLowerCase())) {
-                    definitions.push(data[def].text);
-                }
+        const data: AxiosResponse = await this.baseDefinition(word);
+        for (const def in data) {
+            if (!(data[def].text).toLowerCase().includes(word.toLowerCase())) {
+                definitions.push(data[def].text);
             }
-
-            this.removeExamplesDefinitions(definitions);
-            this.removeDetailsDefinitions(definitions);
-
-        } catch (err) {
-            throw err;
         }
+
+        this.removeExamplesDefinitions(definitions);
+        this.removeDetailsDefinitions(definitions);
 
         return definitions;
     }
 
     public async wordDefinition(level: string, word: string): Promise<string> {
+
         const filteredDefinitions: string[] = await this.filterDefinitions(word);
-        try {
-            if (filteredDefinitions.length === 0) {
-                return "No definitions";
-            }
-            switch (level) {
-                case Level.Easy:
-                    {
-                        return filteredDefinitions[0];
-                    }
-                case Level.Hard:
-                    {
-                        if (filteredDefinitions.length > 1) {
-                            return filteredDefinitions[Math.floor((Math.random() * (filteredDefinitions.length - 1) + 1))];
-                        } else {
-                            return filteredDefinitions[0];
-                        }
-                    }
-                default: {
+
+        if (filteredDefinitions.length === 0) {
+            return "No definitions";
+        }
+        switch (level) {
+            case Level.Easy:
+                {
                     return filteredDefinitions[0];
                 }
+            case Level.Hard:
+                {
+                    if (filteredDefinitions.length > 1) {
+                        return filteredDefinitions[Math.floor((Math.random() * (filteredDefinitions.length - 1) + 1))];
+                    } else {
+                        return filteredDefinitions[0];
+                    }
+                }
+            default: {
+                return filteredDefinitions[0];
             }
-        } catch (err) {
-            throw err;
         }
+
     }
 
     public async wordSearch(researchCriteria: string, common: string): Promise<string> {
@@ -122,10 +114,11 @@ export default class LexicalService {
         const data: string[] = [];
         let word: string;
         let definition: string;
-        do {
+
+        // do {
             word = await this.wordSearch(researchCriteria, common);
             definition = await this.wordDefinition(level, word);
-        } while (definition === "No definitions");
+        // } while (definition === "No definitions");
 
         data[0] = word;
         data[1] = definition;
