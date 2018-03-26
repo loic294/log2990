@@ -3,7 +3,7 @@ import { OrthographicCamera, WebGLRenderer, Scene, Vector3, Color } from "three"
 import { DotCommand } from "../DotCommand";
 import { TrackInformation } from "../trackInformation";
 
-const FAR_CLIPPING_PLANE: number = 10000;
+const FAR_CLIPPING_PLANE: number = 100000;
 const NEAR_CLIPPING_PLANE: number = 1;
 const CAMERA_DISTANCE: number = 50;
 const ASPECT: number = window.innerWidth / window.innerHeight;
@@ -101,9 +101,9 @@ export class TrackCreationComponent implements AfterViewInit {
             }
         }
 
-        this._isSaved = (trackIsValid && this._dotCommand.getTrackIsCompleted());
+        this._isSaved = (trackIsValid && this._dotCommand.getTrackIsCompleted() && this._trackInformation.track.name !== "");
 
-        if (this._isSaved && this._trackInformation.track.name !== "") {
+        if (this._isSaved) {
             this.separateVertice();
             this.sendToDb();
         }
@@ -184,12 +184,16 @@ export class TrackCreationComponent implements AfterViewInit {
         return [canvasWidth, canvasWidth * CANVAS_ASPECT];
     }
 
-    public getScene(): THREE.Scene {
+    public get scene(): THREE.Scene {
         return this._scene;
     }
 
-    public getDotCommand(): DotCommand {
+    public get dotCommand(): DotCommand {
         return this._dotCommand;
+    }
+
+    public get trackInformation(): TrackInformation {
+        return this._trackInformation;
     }
 
     public isSaved(): boolean {

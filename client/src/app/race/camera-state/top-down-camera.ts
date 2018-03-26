@@ -5,7 +5,7 @@ import { Car } from "../car/car";
 const DISTANCE_VARIATION: number = 0.98;
 const MAX_ZOOM_FACTOR: number = 2;
 const MIN_ZOOM_FACTOR: number = 0.5;
-const INITIAL_HEIGHT: number = 25;
+const INITIAL_HEIGHT: number = 50;
 
 export default class TopDownCamera extends AbsCamera {
 

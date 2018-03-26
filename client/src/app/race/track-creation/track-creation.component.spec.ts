@@ -1,5 +1,6 @@
 // tslint:disable:no-magic-numbers no-floating-promises
 // import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+// import { FormsModule } from "@angular/forms";
 // import { TrackCreationComponent } from "./track-creation.component";
 // import { Object3D, Line } from "three";
 
@@ -12,9 +13,12 @@ describe("TrackCreationComponent", () => {
 
     // beforeEach(async(() => {
     //     TestBed.configureTestingModule({
+    //         imports: [FormsModule],
     //         declarations: [TrackCreationComponent]
     //     })
-    //         .compileComponents();
+    //         .compileComponents().catch((error) => {
+    //              throw error;
+    //    });
     // }));
 
     // beforeEach(() => {
@@ -150,5 +154,12 @@ describe("TrackCreationComponent", () => {
 
     //     expect(component.isSaved()).toBe(true);
     // });
+
+    /*it("should give track name 'test1' and description 'desc'", () => {
+        component.trackInformation.track.name = "test1";
+        component.trackInformation.track.description = "desc";
+        expect(component.trackInformation.track.name).toBe("test1");
+        expect(component.trackInformation.track.description).toBe("desc");
+    });*/
 
 });

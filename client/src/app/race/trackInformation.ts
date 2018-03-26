@@ -41,7 +41,7 @@ export class TrackInformation {
     }
 
     public resetTrack(): void {
-        this._currentTrack = {name: "", type: "", description: "", timesPlayed: 0, vertice: new Array()};
+        this._currentTrack = {name: "", type: "", description: "", timesPlayed: 0, vertice: new Array(), completedTimes: new Array()};
     }
 
     public get tracks(): Array<String> {
