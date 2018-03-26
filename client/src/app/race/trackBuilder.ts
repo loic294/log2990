@@ -1,12 +1,13 @@
 import {
     Vector3, MeshBasicMaterial, Mesh, Object3D,
-    Texture, TextureLoader, PlaneGeometry, DoubleSide, CircleGeometry
+    PlaneGeometry, DoubleSide, CircleGeometry
 } from "three";
 import { LineSegment } from "./DotCommand";
 import { PI_OVER_2 } from "../constants";
 
 const WIDTH: number = 10;
 const CIRCLE_SEGMENTS: number = 32;
+const PLANE_COLOR: number = 0x0055FF;
 
 export class TrackBuilder {
     private _scene: THREE.Scene;
@@ -20,8 +21,7 @@ export class TrackBuilder {
         this._vertice = vertice;
         this._edges = edges;
         this._circleGeometry = new CircleGeometry(WIDTH / 2, CIRCLE_SEGMENTS);
-        const texture: Texture = new TextureLoader().load("../../assets/track/track.jpg");
-        this._material = new MeshBasicMaterial({ map: texture, side: DoubleSide });
+        this._material = new MeshBasicMaterial({ color: PLANE_COLOR, side: DoubleSide });
     }
 
     public buildTrack(): void {
