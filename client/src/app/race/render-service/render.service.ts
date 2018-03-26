@@ -1,14 +1,18 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
-import { WebGLRenderer, Scene, AmbientLight,
-MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, BoxGeometry } from "three";
+import {
+    WebGLRenderer, Scene, AmbientLight,
+    MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, BoxGeometry
+} from "three";
 import { Car } from "../car/car";
 import { CameraService } from "../camera-service/camera.service";
+import { AiService } from "../ai-service/ai.service";
 
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 1;
 
 const SIZE_SKYBOX: number = 10000;
+const AMOUNT_OF_NPCS: number = 1;
 
 @Injectable()
 export class RenderService {
@@ -19,9 +23,19 @@ export class RenderService {
     private _scene: THREE.Scene;
     private _stats: Stats;
     private _lastDate: number;
+    private _npcs: Array<Car>;
+    private _aiService: AiService;
+    private _trackLoaded: boolean;
 
     public constructor(private _cameraService: CameraService) {
         this._car = new Car();
+        this._npcs = [];
+        this._trackLoaded = false;
+
+        for (let i: number = 0; i < AMOUNT_OF_NPCS; i++) {
+            this._npcs[i] = new Car();
+        }
+
     }
 
     public async initialize(container: HTMLDivElement): Promise<void> {
@@ -43,6 +57,9 @@ export class RenderService {
     private update(): void {
         const timeSinceLastFrame: number = Date.now() - this._lastDate;
         this._car.update(timeSinceLastFrame);
+        if (this._trackLoaded) {
+            this._aiService.update(timeSinceLastFrame);
+        }
         this._cameraService.followCar();
         this._lastDate = Date.now();
     }
@@ -52,9 +69,13 @@ export class RenderService {
 
         await this._car.init();
         this.scene.add(this._car);
+        for (let i: number = 0; i < AMOUNT_OF_NPCS; i++) {
+            await this._npcs[i].init();
+            this.scene.add(this._npcs[i]);
+        }
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
 
-        this._cameraService.initialize( this._car, this.getAspectRatio());
+        this._cameraService.initialize(this._car, this.getAspectRatio());
         this._cameraService.changeCamera();
     }
 
@@ -99,7 +120,7 @@ export class RenderService {
 
         for (const imageSuffix of imageSuffixes) {
             imageFilePath = `${imageDirectory}${imageName}${imageSuffix}${imageType}`;
-            sidesOfSkybox.push( new MeshBasicMaterial ( {map: new TextureLoader().load( imageFilePath ), side: DoubleSide } ));
+            sidesOfSkybox.push(new MeshBasicMaterial({ map: new TextureLoader().load(imageFilePath), side: DoubleSide }));
         }
 
         const skyboxGeometry: BoxGeometry = new BoxGeometry(SIZE_SKYBOX, SIZE_SKYBOX, SIZE_SKYBOX);
@@ -127,5 +148,17 @@ export class RenderService {
 
     public get cameraService(): CameraService {
         return this._cameraService;
+    }
+
+    public get npcs(): Array<Car> {
+        return this._npcs;
+    }
+
+    public set aiService(aiService: AiService) {
+        this._aiService = aiService;
+    }
+
+    public set trackLoaded(trackLoaded: boolean) {
+        this._trackLoaded = trackLoaded;
     }
 }

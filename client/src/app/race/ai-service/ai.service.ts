@@ -13,27 +13,39 @@ enum Stage {
 export class AiService {
 
     private _pointIndex: number;
+    private _currentCar: Car;
 
-    public constructor(private _track: TrackBuilder, private _car: Car) {
+    public constructor(private _track: TrackBuilder, private _npcs: Array<Car>, private SCALE_FACTOR: number) {
         this._pointIndex = 0;
     }
 
-    public update(): void {
-        this.movement();
-        this.steering();
+    public update(timeSinceLastFrame: number): void {
+        for (const car of this._npcs) {
+            this._currentCar = car;
+            this.movement();
+            this.steering();
+            console.log(this.distanceCarToPoint().length());
+            console.log(this.lengthOfDistancePointToPoint());
+            console.log(this._pointIndex);
+            console.log(this.nextPointIndex());
+            this._currentCar.update(timeSinceLastFrame);
+        }
     }
 
     private movement(): void {
         this.releaseBrake();
         if (this.distanceGreaterThanDistance(Stage.ACCELERATION)) {
             this.pressAccelerator();
+            console.log("ACCELERATING");
         } else if (this.distanceGreaterThanDistance(Stage.RELEASE)) {
             this.releaseAccelerator();
+            console.log("RELEASE");
         } else if (this.distanceGreaterThanDistance(Stage.BRAKING)) {
             this.pressBrake();
+            console.log("BRAKING");
         } else {
             this.switchLines();
-            this.movement();
+            console.log("SWITCHING LINES");
         }
     }
 
@@ -46,29 +58,36 @@ export class AiService {
     }
 
     private distanceCarToPoint(): Vector3 {
-        return (new Vector3().subVectors(this.nextPointPosition(), this._car.meshPosition));
+        return (new Vector3().subVectors(this.nextPointPosition(), this._currentCar.meshPosition)).multiplyScalar(this.SCALE_FACTOR);
     }
 
     private lengthOfDistancePointToPoint(): number {
-        return (new Vector3().subVectors(this.nextPointPosition(), this.currentPointPosition())).length();
+        return (new Vector3().subVectors(this.nextPointPosition(), this.currentPointPosition())).multiplyScalar(this.SCALE_FACTOR).length();
     }
 
     private steering(): void { // Finish This.
-        if (this.isOnLine()) {
-            this.releaseSteering();
+        if (this.isToTheLeftOfLine()) {
+            this.steerRight();
+            console.log("STEERING RIGHT");
         } else if (this.isToTheRightOfLine()) {
             this.steerLeft();
+            console.log("STEERING LEFT");
         } else {
-            this.steerRight();
+            this.releaseSteering();
+            console.log("ON LINE");
         }
     }
-
+/*
     private isOnLine(): boolean {
-        return this.distanceCarToPoint().normalize() === this._car.direction.normalize();
+        return this.distanceCarToPoint().normalize().equals(this._currentCar.direction.normalize());
+    }
+*/
+    private isToTheRightOfLine(): boolean {
+        return this.distanceCarToPoint().normalize().dot(this._currentCar.direction.normalize()) < 0;
     }
 
-    private isToTheRightOfLine(): boolean {
-        return this.distanceCarToPoint().normalize().dot(this._car.direction.normalize()) > 0;
+    private isToTheLeftOfLine(): boolean {
+        return this.distanceCarToPoint().normalize().dot(this._currentCar.direction.normalize()) > 0;
     }
 
     private currentPointPosition(): Vector3 {
@@ -84,30 +103,30 @@ export class AiService {
     }
 
     private releaseAccelerator(): void {
-        this._car.isAcceleratorPressed = false;
+        this._currentCar.isAcceleratorPressed = false;
     }
 
     private pressAccelerator(): void {
-        this._car.isAcceleratorPressed = true;
+        this._currentCar.isAcceleratorPressed = true;
     }
 
     private releaseBrake(): void {
-        this._car.releaseBrakes();
+        this._currentCar.releaseBrakes();
     }
 
     private pressBrake(): void {
-        this._car.brake();
+        this._currentCar.brake();
     }
 
     private releaseSteering(): void {
-        this._car.releaseSteering();
+        this._currentCar.releaseSteering();
     }
 
     private steerLeft(): void {
-        this._car.steerLeft();
+        this._currentCar.steerLeft();
     }
 
     private steerRight(): void {
-        this._car.steerRight();
+        this._currentCar.steerRight();
     }
 }
