@@ -5,11 +5,12 @@ import GridGeneration from "../../services/gridGeneration/gridGeneration";
 export const generate: (req: Request, res: Response, next: NextFunction) => Promise<void> =
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
-    const TEN: number = 10;
+    const GRID_SIZE: number = 6;
 
     const grid: GridGeneration = new GridGeneration();
-    grid.fillGridWithCells(TEN);
+    grid.fillGridWithCells(GRID_SIZE);
     grid.fillGridWithBlackCells();
+    grid.findAllWordsSpaces();
 
     res.json({ success: true });
 
