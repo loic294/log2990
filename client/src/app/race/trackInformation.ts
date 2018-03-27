@@ -52,7 +52,16 @@ export class TrackInformation {
         return this._trackNames;
     }
 
+    public set tracks(tracks: Array<String>) {
+        this._trackNames = tracks;
+    }
+
     public get track(): ITrack {
         return this._currentTrack;
     }
+
+    public set track(track: ITrack) {
+        this._currentTrack = track;
+    }
+
 }

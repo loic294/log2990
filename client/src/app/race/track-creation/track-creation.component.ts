@@ -60,7 +60,7 @@ export class TrackCreationComponent implements AfterViewInit {
         this._trackInformation.track.vertice = trackVertices;
     }
 
-    private loadTrack(): void {
+    public loadTrack(): void {
         for (const vertex of this._trackInformation.track.vertice) {
                 this._dotCommand.addObjects(new Vector3(vertex[0], vertex[1], vertex[2]));
             }

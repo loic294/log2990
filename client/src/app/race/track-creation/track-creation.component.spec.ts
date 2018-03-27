@@ -152,7 +152,8 @@ describe("TrackCreationComponent", () => {
     });
 
     it("should load track name 'test' and change number of objects in track after removing connecting edge.", () => {
-        component.getTrackInfo("test");
+        component.trackInformation.track = {name: "test", vertice: [[1, 0, 1], [-1, 0, 1], [1, 0, -1], [-1, 0, -1]]};
+        component.loadTrack();
         const nbSceneChildren: number = component.scene.children.length;
         component.dotCommand.remove();
         const eventDown1: MouseEvent = new MouseEvent("mousedown", { clientX: 100, clientY: 50 });
@@ -164,45 +165,13 @@ describe("TrackCreationComponent", () => {
         expect(component.scene.children.length).toBeGreaterThan(nbSceneChildren);
     });
 
-    /*it("should load track name 'test' and unsuccessfuly add new object", () => {
-        component.getTrackInfo("test");
+    it("should load track name 'test' and unsuccessfuly add new object", () => {
+        component.trackInformation.track = {name: "test", vertice: [[1, 0, 1], [-1, 0, 1], [1, 0, -1], [-1, 0, -1]]};
+        component.loadTrack();
         const nbSceneChildren: number = component.scene.children.length;
         const eventDown: MouseEvent = new MouseEvent("mousedown", { clientX: 200, clientY: 100 });
         component.onKeyDown(eventDown);
         expect(component.scene.children.length).toBe(nbSceneChildren);
     });
-
-    it("should load track name 'test' and save new track by changing name", () => {
-        component.trackInformation.getTracksList();
-        const numberOfTracks: number = component.trackInformation.tracks.length;
-        component.getTrackInfo("test");
-        component.trackInformation.track.name = "test2";
-        component.save();
-        expect(component.trackInformation.tracks.length).toBe(numberOfTracks + 1);
-    });
-
-    it("should load track name 'test2' and overwrite track 'test2'", () => {
-        component.trackInformation.getTracksList();
-        const numberOfTracks: number = component.trackInformation.tracks.length;
-        component.getTrackInfo("test2");
-        component.trackInformation.track.description = "new description";
-        component.save();
-        expect(component.trackInformation.tracks.length).toBe(numberOfTracks);
-        component.getTrackInfo("test2");
-        expect(component.trackInformation.track.description).toBe("new description");
-    });*/
-
-    /*it("should delete track name 'test2'", () => {
-        component.trackInformation.getTracksList();
-        const numberOfTracks: number = component.trackInformation.tracks.length;
-        component.getTrackInfo("test2");
-        component.deleteTrack();
-        expect(component.trackInformation.tracks.length).toBe(numberOfTracks - 1);
-    });
-
-    it("should delete track name 'test2'", async () => {
-        await trackInfo.getTracksList();
-        expect(trackInfo.tracks.length).toBe(12414);
-    });*/
 
 });
