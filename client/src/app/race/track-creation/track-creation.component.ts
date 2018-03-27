@@ -184,7 +184,7 @@ export class TrackCreationComponent implements AfterViewInit {
         return [canvasWidth, canvasWidth * CANVAS_ASPECT];
     }
 
-    public get scene(): THREE.Scene {
+    public get scene(): Scene {
         return this._scene;
     }
 
