@@ -103,13 +103,10 @@ export class SocketService {
             this._highlightCell.next(data);
         });
         this._socket.on("push_validation", (data: string): void => {
-           this.pushValidation(data);
+            this.pushValidation(data);
         });
         this._socket.on("second_player_joined", (data: IGameModel) => {
-            console.log('SET GRID SYNC')
-            const content: string = JSON.stringify({ grid: this._grid, clues: this._clues });
-            this.socket.emit("sync_grid", content);
-           this.secondPlayerJoined(data);
+            this.secondPlayerJoined(data);
         });
         this._socket.on("opponent_disconnected", (data: boolean) => {
             this._opponentDisconnected.next(true);
@@ -123,8 +120,13 @@ export class SocketService {
     }
 
     public initializeGridSocket(): void {
-        this._socket.on("sync_grid", (data: string) => {
-            console.log('RECEIVED SYNC GRID')
+        this._socket.on("sync_grid_send", (data: string) => {
+            const { grid, clues } = JSON.parse(data);
+            this.gridLoadingService.setNewGrid(grid, clues);
+        });
+        this._socket.on("ready_to_sync", (data: IGameModel) => {
+            const content: string = JSON.stringify({ grid: this._grid, clues: this._clues });
+            this.socket.emit("sync_grid", content);
         });
     }
 
@@ -135,7 +137,7 @@ export class SocketService {
 
     private secondPlayerJoined(data: IGameModel): void {
         this._userConnected.next(true);
-        if ( this.player === data.players[0]) {
+        if (this.player === data.players[0]) {
             this._opponentName.next(data.players[1].toString());
         } else {
             this._opponentName.next(data.players[0].toString());
@@ -232,7 +234,7 @@ export class SocketService {
         if (mode === "Two Players") {
             const gameId: string = this.player;
             const difficulty: String = this.difficulty;
-            this._socket.emit("create_game", JSON.stringify({ gameId, difficulty}));
+            this._socket.emit("create_game", JSON.stringify({ gameId, difficulty }));
             this.joinGame(gameId);
         }
     }
@@ -249,11 +251,11 @@ export class SocketService {
     }
 
     public syncWord(word: Word): void {
-        this._socket.emit("sync_word", JSON.stringify({word}));
+        this._socket.emit("sync_word", JSON.stringify({ word }));
     }
 
     public sendValidation(word: Word): void {
-        this._socket.emit("send_validation", JSON.stringify({word}));
+        this._socket.emit("send_validation", JSON.stringify({ word }));
         this._userScore.next(this._userScoreCount++);
     }
 
