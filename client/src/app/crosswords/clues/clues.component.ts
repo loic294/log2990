@@ -22,8 +22,6 @@ export class CluesComponent implements OnInit {
         private gridLoadingService: GridLoadingService
     ) {
         this.clues = [];
-        this._wordCount = this._clues.length;
-        this.socketService.setWordCount(this._wordCount);
         this._selectedClue = null;
 
         this.gridLoadingService.newClues.subscribe(

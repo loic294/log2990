@@ -25,6 +25,7 @@
     "@angular/router": "^5.2.3",
     "@types/mongoose": "^5.0.2",
     "animations": "0.0.0",
+    "axios": "^0.18.0",
     "core-js": "^2.4.1",
     "glob": "^7.1.2",
     "karma-phantomjs-launcher": "^1.0.4",
