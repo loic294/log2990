@@ -99,7 +99,7 @@ export class GameComponent implements AfterViewInit {
         }
     }
 
-    private loadTrack(): void {
+    public loadTrack(): void {
         this.clearScene();
 
         this.shiftTrack();
@@ -107,7 +107,7 @@ export class GameComponent implements AfterViewInit {
         this._dotCommand.complete();
     }
 
-    private showTrack(): void {
+    public showTrack(): void {
         this.clearScene();
 
         this._dotCommand = new DotCommand(this.renderService.scene,
@@ -125,6 +125,22 @@ export class GameComponent implements AfterViewInit {
     public async getTrackInfo(trackName: String): Promise<void> {
         await this._trackInformation.getTrackInfo(trackName);
         this.showTrack();
+    }
+
+    public get trackInformation(): TrackInformation {
+        return this._trackInformation;
+    }
+
+    public get service(): RenderService {
+        return this.renderService;
+    }
+
+    public get trackLoaded(): boolean {
+        return this._trackLoaded;
+    }
+
+    public get raceStarted(): boolean {
+        return this._raceStarted;
     }
 
 }

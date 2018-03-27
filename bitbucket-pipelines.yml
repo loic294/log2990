@@ -8,6 +8,15 @@ image: node:8.9.4
 pipelines:
   default:
     - step:
+        name: Server start
+        caches:
+          - node
+        script:
+          - cd server
+          - npm --version
+          - npm install
+          - npm start
+    - step:
         name: Server test
         caches:
           - node

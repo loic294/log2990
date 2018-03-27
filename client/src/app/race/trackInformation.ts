@@ -10,7 +10,11 @@ export class TrackInformation {
 
     public getTracksList(): void {
         this._trackService.getTracks("all").then((data) => {
-            this._trackNames = JSON.parse(data.toString());
+            const tempArray: Array<ITrack> = JSON.parse(data.toString());
+            this._trackNames = new Array();
+            for (const track of tempArray) {
+                this._trackNames.push(track.name);
+            }
         }).catch((error) => {
             throw error;
         });
@@ -48,7 +52,16 @@ export class TrackInformation {
         return this._trackNames;
     }
 
+    public set tracks(tracks: Array<String>) {
+        this._trackNames = tracks;
+    }
+
     public get track(): ITrack {
         return this._currentTrack;
     }
+
+    public set track(track: ITrack) {
+        this._currentTrack = track;
+    }
+
 }
