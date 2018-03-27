@@ -129,8 +129,13 @@ export class SocketService {
     }
 
     public initializeGridSocket(): void {
-        this._socket.on("sync_grid", (data: string) => {
-            console.log('RECEIVED SYNC GRID')
+        this._socket.on("sync_grid_send", (data: string) => {
+            const { grid, clues } = JSON.parse(data);
+            this.gridLoadingService.setNewGrid(grid, clues);
+        });
+        this._socket.on("ready_to_sync", (data: IGameModel) => {
+            const content: string = JSON.stringify({ grid: this._grid, clues: this._clues });
+            this.socket.emit("sync_grid", content);
         });
     }
 
@@ -141,7 +146,7 @@ export class SocketService {
 
     private secondPlayerJoined(data: IGameModel): void {
         this._userConnected.next(true);
-        if ( this.player === data.players[0]) {
+        if (this.player === data.players[0]) {
             this._opponentName.next(data.players[1].toString());
         } else {
             this._opponentName.next(data.players[0].toString());

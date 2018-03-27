@@ -22,11 +22,21 @@ const joinSecondPlayer: Function = async (socket: Socket, game: IGameModel, room
 
     game = await Game.findOneAndUpdate({ name: game.name}, { players: [game.players[0], value] }, {new: true});
 
-    socket.server.in(room).emit(SocketMessage.secondPlayerJoined, game);
+    socket.server.in(room).emit("second_player_joined", game);
+    socket.broadcast.server.to(room).emit("ready_to_sync", game);
 
     socket.emit(SocketMessage.connectedToGame, JSON.stringify({
         game
     }));
+};
+
+const syncGrid: Function = async (socket: Socket, room: string): Promise<void> => {
+    socket.join(room);
+
+    socket.on("sync_grid", async (content: string) => {
+        socket.broadcast.server.to(room).emit("sync_grid_send", content);
+    });
+
 };
 
 const rematch: Function = async (socket: Socket, data: string, game: IGameModel): Promise<void> => {
@@ -75,6 +85,8 @@ export default (socket: Socket) => {
         rematch(socket, data);
 
         validation(socket, data);
+
+        syncGrid(socket, room);
 
     });
 };

@@ -38,6 +38,14 @@ export class GridLoadingService {
         this._cluesLoad.next(augmentedWords);
     }
 
+    public setNewGrid(grid: Array<String>, clues: Array<Word>): void {
+        const augmentedWords: Array<Word> = clues.map((clue) =>
+            new Word(clue.name, clue.desc, clue.position, clue.orientation, clue.index, clue.isValidated));
+
+        this._gridLoad.next(grid);
+        this._cluesLoad.next(augmentedWords);
+    }
+
     public get newGrid(): Observable<Array<String>> {
         return this._loadNewGrid;
     }
