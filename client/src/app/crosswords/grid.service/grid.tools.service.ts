@@ -29,7 +29,6 @@ export class GridToolsService {
     }
 
     public wordsStartAtPosition(row: number, col: number, clues: Array<Word>): Array<number> {
-        console.log('CLUES', clues)
         return clues.filter((word: Word): boolean => word.position[0] === row && word.position[1] === col)
             .map((word: Word): number => word.index + 1);
     }
