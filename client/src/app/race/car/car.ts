@@ -30,40 +30,6 @@ export class Car extends Object3D {
     private weightRear: number;
     private _boundingBox: Box3;
 
-    public get speed(): Vector3 {
-        return this._speed.clone();
-    }
-
-    public get currentGear(): number {
-        return this.engine.currentGear;
-    }
-
-    public get rpm(): number {
-        return this.engine.rpm;
-    }
-
-    public get angle(): number {
-        return this.mesh.rotation.y * RAD_TO_DEG;
-    }
-
-    public get direction(): Vector3 {
-        const rotationMatrix: Matrix4 = new Matrix4();
-        const carDirection: Vector3 = new Vector3(0, 0, -1);
-
-        rotationMatrix.extractRotation(this.mesh.matrix);
-        carDirection.applyMatrix4(rotationMatrix);
-
-        return carDirection;
-    }
-
-    public get meshPosition(): Vector3 {
-        return this.mesh.position;
-    }
-
-    public get boundingBox(): Box3 {
-        return this._boundingBox;
-    }
-
     public constructor(
         engine: Engine = new Engine(),
         rearWheel: Wheel = new Wheel(),
@@ -99,6 +65,40 @@ export class Car extends Object3D {
         this._speed = new Vector3(0, 0, 0);
 
         this._boundingBox = new Box3().setFromObject(this);
+    }
+
+    public get speed(): Vector3 {
+        return this._speed.clone();
+    }
+
+    public get currentGear(): number {
+        return this.engine.currentGear;
+    }
+
+    public get rpm(): number {
+        return this.engine.rpm;
+    }
+
+    public get angle(): number {
+        return this.mesh.rotation.y * RAD_TO_DEG;
+    }
+
+    public get direction(): Vector3 {
+        const rotationMatrix: Matrix4 = new Matrix4();
+        const carDirection: Vector3 = new Vector3(0, 0, -1);
+
+        rotationMatrix.extractRotation(this.mesh.matrix);
+        carDirection.applyMatrix4(rotationMatrix);
+
+        return carDirection;
+    }
+
+    public get meshPosition(): Vector3 {
+        return this.mesh.position;
+    }
+
+    public get boundingBox(): Box3 {
+        return this._boundingBox;
     }
 
     private async load(): Promise<Object3D> {
