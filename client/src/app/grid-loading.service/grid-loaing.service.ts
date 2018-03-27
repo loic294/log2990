@@ -28,7 +28,7 @@ export class GridLoadingService {
 
     public async loadNewGrid(): Promise<void> {
 
-        const url: string = "http://localhost:3000/grid/mock/0";
+        const url: string = "http://localhost:3000/grid/mock";
         const { data: { grid, clues } }: { data: { grid: Array<String>, clues: Array<Word> }} = await axios.get(url);
 
         const augmentedWords: Array<Word> = clues.map((clue) =>

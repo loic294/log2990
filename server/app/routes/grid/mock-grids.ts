@@ -111,12 +111,12 @@ export const clues4: Array<Word> = [
 const grids: Array<Array<String>> = [grid1, grid2, grid3, grid4];
 const clues: Array<Array<Word>> = [clues1, clues2, clues3, clues4];
 
-export const selectGrid: (defaultID: number) => GridMessage = (defaultID: number) => {
+export const selectGrid: () => GridMessage = () => {
     const FACTOR: number = 100;
     const gridID: number = Math.round((Math.random() * FACTOR) % 4);
 
     return {
-        grid: grids[defaultID || gridID],
-        clues: clues[defaultID || gridID]
+        grid: grids[gridID],
+        clues: clues[gridID]
     };
 };

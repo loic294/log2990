@@ -6,6 +6,7 @@ import { IGameModel } from "./../../../../server/app/models/game";
 import { difficultyName } from "../../../../common/grid/difficulties";
 import Word from "../../../../common/lexical/word";
 import { DifficultyService } from "./../difficulty.service/difficulty.service";
+import { GridLoadingService } from "../grid-loading.service/grid-loaing.service";
 
 @Injectable()
 export class SocketService {
@@ -17,48 +18,40 @@ export class SocketService {
     private _games: IGameModel[];
     private _showGames: boolean;
     private _wordCount: number;
+    private _grid: Array<String>;
+    private _clues: Array<Word>;
 
     private _updateUserConnected: Observable<boolean>;
     private _userConnected: Subject<boolean> = new Subject<boolean>();
-
     private _updateHighligthCell: Observable<string>;
     private _highlightCell: Subject<string> = new Subject<string>();
-
     private _updateWordValidated: Observable<string>;
     private _wordToValidate: Subject<string> = new Subject<string>();
-
     private _updateOpponentDisconnected: Observable<boolean>;
     private _opponentDisconnected: Subject<boolean> = new Subject<boolean>();
-
     private _updateOpponentName: Observable<string>;
     private _opponentName: Subject<string> = new Subject<string>();
-
     private _updateUserScore: Observable<number>;
     private _userScore: Subject<number> = new Subject<number>();
     private _userScoreCount: number;
-
     private _updateOpponentScore: Observable<number>;
     private _opponentScore: Subject<number> = new Subject<number>();
     private _opponentScoreCount: number;
-
     private _updateGridValidated: Observable<boolean>;
     private _gridValidated: Subject<boolean> = new Subject<boolean>();
-
     private _updateRequestRematch: Observable<string>;
     private _requestRematch: Subject<string> = new Subject<string>();
-
     private _updateRequestModeMenu: Observable<boolean>;
     private _requestModeMenu: Subject<boolean> = new Subject<boolean>();
-
     private _updateAcceptRematch: Observable<boolean>;
     private _acceptRematch: Subject<boolean> = new Subject<boolean>();
-
     private _updateGridValidation: Observable<number>;
     private _gridValidation: Subject<number> = new Subject<number>();
 
     public constructor(
         private _socket: Socket,
-        private difficultyService: DifficultyService
+        private difficultyService: DifficultyService,
+        private gridLoadingService: GridLoadingService
     ) {
         this.difficultyService.difficulty.subscribe((diff) => {
             this._difficulty = difficultyName(diff);
@@ -82,41 +75,56 @@ export class SocketService {
         this._updateAcceptRematch = this._acceptRematch.asObservable();
         this._updateGridValidation = this._gridValidation.asObservable();
         this.initializeSocket();
+        this.initializeGridSocket();
+        this.initializeObservables();
 
     }
+
     public get socket(): Socket {
         return this._socket;
     }
 
+    public initializeObservables(): void {
+        this.gridLoadingService.newGrid.subscribe((grid: Array<String>) => {
+            this._grid = grid;
+        });
+
+        this.gridLoadingService.newClues.subscribe((clues: Array<Word>) => {
+            this._clues = clues;
+        });
+    }
+
     public initializeSocket(): void {
         this._socket.connect();
-
         this._socket.on("add_games", (games: IGameModel[]) => {
             this._games = games;
         });
-
         this._socket.on("receive_word", (data: string): void => {
             this._highlightCell.next(data);
         });
-
         this._socket.on("push_validation", (data: string): void => {
            this.pushValidation(data);
         });
-
         this._socket.on("second_player_joined", (data: IGameModel) => {
+            console.log('SET GRID SYNC')
+            const content: string = JSON.stringify({ grid: this._grid, clues: this._clues });
+            this.socket.emit("sync_grid", content);
            this.secondPlayerJoined(data);
         });
-
         this._socket.on("opponent_disconnected", (data: boolean) => {
             this._opponentDisconnected.next(true);
         });
-
         this._socket.on("rematch_invitation", (data: string) => {
             this._requestRematch.next(data);
         });
-
         this._socket.on("rematch_accepted", (data: boolean) => {
             this._acceptRematch.next(true);
+        });
+    }
+
+    public initializeGridSocket(): void {
+        this._socket.on("sync_grid", (data: string) => {
+            console.log('RECEIVED SYNC GRID')
         });
     }
 
@@ -274,5 +282,4 @@ export class SocketService {
     public sendRequestModeMenu(): void {
         this._requestModeMenu.next(true);
     }
-
 }

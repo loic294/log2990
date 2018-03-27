@@ -2,6 +2,7 @@ import { Component, Inject } from "@angular/core";
 import { SocketService } from "../../socket.service/socket.service";
 import { IGameModel } from "./../../../../../server/app/models/game";
 import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
+import { GridLoadingService } from "../../grid-loading.service/grid-loaing.service";
 
 @Component({
     selector: "app-mode-component-mode",
@@ -20,11 +21,17 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
         private socketService: SocketService,
         public dialogRef: MatDialogRef<ModeComponent>,
         public dialog: MatDialog,
+        private gridLoadingService: GridLoadingService,
         @Inject(MAT_DIALOG_DATA) public data: {}) {
             this.waitingConnection();
             dialogRef.disableClose = true;
 
         }
+
+    public newGame(): void {
+        this.gridLoadingService.loadNewGrid();
+        this.closeDialog();
+    }
 
     public closeDialog(): void {
         this.dialogRef.close();
@@ -44,7 +51,6 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
 
     public startSoloGame(): boolean {
         return this.selectedMode === "Single Player" && this.showNameInput;
-
     }
 
     public isDifficultySelected(): boolean {

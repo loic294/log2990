@@ -29,6 +29,9 @@ export class CluesComponent implements OnInit {
         this.gridLoadingService.newClues.subscribe(
             (clues: Array<Word>) => {
                 this.clues = clues;
+                this._wordCount = 1;
+                // this._wordCount = clues.length;
+                this.socketService.setWordCount(this._wordCount);
             });
     }
 
