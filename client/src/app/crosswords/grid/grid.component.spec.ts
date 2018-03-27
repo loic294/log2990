@@ -10,6 +10,7 @@ import { SocketService } from "../socket.service/socket.service";
 import { GridService } from "../grid.service/grid.service";
 import { DifficultyService } from "../difficulty.service/difficulty.service";
 import Word, { Orientation } from "../../../../../common/lexical/word";
+import { GridLoadingService } from "../../grid-loading.service/grid-loaing.service";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
@@ -22,13 +23,17 @@ describe("GridComponent", () => {
     TestBed.configureTestingModule({
       imports: [ FormsModule, SocketIoModule.forRoot(config) ],
       declarations: [ GridComponent ],
-      providers: [ WordService, SocketService, GridService, DifficultyService ]
+      providers: [ WordService, SocketService, GridService, DifficultyService, GridLoadingService ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    gridService = new GridService(new WordService(), new SocketService(new Socket(config), new DifficultyService()));
+    gridService = new GridService(
+        new WordService(),
+        new SocketService(new Socket(config), new DifficultyService(), new GridLoadingService()),
+        new GridLoadingService()
+    );
     fixture = TestBed.createComponent(GridComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

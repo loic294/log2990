@@ -4,13 +4,27 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { SocketIoConfig, SocketIoModule } from "ng-socket-io";
 import { CluesComponent } from "./clues.component";
-import { WordService } from "../word.service/word.service";
-import { SocketService } from "../socket.service/socket.service";
-import { DifficultyService } from "../difficulty.service/difficulty.service";
+import { WordService } from "../../word.service/word.service";
+import { SocketService } from "../../socket.service/socket.service";
+import { DifficultyService } from "../../difficulty.service/difficulty.service";
+import Word, { Orientation } from "../../../../../common/lexical/word";
+import { GridLoadingService } from "../../grid-loading.service/grid-loaing.service";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
-import CLUES from "../mock-words";
+const CLUES: Array<Word> = [
+    new Word("Clue", "Definition of word clue", [1, 6], Orientation.horizontal, 0),
+    new Word("Wound", "Definition of word wound", [2, 0], Orientation.horizontal, 1),
+    new Word("Finish", "Definition of word finish", [5, 2], Orientation.horizontal, 2),
+    new Word("Menu", "Definition of word menu", [7, 1], Orientation.horizontal, 3),
+    new Word("Grave", "Definition of word grave", [9, 0], Orientation.horizontal, 4),
+    new Word("Dock", "Definition of word dock", [9, 6], Orientation.horizontal, 5),
+    new Word("Worry", "Definition of word worry", [2, 0], Orientation.vertical, 6),
+    new Word("Adventure", "Definition of word adventure", [1, 4], Orientation.vertical, 7),
+    new Word("Crossword", "Definition of word crossword", [1, 6], Orientation.vertical, 8),
+    new Word("Push", "Definition of word push", [0, 8], Orientation.vertical, 9),
+    new Word("Crack", "Definition of word crack", [5, 9], Orientation.vertical, 10),
+];
 
 describe("CluesComponent", () => {
   let component: CluesComponent;
@@ -20,7 +34,7 @@ describe("CluesComponent", () => {
     TestBed.configureTestingModule({
       imports: [ SocketIoModule.forRoot(config) ],
       declarations: [ CluesComponent ],
-      providers: [ WordService, SocketService, DifficultyService ]
+      providers: [ WordService, SocketService, DifficultyService, GridLoadingService ]
     })
     .compileComponents();
   }));

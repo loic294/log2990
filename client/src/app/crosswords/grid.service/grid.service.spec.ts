@@ -6,6 +6,7 @@ import { SocketService } from "../socket.service/socket.service";
 import { GridService } from "./grid.service";
 import Word, { Orientation } from "../../../../../common/lexical/word";
 import { DifficultyService } from "./../difficulty.service/difficulty.service";
+import { GridLoadingService } from "../grid-loading.service/grid-loaing.service";
 
 describe("GridService", () => {
 
@@ -15,14 +16,18 @@ describe("GridService", () => {
 
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        providers: [ SocketService, DifficultyService ]
+        providers: [ SocketService, DifficultyService, GridLoadingService ]
       })
       .compileComponents();
     }));
 
     beforeEach(() => {
-        socketService = new SocketService(new Socket(config), new DifficultyService());
-        gridService = new GridService(new WordService(), new SocketService(new Socket(config), new DifficultyService()));
+        socketService = new SocketService(new Socket(config), new DifficultyService(), new GridLoadingService());
+        gridService = new GridService(
+            new WordService(),
+            new SocketService(new Socket(config), new DifficultyService(), new GridLoadingService()),
+            new GridLoadingService()
+        );
     });
 
     it("'b' should be a letter", () => {
