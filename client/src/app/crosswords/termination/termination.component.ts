@@ -3,6 +3,7 @@ import { SocketService } from "../socket.service/socket.service";
 import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
 import { Type } from "../type";
 import { Mode } from "../../../../../common/grid/player";
+import { GridLoadingService } from "../../grid-loading.service/grid-loaing.service";
 
 @Component({
     selector: "app-termination-component-termination",
@@ -19,6 +20,7 @@ import { Mode } from "../../../../../common/grid/player";
         private socketService: SocketService,
         public dialogRef: MatDialogRef<TerminationComponent>,
         public dialog: MatDialog,
+        private gridLoadingService: GridLoadingService,
         @Inject(MAT_DIALOG_DATA) public data: Type) {
 
             dialogRef.disableClose = true;
@@ -36,14 +38,8 @@ import { Mode } from "../../../../../common/grid/player";
     }
 
     public createSoloGame(): void {
-        // *************************************************************************************************************
-        // tslint:disable-next-line:no-suspicious-comment
-        // TODO @berj @cbm @lobel
-        // Was not implemented because Grid generation is missing.
-        // Implementation will need to be based on a function that
-        // request a new generation
-        // this.socketService.difficulty;
-        // **************************************************************************************************************
+
+        this.gridLoadingService.loadNewGrid();
         this.closeDialog();
 
     }
