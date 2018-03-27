@@ -151,7 +151,7 @@ describe("TrackCreationComponent", () => {
         expect(component.trackInformation.track.description).toBe("desc");
     });
 
-    it("should load track name 'test' and change number of objects in track after removing connecting edge.", () => {
+    it("should load track name 'test', remove last edge and successfully add new dots and edges", () => {
         component.trackInformation.track = {name: "test", vertice: [[1, 0, 1], [-1, 0, 1], [1, 0, -1], [-1, 0, -1]]};
         component.loadTrack();
         const nbSceneChildren: number = component.scene.children.length;
@@ -165,7 +165,7 @@ describe("TrackCreationComponent", () => {
         expect(component.scene.children.length).toBeGreaterThan(nbSceneChildren);
     });
 
-    it("should load track name 'test' and unsuccessfuly add new object", () => {
+    it("should load track name 'test', not remove anything and fail at adding new objects", () => {
         component.trackInformation.track = {name: "test", vertice: [[1, 0, 1], [-1, 0, 1], [1, 0, -1], [-1, 0, -1]]};
         component.loadTrack();
         const nbSceneChildren: number = component.scene.children.length;
