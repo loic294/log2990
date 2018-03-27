@@ -20,15 +20,13 @@ export const grid1: Array<String> = [
 ];
 
 export const clues1: Array<Word> = [
-    new Word("Increase", "Definition of word clue", [1, 2], Orientation.horizontal, 0),
-    new Word("Carry", "Definition of word wound", [3, 5], Orientation.horizontal, 1),
-    new Word("Understand", "Definition of word finish", [5, 2], Orientation.horizontal, 2),
-    new Word("Manager", "Definition of word menu", [7, 1], Orientation.horizontal, 3),
-    new Word("Industry", "Definition of word grave", [9, 1], Orientation.horizontal, 4),
-    new Word("Tissue", "Definition of word worry", [1, 0], Orientation.vertical, 5),
-    new Word("Liar", "Definition of word adventure", [0, 2], Orientation.vertical, 6),
-    new Word("Department", "Definition of word crossword", [0, 6], Orientation.vertical, 7),
-    new Word("Strong", "Definition of word push", [1, 8], Orientation.vertical, 8)
+    new Word("Increase", "Definition of word Increase", [1, 2], Orientation.horizontal, 0),
+    new Word("Carry", "Definition of word Carry", [3, 5], Orientation.horizontal, 1),
+    new Word("Understand", "Definition of word Understand", [5, 0], Orientation.horizontal, 2),
+    new Word("Industry", "Definition of word Industry", [9, 1], Orientation.horizontal, 4),
+    new Word("Tissue", "Definition of word Tissue", [1, 0], Orientation.vertical, 5),
+    new Word("Liar", "Definition of word Liar", [0, 2], Orientation.vertical, 6),
+    new Word("Department", "Definition of word Department", [0, 6], Orientation.vertical, 7)
 ];
 
 export const grid2: Array<String> = [
