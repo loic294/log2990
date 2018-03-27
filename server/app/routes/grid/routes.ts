@@ -14,7 +14,7 @@ export default {
         },
         {
             method: "GET",
-            path: "/mock",
+            path: "/mock/:id",
             middleware: [
                 grid.mock
             ]

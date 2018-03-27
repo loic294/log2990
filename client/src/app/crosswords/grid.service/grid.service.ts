@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
-import { GRID } from "../mock-grid";
-import { Cell } from "../../../../../common/grid/cell";
+import { Cell } from "../../../../common/grid/cell";
 import { Observable } from "rxjs/Observable";
 import { of } from "rxjs/observable/of";
 import Word, { Orientation } from "../../../../../common/lexical/word";
@@ -8,8 +7,8 @@ import { GridToolsService} from "./grid.tools.service";
 
 import { WordService } from "../word.service/word.service";
 import { SocketService } from "../socket.service/socket.service";
-import CLUES from "../mock-words";
-import { BACK_SPACE_KEY_CODE } from "../../constants";
+import { GridLoadingService } from "../grid-loading.service/grid-loaing.service";
+import { BACK_SPACE_KEY_CODE } from "../constants";
 
 @Injectable()
 export class GridService {
@@ -18,16 +17,31 @@ export class GridService {
     private _selectedWord: Cell;
     private _word: Word;
     private _otherWord: Word;
-    private _gridTools: GridToolsService;
+    private _gridTools: GridTools;
+    private _clues: Array<Word>;
 
     public constructor(
         private _wordService: WordService,
-        private socketService: SocketService
+        private socketService: SocketService,
+        private gridLoadingService: GridLoadingService
     ) {
 
-        this._gridTools = new GridToolsService();
-        this.initGrid();
+        this._clues = [];
+        this._gridTools = new GridTools();
         this.initServicesListeners();
+        this.initLoadingServices();
+    }
+
+    private initLoadingServices(): void {
+        this.gridLoadingService.newGrid.subscribe(
+            (grid: Array<String>) => {
+                this.initGrid(grid);
+            });
+
+        this.gridLoadingService.newClues.subscribe(
+            (clues: Array<Word>) => {
+                this._clues = clues;
+            });
     }
 
     private initServicesListeners(): void {
@@ -42,17 +56,18 @@ export class GridService {
         this.socketService.cellToHighligh.subscribe(
             (data: string) => {
                 const { word }: { word: Word } = JSON.parse(data);
-                const selectedWord: Word = CLUES.find((w: Word) => word !== null && w.index === word.index);
+                const selectedWord: Word = this._clues.find((w: Word) => word !== null && w.index === word.index);
                 this.selectOtherPlayerWord(selectedWord || null);
             });
 
         this.socketService.wordIsValidated.subscribe(
             (data: string) => {
                 const { word }: { word: Word } = JSON.parse(data);
-                const selectedWord: Word = CLUES.find((w: Word) => word !== null && w.index === word.index);
+                const selectedWord: Word = this._clues.find((w: Word) => word !== null && w.index === word.index);
                 selectedWord.isValidated = true;
                 this.applyValidation(selectedWord, true);
             });
+
     }
 
     private selectCellFromService(word: Word): void {
@@ -237,8 +252,8 @@ export class GridService {
         }
     }
 
-    private initGrid(): void {
-        this._grid = GRID.map((row: string) => {
+    private initGrid(grid: Array<String>): void {
+        this._grid = grid.map((row: string) => {
             const strings: Array<string> = row.split(" ");
 
             return strings.map((cell: string) => new Cell(cell));
@@ -251,7 +266,7 @@ export class GridService {
                 this._grid[row][col].char = "";
             }
 
-            this._grid[row][col].wordIndexes = this._gridTools.wordsStartAtPosition(row, col);
+            this._grid[row][col].wordIndexes = this._gridTools.wordsStartAtPosition(row, col, this._clues);
         });
 
     }

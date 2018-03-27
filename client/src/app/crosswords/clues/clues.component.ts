@@ -2,9 +2,8 @@ import { Component, OnInit } from "@angular/core";
 import { SocketService } from "../socket.service/socket.service";
 import Word from "../../../../../common/lexical/word";
 
-import { WordService } from "../word.service/word.service";
-
-import CLUES from "../mock-words";
+import { WordService } from "../../word.service/word.service";
+import { GridLoadingService } from "../../grid-loading.service/grid-loaing.service";
 
 @Component({
     selector: "app-clues",
@@ -19,12 +18,18 @@ export class CluesComponent implements OnInit {
 
     public constructor(
         public _wordService: WordService,
-        private socketService: SocketService
+        private socketService: SocketService,
+        private gridLoadingService: GridLoadingService
     ) {
-        this.clues = CLUES;
+        this.clues = [];
         this._wordCount = this._clues.length;
         this.socketService.setWordCount(this._wordCount);
         this._selectedClue = null;
+
+        this.gridLoadingService.newClues.subscribe(
+            (clues: Array<Word>) => {
+                this.clues = clues;
+            });
     }
 
     public onSelect(clue: Word): void {

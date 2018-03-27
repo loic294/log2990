@@ -24,6 +24,6 @@ export const generate: (req: Request, res: Response, next: NextFunction) => Prom
 export const mock: (req: Request, res: Response, next: NextFunction) => Promise<void> =
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
-    res.json({ grid: selectGrid() });
+    res.json(selectGrid(req.params.id));
 
 };
