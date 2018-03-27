@@ -15,13 +15,15 @@ import { DifficultyService } from "../../difficulty.service/difficulty.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import { Difficulty } from "../../../../../common/grid/difficulties";
 import { Type } from "../type"
+import { GridLoadingService } from "../../grid-loading.service/grid-loaing.service";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
 @NgModule({
     imports: [CommonModule, MatDialogModule, MatProgressSpinnerModule],
     declarations: [TerminationDialogComponent, DifficultyComponent],
-    entryComponents: [TerminationDialogComponent]
+    entryComponents: [TerminationDialogComponent],
+    providers: [GridLoadingService]
   })
   export class FakeTestTerminationModule {}
 
@@ -59,7 +61,7 @@ describe("TerminationComponent", () => {
     component = fixture.componentInstance;
 
     difficulty = fixtureDifficulty.componentInstance;
-    socketService = new SocketService(new Socket(config), new DifficultyService());
+    socketService = new SocketService(new Socket(config), new DifficultyService(), new GridLoadingService());
     fixture.detectChanges();
     dialog = component.dialog.open(TerminationDialogComponent, {
         width: "500px",

@@ -19,13 +19,15 @@ import { GridService } from "../../grid.service/grid.service";
 import { DifficultyService } from "../../difficulty.service/difficulty.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import { TerminationComponent } from "../termination/termination.component";
+import { GridLoadingService } from "../../grid-loading.service/grid-loaing.service";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
 @NgModule({
     imports: [CommonModule, MatDialogModule, MatProgressSpinnerModule],
     declarations: [ModeDialogComponent, DifficultyComponent],
-    entryComponents: [ModeDialogComponent]
+    entryComponents: [ModeDialogComponent],
+    providers: [GridLoadingService]
   })
 export class FakeTestDialogModule {}
 
