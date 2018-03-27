@@ -48,7 +48,6 @@ export class GridService {
         this._wordService.wordFromClue.subscribe(
             (_wordFromClue: Word) => {
                 if (_wordFromClue) {
-                    console.log('WORD FROM CLUE', _wordFromClue)
                     this._word = _wordFromClue;
                     this.selectCellFromService(_wordFromClue);
                 }
