@@ -20,9 +20,10 @@ export class GridLoadingService {
     }
 
     public initGrid(): void {
+        const DELAY: number = 500;
         setTimeout(() => {
             this.loadNewGrid();
-        }, 500);
+        },         DELAY);
     }
 
     public async loadNewGrid(): Promise<void> {
