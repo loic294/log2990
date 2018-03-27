@@ -67,4 +67,12 @@ export class TrackBuilder {
         circle.rotateX(PI_OVER_2);
         this._scene.add(circle);
     }
+
+    public get vertices(): Array<Object3D> {
+        return this._vertice;
+    }
+
+    public set vertices(vertices: Array<Object3D>) {
+        this._vertice = vertices;
+    }
 }
