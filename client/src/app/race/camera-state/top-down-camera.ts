@@ -40,12 +40,12 @@ export default class TopDownCamera extends AbsCamera {
     }
 
     private areLimitsExceeded(isZoomPositive: boolean, zoom: number): boolean {
-        return isZoomPositive ? zoom > MIN_ZOOM_FACTOR : zoom < MAX_ZOOM_FACTOR;
+        return isZoomPositive ? zoom > MAX_ZOOM_FACTOR : zoom < MIN_ZOOM_FACTOR ;
     }
 
     public zoom(isPositive: boolean): void {
         const camera: OrthographicCamera = this._camera as OrthographicCamera;
-        if (this.areLimitsExceeded(isPositive, camera.zoom)) {
+        if (!this.areLimitsExceeded(isPositive, camera.zoom)) {
 
             camera.zoom *= (isPositive ? 1 / DISTANCE_VARIATION : DISTANCE_VARIATION);
             camera.updateProjectionMatrix();
