@@ -6,6 +6,7 @@ Alexey Snigirev <https://github.com/gigi> */
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 /// <reference types="node" />
 // tslint:disable
+import * as SocketIO from "socket.io";
 
 export interface SocketIOStatic {
     /**
