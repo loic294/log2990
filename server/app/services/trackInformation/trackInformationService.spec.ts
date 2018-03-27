@@ -1,9 +1,9 @@
 /* tslint:disable */
-// import { TrackInformationService } from "./trackInformationService";
-// import { assert } from "chai";
-// import { ITrack } from "../../models/trackInfo";
+import { TrackInformationService } from "./trackInformationService";
+import { assert } from "chai";
+import { ITrack } from "../../models/trackInfo";
 
-// const trackService: TrackInformationService = new TrackInformationService();
+const trackService: TrackInformationService = new TrackInformationService();
 
 describe("trackInformationService", () => {
 
