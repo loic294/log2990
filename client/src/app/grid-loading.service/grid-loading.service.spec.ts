@@ -3,10 +3,11 @@ import { SocketIoModule, SocketIoConfig } from "ng-socket-io";
 
 import { SocketService } from "../socket.service/socket.service";
 import { DifficultyService } from "./../difficulty.service/difficulty.service";
+import { GridLoadingService } from "./grid-loaing.service";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
-describe("SocketService", () => {
+describe("GridLoadingService", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -14,12 +15,13 @@ describe("SocketService", () => {
       ],
       providers: [
         SocketService,
-        DifficultyService
+        DifficultyService,
+        GridLoadingService
       ]
     });
   });
 
-  it("should be created", inject([SocketService], (service: SocketService) => {
+  it("should be created", inject([SocketService, GridLoadingService], (service: SocketService) => {
     expect(service).toBeTruthy();
   }));
 });

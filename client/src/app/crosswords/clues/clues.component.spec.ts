@@ -26,7 +26,6 @@ const CLUES: Array<Word> = [
     new Word("Crack", "Definition of word crack", [5, 9], Orientation.vertical, 10),
 ];
 
-
 describe("CluesComponent", () => {
   let component: CluesComponent;
   let fixture: ComponentFixture<CluesComponent>;

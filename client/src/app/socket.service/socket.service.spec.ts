@@ -28,7 +28,7 @@ describe("SocketService", () => {
         socketService = new SocketService(new Socket(config), new DifficultyService(), new GridLoadingService());
     });
 
-    it("should be created", inject([SocketService, GridLoadingService], (service: SocketService) => {
-        expect(service).toBeTruthy();
+    it("should be created", inject([SocketService, GridLoadingService], () => {
+        expect(socketService).toBeTruthy();
     }));
 });
