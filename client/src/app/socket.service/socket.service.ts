@@ -21,7 +21,7 @@ export class SocketService {
     private _updateUserConnected: Observable<boolean>;
     private _userConnected: Subject<boolean> = new Subject<boolean>();
 
-    private _updateHighligthCell: Observable<string>;
+    private _updateHighlightCell: Observable<string>;
     private _highlightCell: Subject<string> = new Subject<string>();
 
     private _updateWordValidated: Observable<string>;
@@ -70,7 +70,7 @@ export class SocketService {
         this._selectedMode = "";
         this._showGames = false;
         this._updateUserConnected = this._userConnected.asObservable();
-        this._updateHighligthCell = this._highlightCell.asObservable();
+        this._updateHighlightCell = this._highlightCell.asObservable();
         this._updateUserScore = this._userScore.asObservable();
         this._updateOpponentScore = this._opponentScore.asObservable();
         this._updateWordValidated = this._wordToValidate.asObservable();
@@ -182,7 +182,7 @@ export class SocketService {
     }
 
     public get cellToHighligh(): Observable<string> {
-        return this._updateHighligthCell;
+        return this._updateHighlightCell;
     }
 
     public get wordIsValidated(): Observable<string> {
