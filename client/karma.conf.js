@@ -24,6 +24,9 @@ module.exports = function (config) {
     files: [
         './node_modules/phantomjs-polyfill/bind-polyfill.js'
     ],
+    exclude: [
+        './src/app/race/**/*.js'
+    ],
     client:{
       clearContext: false // leave Jasmine Spec Runner output visible in browser
     },
