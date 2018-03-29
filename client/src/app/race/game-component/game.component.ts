@@ -63,12 +63,12 @@ export class GameComponent implements AfterViewInit {
         if (this._trackLoaded) {
             this.loadTrack();
             this.inputManager.init(this.renderService);
-            this.renderService.start();
 
             const trackBuilder: TrackBuilder = new TrackBuilder(this.renderService.scene,
                                                                 this._dotCommand.getVertices(),
                                                                 this._dotCommand.getEdges());
             trackBuilder.buildTrack();
+            this.renderService.start();
 
             this.renderService.aiService = new AiService(trackBuilder, this.renderService.bots);
             this.renderService.trackLoaded = true;

@@ -10,14 +10,17 @@ const CIRCLE_SEGMENTS: number = 32;
 const PLANE_COLOR: number = 0x0055FF;
 const OFFSET_FACTOR: number = -0.1;
 const DISTANCE_FACTOR: number = 1.5;
+const NUMBER_OF_LINE: number = 2;
 
 export class TrackBuilder {
     private _circleGeometry: CircleGeometry;
     private _material: MeshBasicMaterial;
+    private _startingLines: Array<Mesh>;
 
     public constructor(private _scene: THREE.Scene, private _vertice: Array<Object3D>, private _edges: Array<LineSegment>) {
         this._circleGeometry = new CircleGeometry(WIDTH / 2, CIRCLE_SEGMENTS);
         this._material = new MeshBasicMaterial({ color: PLANE_COLOR, side: DoubleSide });
+        this._startingLines = new Array();
     }
 
     public buildTrack(): void {
@@ -34,6 +37,7 @@ export class TrackBuilder {
 
         this.removeLines();
         this.placeStartingLines();
+        this.positionRacers();
 
     }
 
@@ -89,11 +93,41 @@ export class TrackBuilder {
 
         firstLine.rotateX(PI_OVER_2);
         firstLine.translateOnAxis(translationDirection, WIDTH / DISTANCE_FACTOR);
+        this._startingLines.push(firstLine);
         this._scene.add(firstLine);
 
         secondLine.rotateX(PI_OVER_2);
         secondLine.translateOnAxis(translationDirection, WIDTH * DISTANCE_FACTOR);
+        this._startingLines.push(secondLine);
         this._scene.add(secondLine);
+    }
+
+    private positionRacers(): void {
+
+        let spotsOnFirstLine: number = 2;
+        let spotsOnSecondLine: number = 2;
+
+        for (const object of this._scene.children) {
+            if (object.name === "car") {
+                if (Math.random() % NUMBER_OF_LINE === 0 && spotsOnFirstLine !== 0) {
+                    this.placeOnFirstLine(object);
+                    spotsOnFirstLine--;
+                } else if (spotsOnSecondLine !== 0) {
+                    this.placeOnSecondLine(object);
+                    spotsOnSecondLine--;
+                } else {
+                    this.placeOnFirstLine(object);
+                }
+            }
+        }
+    }
+
+    private placeOnFirstLine(car: Object3D): void {
+        car.translateOnAxis(this._startingLines[0].position, 1);
+    }
+
+    private placeOnSecondLine(car: Object3D): void {
+        car.translateOnAxis(this._startingLines[1].position, 1);
     }
 
     public get vertices(): Array<Object3D> {

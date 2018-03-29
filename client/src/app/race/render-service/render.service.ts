@@ -12,7 +12,7 @@ const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 1;
 
 const SIZE_SKYBOX: number = 10000;
-const AMOUNT_OF_NPCS: number = 1;
+const AMOUNT_OF_NPCS: number = 3;
 
 @Injectable()
 export class RenderService {
@@ -68,9 +68,11 @@ export class RenderService {
         this._scene = new Scene();
 
         await this._car.init();
+        this._car.name = "car";
         this.scene.add(this._car);
         for (let i: number = 0; i < AMOUNT_OF_NPCS; i++) {
             await this._bots[i].init();
+            this._bots[i].name = "car";
             this.scene.add(this._bots[i]);
         }
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
@@ -80,7 +82,7 @@ export class RenderService {
     }
 
     public start(): void {
-        this._cameraService.changeCamera();
+        this._cameraService.initialize(this._car, this.getAspectRatio());
         this.loadSkybox();
     }
 
