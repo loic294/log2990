@@ -75,7 +75,7 @@ export class TrackBuilder {
 
     private placeStartingLines(): void {
         const lineGeometry: PlaneGeometry = new PlaneGeometry(2, WIDTH);
-        const texture: Texture = new TextureLoader().load( "../../../assets/track/line2.jpg" );
+        const texture: Texture = new TextureLoader().load( "../../../assets/track/starting_line.jpg" );
         const lineMaterial: MeshBasicMaterial = new MeshBasicMaterial({ map: texture, side: DoubleSide });
         lineMaterial.polygonOffset = true;
         lineMaterial.polygonOffsetFactor = OFFSET_FACTOR;
