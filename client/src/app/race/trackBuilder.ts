@@ -1,6 +1,6 @@
 import {
     Vector3, MeshBasicMaterial, Mesh, Object3D,
-    PlaneGeometry, DoubleSide, CircleGeometry
+    PlaneGeometry, DoubleSide, CircleGeometry, Texture, TextureLoader
 } from "three";
 import { LineSegment } from "./DotCommand";
 import { PI_OVER_2 } from "../constants";
@@ -8,6 +8,8 @@ import { PI_OVER_2 } from "../constants";
 const WIDTH: number = 10;
 const CIRCLE_SEGMENTS: number = 32;
 const PLANE_COLOR: number = 0x0055FF;
+const OFFSET_FACTOR: number = -0.1;
+const DISTANCE_FACTOR: number = 1.5;
 
 export class TrackBuilder {
     private _circleGeometry: CircleGeometry;
@@ -31,6 +33,8 @@ export class TrackBuilder {
         }
 
         this.removeLines();
+        this.placeStartingLines();
+
     }
 
     private placePlane(firstSide: Vector3, secondSide: Vector3): void {
@@ -52,6 +56,7 @@ export class TrackBuilder {
         }
 
         this._scene.add(plane);
+
     }
 
     private removeLines(): void {
@@ -66,6 +71,29 @@ export class TrackBuilder {
         circle.position.set(vertex.position.x, vertex.position.y, vertex.position.z);
         circle.rotateX(PI_OVER_2);
         this._scene.add(circle);
+    }
+
+    private placeStartingLines(): void {
+        const lineGeometry: PlaneGeometry = new PlaneGeometry(2, WIDTH);
+        const texture: Texture = new TextureLoader().load( "../../../assets/track/line2.jpg" );
+        const lineMaterial: MeshBasicMaterial = new MeshBasicMaterial({ map: texture, side: DoubleSide });
+        lineMaterial.polygonOffset = true;
+        lineMaterial.polygonOffsetFactor = OFFSET_FACTOR;
+        const firstLine: Mesh = new Mesh(lineGeometry, lineMaterial);
+        const secondLine: Mesh = new Mesh(lineGeometry, lineMaterial);
+
+        const translationDirection: Vector3 = new Vector3(this._vertice[1].position.x,
+                                                          this._vertice[1].position.z,
+                                                          this._vertice[1].position.y);
+        translationDirection.normalize();
+
+        firstLine.rotateX(PI_OVER_2);
+        firstLine.translateOnAxis(translationDirection, WIDTH / DISTANCE_FACTOR);
+        this._scene.add(firstLine);
+
+        secondLine.rotateX(PI_OVER_2);
+        secondLine.translateOnAxis(translationDirection, WIDTH * DISTANCE_FACTOR);
+        this._scene.add(secondLine);
     }
 
     public get vertices(): Array<Object3D> {
