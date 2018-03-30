@@ -12,7 +12,7 @@ const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 1;
 
 const SIZE_SKYBOX: number = 10000;
-const AMOUNT_OF_NPCS: number = 1;
+const AMOUNT_OF_NPCS: number = 3;
 
 @Injectable()
 export class RenderService {
@@ -80,7 +80,7 @@ export class RenderService {
     }
 
     public start(): void {
-        this._cameraService.changeCamera();
+        this._cameraService.initialize(this._car, this.getAspectRatio());
         this.loadSkybox();
     }
 
