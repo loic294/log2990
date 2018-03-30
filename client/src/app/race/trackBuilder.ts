@@ -12,6 +12,7 @@ const PLANE_COLOR: number = 0x0055FF;
 const OFFSET_FACTOR: number = -0.1;
 const DISTANCE_FACTOR: number = 1.5;
 const NUMBER_OF_LINE: number = 2;
+const LINE_POSITION_FACTOR: number = 3;
 
 export class TrackBuilder {
     private _circleGeometry: CircleGeometry;
@@ -95,35 +96,34 @@ export class TrackBuilder {
 
         firstLine.rotateX(PI_OVER_2);
         firstLine.translateOnAxis(translationDirection, WIDTH / DISTANCE_FACTOR);
+        firstLine.userData.leftPositionTaken = false;
+        firstLine.userData.rightPositionTaken = false;
         this._startingLines.push(firstLine);
         this._scene.add(firstLine);
 
         secondLine.rotateX(PI_OVER_2);
         secondLine.translateOnAxis(translationDirection, WIDTH * DISTANCE_FACTOR);
+        secondLine.userData.leftPositionTaken = false;
+        secondLine.userData.rightPositionTaken = false;
         this._startingLines.push(secondLine);
         this._scene.add(secondLine);
     }
 
     private positionRacers(): void {
 
-        let spotsOnFirstLine: number = 2;
-        let spotsOnSecondLine: number = 2;
-
-        if (Math.random() % NUMBER_OF_LINE === 0) {
+        if (Math.random() * NUMBER_OF_LINE <= 1) {
             this.placeOnFirstLine(this._playerCar);
-            spotsOnFirstLine--;
         } else {
             this.placeOnSecondLine(this._playerCar);
-            spotsOnSecondLine--;
         }
 
         for (const car of this._botCars) {
-            if (Math.random() % NUMBER_OF_LINE === 0 && spotsOnFirstLine !== 0) {
+            if (Math.random() * NUMBER_OF_LINE <= 1 && (!this._startingLines[0].userData.leftPositionTaken ||
+                                                         !this._startingLines[0].userData.rightPositionTaken)) {
                 this.placeOnFirstLine(car);
-                spotsOnFirstLine--;
-            } else if (spotsOnSecondLine !== 0) {
+            } else if ((!this._startingLines[1].userData.leftPositionTaken ||
+                        !this._startingLines[1].userData.rightPositionTaken)) {
                 this.placeOnSecondLine(car);
-                spotsOnSecondLine--;
             } else {
                 this.placeOnFirstLine(car);
             }
@@ -131,11 +131,68 @@ export class TrackBuilder {
     }
 
     private placeOnFirstLine(car: Car): void {
-        car.meshPosition = this._startingLines[0].position;
+        const perpendicular: Vector3 = this.findPerpendicularVector(this._startingLines[0].position);
+        if (Math.random() * NUMBER_OF_LINE <= 1 && !this._startingLines[0].userData.leftPositionTaken) {
+
+            car.meshPosition = this._startingLines[0].position;
+            const direction: Vector3 = new Vector3(perpendicular.x * WIDTH / LINE_POSITION_FACTOR, 0,
+                                                   perpendicular.y * WIDTH / LINE_POSITION_FACTOR);
+            car.meshPosition = direction;
+            this._startingLines[0].userData.leftPositionTaken = true;
+
+        } else if (!this._startingLines[0].userData.rightPositionTaken) {
+
+            car.meshPosition = this._startingLines[0].position;
+            const direction: Vector3 = new Vector3(-perpendicular.x * WIDTH / LINE_POSITION_FACTOR, 0,
+                                                   -perpendicular.y * WIDTH / LINE_POSITION_FACTOR);
+            car.meshPosition = direction;
+            this._startingLines[0].userData.rightPositionTaken = true;
+
+        } else {
+
+            car.meshPosition = this._startingLines[0].position;
+            const direction: Vector3 = new Vector3(perpendicular.x * WIDTH / LINE_POSITION_FACTOR, 0,
+                                                   perpendicular.y * WIDTH / LINE_POSITION_FACTOR);
+            car.meshPosition = direction;
+            this._startingLines[0].userData.leftPositionTaken = true;
+        }
     }
 
     private placeOnSecondLine(car: Car): void {
-        car.meshPosition = this._startingLines[1].position;
+        const perpendicular: Vector3 = this.findPerpendicularVector(this._startingLines[1].position);
+        if (Math.random() * NUMBER_OF_LINE <= 1 && !this._startingLines[1].userData.leftPositionTaken) {
+
+            car.meshPosition = this._startingLines[1].position;
+            const direction: Vector3 = new Vector3(perpendicular.x * WIDTH / LINE_POSITION_FACTOR, 0,
+                                                   perpendicular.y * WIDTH / LINE_POSITION_FACTOR);
+            car.meshPosition = direction;
+            this._startingLines[1].userData.leftPositionTaken = true;
+
+        } else if (!this._startingLines[1].userData.rightPositionTaken) {
+
+            car.meshPosition = this._startingLines[1].position;
+            const direction: Vector3 = new Vector3(-perpendicular.x * WIDTH / LINE_POSITION_FACTOR, 0,
+                                                   -perpendicular.y * WIDTH / LINE_POSITION_FACTOR);
+            car.meshPosition = direction;
+            this._startingLines[1].userData.rightPositionTaken = true;
+
+        } else {
+
+            car.meshPosition = this._startingLines[1].position;
+            const direction: Vector3 = new Vector3(perpendicular.x * WIDTH / LINE_POSITION_FACTOR, 0,
+                                                   perpendicular.y * WIDTH / LINE_POSITION_FACTOR);
+            car.meshPosition = direction;
+            this._startingLines[1].userData.leftPositionTaken = true;
+        }
+    }
+
+    private findPerpendicularVector(vector: Vector3): Vector3 {
+        const orthogonal: Vector3 = new Vector3(0, 0, 1);
+        const perpendicular: Vector3 = new Vector3;
+        perpendicular.crossVectors(vector, orthogonal);
+        perpendicular.normalize();
+
+        return perpendicular;
     }
 
     public get vertices(): Array<Object3D> {
