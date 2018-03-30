@@ -68,11 +68,9 @@ export class RenderService {
         this._scene = new Scene();
 
         await this._car.init();
-        this._car.name = "car";
         this.scene.add(this._car);
         for (let i: number = 0; i < AMOUNT_OF_NPCS; i++) {
             await this._bots[i].init();
-            this._bots[i].name = "car";
             this.scene.add(this._bots[i]);
         }
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));

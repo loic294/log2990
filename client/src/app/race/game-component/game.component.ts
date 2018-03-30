@@ -66,7 +66,9 @@ export class GameComponent implements AfterViewInit {
 
             const trackBuilder: TrackBuilder = new TrackBuilder(this.renderService.scene,
                                                                 this._dotCommand.getVertices(),
-                                                                this._dotCommand.getEdges());
+                                                                this._dotCommand.getEdges(),
+                                                                this.renderService.car,
+                                                                this.renderService.bots);
             trackBuilder.buildTrack();
             this.renderService.start();
 

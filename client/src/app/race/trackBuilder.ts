@@ -4,6 +4,7 @@ import {
 } from "three";
 import { LineSegment } from "./DotCommand";
 import { PI_OVER_2 } from "../constants";
+import { Car } from "./car/car";
 
 const WIDTH: number = 10;
 const CIRCLE_SEGMENTS: number = 32;
@@ -17,7 +18,8 @@ export class TrackBuilder {
     private _material: MeshBasicMaterial;
     private _startingLines: Array<Mesh>;
 
-    public constructor(private _scene: THREE.Scene, private _vertice: Array<Object3D>, private _edges: Array<LineSegment>) {
+    public constructor(private _scene: THREE.Scene, private _vertice: Array<Object3D>, private _edges: Array<LineSegment>,
+                       private _playerCar: Car, private _botCars: Array<Car>) {
         this._circleGeometry = new CircleGeometry(WIDTH / 2, CIRCLE_SEGMENTS);
         this._material = new MeshBasicMaterial({ color: PLANE_COLOR, side: DoubleSide });
         this._startingLines = new Array();
@@ -79,7 +81,7 @@ export class TrackBuilder {
 
     private placeStartingLines(): void {
         const lineGeometry: PlaneGeometry = new PlaneGeometry(2, WIDTH);
-        const texture: Texture = new TextureLoader().load( "../../../assets/track/starting_line.jpg" );
+        const texture: Texture = new TextureLoader().load("../../../assets/track/starting_line.jpg");
         const lineMaterial: MeshBasicMaterial = new MeshBasicMaterial({ map: texture, side: DoubleSide });
         lineMaterial.polygonOffset = true;
         lineMaterial.polygonOffsetFactor = OFFSET_FACTOR;
@@ -107,27 +109,33 @@ export class TrackBuilder {
         let spotsOnFirstLine: number = 2;
         let spotsOnSecondLine: number = 2;
 
-        for (const object of this._scene.children) {
-            if (object.name === "car") {
-                if (Math.random() % NUMBER_OF_LINE === 0 && spotsOnFirstLine !== 0) {
-                    this.placeOnFirstLine(object);
-                    spotsOnFirstLine--;
-                } else if (spotsOnSecondLine !== 0) {
-                    this.placeOnSecondLine(object);
-                    spotsOnSecondLine--;
-                } else {
-                    this.placeOnFirstLine(object);
-                }
+        if (Math.random() % NUMBER_OF_LINE === 0) {
+            this.placeOnFirstLine(this._playerCar);
+            spotsOnFirstLine--;
+        } else {
+            this.placeOnSecondLine(this._playerCar);
+            spotsOnSecondLine--;
+        }
+
+        for (const car of this._botCars) {
+            if (Math.random() % NUMBER_OF_LINE === 0 && spotsOnFirstLine !== 0) {
+                this.placeOnFirstLine(car);
+                spotsOnFirstLine--;
+            } else if (spotsOnSecondLine !== 0) {
+                this.placeOnSecondLine(car);
+                spotsOnSecondLine--;
+            } else {
+                this.placeOnFirstLine(car);
             }
         }
     }
 
-    private placeOnFirstLine(car: Object3D): void {
-        car.translateOnAxis(this._startingLines[0].position, 1);
+    private placeOnFirstLine(car: Car): void {
+        car.meshPosition = this._startingLines[0].position;
     }
 
-    private placeOnSecondLine(car: Object3D): void {
-        car.translateOnAxis(this._startingLines[1].position, 1);
+    private placeOnSecondLine(car: Car): void {
+        car.meshPosition = this._startingLines[1].position;
     }
 
     public get vertices(): Array<Object3D> {
