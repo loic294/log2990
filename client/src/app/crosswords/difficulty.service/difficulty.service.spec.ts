@@ -1,5 +1,5 @@
 import { TestBed, inject } from "@angular/core/testing";
-import { Difficulty } from "./../../../../common/grid/difficulties";
+import { Difficulty } from "./../../../../../common/grid/difficulties";
 import { DifficultyService } from "./difficulty.service";
 
 describe("DifficultyService", () => {

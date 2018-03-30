@@ -10,8 +10,8 @@ import {MatProgressSpinnerModule} from "@angular/material";
 
 import { TerminationComponent, TerminationDialogComponent } from "./termination.component";
 import { DifficultyComponent } from "../difficulty/difficulty.component";
-import { SocketService } from "../../socket.service/socket.service";
-import { DifficultyService } from "../../difficulty.service/difficulty.service";
+import { SocketService } from "../socket.service/socket.service";
+import { DifficultyService } from "../difficulty.service/difficulty.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import { Difficulty } from "../../../../../common/grid/difficulties";
 import { Type } from "../type"

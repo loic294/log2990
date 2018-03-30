@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 
-import { WordService } from "../../word.service/word.service";
-import { SocketService } from "../../socket.service/socket.service";
+import { WordService } from "../word.service/word.service";
+import { SocketService } from "../socket.service/socket.service";
 
 @Component({
   selector: "app-crossword",

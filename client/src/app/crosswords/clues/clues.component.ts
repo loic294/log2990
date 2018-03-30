@@ -1,10 +1,10 @@
 import { Component, OnInit } from "@angular/core";
-import { SocketService } from "../../socket.service/socket.service";
+import { SocketService } from "../socket.service/socket.service";
 import Word from "../../../../../common/lexical/word";
 
-import { WordService } from "../../word.service/word.service";
+import { WordService } from "../word.service/word.service";
 
-import CLUES from "../../mock-words";
+import CLUES from "../mock-words";
 
 @Component({
     selector: "app-clues",

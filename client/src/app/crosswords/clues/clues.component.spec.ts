@@ -4,13 +4,13 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { SocketIoConfig, SocketIoModule } from "ng-socket-io";
 import { CluesComponent } from "./clues.component";
-import { WordService } from "../../word.service/word.service";
-import { SocketService } from "../../socket.service/socket.service";
-import { DifficultyService } from "../../difficulty.service/difficulty.service";
+import { WordService } from "../word.service/word.service";
+import { SocketService } from "../socket.service/socket.service";
+import { DifficultyService } from "../difficulty.service/difficulty.service";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
-import CLUES from "../../mock-words";
+import CLUES from "../mock-words";
 
 describe("CluesComponent", () => {
   let component: CluesComponent;

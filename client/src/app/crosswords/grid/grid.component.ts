@@ -3,7 +3,7 @@
 import { Component } from "@angular/core";
 
 import { Cell } from "../../../../../common/grid/cell";
-import { GridService } from "../../grid.service/grid.service";
+import { GridService } from "../grid.service/grid.service";
 import { CELL_HEIGHT } from "../../constants";
 
 /** TEMPORARY MOCKED CONTENT
