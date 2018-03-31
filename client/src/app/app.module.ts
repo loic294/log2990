@@ -28,6 +28,7 @@ import { DifficultyService } from "./difficulty.service/difficulty.service";
 import { HomeComponent } from "./home/home.component";
 import { TrackInformationService } from "../../../server/app/services/trackInformation/trackInformationService";
 import { TerminationComponent, TerminationDialogComponent } from "./crosswords/termination/termination.component";
+import { HudComponent } from './race/hud/hud.component';
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
@@ -46,7 +47,8 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         TrackCreationComponent,
         TerminationComponent,
         TerminationDialogComponent,
-        ModeDialogComponent
+        ModeDialogComponent,
+        HudComponent
     ],
     entryComponents: [
         ModeDialogComponent,
