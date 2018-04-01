@@ -45,12 +45,16 @@ export class GameComponent implements AfterViewInit {
 
     @HostListener("window:keydown", ["$event"])
     public onKeyDown(event: KeyboardEvent): void {
-        this.inputManager.handleKey(event, Release.Down);
+        if (!this.renderService.raceIsCompleted) {
+            this.inputManager.handleKey(event, Release.Down);
+        }
     }
 
     @HostListener("window:keyup", ["$event"])
     public onKeyUp(event: KeyboardEvent): void {
-        this.inputManager.handleKey(event, Release.Up);
+        if (!this.renderService.raceIsCompleted) {
+            this.inputManager.handleKey(event, Release.Up);
+        }
     }
 
     public async ngAfterViewInit(): Promise<void> {

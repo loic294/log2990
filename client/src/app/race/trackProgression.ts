@@ -7,13 +7,14 @@ const MAX_LAPS: number = 3;
 export class TrackProgression {
     private _lapsCompleted: number;
     private _isNewLap: boolean;
+    private _raceIsCompleted: boolean;
 
     public constructor(private _startingLine: Vector3, private _playerCar: Car) {
         this._isNewLap = false;
         this._lapsCompleted = 0;
     }
 
-    public checkIfAtStartingLine(): boolean {
+    public checkIfAtStartingLine(): void {
 
         const carPosition: Vector3 = new Vector3;
         carPosition.subVectors(this._startingLine, this._playerCar.meshPosition);
@@ -26,7 +27,11 @@ export class TrackProgression {
             this._isNewLap = true;
         }
 
-        return (this._lapsCompleted === MAX_LAPS);
+        this._raceIsCompleted = (this._lapsCompleted >= MAX_LAPS);
+    }
+
+    public get raceIsCompleted(): boolean {
+        return this._raceIsCompleted;
     }
 
 }

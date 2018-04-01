@@ -167,4 +167,8 @@ export class RenderService {
     public set trackLoaded(trackLoaded: boolean) {
         this._trackLoaded = trackLoaded;
     }
+
+    public get raceIsCompleted(): boolean {
+        return this._trackProgression.raceIsCompleted;
+    }
 }
