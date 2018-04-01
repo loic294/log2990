@@ -12,8 +12,8 @@ import { DifficultyComponent } from "../difficulty/difficulty.component";
 import { ModeComponent, ModeDialogComponent, } from "../mode/mode.component";
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatProgressSpinnerModule} from "@angular/material";
-import { SocketService } from "../../socket.service/socket.service";
-import { DifficultyService } from "../../difficulty.service/difficulty.service";
+import { SocketService } from "../socket.service/socket.service";
+import { DifficultyService } from "../difficulty.service/difficulty.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
