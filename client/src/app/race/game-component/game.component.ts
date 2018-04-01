@@ -70,7 +70,7 @@ export class GameComponent implements AfterViewInit {
                                                                 this.renderService.car,
                                                                 this.renderService.bots);
             trackBuilder.buildTrack();
-            this.renderService.start();
+            this.renderService.start(trackBuilder.startingLines[0].position);
 
             this.renderService.aiService = new AiService(trackBuilder, this.renderService.bots);
             this.renderService.trackLoaded = true;

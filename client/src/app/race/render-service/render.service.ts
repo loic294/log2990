@@ -2,11 +2,12 @@ import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import {
     WebGLRenderer, Scene, AmbientLight,
-    MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, BoxGeometry
+    MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, BoxGeometry, Vector3
 } from "three";
 import { Car } from "../car/car";
 import { CameraService } from "../camera-service/camera.service";
 import { AiService } from "../ai-service/ai.service";
+import { TrackProgression } from "../trackProgression";
 
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 1;
@@ -26,6 +27,7 @@ export class RenderService {
     private _bots: Array<Car>;
     private _aiService: AiService;
     private _trackLoaded: boolean;
+    private _trackProgression: TrackProgression;
 
     public constructor(private _cameraService: CameraService) {
         this._car = new Car();
@@ -79,9 +81,10 @@ export class RenderService {
         this._cameraService.changeCamera();
     }
 
-    public start(): void {
+    public start(startingLine: Vector3): void {
         this._cameraService.initialize(this._car, this.getAspectRatio());
         this.loadSkybox();
+        this._trackProgression = new TrackProgression(startingLine, this._car);
     }
 
     public getAspectRatio(): number {
@@ -103,6 +106,9 @@ export class RenderService {
         this.update();
         this.renderer.render(this.scene, this._cameraService.camera);
         this._stats.update();
+        if (this._trackProgression !== undefined) {
+            this._trackProgression.checkIfAtStartingLine();
+        }
     }
 
     public onResize(): void {

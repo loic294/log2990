@@ -7,7 +7,6 @@ import { Car } from "./car/car";
 
 const WIDTH: number = 10;
 const CIRCLE_SEGMENTS: number = 32;
-const PLANE_COLOR: number = 0x0055FF;
 const OFFSET_FACTOR: number = -0.1;
 const DISTANCE_FACTOR: number = 1.5;
 const NUMBER_OF_LINE: number = 2;
@@ -19,12 +18,10 @@ const TEXTURE_DIMENSION: number = 5;
 
 export class TrackBuilder {
     private _circleGeometry: CircleGeometry;
-    private _material: MeshBasicMaterial;
     private _startingLines: Array<Mesh>;
     public constructor(private _scene: THREE.Scene, private _vertice: Array<Object3D>, private _edges: Array<LineSegment>,
                        private _playerCar: Car, private _botCars: Array<Car>) {
         this._circleGeometry = new CircleGeometry(WIDTH / 2, CIRCLE_SEGMENTS);
-        this._material = new MeshBasicMaterial({ color: PLANE_COLOR, side: DoubleSide });
         this._startingLines = new Array();
     }
 
@@ -229,5 +226,9 @@ export class TrackBuilder {
 
     public set vertices(vertices: Array<Object3D>) {
         this._vertice = vertices;
+    }
+
+    public get startingLines(): Array<Mesh> {
+        return this._startingLines;
     }
 }
