@@ -70,8 +70,7 @@ export class RenderService {
             await this._bots[i].init();
             this.scene.add(this._bots[i]);
         }
-        this._environmentService.initialize();
-        this.scene.add(this._environmentService.light);
+        this._environmentService.initialize(this._scene);
 
         this._cameraService.initialize(this._car, this.getAspectRatio());
         this._cameraService.changeCamera();
@@ -79,7 +78,6 @@ export class RenderService {
 
     public start(): void {
         this._cameraService.changeCamera();
-        this._scene.add(this._environmentService.skybox);
     }
 
     public getAspectRatio(): number {
