@@ -1,17 +1,14 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
-import {
-    WebGLRenderer, Scene, AmbientLight,
-    MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, BoxGeometry
-} from "three";
+import { WebGLRenderer, Scene } from "three";
 import { Car } from "../car/car";
 import { CameraService } from "../camera-service/camera.service";
 import { AiService } from "../ai-service/ai.service";
+import { EnvironmentService } from "../environment-service/environment.service";
 
-const WHITE: number = 0xFFFFFF;
-const AMBIENT_LIGHT_OPACITY: number = 1;
+// const WHITE: number = 0xFFFFFF;
+// const AMBIENT_LIGHT_OPACITY: number = 1;
 
-const SIZE_SKYBOX: number = 10000;
 const AMOUNT_OF_NPCS: number = 1;
 
 @Injectable()
@@ -27,7 +24,7 @@ export class RenderService {
     private _aiService: AiService;
     private _trackLoaded: boolean;
 
-    public constructor(private _cameraService: CameraService) {
+    public constructor(private _cameraService: CameraService, private _environmentService: EnvironmentService) {
         this._car = new Car();
         this._bots = [];
         this._trackLoaded = false;
@@ -73,7 +70,8 @@ export class RenderService {
             await this._bots[i].init();
             this.scene.add(this._bots[i]);
         }
-        this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
+        this._environmentService.initialize();
+        this.scene.add(this._environmentService.light);
 
         this._cameraService.initialize(this._car, this.getAspectRatio());
         this._cameraService.changeCamera();
@@ -81,7 +79,7 @@ export class RenderService {
 
     public start(): void {
         this._cameraService.changeCamera();
-        this.loadSkybox();
+        this._scene.add(this._environmentService.skybox);
     }
 
     public getAspectRatio(): number {
@@ -108,26 +106,6 @@ export class RenderService {
     public onResize(): void {
         this._cameraService.onResize(this.getAspectRatio());
         this.renderer.setSize(this._container.clientWidth, this._container.clientHeight);
-    }
-
-    private loadSkybox(): void {
-        const sidesOfSkybox: MeshBasicMaterial[] = [];
-        const imageDirectory: string = "../../../assets/skybox/";
-        const imageName: string = "stormydays_";
-        const imageSuffixes: string[] = ["ft", "bk", "up", "dn", "rt", "lf"];
-        const imageType: string = ".png";
-        let imageFilePath: string = "";
-
-        for (const imageSuffix of imageSuffixes) {
-            imageFilePath = `${imageDirectory}${imageName}${imageSuffix}${imageType}`;
-            sidesOfSkybox.push(new MeshBasicMaterial({ map: new TextureLoader().load(imageFilePath), side: DoubleSide }));
-        }
-
-        const skyboxGeometry: BoxGeometry = new BoxGeometry(SIZE_SKYBOX, SIZE_SKYBOX, SIZE_SKYBOX);
-        const skyboxTexture: MultiMaterial = new MultiMaterial(sidesOfSkybox);
-        const skybox: Mesh = new Mesh(skyboxGeometry, skyboxTexture);
-
-        this._scene.add(skybox);
     }
 
     public get renderer(): WebGLRenderer {

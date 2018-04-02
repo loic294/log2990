@@ -1,6 +1,6 @@
 import {
-    Vector3, MeshBasicMaterial, Mesh, Object3D,
-    PlaneGeometry, DoubleSide, CircleGeometry, TextureLoader, Texture, RepeatWrapping} from "three";
+    Vector3, Mesh, Object3D,
+    PlaneGeometry, DoubleSide, CircleGeometry, TextureLoader, Texture, RepeatWrapping, MeshLambertMaterial} from "three";
 import { LineSegment } from "./DotCommand";
 import { PI_OVER_2 } from "../constants";
 
@@ -24,7 +24,7 @@ export class TrackBuilder {
         texture.wrapT = RepeatWrapping;
         texture.repeat.set(OFFTRACK_DIMENSION / TEXTURE_DIMENSION, OFFTRACK_DIMENSION / TEXTURE_DIMENSION);
 
-        const material: MeshBasicMaterial = new MeshBasicMaterial({ map: texture, side: DoubleSide });
+        const material: MeshLambertMaterial = new MeshLambertMaterial({ map: texture, side: DoubleSide });
         const planeGeometry: PlaneGeometry = new PlaneGeometry(OFFTRACK_DIMENSION, OFFTRACK_DIMENSION);
         const offTrackPlane: Mesh = new Mesh(planeGeometry, material);
 
@@ -57,7 +57,7 @@ export class TrackBuilder {
     private generatePlane(firstSide: Vector3, secondSide: Vector3): void {
         const length: number = firstSide.distanceTo(secondSide);
 
-        const material: MeshBasicMaterial = new MeshBasicMaterial({ map: this.generateTexture(length), side: DoubleSide });
+        const material: MeshLambertMaterial = new MeshLambertMaterial({ map: this.generateTexture(length), side: DoubleSide });
         const planeGeometry: PlaneGeometry = new PlaneGeometry(WIDTH, length);
         const plane: Mesh = new Mesh(planeGeometry, material);
         plane.position.set(firstSide.x, firstSide.y, firstSide.z);
@@ -87,7 +87,7 @@ export class TrackBuilder {
 
     private replaceSphere(vertex: Object3D): void {
         this._scene.remove(vertex);
-        const material: MeshBasicMaterial = new MeshBasicMaterial({ map: this.generateTexture(WIDTH), side: DoubleSide });
+        const material: MeshLambertMaterial = new MeshLambertMaterial({ map: this.generateTexture(WIDTH), side: DoubleSide });
         const circle: Mesh = new Mesh(this._circleGeometry, material);
         circle.position.set(vertex.position.x, vertex.position.y, vertex.position.z);
         circle.rotateX(PI_OVER_2);
