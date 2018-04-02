@@ -126,6 +126,10 @@ export class RenderService {
         return this._cameraService;
     }
 
+    public get environmentService(): EnvironmentService {
+        return this._environmentService;
+    }
+
     public get bots(): Array<Car> {
         return this._bots;
     }
