@@ -6,40 +6,45 @@ const WIDTH: number = 10;
 const MAX_LAPS: number = 3;
 
 export class TrackProgression {
-    private _lapsCompleted: number;
-    private _isNewLap: boolean;
-    private _clock: Clock;
 
-    public constructor(private _startingLine: Vector3, private _playerCar: Car,
+    public constructor(private _startingLine: Vector3, private _playerCar: Car, private _botCars: Array<Car>,
                        private _trackPtogressionService: TrackProgressionService) {
-        this._isNewLap = false;
-        this._lapsCompleted = 0;
+        this._playerCar.userData.isNewLap = false;
+        this._playerCar.userData.lapsCompleted = 0;
+        this._playerCar.userData.clock = new Clock();
+        this._playerCar.userData.clock.start();
         this._trackPtogressionService.sendGameProgress(false);
-        this._clock = new Clock();
-        this._clock.start();
     }
 
-    public checkIfAtStartingLine(): void {
+    public checkRaceProgress(): void {
 
         const carPosition: Vector3 = new Vector3;
         carPosition.subVectors(this._startingLine, this._playerCar.meshPosition);
         const carDistance: number = carPosition.length();
 
-        if (this._isNewLap && carDistance < WIDTH / 2) {
-            this._lapsCompleted++;
-            this._isNewLap = false;
-        } else if (!this._isNewLap && carDistance > WIDTH) {
-            this._isNewLap = true;
+        if (this._playerCar.userData.isNewLap && carDistance < WIDTH / 2) {
+            this._playerCar.userData.lapsCompleted++;
+            this._playerCar.userData.isNewLap = false;
+        } else if (!this._playerCar.userData.isNewLap && carDistance > WIDTH) {
+            this._playerCar.userData.isNewLap = true;
         }
 
-        if (this._lapsCompleted < MAX_LAPS) {
-            this._trackPtogressionService.sendGameTime(this._clock.getElapsedTime());
+        if (this._playerCar.userData.lapsCompleted < MAX_LAPS) {
+            this._trackPtogressionService.sendGameTime(this._playerCar.userData.clock.getElapsedTime());
         }
 
-        if (this._lapsCompleted >= MAX_LAPS) {
+        if (this._playerCar.userData.lapsCompleted >= MAX_LAPS) {
             this._trackPtogressionService.sendGameProgress(true);
-            this._clock.stop();
+            this._playerCar.userData.clock.stop();
         }
     }
+
+    /*private checkIfAtStartingLine(car: Car): void {
+
+    }
+
+    private checkCarTime(car: Car): void {
+
+    }*/
 
 }
