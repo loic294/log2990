@@ -7,6 +7,7 @@
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
+    "test-circle-ci": "set NODE_ENV=testing && ng test",
     "pipeline": "ng test --watch=false",
     "lint": "ng lint --type-check --format stylish --fix"
   },
