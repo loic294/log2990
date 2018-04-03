@@ -7,7 +7,7 @@ const MAX_LAPS: number = 3;
 
 export class TrackProgression {
 
-    public constructor(private _startingLine: Vector3, private _playerCar: Car, private _botCars: Array<Car>,
+    public constructor(private _startingLine: Vector3, private _playerCar: Car,
                        private _trackPtogressionService: TrackProgressionService) {
         this._playerCar.userData.isNewLap = false;
         this._playerCar.userData.lapsCompleted = 0;
@@ -38,13 +38,5 @@ export class TrackProgression {
             this._playerCar.userData.clock.stop();
         }
     }
-
-    /*private checkIfAtStartingLine(car: Car): void {
-
-    }
-
-    private checkCarTime(car: Car): void {
-
-    }*/
 
 }
