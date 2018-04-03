@@ -14,20 +14,15 @@ import { HomeComponent } from "../../home/home.component";
 import { CluesComponent } from "../../crosswords/clues/clues.component";
 import { DifficultyComponent } from "../../crosswords/difficulty/difficulty.component";
 import { GridComponent } from "../../crosswords/grid/grid.component";
-import { WordService } from "../../word.service/word.service";
 import { ModeComponent, ModeDialogComponent } from "../../crosswords/mode/mode.component";
 import {MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS} from "@angular/material/dialog";
 import {MatProgressSpinnerModule} from "@angular/material";
-import { SocketService } from "../../socket.service/socket.service";
-import { GridService } from "../../grid.service/grid.service";
-import { DifficultyService } from "../../difficulty.service/difficulty.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import { TerminationComponent, TerminationDialogComponent } from "../../crosswords/termination/termination.component";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
 describe("AdminComponent", () => {
-  let component: AdminComponent;
   let fixture: ComponentFixture<AdminComponent>;
 
   beforeEach(async(() => {
@@ -56,10 +51,6 @@ describe("AdminComponent", () => {
         TerminationDialogComponent
         ],
       providers: [
-            WordService,
-            SocketService,
-            GridService,
-            DifficultyService,
             {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: true}},
             {provide: APP_BASE_HREF, useValue : "/" }
         ],
@@ -69,7 +60,6 @@ describe("AdminComponent", () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AdminComponent);
-    component = fixture.componentInstance;
     fixture.detectChanges();
   });
 

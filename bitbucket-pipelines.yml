@@ -8,6 +8,40 @@ image: node:8.9.4
 pipelines:
   default:
     - step:
+        name: Client build
+        caches: 
+          - nodeclient
+          - node
+        script:
+        - cd client
+        - npm --version
+        - npm install
+        - npm run-script build
+    - step:
+        name: Client run lint
+        caches:
+          - nodeclient
+        script:
+          - cd client
+          - npm run lint
+    - step:
+        name: Client build
+        caches: 
+          - nodeclient
+          - node
+        script:
+        - cd client
+        - npm --version
+        - npm install
+        - npm run-script build
+    - step:
+        name: Client run lint
+        caches:
+          - nodeclient
+        script:
+          - cd client
+          - npm run lint
+    - step:
         name: Server start
         caches:
           - node
@@ -31,40 +65,6 @@ pipelines:
           - node
         script:
           - cd server
-          - npm run lint
-    - step:
-        name: Client build
-        caches: 
-          - nodeclient
-          - node
-        script:
-        - cd client
-        - npm --version
-        - npm install
-        - npm run-script build
-    - step:
-        name: Client run lint
-        caches:
-          - nodeclient
-        script:
-          - cd client
-          - npm run lint
-    - step:
-        name: Client build
-        caches: 
-          - nodeclient
-          - node
-        script:
-        - cd client
-        - npm --version
-        - npm install
-        - npm run-script build
-    - step:
-        name: Client run lint
-        caches:
-          - nodeclient
-        script:
-          - cd client
           - npm run lint
 definitions:
   caches:
