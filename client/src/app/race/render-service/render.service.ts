@@ -8,6 +8,7 @@ import { Car } from "../car/car";
 import { CameraService } from "../camera-service/camera.service";
 import { AiService } from "../ai-service/ai.service";
 import { TrackProgression } from "../trackProgression";
+import { TrackProgressionService } from "../trackProgressionService";
 
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 1;
@@ -81,10 +82,10 @@ export class RenderService {
         this._cameraService.changeCamera();
     }
 
-    public start(startingLine: Vector3): void {
+    public start(startingLine: Vector3, service: TrackProgressionService): void {
         this._cameraService.initialize(this._car, this.getAspectRatio());
         this.loadSkybox();
-        this._trackProgression = new TrackProgression(startingLine, this._car);
+        this._trackProgression = new TrackProgression(startingLine, this._car, service);
     }
 
     public getAspectRatio(): number {
@@ -168,7 +169,4 @@ export class RenderService {
         this._trackLoaded = trackLoaded;
     }
 
-    public get raceIsCompleted(): boolean {
-        return this._trackProgression.raceIsCompleted;
-    }
 }

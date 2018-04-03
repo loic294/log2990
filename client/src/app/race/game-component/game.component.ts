@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, ViewChild, HostListener } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, ViewChild, HostListener, OnInit } from "@angular/core";
 import { RenderService } from "../render-service/render.service";
 import InputManagerService, { Release } from "../input-manager/input-manager.service";
 import { DotCommand } from "../DotCommand";
@@ -7,6 +7,7 @@ import { CameraService } from "../camera-service/camera.service";
 import { TrackInformation } from "../trackInformation";
 import { TrackBuilder } from "../trackBuilder";
 import { AiService } from "../ai-service/ai.service";
+import { TrackProgressionService } from "../trackProgressionService";
 
 const SCALE_FACTOR: number = -10;
 
@@ -22,7 +23,7 @@ const SCALE_FACTOR: number = -10;
     ]
 })
 
-export class GameComponent implements AfterViewInit {
+export class GameComponent implements AfterViewInit, OnInit {
 
     @ViewChild("container")
     private containerRef: ElementRef;
@@ -30,8 +31,11 @@ export class GameComponent implements AfterViewInit {
     private _trackLoaded: boolean;
     private _trackInformation: TrackInformation;
     private _dotCommand: DotCommand;
+    private _raceIsCompleted: boolean;
+    private _currentGameTime: string;
 
-    public constructor(private renderService: RenderService, private inputManager: InputManagerService) {
+    public constructor(private renderService: RenderService, private inputManager: InputManagerService,
+                       private _trackProgressionService: TrackProgressionService) {
         this._raceStarted = false;
         this._trackLoaded = false;
         this._trackInformation = new TrackInformation();
@@ -45,14 +49,14 @@ export class GameComponent implements AfterViewInit {
 
     @HostListener("window:keydown", ["$event"])
     public onKeyDown(event: KeyboardEvent): void {
-        if (!this.renderService.raceIsCompleted) {
+        if (!this._raceIsCompleted) {
             this.inputManager.handleKey(event, Release.Down);
         }
     }
 
     @HostListener("window:keyup", ["$event"])
     public onKeyUp(event: KeyboardEvent): void {
-        if (!this.renderService.raceIsCompleted) {
+        if (!this._raceIsCompleted) {
             this.inputManager.handleKey(event, Release.Up);
         }
     }
@@ -63,8 +67,18 @@ export class GameComponent implements AfterViewInit {
 
     }
 
+    public ngOnInit(): void {
+        this._trackProgressionService.gameFinished
+            .subscribe((_gameFinished) => this.stopGame(_gameFinished));
+        this._trackProgressionService.gameTime
+            .subscribe((_gameTime) => this._currentGameTime = _gameTime.toFixed(2));
+    }
+
     public start(): void {
         if (this._trackLoaded) {
+            this._trackInformation.track.timesPlayed++;
+            this._trackInformation.patchTrack();
+
             this.loadTrack();
             this.inputManager.init(this.renderService);
 
@@ -74,7 +88,7 @@ export class GameComponent implements AfterViewInit {
                                                                 this.renderService.car,
                                                                 this.renderService.bots);
             trackBuilder.buildTrack();
-            this.renderService.start(trackBuilder.startingLines[0].position);
+            this.renderService.start(trackBuilder.startingLines[0].position, this._trackProgressionService);
 
             this.renderService.aiService = new AiService(trackBuilder, this.renderService.bots);
             this.renderService.trackLoaded = true;
@@ -126,6 +140,17 @@ export class GameComponent implements AfterViewInit {
         this._dotCommand.connectToFirst();
         this._dotCommand.complete();
         this._trackLoaded = true;
+    }
+
+    private stopGame(gameFinished: boolean): void {
+        if (gameFinished && this._raceStarted) {
+            this._raceIsCompleted = true;
+            this._raceStarted = false;
+            this._trackLoaded = false;
+
+            this._trackInformation.track.completedTimes.push(this._currentGameTime);
+            this._trackInformation.patchTrack();
+        }
     }
 
     public async getTrackInfo(trackName: String): Promise<void> {
