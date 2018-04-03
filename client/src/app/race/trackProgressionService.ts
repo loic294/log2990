@@ -2,33 +2,28 @@ import { Observable } from "rxjs/Observable";
 import { Subject } from "rxjs/Subject";
 import { Injectable } from "@angular/core";
 
+export interface IGameInformation {
+    gameTime: number;
+    lapTimes: Array<number>;
+    currentLap: number;
+    gameIsFinished: boolean;
+}
+
 @Injectable()
 export class TrackProgressionService {
-    private _gameFinished: Observable<boolean>;
-    private _gameFinishedSubject: Subject<boolean> = new Subject<boolean>();
-
-    private _gameTime: Observable<number>;
-    private _gameTimeSubject: Subject<number> = new Subject<number>();
+    private _game: Observable<IGameInformation>;
+    private _gameSubject: Subject<IGameInformation> = new Subject<IGameInformation>();
 
     public constructor() {
-        this._gameFinished = this._gameFinishedSubject.asObservable();
-        this._gameTime = this._gameTimeSubject.asObservable();
+        this._game = this._gameSubject.asObservable();
     }
 
-    public get gameFinished(): Observable<boolean> {
-        return this._gameFinished;
+    public get game(): Observable<IGameInformation> {
+        return this._game;
     }
 
-    public get gameTime(): Observable<number> {
-        return this._gameTime;
-    }
-
-    public sendGameProgress(gameFinished: boolean): void {
-        this._gameFinishedSubject.next(gameFinished);
-    }
-
-    public sendGameTime(gameTime: number): void {
-        this._gameTimeSubject.next(gameTime);
+    public sendGameProgress(game: IGameInformation): void {
+        this._gameSubject.next(game);
     }
 
 }

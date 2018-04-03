@@ -8,7 +8,7 @@ export interface ITrack {
     description?: String;
     timesPlayed?: number;
     vertice?: Array<Array<number>>;
-    completedTimes?: Array<string>;
+    completedTimes?: Array<number>;
 }
 
 export interface ITrackInfo extends Document {
@@ -17,7 +17,7 @@ export interface ITrackInfo extends Document {
     description: String;
     timesPlayed: number;
     vertice: Array<Array<number>>;
-    completedTimes: Array<string>;
+    completedTimes: Array<number>;
 }
 
 export const trackSchema: Schema = new Schema({
@@ -26,7 +26,7 @@ export const trackSchema: Schema = new Schema({
     description: String,
     timesPlayed: Number,
     vertice: Array<Array<Number>>(),
-    completedTimes: Array<string>()
+    completedTimes: Array<number>()
 });
 
 export default mongoose.model<ITrackInfo>("Track", trackSchema);

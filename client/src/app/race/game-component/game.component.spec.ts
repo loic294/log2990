@@ -2,6 +2,7 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { GameComponent } from "./game.component";
+import { TrackProgressionService } from "../trackProgressionService";
 
 describe("GameComponent", () => {
     let component: GameComponent;
@@ -10,7 +11,8 @@ describe("GameComponent", () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [FormsModule],
-            declarations: [GameComponent]
+            declarations: [GameComponent],
+            providers: [TrackProgressionService]
         })
             .compileComponents().catch((error) => {
                 throw error;
@@ -41,7 +43,7 @@ describe("GameComponent", () => {
         const objectsInScene: number = component.service.scene.children.length;
         await component.ngAfterViewInit();
         component.showTrack();
-        component.start();
+        await component.start();
         expect(component.service.scene.children.length).toBeGreaterThan(objectsInScene);
         expect(component.raceStarted).toBe(true);
     });

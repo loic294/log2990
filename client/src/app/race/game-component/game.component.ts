@@ -7,7 +7,7 @@ import { CameraService } from "../camera-service/camera.service";
 import { TrackInformation } from "../trackInformation";
 import { TrackBuilder } from "../trackBuilder";
 import { AiService } from "../ai-service/ai.service";
-import { TrackProgressionService } from "../trackProgressionService";
+import { IGameInformation, TrackProgressionService } from "../trackProgressionService";
 
 const SCALE_FACTOR: number = -10;
 
@@ -31,8 +31,7 @@ export class GameComponent implements AfterViewInit, OnInit {
     private _trackLoaded: boolean;
     private _trackInformation: TrackInformation;
     private _dotCommand: DotCommand;
-    private _raceIsCompleted: boolean;
-    private _currentGameTime: string;
+    private _currentGame: IGameInformation;
 
     public constructor(private renderService: RenderService, private inputManager: InputManagerService,
                        private _trackProgressionService: TrackProgressionService) {
@@ -40,6 +39,8 @@ export class GameComponent implements AfterViewInit, OnInit {
         this._trackLoaded = false;
         this._trackInformation = new TrackInformation();
         this._trackInformation.getTracksList();
+
+        this._currentGame = {gameTime: 0, lapTimes: new Array(), gameIsFinished: false, currentLap: 1};
     }
 
     @HostListener("window:resize", ["$event"])
@@ -49,14 +50,14 @@ export class GameComponent implements AfterViewInit, OnInit {
 
     @HostListener("window:keydown", ["$event"])
     public onKeyDown(event: KeyboardEvent): void {
-        if (!this._raceIsCompleted) {
+        if (!this._currentGame.gameIsFinished) {
             this.inputManager.handleKey(event, Release.Down);
         }
     }
 
     @HostListener("window:keyup", ["$event"])
     public onKeyUp(event: KeyboardEvent): void {
-        if (!this._raceIsCompleted) {
+        if (!this._currentGame.gameIsFinished) {
             this.inputManager.handleKey(event, Release.Up);
         }
     }
@@ -68,16 +69,12 @@ export class GameComponent implements AfterViewInit, OnInit {
     }
 
     public ngOnInit(): void {
-        this._trackProgressionService.gameFinished
-            .subscribe((_gameFinished) => this.stopGame(_gameFinished));
-        this._trackProgressionService.gameTime
-            .subscribe((_gameTime) => this._currentGameTime = _gameTime.toFixed(2));
+        this._trackProgressionService.game
+            .subscribe((_game) => this.actOnProgress(_game));
     }
 
-    public start(): void {
+    public async start(): Promise<void> {
         if (this._trackLoaded) {
-            this._trackInformation.track.timesPlayed++;
-            this._trackInformation.patchTrack();
 
             this.loadTrack();
             this.inputManager.init(this.renderService);
@@ -93,6 +90,9 @@ export class GameComponent implements AfterViewInit, OnInit {
             this.renderService.aiService = new AiService(trackBuilder, this.renderService.bots);
             this.renderService.trackLoaded = true;
             this._raceStarted = true;
+
+            this._trackInformation.track.timesPlayed++;
+            await this._trackInformation.patchTrack();
         }
     }
 
@@ -142,15 +142,20 @@ export class GameComponent implements AfterViewInit, OnInit {
         this._trackLoaded = true;
     }
 
-    private stopGame(gameFinished: boolean): void {
-        if (gameFinished && this._raceStarted) {
-            this._raceIsCompleted = true;
+    private actOnProgress(game: IGameInformation): void {
+        this._currentGame = game;
+
+        if (game.gameIsFinished && this._raceStarted) {
             this._raceStarted = false;
             this._trackLoaded = false;
 
-            this._trackInformation.track.completedTimes.push(this._currentGameTime);
-            this._trackInformation.patchTrack();
+            this.saveTime().catch();
         }
+    }
+
+    private async saveTime(): Promise<void> {
+        this._trackInformation.track.completedTimes.push(this._currentGame.gameTime);
+        await this._trackInformation.patchTrack();
     }
 
     public async getTrackInfo(trackName: String): Promise<void> {
