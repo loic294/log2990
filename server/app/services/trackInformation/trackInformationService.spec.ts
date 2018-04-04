@@ -1,4 +1,5 @@
 /* tslint:disable */
+/*
 import { TrackInformationService } from "./trackInformationService";
 import { assert } from "chai";
 import { ITrack } from "../../models/trackInfo";
@@ -6,7 +7,7 @@ import { ITrack } from "../../models/trackInfo";
 const trackService: TrackInformationService = new TrackInformationService();
 
 describe("trackInformationService", () => {
-
+    
     describe("POST et GET", () => {
         it("should save new track named track1 and get track named track1", async () => {
             const tempObject: ITrack = { name: "track1", type: "type1", description: "desc", timesPlayed: 0 };
@@ -68,3 +69,4 @@ describe("trackInformationService", () => {
     });
 
 });
+*/
