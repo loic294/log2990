@@ -1,6 +1,7 @@
 import {
     Vector3, MeshBasicMaterial, Mesh, Object3D,
-    PlaneGeometry, DoubleSide, CircleGeometry, TextureLoader, Texture, RepeatWrapping} from "three";
+    PlaneGeometry, DoubleSide, CircleGeometry, TextureLoader, Texture, RepeatWrapping
+} from "three";
 import { LineSegment } from "./DotCommand";
 import { PI_OVER_2 } from "../constants";
 import { Car } from "./car/car";
@@ -123,82 +124,72 @@ export class TrackBuilder {
         const firstLine: Mesh = new Mesh(lineGeometry, lineMaterial);
         const secondLine: Mesh = new Mesh(lineGeometry, lineMaterial);
 
+        this.positionStartingLine(firstLine, WIDTH / DISTANCE_FACTOR);
+        this.positionStartingLine(secondLine, WIDTH * DISTANCE_FACTOR);
+    }
+
+    private positionStartingLine(line: Mesh, distance: number): void {
         const translationDirection: Vector3 = new Vector3(this._vertice[1].position.x,
                                                           this._vertice[1].position.z,
                                                           this._vertice[1].position.y);
         translationDirection.normalize();
 
-        firstLine.rotateX(PI_OVER_2);
-        firstLine.translateOnAxis(translationDirection, WIDTH / DISTANCE_FACTOR);
-        firstLine.userData.leftPositionTaken = false;
-        firstLine.userData.rightPositionTaken = false;
-        this._startingLines.push(firstLine);
-        this._scene.add(firstLine);
-
-        secondLine.rotateX(PI_OVER_2);
-        secondLine.translateOnAxis(translationDirection, WIDTH * DISTANCE_FACTOR);
-        secondLine.userData.leftPositionTaken = false;
-        secondLine.userData.rightPositionTaken = false;
-        this._startingLines.push(secondLine);
-        this._scene.add(secondLine);
+        line.rotateX(PI_OVER_2);
+        line.translateOnAxis(translationDirection, distance);
+        line.userData.leftPositionTaken = false;
+        line.userData.rightPositionTaken = false;
+        this._startingLines.push(line);
+        this._scene.add(line);
     }
 
     private positionRacers(): void {
 
-        if (Math.random() * NUMBER_OF_LINE <= 1) {
-            this.placeOnLine(this._playerCar, this._startingLines[0]);
-        } else {
-            this.placeOnLine(this._playerCar, this._startingLines[1]);
-        }
+        this.chooseLine(this._playerCar);
 
         for (const car of this._botCars) {
-            if (Math.random() * NUMBER_OF_LINE <= 1 && (!this._startingLines[0].userData.leftPositionTaken ||
-                                                         !this._startingLines[0].userData.rightPositionTaken)) {
-                this.placeOnLine(car, this._startingLines[0]);
-            } else if ((!this._startingLines[1].userData.leftPositionTaken ||
-                        !this._startingLines[1].userData.rightPositionTaken)) {
-                this.placeOnLine(car, this._startingLines[1]);
-            } else {
-                this.placeOnLine(car, this._startingLines[0]);
-            }
+            this.chooseLine(car);
         }
     }
 
-    private placeOnLine(car: Car, line: Mesh): void {
+    private chooseLine(car: Car): void {
+        if (Math.random() * NUMBER_OF_LINE <= 1 && (!this._startingLines[0].userData.leftPositionTaken ||
+            !this._startingLines[0].userData.rightPositionTaken)) {
+            this.chooseLineSide(car, this._startingLines[0]);
+        } else if ((!this._startingLines[1].userData.leftPositionTaken ||
+            !this._startingLines[1].userData.rightPositionTaken)) {
+            this.chooseLineSide(car, this._startingLines[1]);
+        } else {
+            this.chooseLineSide(car, this._startingLines[0]);
+        }
+    }
+
+    private chooseLineSide(car: Car, line: Mesh): void {
         const perpendicular: Vector3 = this.findPerpendicularVector(line.position);
         if (Math.random() * NUMBER_OF_LINE <= 1 && !line.userData.leftPositionTaken) {
-
-            car.meshPosition = line.position;
-            const direction: Vector3 = new Vector3(perpendicular.x * WIDTH / LINE_POSITION_FACTOR, 0,
-                                                   perpendicular.y * WIDTH / LINE_POSITION_FACTOR);
-            car.meshPosition = direction;
+            this.placeOnLine(car, line, perpendicular);
             line.userData.leftPositionTaken = true;
-
         } else if (!line.userData.rightPositionTaken) {
-
-            car.meshPosition = line.position;
-            const direction: Vector3 = new Vector3(-perpendicular.x * WIDTH / LINE_POSITION_FACTOR, 0,
-                                                   -perpendicular.y * WIDTH / LINE_POSITION_FACTOR);
-            car.meshPosition = direction;
+            perpendicular.x = -perpendicular.x;
+            perpendicular.y = -perpendicular.y;
+            this.placeOnLine(car, line, perpendicular);
             line.userData.rightPositionTaken = true;
-
         } else {
-
-            car.meshPosition = line.position;
-            const direction: Vector3 = new Vector3(perpendicular.x * WIDTH / LINE_POSITION_FACTOR, 0,
-                                                   perpendicular.y * WIDTH / LINE_POSITION_FACTOR);
-            car.meshPosition = direction;
+            this.placeOnLine(car, line, perpendicular);
             line.userData.leftPositionTaken = true;
         }
+    }
+
+    private placeOnLine(car: Car, line: Mesh, perpendicular: Vector3): void {
+        car.meshPosition = line.position;
+        const direction: Vector3 = new Vector3(perpendicular.x * WIDTH / LINE_POSITION_FACTOR, 0,
+                                               perpendicular.y * WIDTH / LINE_POSITION_FACTOR);
+        car.meshPosition = direction;
     }
 
     private findPerpendicularVector(vector: Vector3): Vector3 {
         const orthogonal: Vector3 = new Vector3(0, 0, 1);
-        const perpendicular: Vector3 = new Vector3;
-        perpendicular.crossVectors(vector, orthogonal);
-        perpendicular.normalize();
 
-        return perpendicular;
+        return new Vector3().crossVectors(vector, orthogonal).normalize();
     }
 
     public get vertices(): Array<Object3D> {
