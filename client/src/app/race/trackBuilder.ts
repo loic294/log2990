@@ -10,6 +10,8 @@ const OFFTRACK_OFFSET: number = 0.02;
 const PLANE_OFFSET: number = 0.01;
 const OFFTRACK_DIMENSION: number = 10000;
 const TEXTURE_DIMENSION: number = 5;
+const OFFTRACK_TEXTURE_PATH: string = "../../assets/grass.jpg";
+const TRACK_TEXTURE_PATH: string = "../../assets/track/asphalt.png";
 
 export class TrackBuilder {
     private _circleGeometry: CircleGeometry;
@@ -19,12 +21,11 @@ export class TrackBuilder {
     }
 
     private generateOffTrack(): void {
-        const texture: Texture = new TextureLoader().load("../../assets/grass.jpg");
-        texture.wrapS = RepeatWrapping;
-        texture.wrapT = RepeatWrapping;
-        texture.repeat.set(OFFTRACK_DIMENSION / TEXTURE_DIMENSION, OFFTRACK_DIMENSION / TEXTURE_DIMENSION);
+        const material: MeshBasicMaterial = new MeshBasicMaterial({
+            map: this.generateTexture(OFFTRACK_DIMENSION, OFFTRACK_DIMENSION, OFFTRACK_TEXTURE_PATH),
+            side: DoubleSide
+        });
 
-        const material: MeshBasicMaterial = new MeshBasicMaterial({ map: texture, side: DoubleSide });
         const planeGeometry: PlaneGeometry = new PlaneGeometry(OFFTRACK_DIMENSION, OFFTRACK_DIMENSION);
         const offTrackPlane: Mesh = new Mesh(planeGeometry, material);
 
@@ -45,25 +46,29 @@ export class TrackBuilder {
         this.removeLines();
     }
 
-    private generateTexture(textureLength: number): Texture {
-        const texture: Texture = new TextureLoader().load("../../assets/track/asphalt.png");
+    private generateTexture(textureWidth: number, textureLength: number, texturePath: string): Texture {
+        const texture: Texture = new TextureLoader().load(texturePath);
         texture.wrapS = RepeatWrapping;
         texture.wrapT = RepeatWrapping;
-        texture.repeat.set(WIDTH / TEXTURE_DIMENSION, textureLength / TEXTURE_DIMENSION);
+        texture.repeat.set(textureWidth / TEXTURE_DIMENSION, textureLength / TEXTURE_DIMENSION);
 
         return texture;
     }
 
-    private generatePlane(firstSide: Vector3, secondSide: Vector3): void {
-        const length: number = firstSide.distanceTo(secondSide);
+    private generatePlane(firstVertex: Vector3, secondVertex: Vector3): void {
+        const length: number = firstVertex.distanceTo(secondVertex);
 
-        const material: MeshBasicMaterial = new MeshBasicMaterial({ map: this.generateTexture(length), side: DoubleSide });
+        const material: MeshBasicMaterial = new MeshBasicMaterial({
+            map: this.generateTexture(WIDTH, length, TRACK_TEXTURE_PATH),
+            side: DoubleSide
+        });
+
         const planeGeometry: PlaneGeometry = new PlaneGeometry(WIDTH, length);
         const plane: Mesh = new Mesh(planeGeometry, material);
-        plane.position.set(firstSide.x, firstSide.y, firstSide.z);
+        plane.position.set(firstVertex.x, firstVertex.y, firstVertex.z);
 
         const dir: Vector3 = new Vector3;
-        dir.subVectors(secondSide, firstSide);
+        dir.subVectors(secondVertex, firstVertex);
         plane.translateOnAxis(dir, 1 / 2);
         const xAxis: Vector3 = new Vector3(0, 0, 1);
         const angle: number = xAxis.angleTo(dir);
@@ -87,7 +92,11 @@ export class TrackBuilder {
 
     private replaceSphere(vertex: Object3D): void {
         this._scene.remove(vertex);
-        const material: MeshBasicMaterial = new MeshBasicMaterial({ map: this.generateTexture(WIDTH), side: DoubleSide });
+        const material: MeshBasicMaterial = new MeshBasicMaterial({
+            map: this.generateTexture(WIDTH, WIDTH, TRACK_TEXTURE_PATH),
+            side: DoubleSide
+        });
+
         const circle: Mesh = new Mesh(this._circleGeometry, material);
         circle.position.set(vertex.position.x, vertex.position.y, vertex.position.z);
         circle.rotateX(PI_OVER_2);
