@@ -185,10 +185,10 @@ export class Car extends Object3D {
         if (this._speed.length() >= MINIMUM_SPEED) {
             const dragForce: Vector3 = this.getDragForce();
             const rollingResistance: Vector3 = this.getRollingResistance();
-            const latitudinalResistance: Vector3 =  this.getLatitudinalResistance();
+            const latitudinalResistance: Vector3 = this.getLatitudinalResistance();
             resultingForce.add(latitudinalResistance);
             resultingForce.add(dragForce.multiplyScalar(this.speed.dot(this.direction)))
-                            .add(rollingResistance.multiplyScalar(this.speed.dot(this.direction)));
+                .add(rollingResistance.multiplyScalar(this.speed.dot(this.direction)));
             /*
                             if (this.speed.dot(this.direction) >= 0) {
                 resultingForce.add(dragForce).add(rollingResistance);
@@ -206,6 +206,9 @@ export class Car extends Object3D {
         } else if (this.isBraking && this.isGoingForward()) {
             const brakeForce: Vector3 = this.getBrakeForce();
             resultingForce.add(brakeForce);
+        } else if (this.isBraking && this.isGoingBackward()) {
+            const brakeForce: Vector3 = this.getBrakeForce();
+            resultingForce.sub(brakeForce);
         }
 
         return resultingForce;
@@ -285,6 +288,11 @@ export class Car extends Object3D {
     private isGoingForward(): boolean {
         // tslint:disable-next-line:no-magic-numbers
         return this.speed.normalize().dot(this.direction) > 0.05;
+    }
+
+    private isGoingBackward(): boolean {
+        // tslint:disable-next-line:no-magic-numbers
+        return this.speed.normalize().dot(this.direction) < -0.05;
     }
 
     public getMass(): number {
