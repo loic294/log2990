@@ -8,6 +8,7 @@ import { TrackInformation } from "../trackInformation";
 import { TrackBuilder } from "../trackBuilder";
 import { AiService } from "../ai-service/ai.service";
 import { IGameInformation, TrackProgressionService } from "../trackProgressionService";
+import { ResultsService } from "../results-service/results.service";
 
 const SCALE_FACTOR: number = -10;
 
@@ -34,7 +35,8 @@ export class GameComponent implements AfterViewInit, OnInit {
     private _currentGame: IGameInformation;
 
     public constructor(private renderService: RenderService, private inputManager: InputManagerService,
-                       private _trackProgressionService: TrackProgressionService) {
+                       private _trackProgressionService: TrackProgressionService,
+                       private resultsService: ResultsService) {
         this._raceStarted = false;
         this._trackLoaded = false;
         this._trackInformation = new TrackInformation();
@@ -144,6 +146,7 @@ export class GameComponent implements AfterViewInit, OnInit {
 
     private actOnProgress(game: IGameInformation): void {
         this._currentGame = game;
+        this.resultsService.selectGame(game);
 
         if (game.gameIsFinished && this._raceStarted) {
             this._raceStarted = false;

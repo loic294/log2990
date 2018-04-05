@@ -6,7 +6,6 @@
   </ul>
 </div>
 
-
 <br>
 <br>
 <br>
@@ -16,9 +15,12 @@
 <li *ngFor="let time of _currentGame.lapTimes">
   {{time}} seconds
 </li>
+
+<app-results></app-results>
 <div *ngIf="!_raceStarted">
 
   <button (click)="start()">start race</button>
+
 
     <li *ngFor="let track of _trackInformation.tracks">
       <button (click)="getTrackInfo(track)">{{track}}</button>
@@ -34,5 +36,4 @@
         {{time}} seconds
       </li>
   </div>
-<app-results></app-results>
 </div>
