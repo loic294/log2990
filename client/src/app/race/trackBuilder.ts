@@ -151,12 +151,14 @@ export class TrackBuilder {
         }
     }
 
+    private lineAsFreePosition(line: Mesh): boolean {
+        return !line.userData.leftPositionTaken || !line.userData.rightPositionTaken;
+    }
+
     private chooseLine(car: Car): void {
-        if (Math.random() * NUMBER_OF_LINE <= 1 && (!this._startingLines[0].userData.leftPositionTaken ||
-            !this._startingLines[0].userData.rightPositionTaken)) {
+        if (Math.random() * NUMBER_OF_LINE <= 1 && this.lineAsFreePosition(this._startingLines[0])) {
             this.chooseLineSide(car, this._startingLines[0]);
-        } else if ((!this._startingLines[1].userData.leftPositionTaken ||
-            !this._startingLines[1].userData.rightPositionTaken)) {
+        } else if (this.lineAsFreePosition(this._startingLines[1])) {
             this.chooseLineSide(car, this._startingLines[1]);
         } else {
             this.chooseLineSide(car, this._startingLines[0]);
