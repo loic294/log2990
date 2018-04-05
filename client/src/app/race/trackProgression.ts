@@ -9,13 +9,13 @@ export class TrackProgression {
     private _game: IGameInformation;
 
     public constructor(private _startingLine: Vector3, private _playerCar: Car,
-                       private _trackPtogressionService: TrackProgressionService) {
+                       private _trackProgressionService: TrackProgressionService) {
         this._playerCar.userData.isNewLap = false;
         this._playerCar.userData.lapsCompleted = 0;
         this._playerCar.userData.clock = new Clock();
 
         this._game = {gameTime: 0, lapTimes: new Array(), gameIsFinished: false, currentLap: 1};
-        this._trackPtogressionService.sendGameProgress(this._game);
+        this._trackProgressionService.sendGameProgress(this._game);
 
         this._playerCar.userData.clock.start();
     }
@@ -38,11 +38,11 @@ export class TrackProgression {
 
         if (this._playerCar.userData.lapsCompleted >= MAX_LAPS) {
             this._game.gameIsFinished = true;
-            this._trackPtogressionService.sendGameProgress(this._game);
+            this._trackProgressionService.sendGameProgress(this._game);
             this._playerCar.userData.clock.stop();
         } else {
             this._game.gameTime = this._playerCar.userData.clock.getElapsedTime().toFixed(2);
-            this._trackPtogressionService.sendGameProgress(this._game);
+            this._trackProgressionService.sendGameProgress(this._game);
         }
     }
 
