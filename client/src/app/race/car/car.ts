@@ -179,13 +179,23 @@ export class Car extends Object3D {
         /* tslint:enable:no-magic-numbers */
     }
 
-    private getLongitudinalForce(): Vector3 {
+    private getResultingForce(): Vector3 {
         const resultingForce: Vector3 = new Vector3();
 
         if (this._speed.length() >= MINIMUM_SPEED) {
             const dragForce: Vector3 = this.getDragForce();
             const rollingResistance: Vector3 = this.getRollingResistance();
-            resultingForce.add(dragForce).add(rollingResistance);
+            const latitudinalResistance: Vector3 =  this.getLatitudinalResistance();
+            resultingForce.add(latitudinalResistance);
+            resultingForce.add(dragForce.multiplyScalar(this.speed.dot(this.direction)))
+                            .add(rollingResistance.multiplyScalar(this.speed.dot(this.direction)));
+            /*
+                            if (this.speed.dot(this.direction) >= 0) {
+                resultingForce.add(dragForce).add(rollingResistance);
+            } else {
+                resultingForce.sub(dragForce).sub(rollingResistance);
+            }
+            */
         }
 
         if (this.isAcceleratorPressed) {
@@ -199,6 +209,14 @@ export class Car extends Object3D {
         }
 
         return resultingForce;
+    }
+
+    private getLatitudinalResistance(): Vector3 {
+        const latitudinalCoefficient: number = 0.1;
+        const latitude: Vector3 = this.direction.cross(this.up);
+        const lateralVector: Vector3 = latitude.normalize().multiplyScalar(this.speed.dot(latitude));
+
+        return lateralVector.multiplyScalar(latitudinalCoefficient * this.mass * GRAVITY);
     }
 
     private getRollingResistance(): Vector3 {
@@ -253,7 +271,7 @@ export class Car extends Object3D {
     }
 
     private getAcceleration(): Vector3 {
-        return this.getLongitudinalForce().divideScalar(this.mass);
+        return this.getResultingForce().divideScalar(this.mass);
     }
 
     private getDeltaSpeed(deltaTime: number): Vector3 {
