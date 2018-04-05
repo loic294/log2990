@@ -66,6 +66,7 @@ export class RenderService {
 
         await this._car.init();
         this.scene.add(this._car);
+        this.scene.add(this._car.headlights.lights[0]);
         for (let i: number = 0; i < AMOUNT_OF_NPCS; i++) {
             await this._bots[i].init();
             this.scene.add(this._bots[i]);

@@ -2,6 +2,7 @@ import { Vector3, Matrix4, Object3D, ObjectLoader, Euler, Quaternion, Box3 } fro
 import { Engine } from "./engine";
 import { MS_TO_SECONDS, GRAVITY, PI_OVER_2, RAD_TO_DEG } from "../../constants";
 import { Wheel } from "./wheel";
+import Headlights from "./headlights";
 
 export const DEFAULT_WHEELBASE: number = 2.78;
 export const DEFAULT_MASS: number = 1515;
@@ -29,6 +30,7 @@ export class Car extends Object3D {
     private steeringWheelDirection: number;
     private weightRear: number;
     private _boundingBox: Box3;
+    private _headlights: Headlights;
 
     public constructor(
         engine: Engine = new Engine(),
@@ -42,12 +44,10 @@ export class Car extends Object3D {
             console.error("Wheelbase should be greater than 0.");
             wheelbase = DEFAULT_WHEELBASE;
         }
-
         if (mass <= 0) {
             console.error("Mass should be greater than 0.");
             mass = DEFAULT_MASS;
         }
-
         if (dragCoefficient <= 0) {
             console.error("Drag coefficient should be greater than 0.");
             dragCoefficient = DEFAULT_DRAG_COEFFICIENT;
@@ -65,6 +65,11 @@ export class Car extends Object3D {
         this._speed = new Vector3(0, 0, 0);
 
         this._boundingBox = new Box3().setFromObject(this);
+        this._headlights = new Headlights();
+    }
+
+    public get headlights(): Headlights {
+        return this._headlights;
     }
 
     public get speed(): Vector3 {
@@ -157,6 +162,7 @@ export class Car extends Object3D {
         const omega: number = this._speed.length() / R;
         this.mesh.rotateY(omega);
         this._boundingBox = new Box3().setFromObject(this);
+        this._headlights.update(this.meshPosition, this.direction);
     }
 
     private physicsUpdate(deltaTime: number): void {
