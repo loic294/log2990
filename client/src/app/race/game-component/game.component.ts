@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, ViewChild, HostListener } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, ViewChild, HostListener, OnInit } from "@angular/core";
 import { RenderService } from "../render-service/render.service";
 import InputManagerService, { Release } from "../input-manager/input-manager.service";
 import { DotCommand } from "../DotCommand";
@@ -7,6 +7,7 @@ import { CameraService } from "../camera-service/camera.service";
 import { TrackInformation } from "../trackInformation";
 import { TrackBuilder } from "../trackBuilder";
 import { AiService } from "../ai-service/ai.service";
+import { IGameInformation, TrackProgressionService } from "../trackProgressionService";
 
 const SCALE_FACTOR: number = -10;
 
@@ -22,7 +23,7 @@ const SCALE_FACTOR: number = -10;
     ]
 })
 
-export class GameComponent implements AfterViewInit {
+export class GameComponent implements AfterViewInit, OnInit {
 
     @ViewChild("container")
     private containerRef: ElementRef;
@@ -30,12 +31,16 @@ export class GameComponent implements AfterViewInit {
     private _trackLoaded: boolean;
     private _trackInformation: TrackInformation;
     private _dotCommand: DotCommand;
+    private _currentGame: IGameInformation;
 
-    public constructor(private renderService: RenderService, private inputManager: InputManagerService) {
+    public constructor(private renderService: RenderService, private inputManager: InputManagerService,
+                       private _trackProgressionService: TrackProgressionService) {
         this._raceStarted = false;
         this._trackLoaded = false;
         this._trackInformation = new TrackInformation();
         this._trackInformation.getTracksList();
+
+        this._currentGame = {gameTime: 0, lapTimes: new Array(), gameIsFinished: false, currentLap: 1};
     }
 
     @HostListener("window:resize", ["$event"])
@@ -45,12 +50,16 @@ export class GameComponent implements AfterViewInit {
 
     @HostListener("window:keydown", ["$event"])
     public onKeyDown(event: KeyboardEvent): void {
-        this.inputManager.handleKey(event, Release.Down);
+        if (!this._currentGame.gameIsFinished) {
+            this.inputManager.handleKey(event, Release.Down);
+        }
     }
 
     @HostListener("window:keyup", ["$event"])
     public onKeyUp(event: KeyboardEvent): void {
-        this.inputManager.handleKey(event, Release.Up);
+        if (!this._currentGame.gameIsFinished) {
+            this.inputManager.handleKey(event, Release.Up);
+        }
     }
 
     public async ngAfterViewInit(): Promise<void> {
@@ -59,20 +68,31 @@ export class GameComponent implements AfterViewInit {
 
     }
 
-    public start(): void {
+    public ngOnInit(): void {
+        this._trackProgressionService.game
+            .subscribe((_game) => this.actOnProgress(_game));
+    }
+
+    public async start(): Promise<void> {
         if (this._trackLoaded) {
+
             this.loadTrack();
             this.inputManager.init(this.renderService);
-            this.renderService.start();
 
             const trackBuilder: TrackBuilder = new TrackBuilder(this.renderService.scene,
                                                                 this._dotCommand.getVertices(),
-                                                                this._dotCommand.getEdges());
+                                                                this._dotCommand.getEdges(),
+                                                                this.renderService.car,
+                                                                this.renderService.bots);
             trackBuilder.buildTrack();
+            this.renderService.start(trackBuilder.startingLines[0].position, this._trackProgressionService);
 
             this.renderService.aiService = new AiService(trackBuilder, this.renderService.bots);
             this.renderService.trackLoaded = true;
             this._raceStarted = true;
+
+            this._trackInformation.track.timesPlayed++;
+            await this._trackInformation.patchTrack();
         }
     }
 
@@ -120,6 +140,22 @@ export class GameComponent implements AfterViewInit {
         this._dotCommand.connectToFirst();
         this._dotCommand.complete();
         this._trackLoaded = true;
+    }
+
+    private actOnProgress(game: IGameInformation): void {
+        this._currentGame = game;
+
+        if (game.gameIsFinished && this._raceStarted) {
+            this._raceStarted = false;
+            this._trackLoaded = false;
+
+            this.saveTime().catch();
+        }
+    }
+
+    private async saveTime(): Promise<void> {
+        this._trackInformation.track.completedTimes.push(this._currentGame.gameTime);
+        await this._trackInformation.patchTrack();
     }
 
     public async getTrackInfo(trackName: String): Promise<void> {

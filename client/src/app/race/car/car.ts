@@ -98,6 +98,10 @@ export class Car extends Object3D {
         return this.mesh.position;
     }
 
+    public set meshPosition(position: Vector3) {
+        this.mesh.position.add(position);
+    }
+
     public get boundingBox(): Box3 {
         return this._boundingBox;
     }

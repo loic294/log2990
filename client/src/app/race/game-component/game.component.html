@@ -11,7 +11,11 @@
 <br>
 <br>
 <br>
-
+<span>Time: {{_currentGame.gameTime}} seconds</span><br>
+<span>FLAGGED laps: {{_currentGame.currentLap}}</span><br>
+<li *ngFor="let time of _currentGame.lapTimes">
+  {{time}} seconds
+</li>
 <div *ngIf="!_raceStarted">
 
   <button (click)="start()">start race</button>
