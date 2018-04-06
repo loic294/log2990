@@ -1,18 +1,22 @@
-import { Vector3, Raycaster, Intersection } from "three";
+import { Vector3, Raycaster, Intersection, Box3 } from "three";
 import { Car } from "./car";
 
 export default class Collision {
     private static carA: Car;
     private static carB: Car;
     public static detectCollision(carA: Car, carB: Car): boolean {
-        return carA.boundingBox.intersectsBox(carB.boundingBox);
+        return Collision.createBoundingBox(carA).intersectsBox(Collision.createBoundingBox(carB));
+    }
+
+    private static createBoundingBox(car: Car): Box3 {
+        return new Box3().setFromObject(car);
     }
 
     public static detectCollisionAndCollide(carA: Car, carB: Car): void {
 
         const ray: Raycaster = new Raycaster(carA.meshPosition.clone(), carB.meshPosition.clone().normalize());
         const collisionResults: Intersection[] = ray.intersectObject(carB);
-        if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
+        if (collisionResults.length > 0) {
             Collision.collide(carA, carB);
             console.log("TESTING");
         }

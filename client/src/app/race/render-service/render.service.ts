@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import {
-    WebGLRenderer, Scene, AmbientLight, BoxHelper,
+    WebGLRenderer, Scene, AmbientLight,
     MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, BoxGeometry, Vector3
 } from "three";
 import { Car } from "../car/car";
@@ -62,17 +62,11 @@ export class RenderService {
         const timeSinceLastFrame: number = Date.now() - this._lastDate;
         this._car.update(timeSinceLastFrame);
         this._bots.forEach((bot) => {
-            if (Collision.detectCollision(this._car, bot)) {
-                console.log("COLLISION CAR-NPC");
-                Collision.collide(this._car, bot);
-            }
+            Collision.detectCollisionAndCollide(this._car, bot);
         });
         for (let i: number = 0; i < this._bots.length; i++) {
             for (let j: number = i; j < this._bots.length; j++) {
-                if (Collision.detectCollision(this._bots[i], this._bots[j])) {
-                    console.log("COLLISION NPC-NPC");
-                    Collision.collide(this._bots[i], this._bots[j]);
-                }
+                Collision.detectCollisionAndCollide(this._bots[i], this._bots[j]);
             }
         }
         if (this._trackLoaded) {
@@ -91,9 +85,6 @@ export class RenderService {
             await this._bots[i].init();
             this.scene.add(this._bots[i]);
         }
-        // TODO: take this off;
-        const helper: BoxHelper = new BoxHelper(this._car);
-        this.scene.add(helper);
 
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
 
