@@ -1,22 +1,28 @@
-<div #container>
-  <ul>
+<div class="canvas-container" #container>
+  <ul class="stats">
     <li>Speed: {{this.renderService.car.speed.length() * 3.6 | number :'2.2-2'}} km/h</li>
     <li>Gear: {{this.renderService.car.currentGear + 1}}</li>
     <li>RPM: {{this.renderService.car.rpm | number:'2.0-0'}}</li>
   </ul>
-  <app-hud></app-hud>
+
+  <p class="lap">Lap: {{_currentGame.currentLap - 1}} / 3</p>
+    <p class="time"> Time: {{_currentGame.gameTime}} seconds</p>
+    <p class="lap-time"> Lap Time: {{_currentGame.gameTime}} seconds</p>
+
 </div>
 
 
+
+
 <br>
 <br>
 <br>
 <br>
-<span>Time: {{_currentGame.gameTime}} seconds</span><br>
-<span>FLAGGED laps: {{_currentGame.currentLap}}</span><br>
-<li *ngFor="let time of _currentGame.lapTimes">
+
+<!-- <span>FLAGGED laps: {{_currentGame.currentLap}}</span><br> -->
+<!-- <li *ngFor="let time of _currentGame.lapTimes">
   {{time}} seconds
-</li>
+</li> -->
 <div *ngIf="!_raceStarted">
 
   <button (click)="start()">start race</button>

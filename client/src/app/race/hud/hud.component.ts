@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { IGameInformation, TrackProgressionService } from "../trackProgressionService";
 
 @Component({
   selector: 'app-hud',
@@ -7,7 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HudComponent implements OnInit {
 
-  public constructor() { }
+  private _currentGame: IGameInformation;
+  public constructor(
+      private trackProgressionService: TrackProgressionService
+  ) { }
 
   public ngOnInit() {
   }
