@@ -1,4 +1,4 @@
-import { Vector3, Raycaster, Intersection, Box3, BoxGeometry, Geometry } from "three";
+import { Vector3, Raycaster, Intersection, Box3, BoxGeometry, Geometry, Quaternion } from "three";
 import { Car } from "./car";
 
 export default class Collision {
@@ -9,40 +9,38 @@ export default class Collision {
         return carA.boundingBox.intersectsBox(carB.boundingBox);
     }
 
-    private static createGeometry(car: Car): Geometry {
-        const box: Box3 = new Box3().setFromObject(car.mesh);
-
-        return new BoxGeometry(box.getSize().x, box.getSize().y, box.getSize().z)
-            .translate(car.meshPosition.x, car.meshPosition.y, car.meshPosition.z);
-
-    }
-
-    public static detectCollision2(carA: Car, carB: Car): boolean {
-
-        const originPoint: Vector3 = carA.meshPosition.clone();
-        let result: boolean = false;
-
-        for (let vertexIndex: number = 0; vertexIndex < Collision.createGeometry(carA).vertices.length; vertexIndex++) {
-            const localVertex: Vector3 = Collision.createGeometry(carA).vertices[vertexIndex].clone();
-            const globalVertex: Vector3 = localVertex.applyMatrix4(carA.matrix);
-            const directionVector: Vector3 = globalVertex.sub(carA.meshPosition);
-
-            const ray: Raycaster = new Raycaster(originPoint, directionVector.clone().normalize());
-            const collisionResults: Intersection[] = ray.intersectObject(carB);
-
-            result = (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length());
-        }
-
-        return result;
-
-    }
-
-    public static collide(carA: Car, carB: Car): void {
+    public static collide(carA: Car, carB: Car): Array<Vector3> {
         this.carA = carA;
         this.carB = carB;
 
-        Collision.calculateSpeedForB();
-        Collision.calculateSpeedForA();
+        const speedA0: Vector3 = carA.speed;
+        const speedB0: Vector3 = carB.speed;
+        const mA: number = carA.mass;
+        const mB: number = carB.mass;
+        const mAB: number = mA + mB;
+
+        const momentumA: Vector3 = speedA0.multiplyScalar(mA);
+        const momentumB: Vector3 = speedB0.multiplyScalar(mB);
+        const speedA: Vector3 = momentumB.multiplyScalar(2).divideScalar(mAB);
+        const speedB: Vector3 = momentumA.multiplyScalar(2).divideScalar(mAB);
+
+        const resultSpeeds: Array<Vector3> = [];
+
+        resultSpeeds.push(speedA);
+        resultSpeeds.push(speedB);
+
+        return resultSpeeds;
+    }
+
+    public static collide2(carA: Car, carB: Car): Array<Vector3> {
+        this.carA = carA;
+        this.carB = carB;
+
+        const resultSpeeds: Array<Vector3> = [];
+        resultSpeeds.push(Collision.calculateSpeedForB());
+        resultSpeeds.push(Collision.calculateSpeedForA());
+
+        return resultSpeeds;
     }
 
     private static calculateNormalVector(): Vector3 {
@@ -82,11 +80,11 @@ export default class Collision {
                 Collision.projectSpeedARelativeToBOnNormalReferentialO()));
     }
 
-    private static calculateSpeedForB(): void {
-        this.carB.speed.addVectors(Collision.calculateSpeedBRelativeToB(), this.carB.speed);
+    private static calculateSpeedForB(): Vector3 {
+        return this.carB.speed.addVectors(Collision.calculateSpeedBRelativeToB(), this.carB.speed);
     }
 
-    private static calculateSpeedForA(): void {
-        this.carA.speed.addVectors(Collision.calculateSpeedARelativeToB(), this.carB.speed);
+    private static calculateSpeedForA(): Vector3 {
+        return this.carA.speed.addVectors(Collision.calculateSpeedARelativeToB(), this.carB.speed);
     }
 }

@@ -62,9 +62,10 @@ export class RenderService {
         const timeSinceLastFrame: number = Date.now() - this._lastDate;
         this._car.update(timeSinceLastFrame);
         this._bots.forEach((bot) => {
-            console.log("MAX DE LA BOITE:" + this._car.boundingBox.max.x);
             if (Collision.detectCollision(this._car, bot)) {
-                Collision.collide(this._car, bot);
+                const resultSpeeds: Array<Vector3> = Collision.collide(this._car, bot);
+                bot.speed = resultSpeeds[1];
+                this._car.speed = resultSpeeds[0];
             }
         });
         /*
