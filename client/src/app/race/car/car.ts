@@ -2,7 +2,7 @@ import { Vector3, Matrix4, Object3D, ObjectLoader, Euler, Quaternion, Box3 } fro
 import { Engine } from "./engine";
 import { MS_TO_SECONDS, GRAVITY, PI_OVER_2, RAD_TO_DEG } from "../../constants";
 import { Wheel } from "./wheel";
-import Headlights from "./headlights";
+import HeadlightsManager from "./headlights";
 
 export const DEFAULT_WHEELBASE: number = 2.78;
 export const DEFAULT_MASS: number = 1515;
@@ -30,7 +30,7 @@ export class Car extends Object3D {
     private steeringWheelDirection: number;
     private weightRear: number;
     private _boundingBox: Box3;
-    private _headlights: Headlights;
+    private _headlightsManager: HeadlightsManager;
 
     public constructor(
         engine: Engine = new Engine(),
@@ -67,8 +67,8 @@ export class Car extends Object3D {
         this._boundingBox = new Box3().setFromObject(this);
     }
 
-    public get headlights(): Headlights {
-        return this._headlights;
+    public get headlightsManager(): HeadlightsManager {
+        return this._headlightsManager;
     }
 
     public get speed(): Vector3 {
@@ -117,8 +117,8 @@ export class Car extends Object3D {
     public async init(): Promise<void> {
         this.mesh = await this.load();
         this.mesh.setRotationFromEuler(INITIAL_MODEL_ROTATION);
-        this._headlights = new Headlights(this.meshPosition);
-        this.mesh.add(this._headlights);
+        this._headlightsManager = new HeadlightsManager();
+        this.mesh.add(this._headlightsManager);
         this.add(this.mesh);
 
     }

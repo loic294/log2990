@@ -6,9 +6,6 @@ import { CameraService } from "../camera-service/camera.service";
 import { AiService } from "../ai-service/ai.service";
 import { EnvironmentService } from "../environment-service/environment.service";
 
-// const WHITE: number = 0xFFFFFF;
-// const AMBIENT_LIGHT_OPACITY: number = 1;
-
 const AMOUNT_OF_NPCS: number = 1;
 
 @Injectable()
