@@ -25,3 +25,7 @@
 .modal-content.hidden {
     display: none;
 }
+
+input {
+    display: inline-block;
+}

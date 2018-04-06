@@ -15,6 +15,7 @@ export class ResultsComponent implements OnInit {
     private _game: IGameInformation;
     private _isHidden: boolean;
     private _bestTimes: Array<number>;
+    private _bestTimeName: String;
 
     public constructor( private resultsService: ResultsService) {
         this._isHidden = true;
@@ -32,15 +33,19 @@ export class ResultsComponent implements OnInit {
         return this._bestTimes;
     }
 
-    // public isBestTime(): boolean {
-    //     for (const time of this.bestTimes()) {
-    //         if (time === this._game.gameTime) {            
-    //             return true;
-    //         }
-    //     }
+    public isBestTime(): boolean {
+        for (const time of this.bestTimes()) {
+            if (time === this._game.gameTime) {
+                return true;
+            }
+        }
 
-    //     return false;
-    // }
+        return false;
+    }
+
+    public enterName(name: String): void {
+        this._bestTimeName = name;
+    }
     // tslint:disable-next-line:typedef
 
     public ngOnInit() {
