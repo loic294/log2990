@@ -3,6 +3,7 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { GameComponent } from "./game.component";
+import { TrackProgressionService } from "../trackProgressionService";
 import { Raycaster, Vector3, Intersection } from "three";
 
 describe("GameComponent", () => {
@@ -12,7 +13,8 @@ describe("GameComponent", () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [FormsModule],
-            declarations: [GameComponent]
+            declarations: [GameComponent],
+            providers: [TrackProgressionService]
         })
             .compileComponents().catch((error) => {
                 throw error;
@@ -43,7 +45,7 @@ describe("GameComponent", () => {
         const objectsInScene: number = component.service.scene.children.length;
         await component.ngAfterViewInit();
         component.showTrack();
-        component.start();
+        await component.start();
         expect(component.service.scene.children.length).toBeGreaterThan(objectsInScene);
         expect(component.raceStarted).toBe(true);
     });
@@ -64,7 +66,7 @@ describe("GameComponent", () => {
         component.trackInformation.track = {name: "track1", vertice: [[1, 0, 1], [-1, 0, 1], [-1, 0, -1], [1, 0, -1]]};
         await component.ngAfterViewInit();
         component.showTrack();
-        component.start();
+        await component.start();
 
         const origin1: Vector3 = new Vector3(0, 1, 1);
         const direction: Vector3 = new Vector3(0, -1, 0);

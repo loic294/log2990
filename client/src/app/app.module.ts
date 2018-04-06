@@ -27,6 +27,7 @@ import {MatProgressSpinnerModule} from "@angular/material";
 import { DifficultyService } from "./crosswords/difficulty.service/difficulty.service";
 import { HomeComponent } from "./home/home.component";
 import { TrackInformationService } from "../../../server/app/services/trackInformation/trackInformationService";
+import { TrackProgressionService } from "./race/trackProgressionService";
 import { TerminationComponent, TerminationDialogComponent } from "./crosswords/termination/termination.component";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
@@ -74,6 +75,7 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         DifficultyService,
         {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: true}},
         TrackInformationService,
+        TrackProgressionService
     ],
     exports: [
         MatProgressSpinnerModule,

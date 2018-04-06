@@ -2,17 +2,19 @@ import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import {
     WebGLRenderer, Scene, AmbientLight,
-    MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, BoxGeometry
+    MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, BoxGeometry, Vector3
 } from "three";
 import { Car } from "../car/car";
 import { CameraService } from "../camera-service/camera.service";
 import { AiService } from "../ai-service/ai.service";
+import { TrackProgression } from "../trackProgression";
+import { TrackProgressionService } from "../trackProgressionService";
 
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 1;
 
 const SIZE_SKYBOX: number = 10000;
-const AMOUNT_OF_NPCS: number = 1;
+const AMOUNT_OF_NPCS: number = 3;
 
 @Injectable()
 export class RenderService {
@@ -26,6 +28,7 @@ export class RenderService {
     private _bots: Array<Car>;
     private _aiService: AiService;
     private _trackLoaded: boolean;
+    private _trackProgression: TrackProgression;
 
     public constructor(private _cameraService: CameraService) {
         this._car = new Car();
@@ -79,9 +82,10 @@ export class RenderService {
         this._cameraService.changeCamera();
     }
 
-    public start(): void {
-        this._cameraService.changeCamera();
+    public start(startingLine: Vector3, service: TrackProgressionService): void {
+        this._cameraService.initialize(this._car, this.getAspectRatio());
         this.loadSkybox();
+        this._trackProgression = new TrackProgression(startingLine, this._car, service);
     }
 
     public getAspectRatio(): number {
@@ -103,6 +107,9 @@ export class RenderService {
         this.update();
         this.renderer.render(this.scene, this._cameraService.camera);
         this._stats.update();
+        if (this._trackProgression !== undefined) {
+            this._trackProgression.checkRaceProgress();
+        }
     }
 
     public onResize(): void {
@@ -161,4 +168,5 @@ export class RenderService {
     public set trackLoaded(trackLoaded: boolean) {
         this._trackLoaded = trackLoaded;
     }
+
 }
