@@ -1,25 +1,40 @@
-import { Vector3, Raycaster, Intersection, Box3 } from "three";
+import { Vector3, Raycaster, Intersection, Box3, BoxGeometry, Geometry } from "three";
 import { Car } from "./car";
 
 export default class Collision {
     private static carA: Car;
     private static carB: Car;
+    /*
     public static detectCollision(carA: Car, carB: Car): boolean {
-        return Collision.createBoundingBox(carA).intersectsBox(Collision.createBoundingBox(carB));
+        return Collision.createGeometry(carA).intersectsBox(Collision.createGeometry(carB));
+    }
+    */
+
+    private static createGeometry(car: Car): Geometry {
+        const box: Box3 = new Box3().setFromObject(car);
+
+        return new BoxGeometry(box.getSize().x, box.getSize().y, box.getSize().z)
+            .translate(car.meshPosition.x, car.meshPosition.y, car.meshPosition.z);
+
     }
 
-    private static createBoundingBox(car: Car): Box3 {
-        return new Box3().setFromObject(car);
-    }
+    public static detectCollision(carA: Car, carB: Car): boolean {
 
-    public static detectCollisionAndCollide(carA: Car, carB: Car): void {
+        const originPoint: Vector3 = carA.meshPosition.clone();
+        let result: boolean = false;
 
-        const ray: Raycaster = new Raycaster(carA.meshPosition.clone(), carB.meshPosition.clone().normalize());
-        const collisionResults: Intersection[] = ray.intersectObject(carB);
-        if (collisionResults.length > 0) {
-            Collision.collide(carA, carB);
-            console.log("TESTING");
+        for (let vertexIndex: number = 0; vertexIndex < Collision.createGeometry(carA).vertices.length; vertexIndex++) {
+            const localVertex: Vector3 = Collision.createGeometry(carA).vertices[vertexIndex].clone();
+            const globalVertex: Vector3 = localVertex.applyMatrix4(carA.matrix);
+            const directionVector: Vector3 = globalVertex.sub(carA.meshPosition);
+
+            const ray: Raycaster = new Raycaster(originPoint, directionVector.clone().normalize());
+            const collisionResults: Intersection[] = ray.intersectObject(carB);
+
+            result = (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length());
         }
+
+        return result;
 
     }
 

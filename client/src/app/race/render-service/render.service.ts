@@ -64,12 +64,14 @@ export class RenderService {
         this._bots.forEach((bot) => {
             if (Collision.detectCollision(this._car, bot)) {
                 Collision.collide(this._car, bot);
+                console.log("COLLISION CAR-BOT");
             }
         });
         for (let i: number = 0; i < this._bots.length; i++) {
             for (let j: number = i; j < this._bots.length; j++) {
                 if (Collision.detectCollision(this._bots[i], this._bots[j])) {
                     Collision.collide(this._bots[i], this._bots[j]);
+                    console.log("COLLISION BOT-BOT");
                 }
             }
         }
