@@ -16,6 +16,15 @@
 <app-results></app-results>
 
 
+<li *ngFor="let time of _currentGame.lapTimes">
+  {{time}} seconds
+</li>
+<p *ngFor="let botTimes of _currentGame.botTimes">
+  <li *ngFor="let time of botTimes">
+    {{time}} seconds
+  </li>
+  <br>
+</p>
 <div *ngIf="!_raceStarted">
 
   <button (click)="start()">start race</button>

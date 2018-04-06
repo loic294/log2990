@@ -7,6 +7,7 @@ export interface IGameInformation {
     lapTimes: Array<number>;
     currentLap: number;
     gameIsFinished: boolean;
+    botTimes: Array<Array<number>>;
 }
 
 @Injectable()

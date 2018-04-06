@@ -151,12 +151,14 @@ export class TrackBuilder {
         }
     }
 
+    private lineAsFreePosition(line: Mesh): boolean {
+        return !line.userData.leftPositionTaken || !line.userData.rightPositionTaken;
+    }
+
     private chooseLine(car: Car): void {
-        if (Math.random() * NUMBER_OF_LINE <= 1 && (!this._startingLines[0].userData.leftPositionTaken ||
-            !this._startingLines[0].userData.rightPositionTaken)) {
+        if (Math.random() * NUMBER_OF_LINE <= 1 && this.lineAsFreePosition(this._startingLines[0])) {
             this.chooseLineSide(car, this._startingLines[0]);
-        } else if ((!this._startingLines[1].userData.leftPositionTaken ||
-            !this._startingLines[1].userData.rightPositionTaken)) {
+        } else if (this.lineAsFreePosition(this._startingLines[1])) {
             this.chooseLineSide(car, this._startingLines[1]);
         } else {
             this.chooseLineSide(car, this._startingLines[0]);
@@ -166,24 +168,21 @@ export class TrackBuilder {
     private chooseLineSide(car: Car, line: Mesh): void {
         const perpendicular: Vector3 = this.findPerpendicularVector(line.position);
         if (Math.random() * NUMBER_OF_LINE <= 1 && !line.userData.leftPositionTaken) {
-            this.placeOnLine(car, line, perpendicular);
             line.userData.leftPositionTaken = true;
         } else if (!line.userData.rightPositionTaken) {
             perpendicular.x = -perpendicular.x;
             perpendicular.y = -perpendicular.y;
-            this.placeOnLine(car, line, perpendicular);
             line.userData.rightPositionTaken = true;
         } else {
-            this.placeOnLine(car, line, perpendicular);
             line.userData.leftPositionTaken = true;
         }
+        this.placeOnLine(car, line, perpendicular);
     }
 
     private placeOnLine(car: Car, line: Mesh, perpendicular: Vector3): void {
-        car.meshPosition = line.position;
         const direction: Vector3 = new Vector3(perpendicular.x * WIDTH / LINE_POSITION_FACTOR, 0,
                                                perpendicular.y * WIDTH / LINE_POSITION_FACTOR);
-        car.meshPosition = direction;
+        car.meshPosition = new Vector3().addVectors(line.position, direction);
     }
 
     private findPerpendicularVector(vector: Vector3): Vector3 {
