@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import {
-    WebGLRenderer, Scene, AmbientLight,
+    WebGLRenderer, Scene, AmbientLight, BoxHelper,
     MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, BoxGeometry, Vector3
 } from "three";
 import { Car } from "../car/car";
@@ -9,6 +9,7 @@ import { CameraService } from "../camera-service/camera.service";
 import { AiService } from "../ai-service/ai.service";
 import { TrackProgression } from "../trackProgression";
 import { TrackProgressionService } from "../trackProgressionService";
+import Collision from "../car/collision";
 
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 1;
@@ -60,6 +61,20 @@ export class RenderService {
     private update(): void {
         const timeSinceLastFrame: number = Date.now() - this._lastDate;
         this._car.update(timeSinceLastFrame);
+        this._bots.forEach((bot) => {
+            if (Collision.detectCollision(this._car, bot)) {
+                console.log("COLLISION CAR-NPC");
+                Collision.collide(this._car, bot);
+            }
+        });
+        for (let i: number = 0; i < this._bots.length; i++) {
+            for (let j: number = i; j < this._bots.length; j++) {
+                if (Collision.detectCollision(this._bots[i], this._bots[j])) {
+                    console.log("COLLISION NPC-NPC");
+                    Collision.collide(this._bots[i], this._bots[j]);
+                }
+            }
+        }
         if (this._trackLoaded) {
             this._aiService.update(timeSinceLastFrame);
         }
@@ -76,6 +91,10 @@ export class RenderService {
             await this._bots[i].init();
             this.scene.add(this._bots[i]);
         }
+        // TODO: take this off;
+        const helper: BoxHelper = new BoxHelper(this._car);
+        this.scene.add(helper);
+
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
 
         this._cameraService.initialize(this._car, this.getAspectRatio());

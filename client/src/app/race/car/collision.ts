@@ -1,4 +1,4 @@
-import { Vector3 } from "three";
+import { Vector3, Raycaster, Intersection } from "three";
 import { Car } from "./car";
 
 export default class Collision {
@@ -6,6 +6,17 @@ export default class Collision {
     private static carB: Car;
     public static detectCollision(carA: Car, carB: Car): boolean {
         return carA.boundingBox.intersectsBox(carB.boundingBox);
+    }
+
+    public static detectCollisionAndCollide(carA: Car, carB: Car): void {
+
+        const ray: Raycaster = new Raycaster(carA.meshPosition.clone(), carB.meshPosition.clone().normalize());
+        const collisionResults: Intersection[] = ray.intersectObject(carB);
+        if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
+            Collision.collide(carA, carB);
+            console.log("TESTING");
+        }
+
     }
 
     public static collide(carA: Car, carB: Car): void {
@@ -49,7 +60,7 @@ export default class Collision {
 
     private static calculateSpeedARelativeToB(): Vector3 {
         return new Vector3().addVectors(Collision.calculateSpeedARelativeToBReferentialO(), Collision.calculateNormalVector()
-                .multiplyScalar(Collision.projectSpeedARelativeToBOnNormal() -
+            .multiplyScalar(Collision.projectSpeedARelativeToBOnNormal() -
                 Collision.projectSpeedARelativeToBOnNormalReferentialO()));
     }
 
