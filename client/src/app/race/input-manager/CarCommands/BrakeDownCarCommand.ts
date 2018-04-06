@@ -6,6 +6,9 @@ export default class BrakeDownCarCommand extends AbsCarCommand {
         console.log("MAX EN X DE LA BOITE:" + this.car.boundingBox.max.x);
         console.log("MAX EN Y DE LA BOITE:" + this.car.boundingBox.max.y);
         console.log("MAX EN Z DE LA BOITE:" + this.car.boundingBox.max.z);
+        console.log("MIN EN X DE LA BOITE:" + this.car.boundingBox.min.x);
+        console.log("MIN EN Y DE LA BOITE:" + this.car.boundingBox.min.y);
+        console.log("MIN EN Z DE LA BOITE:" + this.car.boundingBox.min.z);
         console.log("X DU CENTRE DE LA BOITE:" + this.car.boundingBox.getCenter().x);
         console.log("Y DU CENTRE DE LA BOITE:" + this.car.boundingBox.getCenter().y);
         console.log("Z DU CENTRE DE LA BOITE:" + this.car.boundingBox.getCenter().z);
