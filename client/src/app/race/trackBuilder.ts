@@ -1,6 +1,6 @@
 import {
     Vector3, Mesh, Object3D,
-    PlaneGeometry, DoubleSide, CircleGeometry, TextureLoader, Texture, RepeatWrapping, MeshLambertMaterial} from "three";
+    PlaneGeometry, DoubleSide, CircleGeometry, TextureLoader, Texture, RepeatWrapping, MeshPhongMaterial} from "three";
 import { LineSegment } from "./DotCommand";
 import { PI_OVER_2 } from "../constants";
 
@@ -21,7 +21,7 @@ export class TrackBuilder {
     }
 
     private generateOffTrack(): void {
-        const material: MeshLambertMaterial = new MeshLambertMaterial({
+        const material: MeshPhongMaterial = new MeshPhongMaterial({
             map: this.generateTexture(OFFTRACK_DIMENSION, OFFTRACK_DIMENSION, OFFTRACK_TEXTURE_PATH),
             side: DoubleSide
         });
@@ -58,7 +58,7 @@ export class TrackBuilder {
     private generatePlane(firstVertex: Vector3, secondVertex: Vector3): void {
         const length: number = firstVertex.distanceTo(secondVertex);
 
-        const material: MeshLambertMaterial = new MeshLambertMaterial({
+        const material: MeshPhongMaterial = new MeshPhongMaterial({
             map: this.generateTexture(WIDTH, length, TRACK_TEXTURE_PATH),
             side: DoubleSide
         });
@@ -92,7 +92,7 @@ export class TrackBuilder {
 
     private replaceSphere(vertex: Object3D): void {
         this._scene.remove(vertex);
-        const material: MeshLambertMaterial = new MeshLambertMaterial({
+        const material: MeshPhongMaterial = new MeshPhongMaterial({
             map: this.generateTexture(WIDTH, WIDTH, TRACK_TEXTURE_PATH),
             side: DoubleSide
         });

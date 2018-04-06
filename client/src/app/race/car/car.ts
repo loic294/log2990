@@ -65,7 +65,6 @@ export class Car extends Object3D {
         this._speed = new Vector3(0, 0, 0);
 
         this._boundingBox = new Box3().setFromObject(this);
-        this._headlights = new Headlights();
     }
 
     public get headlights(): Headlights {
@@ -118,7 +117,10 @@ export class Car extends Object3D {
     public async init(): Promise<void> {
         this.mesh = await this.load();
         this.mesh.setRotationFromEuler(INITIAL_MODEL_ROTATION);
+        this._headlights = new Headlights(this.meshPosition);
+        this.mesh.add(this._headlights);
         this.add(this.mesh);
+
     }
 
     public steerLeft(): void {
@@ -162,7 +164,6 @@ export class Car extends Object3D {
         const omega: number = this._speed.length() / R;
         this.mesh.rotateY(omega);
         this._boundingBox = new Box3().setFromObject(this);
-        this._headlights.update(this.meshPosition, this.direction);
     }
 
     private physicsUpdate(deltaTime: number): void {
