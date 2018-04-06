@@ -6,15 +6,11 @@ export default class Collision {
     private static carB: Car;
 
     public static detectCollision(carA: Car, carB: Car): boolean {
-        return Collision.createBoundingBox(carA).intersectsBox(Collision.createBoundingBox(carB));
-    }
-
-    private static createBoundingBox(car: Car): Box3 {
-        return new Box3().setFromObject(car);
+        return carA.boundingBox.intersectsBox(carB.boundingBox);
     }
 
     private static createGeometry(car: Car): Geometry {
-        const box: Box3 = new Box3().setFromObject(car);
+        const box: Box3 = new Box3().setFromObject(car.mesh);
 
         return new BoxGeometry(box.getSize().x, box.getSize().y, box.getSize().z)
             .translate(car.meshPosition.x, car.meshPosition.y, car.meshPosition.z);

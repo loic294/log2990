@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import {
-    WebGLRenderer, Scene, AmbientLight, BoxHelper,
+    WebGLRenderer, Scene, AmbientLight,
     MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, BoxGeometry, Vector3
 } from "three";
 import { Car } from "../car/car";
@@ -62,11 +62,12 @@ export class RenderService {
         const timeSinceLastFrame: number = Date.now() - this._lastDate;
         this._car.update(timeSinceLastFrame);
         this._bots.forEach((bot) => {
+            console.log("MAX DE LA BOITE:" + this._car.boundingBox.max.x);
             if (Collision.detectCollision(this._car, bot)) {
                 Collision.collide(this._car, bot);
-                console.log("COLLISION CAR-BOT");
             }
         });
+        /*
         for (let i: number = 0; i < this._bots.length; i++) {
             for (let j: number = i; j < this._bots.length; j++) {
                 if (Collision.detectCollision(this._bots[i], this._bots[j])) {
@@ -75,6 +76,7 @@ export class RenderService {
                 }
             }
         }
+        */
         if (this._trackLoaded) {
             this._aiService.update(timeSinceLastFrame);
         }
@@ -87,7 +89,6 @@ export class RenderService {
 
         await this._car.init();
         this.scene.add(this._car);
-        this.scene.add(new BoxHelper(this._car));
         for (let i: number = 0; i < AMOUNT_OF_NPCS; i++) {
             await this._bots[i].init();
             this.scene.add(this._bots[i]);
