@@ -4,11 +4,14 @@ import { Car } from "./car";
 export default class Collision {
     private static carA: Car;
     private static carB: Car;
-    /*
+
     public static detectCollision(carA: Car, carB: Car): boolean {
-        return Collision.createGeometry(carA).intersectsBox(Collision.createGeometry(carB));
+        return Collision.createBoundingBox(carA).intersectsBox(Collision.createBoundingBox(carB));
     }
-    */
+
+    private static createBoundingBox(car: Car): Box3 {
+        return new Box3().setFromObject(car);
+    }
 
     private static createGeometry(car: Car): Geometry {
         const box: Box3 = new Box3().setFromObject(car);
@@ -18,7 +21,7 @@ export default class Collision {
 
     }
 
-    public static detectCollision(carA: Car, carB: Car): boolean {
+    public static detectCollision2(carA: Car, carB: Car): boolean {
 
         const originPoint: Vector3 = carA.meshPosition.clone();
         let result: boolean = false;

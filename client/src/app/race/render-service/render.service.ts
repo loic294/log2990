@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import {
-    WebGLRenderer, Scene, AmbientLight,
+    WebGLRenderer, Scene, AmbientLight, BoxHelper,
     MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, BoxGeometry, Vector3
 } from "three";
 import { Car } from "../car/car";
@@ -87,6 +87,7 @@ export class RenderService {
 
         await this._car.init();
         this.scene.add(this._car);
+        this.scene.add(new BoxHelper(this._car));
         for (let i: number = 0; i < AMOUNT_OF_NPCS; i++) {
             await this._bots[i].init();
             this.scene.add(this._bots[i]);
