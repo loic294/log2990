@@ -1,4 +1,4 @@
-import { Vector3, Raycaster, Intersection, Box3, BoxGeometry, Geometry, Quaternion } from "three";
+import { Vector3, Quaternion, Matrix4 } from "three";
 import { Car } from "./car";
 
 export default class Collision {
@@ -19,6 +19,8 @@ export default class Collision {
         const mB: number = carB.mass;
         const mAB: number = mA + mB;
 
+        Collision.applyMatrix(carA, carB, speedA0, speedB0);
+
         const momentumA: Vector3 = speedA0.multiplyScalar(mA);
         const momentumB: Vector3 = speedB0.multiplyScalar(mB);
         const speedA: Vector3 = momentumB.multiplyScalar(2).divideScalar(mAB);
@@ -30,6 +32,23 @@ export default class Collision {
         resultSpeeds.push(speedB);
 
         return resultSpeeds;
+    }
+
+    private static applyMatrix (carA: Car, carB: Car, vA: Vector3, vB: Vector3): void {
+        const rotationMatrixA: Matrix4 = new Matrix4();
+        const rotationMatrixB: Matrix4 = new Matrix4();
+        rotationMatrixA.extractRotation(carA.mesh.matrix);
+        rotationMatrixB.extractRotation(carB.mesh.matrix);
+        const rotationQuaternionA: Quaternion = new Quaternion();
+        const rotationQuaternionB: Quaternion = new Quaternion();
+        rotationQuaternionA.setFromRotationMatrix(rotationMatrixA);
+        rotationQuaternionB.setFromRotationMatrix(rotationMatrixB);
+
+        const array: Array<Quaternion> = new Array();
+        array.push(rotationQuaternionA);
+        array.push(rotationQuaternionB);
+        vA.applyMatrix4(rotationMatrixA);
+        vB.applyMatrix4(rotationMatrixB);
     }
 
     public static collide2(carA: Car, carB: Car): Array<Vector3> {
