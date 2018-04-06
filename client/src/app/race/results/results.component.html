@@ -1,9 +1,14 @@
-<button (click)="show()">Open Modal</button>
+<!--<button (click)="show()">Open Modal</button>-->
+<div *ngIf="_game.gameIsFinished">
+  <div id="resultsModal" class="modal" [class.hidden]="!isHidden">
 
-<!--<div id="resultsModal" class="modal" [class.hidden]="isHidden">
+    <div class="modal-content">
+      <h2>FELICITATIONS</h2>
+      <p>RESULTATS</p>
+      <li *ngFor="let time of bestTimes()">
+        <span>{{time}} seconds</span>
+      </li>
+    </div>
 
-  <div class="modal-content">
-    <p>RESULTATS</p>
   </div>
-
-</div>-->
+</div>

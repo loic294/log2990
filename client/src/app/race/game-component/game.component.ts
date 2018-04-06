@@ -92,7 +92,6 @@ export class GameComponent implements AfterViewInit, OnInit {
             this.renderService.aiService = new AiService(trackBuilder, this.renderService.bots);
             this.renderService.trackLoaded = true;
             this._raceStarted = true;
-
             this._trackInformation.track.timesPlayed++;
             await this._trackInformation.patchTrack();
         }
@@ -147,12 +146,12 @@ export class GameComponent implements AfterViewInit, OnInit {
     private actOnProgress(game: IGameInformation): void {
         this._currentGame = game;
         this.resultsService.selectGame(game);
-
+        this.resultsService.selectTrackTimes(this._trackInformation.track.completedTimes); // FOR TESTING PURPOSES (TO REMOVE)
         if (game.gameIsFinished && this._raceStarted) {
             this._raceStarted = false;
             this._trackLoaded = false;
-
             this.saveTime().catch();
+            this.resultsService.selectTrackTimes(this._trackInformation.track.completedTimes);
         }
     }
 
