@@ -21,6 +21,7 @@ const TARGET_Z: number = -20;
 
 export default class HeadlightsManager extends Object3D {
     private _headlights: Array<SpotLight>;
+    private _isActive: boolean;
 
     public constructor() {
         super();
@@ -45,12 +46,14 @@ export default class HeadlightsManager extends Object3D {
         for (const light of this._headlights) {
             light.intensity = INTENSITY;
         }
+        this._isActive = true;
     }
 
     public deactivateLight(): void {
         for (const light of this._headlights) {
             light.intensity = 0;
         }
+        this._isActive = false;
     }
 
     public get lights(): Array<SpotLight> {
