@@ -10,14 +10,16 @@ import BrakeUpCarCommand from "./CarCommands/BrakeUpCarCommand";
 import ChangeCameraViewCommand from "./CameraCommands/ChangeCameraViewCommand";
 import { RenderService } from "../render-service/render.service";
 import ZoomCameraCommand from "./CameraCommands/ZoomCameraCommand";
-import ChangeModeCommand from "./EnvironmentCommands/ChangeModeCommand";
+import ChangeModeCommand from "./ChangeModeCommand";
+import ChangeLightStateCommand from "./ChangeLightStateCommand";
 
 const ACCELERATE_KEYCODE: number = 87;  // w
 const LEFT_KEYCODE: number = 65;        // a
 const BRAKE_KEYCODE: number = 83;       // s
 const RIGHT_KEYCODE: number = 68;       // d
 const CHANGE_VIEW_KEYCODE: number = 67; // c
-const CHANGE_ENVIRONMENT: number = 77;  // m
+const CHANGE_ENVIRONMENT: number = 78;  // n
+const CHANGE_LIGHT_STATE: number = 84;  // t
 const ZOOM_IN: number = 187; // = (+)
 const ZOOM_OUT: number = 189; // -
 
@@ -46,7 +48,8 @@ export default class InputManagerService {
             {keyCode: CHANGE_VIEW_KEYCODE, command: new ChangeCameraViewCommand(renderer.cameraService)},
             {keyCode: ZOOM_IN, command: new ZoomCameraCommand(renderer.cameraService, true)},
             {keyCode: ZOOM_OUT, command: new ZoomCameraCommand(renderer.cameraService, false)},
-            {keyCode: CHANGE_ENVIRONMENT, command: new ChangeModeCommand(renderer.environmentService)}
+            {keyCode: CHANGE_ENVIRONMENT, command: new ChangeModeCommand(renderer.environmentService, renderer)},
+            {keyCode: CHANGE_LIGHT_STATE, command: new ChangeLightStateCommand(renderer)}
 
         ];
 

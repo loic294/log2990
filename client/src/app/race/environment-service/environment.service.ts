@@ -1,12 +1,11 @@
 import { Injectable } from "@angular/core";
 import { AmbientLight, MeshBasicMaterial, TextureLoader, DoubleSide, BoxGeometry, MultiMaterial, Mesh, Scene } from "three";
+import { DAY, NIGHT } from "../../constants";
 
 const WHITE: number = 0xFFFFFF;
 const DAY_LIGHT_OPACITY: number = 1;
 const NIGHT_LIGHT_OPACITY: number = 0.2;
 const SIZE_SKYBOX: number = 10000;
-const DAY: string = "day/";
-const NIGHT: string = "night/";
 
 @Injectable()
 export class EnvironmentService {
@@ -55,5 +54,9 @@ export class EnvironmentService {
         this.loadSkybox();
         this._scene.add(this._light);
         this._scene.add(this._skybox);
+    }
+
+    public get mode(): string {
+        return this._mode;
     }
 }

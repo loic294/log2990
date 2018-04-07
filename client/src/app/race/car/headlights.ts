@@ -1,4 +1,5 @@
 import { SpotLight, Vector3, Object3D } from "three";
+import { DAY, NIGHT } from "../../constants";
 
 enum LIGHT_POSITION {
     FRONT_LEFT,
@@ -25,6 +26,7 @@ export default class HeadlightsManager extends Object3D {
 
     public constructor() {
         super();
+        this._isActive = false;
         this._headlights = new Array<SpotLight>();
 
         this._headlights.push(new SpotLight(WHITE, 0, DISTANCE, ANGLE, EXPONENT, DECAY));
@@ -42,14 +44,26 @@ export default class HeadlightsManager extends Object3D {
         }
     }
 
-    public activateLight(): void {
+    public changeState(environnementTime: string): void {
+        if (environnementTime === DAY && this.isActive) {
+            this.deactivate();
+        } else if (environnementTime === NIGHT && !this.isActive) {
+            this.activate();
+        } else if (environnementTime === "" && this._isActive) {
+            this.deactivate();
+        } else if (environnementTime === "" && !this._isActive) {
+            this.activate();
+        }
+    }
+
+    public activate(): void {
         for (const light of this._headlights) {
             light.intensity = INTENSITY;
         }
         this._isActive = true;
     }
 
-    public deactivateLight(): void {
+    public deactivate(): void {
         for (const light of this._headlights) {
             light.intensity = 0;
         }
@@ -60,4 +74,7 @@ export default class HeadlightsManager extends Object3D {
         return this._headlights;
     }
 
+    public get isActive(): boolean {
+        return this._isActive;
+    }
 }

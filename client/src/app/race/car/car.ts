@@ -279,4 +279,8 @@ export class Car extends Object3D {
     public getMass(): number {
         return this.mass;
     }
+
+    public changeLightsState(environmentTime: string): void {
+        this.headlightsManager.changeState(environmentTime);
+    }
 }

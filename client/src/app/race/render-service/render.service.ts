@@ -103,6 +103,13 @@ export class RenderService {
         this.renderer.setSize(this._container.clientWidth, this._container.clientHeight);
     }
 
+    public changeLightState(environmentTime: string = ""): void {
+        this._car.changeLightsState(environmentTime);
+        for (const bot of this.bots) {
+            bot.changeLightsState(environmentTime);
+        }
+    }
+
     public get renderer(): WebGLRenderer {
         return this._renderer;
     }
