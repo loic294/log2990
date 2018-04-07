@@ -26,7 +26,7 @@ export const trackSchema: Schema = new Schema({
     description: String,
     timesPlayed: Number,
     vertice: Array<Array<Number>>(),
-    completedTimes: Array<Number>()
+    completedTimes: Array<number>()
 });
 
 export default mongoose.model<ITrackInfo>("Track", trackSchema);
