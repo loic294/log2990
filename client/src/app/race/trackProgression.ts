@@ -13,11 +13,14 @@ export class TrackProgression {
         this._playerCar.userData.isNewLap = false;
         this._playerCar.userData.lapsCompleted = 0;
         this._playerCar.userData.clock = new Clock();
+        this._playerCar.userData.clock2 = new Clock();
 
-        this._game = {gameTime: 0, lapTimes: new Array(), gameIsFinished: false, currentLap: 1};
+        this._game = {gameTime: 0,lapTime: 0, lapTimes: new Array(), gameIsFinished: false, currentLap: 1};
         this._trackProgressionService.sendGameProgress(this._game);
 
         this._playerCar.userData.clock.start();
+        this._playerCar.userData.clock2.start();
+        
     }
 
     public checkRaceProgress(): void {
@@ -26,12 +29,15 @@ export class TrackProgression {
         carPosition.subVectors(this._startingLine, this._playerCar.meshPosition);
         const carDistance: number = carPosition.length();
 
-        if (this._playerCar.userData.isNewLap && carDistance < WIDTH / 2) {
+        if (this._playerCar.userData.isNewLap && carDistance < WIDTH / 2 && this._playerCar.userData.lapsCompleted < MAX_LAPS) {
             this._playerCar.userData.lapsCompleted++;
             this._playerCar.userData.isNewLap = false;
 
             this._game.currentLap++;
-            this._game.lapTimes.push(this._playerCar.userData.clock.getElapsedTime().toFixed(2));
+
+            this._game.lapTimes.push(this._playerCar.userData.clock2.getElapsedTime().toFixed(2));            
+            this._playerCar.userData.clock2.stop();
+
         } else if (!this._playerCar.userData.isNewLap && carDistance > WIDTH) {
             this._playerCar.userData.isNewLap = true;
         }
@@ -42,6 +48,7 @@ export class TrackProgression {
             this._playerCar.userData.clock.stop();
         } else {
             this._game.gameTime = this._playerCar.userData.clock.getElapsedTime().toFixed(2);
+            this._game.lapTime = this._playerCar.userData.clock2.getElapsedTime().toFixed(2);
             this._trackProgressionService.sendGameProgress(this._game);
         }
     }

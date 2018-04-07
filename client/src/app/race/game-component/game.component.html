@@ -7,7 +7,7 @@
 
   <p class="lap">Lap: {{_currentGame.currentLap - 1}} / 3</p>
     <p class="time"> Time: {{_currentGame.gameTime}} seconds</p>
-    <p class="lap-time"> Lap Time: {{_currentGame.gameTime}} seconds</p>
+    <p class="lap-time"> Lap Time: {{_currentGame.lapTime}} seconds</p>
 
 </div>
 
@@ -19,10 +19,10 @@
 <br>
 <br>
 
-<!-- <span>FLAGGED laps: {{_currentGame.currentLap}}</span><br> -->
-<!-- <li *ngFor="let time of _currentGame.lapTimes">
+<span>FLAGGED laps: {{_currentGame.currentLap}}</span><br>
+ <li *ngFor="let time of _currentGame.lapTimes">
   {{time}} seconds
-</li> -->
+</li> 
 <div *ngIf="!_raceStarted">
 
   <button (click)="start()">start race</button>
