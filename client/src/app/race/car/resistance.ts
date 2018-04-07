@@ -2,6 +2,8 @@ import { Vector3 } from "three";
 import { Car , MINIMUM_SPEED, NUMBER_REAR_WHEELS, NUMBER_WHEELS } from "../car/car";
 import { GRAVITY } from "../../constants";
 
+const LATITUDINAL_COEFFICIENT: number = 0.3;
+
 export class Resistance {
 
     public static getResultingForce(car: Car): Vector3 {
@@ -44,11 +46,10 @@ export class Resistance {
     }
 
     private static getLatitudinalResistance(car: Car): Vector3 {
-        const latitudinalCoefficient: number = 0.1;
         const latitude: Vector3 = car.direction.cross(car.up);
         const vLaterale: Vector3 = latitude.normalize().multiplyScalar(car.speed.dot(latitude));
 
-        return vLaterale.multiplyScalar(latitudinalCoefficient * car.mass * GRAVITY);
+        return vLaterale.multiplyScalar(LATITUDINAL_COEFFICIENT * car.mass * GRAVITY);
     }
 
     private static getDragForce(car: Car): Vector3 {
