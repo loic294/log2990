@@ -85,7 +85,7 @@ export class GridService {
         }
     }
 
-    public applyValidation(word: Word, isOther: boolean = false): void {
+    private applyValidation(word: Word, isOther: boolean = false): void {
         let tempX: number = word.row;
         let tempY: number = word.col;
         let i: number = 0;
@@ -228,7 +228,7 @@ export class GridService {
         });
     }
 
-    public validateWord(enteredWord: string, elem: HTMLElement): void {
+    private validateWord(enteredWord: string, elem: HTMLElement): void {
         if (this._word.name.toUpperCase() === enteredWord.toUpperCase()) {
             this.applyValidation(this._word);
             this._word.isValidated = true;

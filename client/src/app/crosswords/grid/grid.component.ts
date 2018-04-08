@@ -50,13 +50,10 @@ export class GridComponent {
 
     public highlightStyle(isOther: boolean): {} {
         const wordLength: number = this._gridService.wordLength(isOther);
-        let color: string;
-        isOther ? color = "blue" : color = "red";
 
         return {
             "height": this._gridService.isHorizontal(isOther) ?  CELL_HEIGHT + "px" : this.highlightLength(wordLength),
             "width": !this._gridService.isHorizontal(isOther) ? CELL_HEIGHT + "px" :  this.highlightLength(wordLength),
-            "border-color": color
           };
     }
 
