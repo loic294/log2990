@@ -74,7 +74,8 @@ export default class LexicalService {
         const filteredDefinitions: string[] = await this.filterDefinitions(word);
         try {
             if (filteredDefinitions.length === 0) {
-                return "No definitions";
+                this.wordDefinition(level, word);
+                // return "No definitions";
             }
             switch (level) {
                 case Level.Easy:
@@ -100,19 +101,27 @@ export default class LexicalService {
 
     public async wordSearch(researchCriteria: string, common: string): Promise<string> {
         let request: string;
+        let previousChar: string = "";
+        const tenWordLetterRepeat: number = 10;
         request = "";
 
         for (const item of researchCriteria) {
+
             if (item.match(/[a-z]/i)) {
                 request += item;
             }
-            request += "?".repeat(+item);
+            if (previousChar === "1" && item === "0") {
+                request += "?".repeat(tenWordLetterRepeat);
+            } else {
+                request += "?".repeat(+item);
+            }
+            previousChar = item;
         }
 
         const { data }: { data: Array<AxiosWords> } = await this.baseWordSearch(request);
 
         if (data === undefined || data.length === 0) {
-            return "undefined";
+            this.wordSearch(researchCriteria, common);
         }
 
         return this.commonFinder(common, data, request);
@@ -122,10 +131,10 @@ export default class LexicalService {
         const data: string[] = [];
         let word: string;
         let definition: string;
-        do {
-            word = await this.wordSearch(researchCriteria, common);
-            definition = await this.wordDefinition(level, word);
-        } while (definition === "No definitions");
+        // do {
+        word = await this.wordSearch(researchCriteria, common);
+        definition = await this.wordDefinition(level, word);
+        // } while (definition === "No definitions");
 
         data[0] = word;
         data[1] = definition;
