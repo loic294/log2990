@@ -101,7 +101,7 @@ export default class LexicalService {
     public async wordSearch(researchCriteria: string, common: string): Promise<string> {
         let request: string;
         let previousChar: string = "";
-        const tenWordLetterRepeat: number = 10;
+        const tenWordLetterRepeat: number = 9;
         request = "";
 
         for (const item of researchCriteria) {
