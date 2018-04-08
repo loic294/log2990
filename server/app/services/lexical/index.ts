@@ -120,6 +120,7 @@ export default class LexicalService {
         const { data }: { data: Array<AxiosWords> } = await this.baseWordSearch(request);
 
         if (data === undefined || data.length === 0) {
+            // tslint:disable-next-line:no-floating-promises
             this.wordSearch(researchCriteria, common);
         }
 
