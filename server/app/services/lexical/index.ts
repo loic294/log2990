@@ -74,8 +74,7 @@ export default class LexicalService {
         const filteredDefinitions: string[] = await this.filterDefinitions(word);
         try {
             if (filteredDefinitions.length === 0) {
-                this.wordDefinition(level, word);
-                // return "No definitions";
+                return "No definitions";
             }
             switch (level) {
                 case Level.Easy:
@@ -131,10 +130,16 @@ export default class LexicalService {
         const data: string[] = [];
         let word: string;
         let definition: string;
-        // do {
-        word = await this.wordSearch(researchCriteria, common);
-        definition = await this.wordDefinition(level, word);
-        // } while (definition === "No definitions");
+        let timeOut: number = 5;
+        do {
+            word = await this.wordSearch(researchCriteria, common);
+            definition = await this.wordDefinition(level, word);
+            timeOut--;
+        } while (definition === "No definitions" && timeOut > 0);
+
+        if (definition === "No definitions") {
+            return data[0] = undefined, data[1] = undefined;
+        }
 
         data[0] = word;
         data[1] = definition;
