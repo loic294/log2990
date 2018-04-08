@@ -9,6 +9,7 @@ import { CameraService } from "../camera-service/camera.service";
 import { AiService } from "../ai-service/ai.service";
 import { TrackProgression } from "../trackProgression";
 import { TrackProgressionService } from "../trackProgressionService";
+import { AudioService } from "../audio-service/audio.service";
 
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 1;
@@ -30,7 +31,7 @@ export class RenderService {
     private _trackLoaded: boolean;
     private _trackProgression: TrackProgression;
 
-    public constructor(private _cameraService: CameraService) {
+    public constructor(private _cameraService: CameraService, private _audioService: AudioService) {
         this._car = new Car();
         this._bots = [];
         this._trackLoaded = false;
@@ -71,11 +72,14 @@ export class RenderService {
         this._scene = new Scene();
 
         await this._car.init();
+
         this.scene.add(this._car);
+
         for (let i: number = 0; i < AMOUNT_OF_NPCS; i++) {
             await this._bots[i].init();
             this.scene.add(this._bots[i]);
         }
+        this._audioService.initialize(this.car, this._bots);
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
 
         this._cameraService.initialize(this._car, this.getAspectRatio());

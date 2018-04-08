@@ -8,6 +8,7 @@ import { TrackInformation } from "../trackInformation";
 import { TrackBuilder } from "../trackBuilder";
 import { AiService } from "../ai-service/ai.service";
 import { IGameInformation, TrackProgressionService } from "../trackProgressionService";
+import { AudioService } from "../audio-service/audio.service";
 
 const SCALE_FACTOR: number = -10;
 
@@ -19,7 +20,8 @@ const SCALE_FACTOR: number = -10;
     providers: [
         RenderService,
         InputManagerService,
-        CameraService
+        CameraService,
+        AudioService
     ]
 })
 
