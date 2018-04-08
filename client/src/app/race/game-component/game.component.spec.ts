@@ -6,7 +6,7 @@ import { GameComponent } from "./game.component";
 import { TrackProgressionService } from "../trackProgressionService";
 import { Raycaster, Vector3, Intersection } from "three";
 
-describe("GameComponent", () => {
+fdescribe("GameComponent", () => {
     let component: GameComponent;
     let fixture: ComponentFixture<GameComponent>;
 
@@ -81,6 +81,31 @@ describe("GameComponent", () => {
 
         expect(intersected1.length).toBe(2);
         expect(intersected2.length).toBe(1);
+    });
+
+    it("should show lap count at 0 on creation", async () => {
+        expect(component._currentGame.currentLap).toEqual(0);
+    });
+
+    it("should show game time at 0 on creation", async () => {
+        expect(component._currentGame.gameTime).toEqual(0);
+    });
+
+    it("should show game time greater then 0 when game started", async () => {
+        component.trackInformation.track = {name: "track1", vertice: [[1, 0, 1], [-1, 0, 1], [-1, 0, -1], [1, 0, -1]]};
+        await component.ngAfterViewInit();
+        component.showTrack();
+        await component.start();
+        expect(component._currentGame.gameTime).toBeGreaterThan(0);
+    });
+
+    it("should increment lap count", async () => {
+        component.trackInformation.track = {name: "track1", vertice: [[1, 0, 1], [-1, 0, 1], [-1, 0, -1], [1, 0, -1]]};
+        await component.ngAfterViewInit();
+        component.showTrack();
+        await component.start();
+        component.service.car.userData.currentLap = 1;
+        expect(component._currentGame.currentLap).toEqual(1);
     });
 
 });
