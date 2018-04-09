@@ -53,6 +53,7 @@ export default class GridGeneration {
     private _gridSize: number = this._DEFAULT_SIZE;
     private blackCellCount: number = 0;
     private maxBlackCells: number = 0.3;
+    private _definitionCache: Object = {};
 
     private intersections: Array<Array<number>> = [];
 
@@ -88,10 +89,33 @@ export default class GridGeneration {
         return vertical && horizontal;
     }
 
+    public isUniqueCell(row: number, col: number): boolean {
+        let count: number = 0;
+
+        if (!this.grid[row - 1] || (this.grid[row - 1][col].isBlack())) {
+            count++;
+        }
+
+        if (!this.grid[row + 1] || (this.grid[row + 1][col].isBlack())) {
+            count++;
+        }
+
+        if (!this.grid[row][col - 1] || (this.grid[row - 1][col].isBlack())) {
+            count++;
+        }
+
+        if (!this.grid[row][col + 1] || (this.grid[row][col + 1].isBlack())) {
+            count++;
+        }
+
+        return count === 4;
+    }
+
     public fillGridWithBlackCells(): void {
         this.traverseGrid((row: number, col: number) => {
             if (row > 0 && col > 0) {
-                if (!this.grid[row][col].isBlack() && Math.random() < this.maxBlackCells && this.hasMinWordSpace(row, col)) {
+                if (!this.grid[row][col].isBlack() && (Math.random() < this.maxBlackCells
+                    && this.hasMinWordSpace(row, col)) || this.isUniqueCell(row, col)) {
                     this.grid[row][col].setBlack(true);
                     this.blackCellCount += 1;
                 }
@@ -102,8 +126,6 @@ export default class GridGeneration {
             this.fillGridWithBlackCells();
         }
 
-        // console.log("Fill with black cells");
-        // console.log(this.printGrid());
     }
 
     public createWordSearchCondition(grid: Array<Array<Cell>>, word: Constraint): string {
@@ -194,9 +216,18 @@ export default class GridGeneration {
     }
 
     public async checkWordDefinition(query: string): Promise<string> {
+
+        if (this._definitionCache[query]) {
+            // console.log("USING CACHE", query);
+
+            return this._definitionCache[query];
+        }
+
         const url: string = `http://localhost:3000/lexical/definition/${query}/easy`;
         const { data: { lexicalResult } }: { data: { lexicalResult: string} } = await axios.get(url);
-        console.log("WORD DEFINITION CHECK", url, lexicalResult);
+        // console.log("WORD DEFINITION CHECK", url, lexicalResult);
+
+        this._definitionCache[query] = lexicalResult;
 
         return lexicalResult;
     }
@@ -209,7 +240,7 @@ export default class GridGeneration {
         }
 
         for (const constraint of word.constraints) {
-            if (constraint.subWord) {
+            // if (constraint.subWord) {
                 const subWord: Constraint = this._wordStack[constraint.wordIndex];
                 let buildWord: string = "";
 
@@ -217,7 +248,7 @@ export default class GridGeneration {
                     buildWord += grid[row][col].char;
                 });
 
-                console.log("SUBOWRD CHECK", buildWord);
+                // console.log("SUBOWRD CHECK", buildWord);
 
                 if (/^[a-z]+$/ig.test(buildWord) && subWord && subWord.length > 1) {
                     const result: string = await this.checkWordDefinition(buildWord);
@@ -226,7 +257,7 @@ export default class GridGeneration {
                         return false;
                     }
                 }
-            }
+            // }
         }
 
         return true;
@@ -259,9 +290,9 @@ export default class GridGeneration {
                     word.desc = lexicalResult[1];
 
                     if (oldResult === word.name && oldResult !== "undefined") {
-                        await this.recursion(words, wordIndex - 1, cycle, gridFreeze);
+                        console.log("FORCE INDEX BACKWARD #1");
 
-                        return false;
+                        return true;
                     }
 
                     oldResult = word.name;
@@ -271,14 +302,16 @@ export default class GridGeneration {
 
                 isValid = await this.checkRelatedDefinitions(word, gridFreeze);
 
-                console.log("WORD CHECK COUNT", count);
-                if (count === 19 && wordIndex > 0) {
-                    console.log("WORD VALIDATION FAILED");
+                // console.log("WORD CHECK COUNT", count);
+                if (count === 9 && wordIndex > 0) {
+                    console.log("FORCE INDEX BACKWARD #2");
 
                     return true;
+                } else if (wordIndex === 0) {
+                    console.log("END WORD INDEX");
                 }
 
-            } while (!isValid && count++ < 20)
+            } while (!isValid && count++ < 10)
 
         }
 
@@ -287,7 +320,7 @@ export default class GridGeneration {
         cycle += 1;
         wordIndex += 1;
         if (await this.recursion(words, wordIndex, cycle, gridFreeze2)) {
-            console.log("WORD RECURSION FAILED", wordIndex, cycle);
+            console.log("FORCE INDEX BACKWARD #3");
 
             if (wordIndex > 0) {
                 await this.recursion(words, wordIndex - 1, cycle, gridFreeze);
@@ -305,6 +338,9 @@ export default class GridGeneration {
             console.log("Recursion completed");
             console.log(this.printGrid());
             console.log(this.printGridWithWord(this._grid));
+
+            console.log(this._definitionCache);
+
             console.timeEnd("generation");
         })
         .catch((err: Error) => console.error(err));
@@ -380,33 +416,33 @@ export default class GridGeneration {
         // console.log("WORDS STACK BEFORE RECUSION", this._wordStack.length);
         this._wordStack = [...words];
 
-        words = words.filter((word: Constraint, filterIndex: number) => {
-            // console.log("-------------------------------");
+        // words = words.filter((word: Constraint, filterIndex: number) => {
+        //     // console.log("-------------------------------");
 
-            let count: number = 0;
-            this.traverseWord(word, (row: number, col: number) => {
-                const intersects: boolean = word.constraints.some((constraint: SubConstraint, index: number): boolean => {
-                    // console.log(row, constraint.point[0], col, constraint.point[1]);
-                    const wordIsBigger: boolean = this._wordStack[constraint.wordIndex].size >= word.size
-                        && !words[filterIndex].constraints[index].subWord;
+        //     let count: number = 0;
+        //     this.traverseWord(word, (row: number, col: number) => {
+        //         const intersects: boolean = word.constraints.some((constraint: SubConstraint, index: number): boolean => {
+        //             // console.log(row, constraint.point[0], col, constraint.point[1]);
+        //             const wordIsBigger: boolean = this._wordStack[constraint.wordIndex].size >= word.size
+        //                 && !words[filterIndex].constraints[index].subWord;
 
-                    return row === constraint.point[0] && col === constraint.point[1] && wordIsBigger;
-                });
+        //             return row === constraint.point[0] && col === constraint.point[1] && wordIsBigger;
+        //         });
 
-                // console.log('INSTERSECTS', intersects);
-                if (intersects) {
-                    count++;
-                }
-            });
+        //         // console.log('INSTERSECTS', intersects);
+        //         if (intersects) {
+        //             count++;
+        //         }
+        //     });
 
-            // console.log("COUNT", count, word.length);
-            const toKeep: boolean = count !== word.length;
-            if (!toKeep) {
-                words = this.setSubConstraintAsSubWord(words, filterIndex);
-            }
+        //     // console.log("COUNT", count, word.length);
+        //     const toKeep: boolean = count !== word.length;
+        //     if (!toKeep) {
+        //         words = this.setSubConstraintAsSubWord(words, filterIndex);
+        //     }
 
-            return toKeep;
-        });
+        //     return toKeep;
+        // });
 
         // console.log(this.printGrid());
         // console.log("WORDS AFTER CONSTRAINT", words.length);
