@@ -93,4 +93,13 @@ export class AudioService {
         this._countdown.play();
     }
 
+    public playCarCollision(): void {
+        const randomIndex: number = Math.floor((Math.random()) % this._carCollision.length);
+        this._carCollision[randomIndex].play();
+    }
+
+    public playWallCollision(): void {
+        this._wallCollision.play();
+    }
+
 }
