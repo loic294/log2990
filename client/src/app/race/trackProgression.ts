@@ -72,8 +72,9 @@ export class TrackProgression {
         if (this._playerCar.userData.lapsCompleted >= MAX_LAPS && !this._game.gameIsFinished) {
             this._game.gameIsFinished = true;
             this._playerCar.userData.clock.stop();
+            this._gameClock.stop();
             this.estimateBotTimes();
-        } else {
+        } else if (!this._game.gameIsFinished) {
             this._game.gameTime = this._gameClock.getElapsedTime().toFixed(2);
         }
     }
