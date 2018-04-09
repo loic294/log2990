@@ -21,6 +21,7 @@
     "@types/errorhandler": "0.0.32",
     "@types/express-session": "^1.15.6",
     "@types/mongoose": "^5.0.7",
+    "@types/request-promise-native": "^1.0.14",
     "animations": "0.0.0",
     "axios": "^0.17.1",
     "body-parser": "~1.16.0",
