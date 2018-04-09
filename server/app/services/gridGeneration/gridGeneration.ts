@@ -4,7 +4,7 @@ import { Cell } from "../../../../common/grid/case";
 import Word, { Orientation } from "../../../../common/lexical/word";
 import Constraint, { SubConstraint } from "./constraint";
 import { printGrid, printGridWithWord } from "./gridDebuggingTools";
-import { traverseGrid, traverseWord, intersects } from "./gridTools";
+import { traverseGrid, traverseWord, intersects, siwtchPosition, sortWords } from "./gridTools";
 import * as request from "request-promise-native";
 
 export enum Difficulty {
@@ -23,7 +23,7 @@ export default class GridGeneration {
     private maxBlackCells: number = 0.3;
     private _definitionCache: Object = {};
 
-    private intersections: Array<Array<number>> = [];
+    private _intersections: Array<Array<number>> = [];
 
     public constructor() {
         console.time("generation");
@@ -289,7 +289,7 @@ export default class GridGeneration {
     public startRecursion(words: Array<Constraint>): void {
         this.recursion(words, 0, 0, this._grid).then(() => {
             console.log("Recursion completed");
-            console.log(printGrid(this._grid, this.intersections));
+            console.log(printGrid(this._grid, this._intersections));
             console.log(printGridWithWord(this._grid));
 
             console.log(this._definitionCache);
@@ -307,7 +307,7 @@ export default class GridGeneration {
             for (let second: number = first; second < WORDS_COUNT; second++) {
                 const intersection: Array<number> = intersects(words[first], words[second]);
                 if (intersection.length > 0) {
-                    this.intersections.push(intersection);
+                    this._intersections.push(intersection);
 
                     words[first].constraints.push({
                         wordIndex: second,
@@ -323,122 +323,57 @@ export default class GridGeneration {
             }
         }
 
-        this.filterConstraints(words);
-    }
-
-    public setSubConstraintAsSubWord(words: Array<Constraint>, wordIndex: number): Array<Constraint> {
-        return words.map((word: Constraint) => {
-            word.constraints = word.constraints.map((constraint: SubConstraint) => {
-                if (constraint.wordIndex === wordIndex) {
-                    constraint.subWord = true;
-                }
-
-                return constraint;
-            });
-
-            return word;
-        });
-    }
-
-    public filterConstraints(words: Array<Constraint>): void {
         this._wordStack = [...words];
-        // THIS CODE WAS REMOVED, SEE OLD COMMIT TO RESTORE
         this.startRecursion(words);
     }
 
     public findAllWordsSpaces(): void {
-        const horizontalWords: Array<Constraint> = this.fillWordSpaceHorizontal(Orientation.horizontal);
-        const verticalWords: Array<Constraint> = this.fillWordSpaceVertical(Orientation.vertical);
+        const horizontalWords: Array<Constraint> = this.findWordsFromSpace(Orientation.horizontal);
+        const verticalWords: Array<Constraint> = this.findWordsFromSpace(Orientation.vertical);
 
-        let allWords: Array<Constraint> = [...horizontalWords, ...verticalWords];
-        allWords = allWords
-            .filter((word: Constraint) => {
-                return word.size > 1;
-            })
-            .sort((a: Constraint, b: Constraint): number => {
-                if (a.size < b.size) {
-                    return 1;
-                }
-
-                if (a.size > b.size) {
-                    return -1;
-                }
-
-                return 0;
-            });
-
-        this.createConstraints(allWords);
+        const allWords: Array<Constraint> = [...horizontalWords, ...verticalWords];
+        this.createConstraints(sortWords(allWords));
     }
 
-    public fillWordSpaceHorizontal(orientation: Orientation): Array<Constraint> {
-        const wordsVertical: Array<Constraint> = [];
-        let word: Constraint = new Constraint("", "", [0, 0], Orientation.horizontal);
+    public findWordsFromSpace(orientation: Orientation): Array<Constraint> {
+        const words: Array<Constraint> = [];
+        let word: Constraint = new Constraint("", "", [0, 0], orientation);
 
-        for (let row: number = 0; row < this._gridSize; row++) {
-            word.position = [row, 0];
-            for (let col: number = 0; col < this._gridSize; col++) {
-                if (!this._grid[row][col].isBlack()) {
+        for (let first: number = 0; first < this._gridSize; first++) {
+            word.position = siwtchPosition(orientation, first, 0);
+
+            for (let second: number = 0; second < this._gridSize; second++) {
+                let positions: Array<number> = siwtchPosition(orientation, first, second);
+
+                if (!this._grid[positions[0]][positions[1]].isBlack()) {
                     word.length += 1;
                 } else {
-                    wordsVertical.push(word);
-                    while (col < this._gridSize && this._grid[row][col].isBlack()) {
-                        col += 1;
+                    words.push(word);
+                    while (second < this._gridSize && this._grid[positions[0]][positions[1]].isBlack()) {
+                        second += 1;
+                        positions = siwtchPosition(orientation, first, second);
                     }
-                    word = new Constraint("", "", [0, 0], Orientation.horizontal);
-                    word.position = [row, col];
-                    if (this._grid[row][col - 1].isBlack() && col < this._gridSize) {
+                    word = new Constraint("", "", [0, 0], orientation);
+                    word.position = siwtchPosition(orientation, first, second);
+
+                    const positions2: Array<number> = siwtchPosition(orientation, first, second - 1);
+                    if (this._grid[positions2[0]][positions2[1]].isBlack() && second < this._gridSize) {
                         word.length = 1;
                     }
                 }
 
-                if (col === this._gridSize - 1) {
-                    wordsVertical.push(word);
-                    word = new Constraint("", "", [0, 0], Orientation.horizontal);
+                if (second === this._gridSize - 1) {
+                    words.push(word);
+                    word = new Constraint("", "", [0, 0], orientation);
                 }
             }
         }
 
-        return wordsVertical;
-    }
-
-    public fillWordSpaceVertical(orientation: Orientation): Array<Constraint> {
-        const wordsVertical: Array<Constraint> = [];
-        let word: Constraint = new Constraint("", "", [0, 0], Orientation.vertical);
-
-        for (let col: number = 0; col < this._gridSize; col++) {
-            word.position = [0, col];
-
-            for (let row: number = 0; row < this._gridSize; row++) {
-                if (!this._grid[row][col].isBlack()) {
-                    word.size += 1;
-                } else {
-                    wordsVertical.push(word);
-                    while (row < this._gridSize && this._grid[row][col].isBlack()) {
-                        row += 1;
-                    }
-                    word = new Constraint("", "", [0, 0], Orientation.vertical);
-                    word.position = [row, col];
-                    if (this._grid[row - 1][col].isBlack() && row < this._gridSize) {
-                        word.length = 1;
-                    }
-                }
-
-                if (row === this._gridSize - 1) {
-                    wordsVertical.push(word);
-                    word = new Constraint("", "", [0, 0], Orientation.vertical);
-                }
-            }
-        }
-
-        return wordsVertical;
+        return words;
     }
 
     public get grid(): Cell[][] {
         return this._grid;
-    }
-
-    public get DEFAULT_SIZE(): number {
-        return this._DEFAULT_SIZE;
     }
 
     public get wordStack(): Array<Word> {
