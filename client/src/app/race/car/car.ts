@@ -3,6 +3,7 @@ import { Engine } from "./engine";
 import { MS_TO_SECONDS, GRAVITY, PI_OVER_2, RAD_TO_DEG } from "../../constants";
 import { Wheel } from "./wheel";
 import { Resistance } from "./resistance";
+import HeadlightsManager from "./headlights";
 
 export const DEFAULT_WHEELBASE: number = 2.78;
 export const DEFAULT_MASS: number = 1515;
@@ -30,6 +31,7 @@ export class Car extends Object3D {
     private steeringWheelDirection: number;
     private _weightRear: number;
     private _boundingBox: Box3;
+    private _headlightsManager: HeadlightsManager;
 
     public constructor(
         engine: Engine = new Engine(),
@@ -43,12 +45,10 @@ export class Car extends Object3D {
             console.error("Wheelbase should be greater than 0.");
             wheelbase = DEFAULT_WHEELBASE;
         }
-
         if (mass <= 0) {
             console.error("Mass should be greater than 0.");
             mass = DEFAULT_MASS;
         }
-
         if (dragCoefficient <= 0) {
             console.error("Drag coefficient should be greater than 0.");
             dragCoefficient = DEFAULT_DRAG_COEFFICIENT;
@@ -68,8 +68,8 @@ export class Car extends Object3D {
         this._boundingBox = new Box3().setFromObject(this);
     }
 
-    public get mesh(): Object3D {
-        return this._mesh;
+    public get headlightsManager(): HeadlightsManager {
+        return this._headlightsManager;
     }
 
     public get speed(): Vector3 {
@@ -90,6 +90,10 @@ export class Car extends Object3D {
 
     public get angle(): number {
         return this._mesh.rotation.y * RAD_TO_DEG;
+    }
+
+    public get mesh(): Object3D {
+        return this._mesh;
     }
 
     public get direction(): Vector3 {
@@ -126,7 +130,10 @@ export class Car extends Object3D {
     public async init(): Promise<void> {
         this._mesh = await this.load();
         this._mesh.setRotationFromEuler(INITIAL_MODEL_ROTATION);
+        this._headlightsManager = new HeadlightsManager();
+        this._mesh.add(this._headlightsManager);
         this.add(this._mesh);
+
     }
 
     public steerLeft(): void {
@@ -260,5 +267,9 @@ export class Car extends Object3D {
 
     public getMass(): number {
         return this._mass;
+    }
+
+    public toogleLight(): void {
+        this.headlightsManager.toogleLight();
     }
 }
