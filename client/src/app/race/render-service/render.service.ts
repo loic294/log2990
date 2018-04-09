@@ -80,7 +80,6 @@ export class RenderService {
             this.scene.add(this._bots[i]);
         }
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
-        this._audioService.initialize(this.car, this._bots);
         this._cameraService.initialize(this._car, this.getAspectRatio());
         this._cameraService.changeCamera();
     }
@@ -89,6 +88,7 @@ export class RenderService {
         this._cameraService.initialize(this._car, this.getAspectRatio());
         this.loadSkybox();
         this._trackProgression = new TrackProgression(startingLine, this._car, service);
+        this._audioService.initializeCarSound(this.car, this._bots);
     }
 
     public getAspectRatio(): number {
