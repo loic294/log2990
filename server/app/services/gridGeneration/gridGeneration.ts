@@ -261,7 +261,6 @@ export default class GridGeneration {
         this.createConstraints(sortWords(allWords));
     }
 
-    // tslint:disable-next-line:max-func-body-length
     public findWordsFromSpace(orientation: Orientation): Array<Constraint> {
         const words: Array<Constraint> = [];
         let word: Constraint = new Constraint("", "", [0, 0], orientation);
@@ -272,22 +271,15 @@ export default class GridGeneration {
             for (let second: number = 0; second < this._gridSize; second++) {
                 let positions: Array<number> = siwtchPosition(orientation, first, second);
 
-                if (!this._grid[positions[0]][positions[1]].isBlack()) {
-                    word.length += 1;
-                } else {
+                if (this._grid[positions[0]][positions[1]].isBlack()) {
                     words.push(word);
                     while (second < this._gridSize && this._grid[positions[0]][positions[1]].isBlack()) {
                         second += 1;
                         positions = siwtchPosition(orientation, first, second);
                     }
-                    word = new Constraint("", "", [0, 0], orientation);
-                    word.position = siwtchPosition(orientation, first, second);
-
-                    const positions2: Array<number> = siwtchPosition(orientation, first, second - 1);
-                    if (this._grid[positions2[0]][positions2[1]].isBlack() && second < this._gridSize) {
-                        word.length = 1;
-                    }
+                    word = new Constraint("", "", siwtchPosition(orientation, first, second), orientation);
                 }
+                word.length++;
 
                 if (second === this._gridSize - 1) {
                     words.push(word);
