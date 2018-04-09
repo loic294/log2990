@@ -5,68 +5,11 @@ import { Orientation } from "../../../../common/lexical/word";
 import Constraint, { SubConstraint } from "./constraint";
 import { checkIntersection } from "line-intersect";
 
-//   public static fillGridWithCells(size: number): Array<Array<Cell>> {
-//     size = size !== undefined ? size : this._DEFAULT_SIZE;
-//     this._grid = [];
-//     this._gridSize = size;
+export const containtsOnlyLetters: (query: string) => boolean
+    = (query: string): boolean => {
 
-//     for (let row: number = 0; row < size; row++) {
-//         this._grid[row] = [];
-//         for (let col: number = 0; col < size; col++) {
-//             this._grid[row][col] = new Cell("◽", row, col);
-//         }
-//     }
-
-//     return this._grid;
-// }
-
-// public hasMinWordSpace(row: number, col: number): boolean {
-//     const MIN_WORD_LENGTH: number = 2;
-//     const vertical: boolean = row === 1 || (this._grid[row - MIN_WORD_LENGTH] && !this._grid[row - MIN_WORD_LENGTH][col].isBlack());
-//     const horizontal: boolean = col === 1 || (this._grid[row][col - MIN_WORD_LENGTH]
-//         && !this._grid[row][col - MIN_WORD_LENGTH].isBlack());
-
-//     return vertical && horizontal;
-// }
-
-// public isUniqueCell(row: number, col: number): boolean {
-//     let count: number = 0;
-
-//     if (!this.grid[row - 1] || (this.grid[row - 1][col].isBlack())) {
-//         count++;
-//     }
-
-//     if (!this.grid[row + 1] || (this.grid[row + 1][col].isBlack())) {
-//         count++;
-//     }
-
-//     if (!this.grid[row][col - 1] || (this.grid[row - 1][col].isBlack())) {
-//         count++;
-//     }
-
-//     if (!this.grid[row][col + 1] || (this.grid[row][col + 1].isBlack())) {
-//         count++;
-//     }
-
-//     return count === 4;
-// }
-
-// public fillGridWithBlackCells(): void {
-//     this.traverseGrid((row: number, col: number) => {
-//         if (row > 0 && col > 0) {
-//             if (!this.grid[row][col].isBlack() && (Math.random() < this.maxBlackCells
-//                 && this.hasMinWordSpace(row, col)) || this.isUniqueCell(row, col)) {
-//                 this.grid[row][col].setBlack(true);
-//                 this.blackCellCount += 1;
-//             }
-//         }
-//     });
-
-//     if (this.blackCellCount < this.maxBlackCells * (this._gridSize ** 2)) {
-//         this.fillGridWithBlackCells();
-//     }
-
-// }
+    return /^[a-z]+$/ig.test(query)
+};
 
 export const sortSubConstraint: (subconstraints: Array<SubConstraint>, index: number) => Array<SubConstraint>
     = (subconstraints: Array<SubConstraint>, index: number): Array<SubConstraint> => {

@@ -2,9 +2,11 @@ import { Cell } from "../../../../common/grid/case";
 import Word, { Orientation } from "../../../../common/lexical/word";
 import Constraint, { SubConstraint } from "./constraint";
 import { printGrid, printGridWithWord } from "./gridDebuggingTools";
-import { traverseWord, intersects, siwtchPosition, sortWords, sortSubConstraint } from "./gridTools";
-import { fillGridWithCells, fillGridWithBlackCells } from "./gridInitialisation"
+import { traverseWord, intersects, siwtchPosition, sortWords, sortSubConstraint, containtsOnlyLetters } from "./gridTools";
+import { fillGridWithCells, fillGridWithBlackCells } from "./gridInitialisation";
 import * as request from "request-promise-native";
+
+const NO_DEFINITION: string = "No definitions";
 
 export default class GridGeneration {
     private _grid: Array<Array<Cell>>;
@@ -28,21 +30,17 @@ export default class GridGeneration {
         this._grid = fillGridWithBlackCells(this._grid, this._maxBlackCells, size);
     }
 
-    // tslint:disable-next-line:max-func-body-length
     public createWordSearchCondition(grid: Array<Array<Cell>>, word: Constraint): string {
-
         const index: number = word.orientation === Orientation.horizontal ? 1 : 0;
         const cosntraints: Array<SubConstraint> = sortSubConstraint(word.constraints, index);
-
         let count: number = 0;
         let query: string = "";
-
         const wordStart: number = word.orientation === Orientation.horizontal ? word.position[1] : word.position[0];
 
         for (let i: number = wordStart; i < wordStart + word.length; i++) {
             const subConstraint: SubConstraint = cosntraints.find((constraint: SubConstraint) => constraint.point[index] === i);
+            count++;
 
-            count += 1;
             if (subConstraint !== undefined) {
                 const cellChar: string = grid[subConstraint.point[0]][subConstraint.point[1]].char;
                 if (cellChar !== "◽") {
@@ -55,14 +53,9 @@ export default class GridGeneration {
                 query += `${count}`;
                 count = 0;
             }
-
         }
 
-        if (query.length === 0) {
-            return "" + count;
-        }
-
-        if (/^[a-z]+$/ig.test(query)) {
+        if (containtsOnlyLetters(query)  || query.length === 0) {
             return `${query}${count}`;
         }
 
@@ -85,7 +78,6 @@ export default class GridGeneration {
     public shouldFindWord(grid: Array<Array<Cell>>, word: Constraint): boolean {
 
         let shouldAddToGrid: boolean = false;
-
         traverseWord(word, (row: number, col: number) => {
             if (grid[row] && grid[row][col] && grid[row][col].char === "◽" && !grid[row][col].isBlack()) {
                 shouldAddToGrid = true;
@@ -110,9 +102,10 @@ export default class GridGeneration {
     }
 
     public async checkRelatedDefinitions(word: Constraint, grid: Array<Array<Cell>>): Promise<boolean> {
+
         const lexicalResult: string = await this.checkWordDefinition(word.name);
 
-        if (lexicalResult === "No definitions") {
+        if (lexicalResult === NO_DEFINITION) {
             return false;
         }
 
@@ -124,10 +117,10 @@ export default class GridGeneration {
                 buildWord += grid[row][col].char;
             });
 
-            if (/^[a-z]+$/ig.test(buildWord) && subWord && subWord.length > 1) {
+            if (containtsOnlyLetters(buildWord) && subWord && subWord.length > 1) {
                 const result: string = await this.checkWordDefinition(buildWord);
 
-                if (result === "No definitions") {
+                if (result === NO_DEFINITION) {
                     return false;
                 }
             }
@@ -162,7 +155,7 @@ export default class GridGeneration {
                     const { lexicalResult }: { lexicalResult: Array<string> } = await request({ uri, json: true });
 
                     // CREATES INFINITE LOOP
-                    // if (lexicalResult[1] === "No definitions" || (oldResult === lexicalResult[1] && oldResult !== "undefined")) {
+                    // if (lexicalResult[1] === NO_DEFINITION || (oldResult === lexicalResult[1] && oldResult !== "undefined")) {
                     //     console.log("FORCE INDEX BACKWARD #1");
                     //     await this.recursion(words, wordIndex - 1, cycle, gridFreeze);
 
@@ -233,6 +226,7 @@ export default class GridGeneration {
             for (let second: number = first; second < WORDS_COUNT; second++) {
                 const intersection: Array<number> = intersects(words[first], words[second]);
                 if (intersection.length > 0) {
+
                     this._intersections.push(intersection);
 
                     words[first].constraints.push({
@@ -295,7 +289,4 @@ export default class GridGeneration {
         return this._grid;
     }
 
-    public get wordStack(): Array<Word> {
-        return this._wordStack;
-    }
 }
