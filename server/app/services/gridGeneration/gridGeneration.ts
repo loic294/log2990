@@ -296,12 +296,12 @@ export default class GridGeneration {
                     const { data: { lexicalResult } }: { data: { lexicalResult: Array<string>} } = await axios.get(url);
 
                     // CREATES INFINITE LOOP
-                    if (lexicalResult[1] === "No definitions" || (oldResult === lexicalResult[1] && oldResult !== "undefined")) {
-                        console.log("FORCE INDEX BACKWARD #1");
-                        await this.recursion(words, wordIndex - 1, cycle, gridFreeze);
+                    // if (lexicalResult[1] === "No definitions" || (oldResult === lexicalResult[1] && oldResult !== "undefined")) {
+                    //     console.log("FORCE INDEX BACKWARD #1");
+                    //     await this.recursion(words, wordIndex - 1, cycle, gridFreeze);
 
-                        return false;
-                    }
+                    //     return false;
+                    // }
 
                     word.name = lexicalResult[0];
                     word.desc = lexicalResult[1];
