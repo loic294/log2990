@@ -5,7 +5,7 @@ import GridGeneration from "../../services/gridGeneration/gridGeneration";
 export const generate: (req: Request, res: Response, next: NextFunction) => Promise<void> =
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
-    const GRID_SIZE: number = 6;
+    const GRID_SIZE: number = 8;
 
     const grid: GridGeneration = new GridGeneration();
     grid.fillGridWithCells(GRID_SIZE);
