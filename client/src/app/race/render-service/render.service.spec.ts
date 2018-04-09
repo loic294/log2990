@@ -2,11 +2,12 @@ import { TestBed, inject } from "@angular/core/testing";
 
 import { RenderService } from "./render.service";
 import { CameraService } from "../camera-service/camera.service";
+import { AudioService } from "../audio-service/audio.service";
 
 describe("RenderService", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [RenderService, CameraService]
+            providers: [RenderService, CameraService, AudioService]
         });
     });
 

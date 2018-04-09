@@ -1,5 +1,5 @@
-import { Vector3, Matrix4, Object3D, ObjectLoader, Euler, Quaternion, Box3, Audio } from "three";
-import { Engine } from "./engine";
+import { Vector3, Matrix4, Object3D, ObjectLoader, Euler, Quaternion, Box3, PositionalAudio } from "three";
+import { Engine, DEFAULT_SHIFT_RPM } from "./engine";
 import { MS_TO_SECONDS, GRAVITY, PI_OVER_2, RAD_TO_DEG } from "../../constants";
 import { Wheel } from "./wheel";
 
@@ -29,7 +29,7 @@ export class Car extends Object3D {
     private steeringWheelDirection: number;
     private weightRear: number;
     private _boundingBox: Box3;
-    private _sound: Audio;
+    private _sound: PositionalAudio;
 
     public constructor(
         engine: Engine = new Engine(),
@@ -162,6 +162,13 @@ export class Car extends Object3D {
         const omega: number = this._speed.length() / R;
         this._mesh.rotateY(omega);
         this._boundingBox = new Box3().setFromObject(this);
+
+        try {
+            this.updateSound();
+        } catch (error) {
+            console.error(error);
+        }
+
     }
 
     private physicsUpdate(deltaTime: number): void {
@@ -209,7 +216,6 @@ export class Car extends Object3D {
     private getRollingResistance(): Vector3 {
         const tirePressure: number = 1;
         // formula taken from: https://www.engineeringtoolbox.com/rolling-friction-resistance-d_1303.html
-
         // tslint:disable-next-line:no-magic-numbers
         const rollingCoefficient: number = (1 / tirePressure) * (Math.pow(this.speed.length() * 3.6 / 100, 2) * 0.0095 + 0.01) + 0.005;
 
@@ -274,6 +280,10 @@ export class Car extends Object3D {
         return this.speed.normalize().dot(this.direction) > 0.05;
     }
 
+    private updateSound(): void {
+        this._sound.setPlaybackRate(this.rpm / (DEFAULT_SHIFT_RPM / 2));
+    }
+
     public getMass(): number {
         return this.mass;
     }
@@ -282,7 +292,7 @@ export class Car extends Object3D {
         return this._mesh;
     }
 
-    public set sound(engineSound: Audio) {
+    public set sound(engineSound: PositionalAudio) {
         this._sound = engineSound;
         this._mesh.add(this._sound);
     }

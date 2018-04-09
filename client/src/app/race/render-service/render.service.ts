@@ -79,9 +79,8 @@ export class RenderService {
             await this._bots[i].init();
             this.scene.add(this._bots[i]);
         }
-        this._audioService.initialize(this.car, this._bots);
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
-
+        this._audioService.initialize(this.car, this._bots);
         this._cameraService.initialize(this._car, this.getAspectRatio());
         this._cameraService.changeCamera();
     }
