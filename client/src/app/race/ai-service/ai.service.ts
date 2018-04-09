@@ -17,6 +17,10 @@ export class AiService {
 
     public constructor(private _track: TrackBuilder, private _npcs: Array<Car>) {
         this._pointIndex = 0;
+        for (const npc of this._npcs) {
+            npc.userData.pointIndex = 0;
+            npc.userData.maxIndex = this._track.vertices.length;
+        }
     }
 
     public update(timeSinceLastFrame: number): void {
@@ -92,6 +96,8 @@ export class AiService {
     }
 
     private nextPointIndex(): number {
+        this._currentCar.userData.pointIndex = (this._pointIndex >= this._track.vertices.length - 1 ? 0 : this._pointIndex + 1);
+
         return (this._pointIndex >= this._track.vertices.length - 1 ? 0 : this._pointIndex + 1);
     }
 
