@@ -3,11 +3,11 @@ import { Subject } from "rxjs/Subject";
 import { Injectable } from "@angular/core";
 
 export interface IGameInformation {
-    gameTime: number;
-    lapTimes: Array<number>;
+    gameTime: String;
+    lapTimes: Array<String>;
     currentLap: number;
     gameIsFinished: boolean;
-    botTimes: Array<Array<number>>;
+    botTimes: Array<Array<String>>;
 }
 
 @Injectable()

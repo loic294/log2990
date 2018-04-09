@@ -40,7 +40,7 @@ export class GameComponent implements AfterViewInit, OnInit {
         this._trackInformation = new TrackInformation();
         this._trackInformation.getTracksList();
 
-        this._currentGame = {gameTime: 0, lapTimes: new Array(), gameIsFinished: false, currentLap: 1, botTimes: new Array()};
+        this._currentGame = {gameTime: "0.00", lapTimes: new Array(), gameIsFinished: false, currentLap: 1, botTimes: new Array()};
     }
 
     @HostListener("window:resize", ["$event"])
