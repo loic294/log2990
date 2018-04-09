@@ -192,6 +192,14 @@ export default class GridGeneration {
         return shouldAddToGrid;
     }
 
+    public async checkRelatedDefinitions(word: Constraint, grid: Array<Array<Cell>>): Promise<boolean> {
+        const url: string = `http://localhost:3000/lexical/definition/${word.name}/easy`;
+        const { data: { lexicalResult } }: { data: { lexicalResult: string} } = await axios.get(url);
+        console.log("WORD DEFINITION CHECK", url, lexicalResult);
+
+        return lexicalResult !== "No definitions";
+    }
+
     public async recursion(words: Array<Constraint>, wordIndex: number, cycle: number, grid: Array<Array<Cell>>): Promise<boolean> {
 
         console.log('CYCLE', cycle, wordIndex, grid[0][0].char);
@@ -201,25 +209,49 @@ export default class GridGeneration {
             return false;
         }
 
+        let gridFreeze: Array<Array<Cell>> = [...grid.map((row: Array<Cell>) => ([...row]))];
+
         if (this.shouldFindWord(grid, word)) {
             const query: string = this.createWordSearchCondition(grid, word);
 
+            let count: number = 0;
+            let isValid: boolean = false;
             do {
-                const url: string = `http://localhost:3000/lexical/wordAndDefinition/${query}/common/easy`;
-                const { data: { lexicalResult } }: { data: { lexicalResult: Array<string>} } = await axios.get(url);
 
-                word.name = lexicalResult[0];
-                word.desc = lexicalResult[1];
-            } while (word.name === "undefined");
+                do {
+                    const url: string = `http://localhost:3000/lexical/wordAndDefinition/${query}/common/easy`;
+                    const { data: { lexicalResult } }: { data: { lexicalResult: Array<string>} } = await axios.get(url);
 
-            grid = this.addWordToGrid(grid, word);
+                    word.name = lexicalResult[0];
+                    word.desc = lexicalResult[1];
+                } while (word.name === "undefined");
+
+                grid = this.addWordToGrid(gridFreeze, word);
+
+                isValid = await this.checkRelatedDefinitions(word, gridFreeze);
+
+                console.log("WORD CHECK COUNT", count);
+                if (count === 9 && wordIndex > 0) {
+                    console.log("WORD VALIDATION FAILED");
+
+                    return true;
+                }
+
+            } while (!isValid && count++ < 10)
+
         }
 
-        const gridFreeze: Array<Array<Cell>> = [...grid];
+        const gridFreeze2: Array<Array<Cell>> = [...gridFreeze.map((row: Array<Cell>) => ([...row]))];
 
         cycle += 1;
         wordIndex += 1;
-        if (await this.recursion(words, wordIndex, cycle, gridFreeze)) {
+        if (await this.recursion(words, wordIndex, cycle, gridFreeze2)) {
+            console.log("WORD RECURSION FAILED", wordIndex, cycle);
+
+            if (wordIndex > 0) {
+                await this.recursion(words, wordIndex - 1, cycle, gridFreeze);
+            }
+
             return false;
         }
 
