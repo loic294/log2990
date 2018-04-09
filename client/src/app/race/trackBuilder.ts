@@ -9,7 +9,7 @@ import { Car } from "./car/car";
 const WIDTH: number = 10;
 const CIRCLE_SEGMENTS: number = 32;
 const OFFSET_FACTOR: number = -0.1;
-const DISTANCE_FACTOR: number = 1.5;
+const DISTANCE_FACTOR: number = 1.3;
 const NUMBER_OF_LINE: number = 2;
 const LINE_POSITION_FACTOR: number = 3;
 const OFFTRACK_OFFSET: number = 0.02;
@@ -136,10 +136,21 @@ export class TrackBuilder {
 
         line.rotateX(PI_OVER_2);
         line.translateOnAxis(translationDirection, distance);
+
+        const angle: number = this.findZRotationAngle(line.position, this._vertice[1].position);
+        line.rotateZ(angle);
+
         line.userData.leftPositionTaken = false;
         line.userData.rightPositionTaken = false;
         this._startingLines.push(line);
         this._scene.add(line);
+    }
+
+    private findZRotationAngle(position: Vector3, destination: Vector3): number {
+        const perpendicularToPosition: Vector3 = this.findPerpendicularVector(position);
+        const perpendicularToPerpendicular: Vector3 = this.findPerpendicularVector(perpendicularToPosition);
+
+        return perpendicularToPerpendicular.angleTo(destination);
     }
 
     private positionRacers(): void {
@@ -183,6 +194,9 @@ export class TrackBuilder {
         const direction: Vector3 = new Vector3(perpendicular.x * WIDTH / LINE_POSITION_FACTOR, 0,
                                                perpendicular.y * WIDTH / LINE_POSITION_FACTOR);
         car.meshPosition = new Vector3().addVectors(line.position, direction);
+
+        const angle: number = this.findZRotationAngle(line.position, this._vertice[1].position);
+        car.getMesh().rotateY(-angle + Math.PI);
     }
 
     private findPerpendicularVector(vector: Vector3): Vector3 {
