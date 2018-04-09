@@ -2,7 +2,7 @@
 // TODO: Remove disable!!
 import { Cell } from "../../../../common/grid/case";
 import Word, { Orientation } from "../../../../common/lexical/word";
-// import Constraint from "./constraint";
+import Constraint, { SubConstraint } from "./constraint";
 import axios from "axios";
 import {
     checkIntersection
@@ -14,38 +14,7 @@ export enum Difficulty {
     hard = 2
 }
 
-interface SubConstraint {
-    wordIndex: number;
-    point: Array<number>;
-    subWord?: boolean;
-}
 
-export class Constraint extends Word {
-    public constraints?: Array<SubConstraint>;
-    public size?: number;
-
-    constructor(
-        public name: string,
-        public desc: string,
-        public position: Array<number>,
-        public orientation: Orientation,
-        public index: number = 0,
-        public isValidated: boolean = false
-    ) {
-        super(name, desc, position, orientation, index, isValidated);
-        this.constraints = [];
-        this.size = name.length;
-    }
-
-    public get length(): number {
-        return this.size;
-    }
-
-    public set length(size: number) {
-        this.size = size;
-    }
-
-}
 export default class GridGeneration {
     private _grid: Array<Array<Cell>>;
     private _wordStack: Array<Constraint>;
@@ -581,35 +550,6 @@ export default class GridGeneration {
                 }
             }
         }
-    }
-
-    public printGrid(): String {
-        let output: string = "";
-        this.traverseGrid((row: number, col: number) => {
-            const cell: Cell = this._grid[row][col];
-            const t: boolean = this.intersections.some((int: Array<number>) => cell.x === int[0] && cell.y === int[1]);
-            output += cell.isBlack() ? " ❌ " : ` ${t ? "🔵" : cell.char} `;
-            if (col === this._grid.length - 1) {
-                output += "\n";
-            }
-        });
-
-        return output;
-    }
-
-    public printGridWithWord(grid: Array<Array<Cell>>): String {
-        let output: string = "";
-        for (let row: number = 0; row < this.grid[0].length; row++) {
-            for (let col: number = 0; col < this.grid[0].length; col++) {
-                const cell: Cell = this.grid[row][col];
-                output += cell.isBlack() ? " ❌ " : ` ${cell.char} `;
-                if (col === this.grid.length - 1) {
-                    output += "\n";
-                }
-            }
-        }
-
-        return output;
     }
 
     public get grid(): Cell[][] {
