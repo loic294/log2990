@@ -89,7 +89,7 @@ export class RenderService {
         this._cameraService.initialize(this._car, this.getAspectRatio());
         this.loadSkybox();
         this._trackProgression = new TrackProgression(startingLine, this._car, service);
-        this._audioService.play();
+        this._audioService.start();
     }
 
     public getAspectRatio(): number {
