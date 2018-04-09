@@ -276,4 +276,8 @@ export class Car extends Object3D {
     public getMass(): number {
         return this.mass;
     }
+
+    public getMesh(): Object3D {
+        return this.mesh;
+    }
 }
