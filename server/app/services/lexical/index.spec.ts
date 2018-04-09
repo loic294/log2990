@@ -14,9 +14,9 @@ describe("wordSearch('4', 'common')", () => {
 });
 
 describe("wordSearch('4', 'uncommon')", () => {
-    it("should return a 4 letter common word", () => {
+    it("should return a 4 letter uncommon word", () => {
         
-        return service.wordSearch("4", "common").then((data: any)=> {
+        return service.wordSearch("4", "uncommon").then((data: any)=> {
             assert.equal(4, data.length);
         });
     });
@@ -43,11 +43,21 @@ describe("wordDefinition('easy','train')", () => {
      });
 });
 
+
 describe("wordDefinition('hard','train')", () => {
     it("should return an alternative definition of the word", () => {
         return service.wordDefinition("hard","train").then((definition: any) => {
             assert.notInclude(definition, "train", "Should not include the word train in the definition");
             assert.notEqual(definition, "A series of connected railroad cars pulled or pushed by one or more locomotives.");
+        });
+     });
+});
+
+describe("wordAndDefinition('10', 'common', 'easy')", () => {
+    it("should return a ten letter word and its definition", () => {
+        return service.wordAndDefinition("10", "common", "easy").then((data: any) => {
+            assert.equal(10, data[0].length);
+            assert.isNotEmpty(data[1]);
         });
      });
 });
