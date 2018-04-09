@@ -84,15 +84,18 @@ export class ResultsComponent implements OnInit {
         this._positionedRaceTimes = [];
         let botIndex: number = 0;
         for (const time of this.completeRaceTimeBots()) {
+            this._positionedRaceTimes.push(new Array());
             this._positionedRaceTimes[botIndex].push("BOT " + botIndex.toString());
             this._positionedRaceTimes[botIndex].push(time);
             botIndex++;
         }
+        this._positionedRaceTimes.push(new Array());
         const playerIndex: number = botIndex++;
         this._positionedRaceTimes[playerIndex].push("YOU");
         this._positionedRaceTimes[playerIndex].push(this._game.gameTime);
-        this._positionedRaceTimes = this._positionedRaceTimes.sort((n1, n2) => parseFloat(n1.toString()) - parseFloat(n2.toString()));
+        this._positionedRaceTimes = this._positionedRaceTimes.sort((n1, n2) => parseFloat(n1[1].toString()) - parseFloat(n2[1].toString()));
     }
+    
 
     public isFirst(): boolean {
         for (const bot of this._game.botTimes) {

@@ -20,5 +20,18 @@
         <span>{{time}} seconds</span>
       </li>
     </div>
+  
+
+  <div *ngIf="showGameResults" class="modal-content">
+      <h1>THIS RACE RESULTS</h1>
+      <li *ngFor="let position of _positionedRaceTimes">
+        <span>{{position[0]}} :</span>
+        <span>{{position[1]}} seconds</span>
+      </li>
   </div>
+  
+  <button (click)="findGameResults()">Game results</button>
+
+  </div>
+  
 </div>
