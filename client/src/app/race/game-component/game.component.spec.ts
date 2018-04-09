@@ -83,15 +83,15 @@ describe("GameComponent", () => {
     });
 
     it("should show lap count at 0 on creation", async () => {
-        expect(component._currentGame.currentLap).toEqual(0);
+        expect(component._currentGame.currentLap).toEqual(1);
     });
 
     it("should show game time at 0 on creation", async () => {
-        expect(component._currentGame.gameTime).toEqual(0);
+        expect(component._currentGame.gameTime).toEqual("0.00");
     });
 
     it("should show lap time at 0 on creation", async () => {
-        expect(component._currentGame.lapTime).toEqual(0);
+        expect(component._currentGame.lapTimes.length).toEqual(0);
     });
 
     it("should show game time greater then 0 when game started", async () => {
@@ -121,7 +121,7 @@ describe("GameComponent", () => {
         component.showTrack();
         await component.start();
         component.service.car.userData.currentLap = 2;
-        expect(component._currentGame.gameTime).toBeGreaterThan(component._currentGame.lapTime);
+        expect(Number(component._currentGame.gameTime)).toBeGreaterThan(Number(component._currentGame.lapTimes[2]));
     });
 
     it("should not increment lap counter over 3", async () => {
