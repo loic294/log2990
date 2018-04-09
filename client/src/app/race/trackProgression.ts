@@ -20,7 +20,6 @@ export class TrackProgression {
             index++;
         }
         this._trackProgressionService.sendGameProgress(this._game);
-
         this._gameClock = new Clock();
         this._gameClock.start();
 

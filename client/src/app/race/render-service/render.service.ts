@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
+import { EnvironmentService } from "../environment-service/environment.service";
 import {
-    WebGLRenderer, Scene, AmbientLight,
-    MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, BoxGeometry, Vector3
+    WebGLRenderer, Scene, Vector3
 } from "three";
 import { Car } from "../car/car";
 import { CameraService } from "../camera-service/camera.service";
@@ -10,10 +10,6 @@ import { AiService } from "../ai-service/ai.service";
 import { TrackProgression } from "../trackProgression";
 import { TrackProgressionService } from "../trackProgressionService";
 
-const WHITE: number = 0xFFFFFF;
-const AMBIENT_LIGHT_OPACITY: number = 1;
-
-const SIZE_SKYBOX: number = 10000;
 const AMOUNT_OF_NPCS: number = 3;
 
 @Injectable()
@@ -30,7 +26,7 @@ export class RenderService {
     private _trackLoaded: boolean;
     private _trackProgression: TrackProgression;
 
-    public constructor(private _cameraService: CameraService) {
+    public constructor(private _cameraService: CameraService, private _environmentService: EnvironmentService) {
         this._car = new Car();
         this._bots = [];
         this._trackLoaded = false;
@@ -76,7 +72,7 @@ export class RenderService {
             await this._bots[i].init();
             this.scene.add(this._bots[i]);
         }
-        this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
+        this._environmentService.initialize(this._scene);
 
         this._cameraService.initialize(this._car, this.getAspectRatio());
         this._cameraService.changeCamera();
@@ -84,7 +80,6 @@ export class RenderService {
 
     public start(startingLine: Vector3, service: TrackProgressionService): void {
         this._cameraService.initialize(this._car, this.getAspectRatio());
-        this.loadSkybox();
         this._trackProgression = new TrackProgression(startingLine, this._car, this._bots, service);
     }
 
@@ -117,24 +112,20 @@ export class RenderService {
         this.renderer.setSize(this._container.clientWidth, this._container.clientHeight);
     }
 
-    private loadSkybox(): void {
-        const sidesOfSkybox: MeshBasicMaterial[] = [];
-        const imageDirectory: string = "../../../assets/skybox/";
-        const imageName: string = "stormydays_";
-        const imageSuffixes: string[] = ["ft", "bk", "up", "dn", "rt", "lf"];
-        const imageType: string = ".png";
-        let imageFilePath: string = "";
-
-        for (const imageSuffix of imageSuffixes) {
-            imageFilePath = `${imageDirectory}${imageName}${imageSuffix}${imageType}`;
-            sidesOfSkybox.push(new MeshBasicMaterial({ map: new TextureLoader().load(imageFilePath), side: DoubleSide }));
+    public changeTimeOfDay(): void {
+        this._environmentService.changeMode();
+        if (!this._environmentService.isNight && this._car.headlightsManager.isActive) {
+            this.toogleLights();
+        } else if (this._environmentService.isNight && !this._car.headlightsManager.isActive) {
+            this.toogleLights();
         }
+    }
 
-        const skyboxGeometry: BoxGeometry = new BoxGeometry(SIZE_SKYBOX, SIZE_SKYBOX, SIZE_SKYBOX);
-        const skyboxTexture: MultiMaterial = new MultiMaterial(sidesOfSkybox);
-        const skybox: Mesh = new Mesh(skyboxGeometry, skyboxTexture);
-
-        this._scene.add(skybox);
+    public toogleLights(): void {
+        this._car.toogleLight();
+        for (const bot of this.bots) {
+            bot.toogleLight();
+        }
     }
 
     public get renderer(): WebGLRenderer {
@@ -155,6 +146,10 @@ export class RenderService {
 
     public get cameraService(): CameraService {
         return this._cameraService;
+    }
+
+    public get environmentService(): EnvironmentService {
+        return this._environmentService;
     }
 
     public get bots(): Array<Car> {
