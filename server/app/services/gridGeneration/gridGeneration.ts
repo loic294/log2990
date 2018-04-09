@@ -1,5 +1,5 @@
 import { Cell } from "../../../../common/grid/case";
-import Word, { Orientation } from "../../../../common/lexical/word";
+import { Orientation } from "../../../../common/lexical/word";
 import Constraint, { SubConstraint } from "./constraint";
 import { printGrid, printGridWithWord } from "./gridDebuggingTools";
 import { traverseWord, intersects, siwtchPosition, sortWords, sortSubConstraint, containtsOnlyLetters } from "./gridTools";
@@ -101,13 +101,7 @@ export default class GridGeneration {
         return lexicalResult;
     }
 
-    public async checkRelatedDefinitions(word: Constraint, grid: Array<Array<Cell>>): Promise<boolean> {
-
-        const lexicalResult: string = await this.checkWordDefinition(word.name);
-
-        if (lexicalResult === NO_DEFINITION) {
-            return false;
-        }
+    public async checkRelatedDefinitions(definition: string, word: Constraint, grid: Array<Array<Cell>>): Promise<boolean> {
 
         for (const constraint of word.constraints) {
             const subWord: Constraint = this._wordStack[constraint.wordIndex];
@@ -129,18 +123,14 @@ export default class GridGeneration {
         return true;
     }
 
-    // tslint:disable-next-line:max-func-body-length
-    public async recursion(words: Array<Constraint>, wordIndex: number, cycle: number, grid: Array<Array<Cell>>): Promise<boolean> {
-
+    public async recursionInternal(
+        words: Array<Constraint>,
+        wordIndex: number,
+        cycle: number,
+        grid: Array<Array<Cell>>,
+        gridFreeze: Array<Array<Cell>>): Promise<Array<Array<Cell>> | boolean> {
         const word: Constraint = words[wordIndex];
-
-        if (cycle > 40 || !word) {
-            console.log("CYCLE OUT OF BOUND");
-
-            return false;
-        }
-
-        const gridFreeze: Array<Array<Cell>> = [...grid.map((row: Array<Cell>) => ([...row]))];
+        const maxRecursion: number = 5;
 
         if (this.shouldFindWord(grid, word)) {
             const query: string = this.createWordSearchCondition(grid, word);
@@ -148,52 +138,52 @@ export default class GridGeneration {
             let count: number = 0;
             let isValid: boolean = false;
             do {
+                const uri: string = `http://localhost:3000/lexical/wordAndDefinition/${query}/common/easy`;
+                const { lexicalResult }: { lexicalResult: Array<string> } = await request({ uri, json: true });
 
-                let oldResult: string = "";
-                do {
-                    const uri: string = `http://localhost:3000/lexical/wordAndDefinition/${query}/common/easy`;
-                    const { lexicalResult }: { lexicalResult: Array<string> } = await request({ uri, json: true });
-
-                    // CREATES INFINITE LOOP
-                    // if (lexicalResult[1] === NO_DEFINITION || (oldResult === lexicalResult[1] && oldResult !== "undefined")) {
-                    //     console.log("FORCE INDEX BACKWARD #1");
-                    //     await this.recursion(words, wordIndex - 1, cycle, gridFreeze);
-
-                    //     return false;
-                    // }
-
+                if (lexicalResult[1] !== NO_DEFINITION) {
                     word.name = lexicalResult[0];
                     word.desc = lexicalResult[1];
-
-                    oldResult = word.name;
-                } while (word.name === "undefined");
-
-                grid = this.addWordToGrid(gridFreeze, word);
-
-                isValid = await this.checkRelatedDefinitions(word, gridFreeze);
-
-                if (count === 9 && wordIndex > 0) {
-                    console.log("FORCE INDEX BACKWARD #2");
-                    await this.recursion(words, wordIndex - 1, cycle, gridFreeze)
-
-                    return false;
-                } else if (wordIndex === 0) {
-                    console.log("END WORD INDEX");
+                    grid = this.addWordToGrid(gridFreeze, word);
+                    isValid = await this.checkRelatedDefinitions(lexicalResult[1], word, gridFreeze);
                 }
 
-            } while (!isValid && count++ < 10)
+                if (count === (maxRecursion - 1) && wordIndex > 0) {
+                    console.log("NO VALID WORD FOUND");
 
+                    return true;
+                }
+            } while (!isValid && count++ < maxRecursion);
+        }
+
+        return grid;
+
+    }
+
+    // tslint:disable-next-line:max-func-body-length
+    public async recursion(words: Array<Constraint>, wordIndex: number, cycle: number, grid: Array<Array<Cell>>): Promise<boolean> {
+
+        if (wordIndex >= words.length || cycle > 45) {
+            console.log("MAX CYCLE", cycle)
+            return false;
+        }
+        const gridFreeze0: Array<Array<Cell>> = [...grid.map((row: Array<Cell>) => ([...row]))];
+        const gridFreeze: Array<Array<Cell>> = [...grid.map((row: Array<Cell>) => ([...row]))];
+
+        const gridResult: Array<Array<Cell>>|boolean = await this.recursionInternal(words, wordIndex, cycle, grid, gridFreeze);
+        if (typeof gridResult === "boolean") {
+            console.log("FORCED RECUSION #1")
+            await this.recursion(words, wordIndex - 1, cycle + 1, gridFreeze0);
         }
 
         const gridFreeze2: Array<Array<Cell>> = [...gridFreeze.map((row: Array<Cell>) => ([...row]))];
 
-        cycle += 1;
-        wordIndex += 1;
-        if (await this.recursion(words, wordIndex, cycle, gridFreeze2)) {
-            console.log("FORCE INDEX BACKWARD #3");
-
+        const recusionCall: boolean = await this.recursion(words, wordIndex + 1, cycle + 1, gridFreeze2);
+        console.log("CALL", recusionCall)
+        if (recusionCall) {
+            console.log("FORCE RECURSION RESTART", wordIndex)
             if (wordIndex > 0) {
-                await this.recursion(words, wordIndex - 1, cycle, gridFreeze);
+                await this.recursion(words, wordIndex - 1, cycle + 1, gridFreeze);
             }
 
             return false;
