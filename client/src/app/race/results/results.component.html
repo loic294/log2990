@@ -2,21 +2,23 @@
   <div id="resultsModal" class="modal">
 
     <div *ngIf="isBestTime() && isFirst()" class="modal-content">
-      <h2>FELICITATIONS</h2>
-      <p>RESULTATS</p>
+      <h1>CONGRATULATIONS YOU WON</h1>
+      <div class="input-row">Please enter your name
+        <input (input)="enterName($event.target.value)" />
+      </div>
+      <h1>BEST TIMES</h1>
       <li *ngFor="let time of bestTimes()">
-          <input *ngIf = "time === _game.gameTime" (input)="enterName($event.target.name)"  />
+          <span *ngIf = "time === _game.gameTime" class = "bestTime">{{bestTimeName}}</span>
           <span>{{time}} seconds</span>
       </li>
     </div>
 
     <div *ngIf="!isBestTime()" class="modal-content">
-        <h2>T POCHE</h2>
-        <p>RESULTATS</p>
-        <li *ngFor="let time of bestTimes()">
-          <span>{{time}} seconds</span>
-        </li>
-      </div>
-
+      <h1>BETTER LUCK NEXT TIME</h1>
+      <h1>BEST TIMES</h1>
+      <li *ngFor="let time of bestTimes()">
+        <span>{{time}} seconds</span>
+      </li>
+    </div>
   </div>
 </div>

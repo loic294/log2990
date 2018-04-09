@@ -28,4 +28,21 @@
 
 input {
     display: inline-block;
+    width: 100%;
+    border: 2px solid #ddd;
+    margin: 10px 0;
+    padding: 8px 16px;
+    border-radius: 6px;
+}
+
+input:focus {
+    outline: none;
+    border-color: red;
+}
+
+
+.bestTime {
+    font-weight: bolder;
+    color: red;
+
 }

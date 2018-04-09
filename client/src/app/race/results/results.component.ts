@@ -16,7 +16,7 @@ export class ResultsComponent implements OnInit {
     private _isHidden: boolean;
     private _times: Array<String>;
     private _bestTimes: Array<String>;
-    //private _bestTimeName: String;
+    private _bestTimeName: String;
 
     public constructor( private resultsService: ResultsService) {
         this._isHidden = true;
@@ -29,6 +29,9 @@ export class ResultsComponent implements OnInit {
 
     public get isHidden(): boolean {
         return this._isHidden;
+    }
+    public get bestTimeName(): String {
+        return this._bestTimeName;
     }
     public bestTimes(): Array<String> {
         if (this._game.gameIsFinished) {
@@ -62,7 +65,6 @@ export class ResultsComponent implements OnInit {
     }
 
     public isFirst(): boolean {
-        console.log("bot Times: ", this._game.botTimes);
         for (const bot of this._game.botTimes) {
             let completeTimeBot: number = 0;
             for (const time of bot) {
@@ -72,12 +74,11 @@ export class ResultsComponent implements OnInit {
                 return false;
             }
         }
-
         return true;
     }
 
     public enterName(name: String): void {
-        // this._bestTimeName = name;
+        this._bestTimeName = name;
     }
     // tslint:disable-next-line:typedef
     public ngOnInit() {
