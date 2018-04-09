@@ -105,9 +105,16 @@ export class TrackProgression {
         for (const bot of this._botCars) {
             let timeFactor: number = 1.2;
 
-            while (bot.userData.lapsCompleted < MAX_LAPS) {
+            if (this._game.botTimes[botIndex].length === 0) {
                 this._game.botTimes[botIndex].push((bot.userData.clock.getElapsedTime()
                                                     + bot.userData.clock.getElapsedTime() * this.findRemaningLapDistance(bot)
+                                                    * timeFactor).toFixed(2));
+                bot.userData.lapsCompleted++;
+            }
+
+            while (bot.userData.lapsCompleted < MAX_LAPS) {
+                this._game.botTimes[botIndex].push((Number(this._game.botTimes[botIndex][0])
+                                                    + Number(this._game.botTimes[botIndex][0]) * this.findRemaningLapDistance(bot)
                                                     * timeFactor).toFixed(2));
                 bot.userData.lapsCompleted++;
                 timeFactor *= timeFactor;
