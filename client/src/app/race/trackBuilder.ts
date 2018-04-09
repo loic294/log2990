@@ -1,7 +1,6 @@
 import {
-    Vector3, MeshBasicMaterial, Mesh, Object3D,
-    PlaneGeometry, DoubleSide, CircleGeometry, TextureLoader, Texture, RepeatWrapping
-} from "three";
+    Vector3, Mesh, Object3D,
+    PlaneGeometry, DoubleSide, CircleGeometry, TextureLoader, Texture, RepeatWrapping, MeshPhongMaterial} from "three";
 import { LineSegment } from "./DotCommand";
 import { PI_OVER_2 } from "../constants";
 import { Car } from "./car/car";
@@ -31,7 +30,7 @@ export class TrackBuilder {
     }
 
     private generateOffTrack(): void {
-        const material: MeshBasicMaterial = new MeshBasicMaterial({
+        const material: MeshPhongMaterial = new MeshPhongMaterial({
             map: this.generateTexture(OFFTRACK_DIMENSION, OFFTRACK_DIMENSION, OFFTRACK_TEXTURE_PATH),
             side: DoubleSide
         });
@@ -71,7 +70,7 @@ export class TrackBuilder {
     private generatePlane(firstVertex: Vector3, secondVertex: Vector3): void {
         const length: number = firstVertex.distanceTo(secondVertex);
 
-        const material: MeshBasicMaterial = new MeshBasicMaterial({
+        const material: MeshPhongMaterial = new MeshPhongMaterial({
             map: this.generateTexture(WIDTH, length, TRACK_TEXTURE_PATH),
             side: DoubleSide
         });
@@ -106,7 +105,7 @@ export class TrackBuilder {
 
     private replaceSphere(vertex: Object3D): void {
         this._scene.remove(vertex);
-        const material: MeshBasicMaterial = new MeshBasicMaterial({
+        const material: MeshPhongMaterial = new MeshPhongMaterial({
             map: this.generateTexture(WIDTH, WIDTH, TRACK_TEXTURE_PATH),
             side: DoubleSide
         });
@@ -120,7 +119,7 @@ export class TrackBuilder {
     private placeStartingLines(): void {
         const lineGeometry: PlaneGeometry = new PlaneGeometry(2, WIDTH);
         const texture: Texture = new TextureLoader().load("../../../assets/track/starting_line.jpg");
-        const lineMaterial: MeshBasicMaterial = new MeshBasicMaterial({ map: texture, side: DoubleSide });
+        const lineMaterial: MeshPhongMaterial = new MeshPhongMaterial({ map: texture, side: DoubleSide });
         lineMaterial.polygonOffset = true;
         lineMaterial.polygonOffsetFactor = OFFSET_FACTOR;
         const firstLine: Mesh = new Mesh(lineGeometry, lineMaterial);
