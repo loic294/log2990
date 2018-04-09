@@ -3,9 +3,50 @@ div {
     height: 800px;
 }
 
-ul, li {
+/* ul, li {
     position: relative;
     margin: 0;
     top: 40px;
     color: red;
+} */
+
+.canvas-container {
+    position: relative;
+}
+
+.stats{
+    position: absolute;
+    margin: 0;
+    top: 40px;
+    left: 20px;
+    color: red;
+}
+
+.time{
+    z-index: 1;
+    position: absolute;
+    right: 50%;
+    top: 40px;
+    align-content: center;
+    color: white;
+}
+
+.lap-time{
+    z-index: 1;
+    position: absolute;
+    right: 50%;
+    top: 60px;
+    align-content: center;
+    color: white;
+}
+
+.lap{
+    background-color: rgba(211,211,211,0.5);
+    padding: 5px 5px;
+    color: white;
+    z-index: 1;
+    position: absolute;
+    right: 20px;
+    top: 40px;
+    align-content: center;
 }

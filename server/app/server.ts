@@ -5,7 +5,7 @@ import * as cors from "cors";
 import routes from "./routes/index";
 import sockets from "./socket/index";
 import { Http2Server } from "http2";
-// import * as SocketIO from "socket.io";
+import * as SocketIO from "socket.io";
 
 const PORT: number = 3000;
 let app: express.Application = express();
