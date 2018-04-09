@@ -52,7 +52,7 @@ export default class GridGeneration {
     private _DEFAULT_SIZE: number = 10;
     private _gridSize: number = this._DEFAULT_SIZE;
     private blackCellCount: number = 0;
-    private maxBlackCells: number = 0.2;
+    private maxBlackCells: number = 0.3;
 
     private intersections: Array<Array<number>> = [];
 
@@ -241,7 +241,7 @@ export default class GridGeneration {
             return false;
         }
 
-        let gridFreeze: Array<Array<Cell>> = [...grid.map((row: Array<Cell>) => ([...row]))];
+        const gridFreeze: Array<Array<Cell>> = [...grid.map((row: Array<Cell>) => ([...row]))];
 
         if (this.shouldFindWord(grid, word)) {
             const query: string = this.createWordSearchCondition(grid, word);
@@ -250,12 +250,21 @@ export default class GridGeneration {
             let isValid: boolean = false;
             do {
 
+                let oldResult: string = ""
                 do {
                     const url: string = `http://localhost:3000/lexical/wordAndDefinition/${query}/common/easy`;
                     const { data: { lexicalResult } }: { data: { lexicalResult: Array<string>} } = await axios.get(url);
 
                     word.name = lexicalResult[0];
                     word.desc = lexicalResult[1];
+
+                    if (oldResult === word.name && oldResult !== "undefined") {
+                        await this.recursion(words, wordIndex - 1, cycle, gridFreeze);
+
+                        return false;
+                    }
+
+                    oldResult = word.name;
                 } while (word.name === "undefined");
 
                 grid = this.addWordToGrid(gridFreeze, word);
