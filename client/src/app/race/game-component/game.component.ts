@@ -145,12 +145,12 @@ export class GameComponent implements AfterViewInit, OnInit {
 
     private actOnProgress(game: IGameInformation): void {
         this._currentGame = game;
-        this.resultsService.selectGame(game);
-        this.resultsService.selectTrackTimes(this._trackInformation.track.completedTimes); // FOR TESTING PURPOSES (TO REMOVE)
+        this._trackInformation.track.completedTimes = ["13.4", "4.7", "55.5"]; //FOR TESTING
         if (game.gameIsFinished && this._raceStarted) {
             this._raceStarted = false;
             this._trackLoaded = false;
             this.saveTime().catch();
+            this.resultsService.selectGame(game);
             this.resultsService.selectTrackTimes(this._trackInformation.track.completedTimes);
         }
     }

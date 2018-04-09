@@ -1,7 +1,7 @@
 <div *ngIf="_game.gameIsFinished">
   <div id="resultsModal" class="modal">
 
-    <div *ngIf="isBestTime()" class="modal-content">
+    <div *ngIf="isBestTime() && isFirst()" class="modal-content">
       <h2>FELICITATIONS</h2>
       <p>RESULTATS</p>
       <li *ngFor="let time of bestTimes()">

@@ -9,8 +9,8 @@ export class ResultsService {
     private _game: Observable<IGameInformation>;
     private _gameSubject: Subject<IGameInformation> = new Subject<IGameInformation>();
 
-    private _times: Observable<Array<number>>;
-    private _timesSubject: Subject<Array<number>> = new Subject<Array<number>>();
+    private _times: Observable<Array<String>>;
+    private _timesSubject: Subject<Array<String>> = new Subject<Array<String>>();
 
     public constructor() {
         this._game = this._gameSubject.asObservable();
@@ -25,11 +25,11 @@ export class ResultsService {
         this._gameSubject.next(game);
     }
 
-    public get trackTimes(): Observable<Array<number>> {
+    public get trackTimes(): Observable<Array<String>> {
         return this._times;
     }
 
-    public selectTrackTimes(times: Array<number>): void {
+    public selectTrackTimes(times: Array<String>): void {
         this._timesSubject.next(times);
     }
 
