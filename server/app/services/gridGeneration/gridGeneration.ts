@@ -1,17 +1,10 @@
-// tslint:disable:no-console no-suspicious-comment max-func-body-length
-// TODO: Remove disable!!
 import { Cell } from "../../../../common/grid/case";
 import Word, { Orientation } from "../../../../common/lexical/word";
 import Constraint, { SubConstraint } from "./constraint";
 import { printGrid, printGridWithWord } from "./gridDebuggingTools";
-import { traverseGrid, traverseWord, intersects, siwtchPosition, sortWords } from "./gridTools";
+import { traverseWord, intersects, siwtchPosition, sortWords, sortSubConstraint } from "./gridTools";
+import { fillGridWithCells, fillGridWithBlackCells } from "./gridInitialisation"
 import * as request from "request-promise-native";
-
-export enum Difficulty {
-    easy = 0,
-    medium = 1,
-    hard = 2
-}
 
 export default class GridGeneration {
     private _grid: Array<Array<Cell>>;
@@ -19,8 +12,7 @@ export default class GridGeneration {
     private _wordsFinal: Array<Constraint>;
     private _DEFAULT_SIZE: number = 10;
     private _gridSize: number = this._DEFAULT_SIZE;
-    private blackCellCount: number = 0;
-    private maxBlackCells: number = 0.3;
+    private _maxBlackCells: number = 0.3;
     private _definitionCache: Object = {};
 
     private _intersections: Array<Array<number>> = [];
@@ -30,83 +22,17 @@ export default class GridGeneration {
         this._wordStack = [];
     }
 
-    public fillGridWithCells(size: number): Array<Array<Cell>> {
-        size = size !== undefined ? size : this._DEFAULT_SIZE;
-        this._grid = [];
-        this._gridSize = size;
-
-        for (let row: number = 0; row < size; row++) {
-            this._grid[row] = [];
-            for (let col: number = 0; col < size; col++) {
-                this._grid[row][col] = new Cell("◽", row, col);
-            }
-        }
-
-        return this._grid;
+    public initializeGrid(size: number): void {
+        this._gridSize = size !== undefined ? size : this._DEFAULT_SIZE;
+        this._grid = fillGridWithCells(this._gridSize);
+        this._grid = fillGridWithBlackCells(this._grid, this._maxBlackCells, size);
     }
 
-    public hasMinWordSpace(row: number, col: number): boolean {
-        const MIN_WORD_LENGTH: number = 2;
-        const vertical: boolean = row === 1 || (this._grid[row - MIN_WORD_LENGTH] && !this._grid[row - MIN_WORD_LENGTH][col].isBlack());
-        const horizontal: boolean = col === 1 || (this._grid[row][col - MIN_WORD_LENGTH]
-            && !this._grid[row][col - MIN_WORD_LENGTH].isBlack());
-
-        return vertical && horizontal;
-    }
-
-    public isUniqueCell(row: number, col: number): boolean {
-        let count: number = 0;
-
-        if (!this.grid[row - 1] || (this.grid[row - 1][col].isBlack())) {
-            count++;
-        }
-
-        if (!this.grid[row + 1] || (this.grid[row + 1][col].isBlack())) {
-            count++;
-        }
-
-        if (!this.grid[row][col - 1] || (this.grid[row - 1][col].isBlack())) {
-            count++;
-        }
-
-        if (!this.grid[row][col + 1] || (this.grid[row][col + 1].isBlack())) {
-            count++;
-        }
-
-        return count === 4;
-    }
-
-    public fillGridWithBlackCells(): void {
-        traverseGrid(this._grid, (row: number, col: number) => {
-            if (row > 0 && col > 0) {
-                if (!this.grid[row][col].isBlack() && (Math.random() < this.maxBlackCells
-                    && this.hasMinWordSpace(row, col)) || this.isUniqueCell(row, col)) {
-                    this.grid[row][col].setBlack(true);
-                    this.blackCellCount += 1;
-                }
-            }
-        });
-
-        if (this.blackCellCount < this.maxBlackCells * (this._gridSize ** 2)) {
-            this.fillGridWithBlackCells();
-        }
-
-    }
-
+    // tslint:disable-next-line:max-func-body-length
     public createWordSearchCondition(grid: Array<Array<Cell>>, word: Constraint): string {
 
         const index: number = word.orientation === Orientation.horizontal ? 1 : 0;
-        const cosntraints: Array<SubConstraint> = word.constraints.sort((a: SubConstraint, b: SubConstraint) => {
-            if (a.point[index] > b.point[index]) {
-                return 1;
-            }
-            if (a.point[index] > b.point[index]) {
-                return 1;
-            }
-
-            return 0;
-        });
-
+        const cosntraints: Array<SubConstraint> = sortSubConstraint(word.constraints, index);
 
         let count: number = 0;
         let query: string = "";
@@ -146,7 +72,6 @@ export default class GridGeneration {
     public addWordToGrid(grid: Array<Array<Cell>>, word: Constraint): Array<Array<Cell>> {
 
         let count: number = 0;
-
         traverseWord(word, (row: number, col: number) => {
             if (word.name[count]) {
                 grid[row][col].char = word.name[count];
@@ -211,6 +136,7 @@ export default class GridGeneration {
         return true;
     }
 
+    // tslint:disable-next-line:max-func-body-length
     public async recursion(words: Array<Constraint>, wordIndex: number, cycle: number, grid: Array<Array<Cell>>): Promise<boolean> {
 
         const word: Constraint = words[wordIndex];
@@ -335,6 +261,7 @@ export default class GridGeneration {
         this.createConstraints(sortWords(allWords));
     }
 
+    // tslint:disable-next-line:max-func-body-length
     public findWordsFromSpace(orientation: Orientation): Array<Constraint> {
         const words: Array<Constraint> = [];
         let word: Constraint = new Constraint("", "", [0, 0], orientation);

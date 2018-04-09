@@ -8,8 +8,7 @@ export const generate: (req: Request, res: Response, next: NextFunction) => Prom
     const GRID_SIZE: number = 8;
 
     const grid: GridGeneration = new GridGeneration();
-    grid.fillGridWithCells(GRID_SIZE);
-    grid.fillGridWithBlackCells();
+    grid.initializeGrid(GRID_SIZE);
     await grid.findAllWordsSpaces();
 
     res.json({ success: true });

@@ -2,7 +2,7 @@
 // TODO: Remove disable!!
 import { Cell } from "../../../../common/grid/case";
 import { Orientation } from "../../../../common/lexical/word";
-import Constraint from "./constraint";
+import Constraint, { SubConstraint } from "./constraint";
 import { checkIntersection } from "line-intersect";
 
 //   public static fillGridWithCells(size: number): Array<Array<Cell>> {
@@ -67,6 +67,21 @@ import { checkIntersection } from "line-intersect";
 //     }
 
 // }
+
+export const sortSubConstraint: (subconstraints: Array<SubConstraint>, index: number) => Array<SubConstraint>
+    = (subconstraints: Array<SubConstraint>, index: number): Array<SubConstraint> => {
+
+    return subconstraints.sort((a: SubConstraint, b: SubConstraint) => {
+        if (a.point[index] > b.point[index]) {
+            return 1;
+        }
+        if (a.point[index] > b.point[index]) {
+            return 1;
+        }
+
+        return 0;
+    });
+};
 
 export const sortWords: (words: Array<Constraint>) => Array<Constraint>
     = (words: Array<Constraint>): Array<Constraint> => {
