@@ -7,6 +7,7 @@ import { CameraService } from "../camera-service/camera.service";
 import { TrackInformation } from "../trackInformation";
 import { TrackBuilder } from "../trackBuilder";
 import { AiService } from "../ai-service/ai.service";
+import { EnvironmentService } from "../environment-service/environment.service";
 import { IGameInformation, TrackProgressionService } from "../trackProgressionService";
 
 const SCALE_FACTOR: number = -10;
@@ -19,7 +20,8 @@ const SCALE_FACTOR: number = -10;
     providers: [
         RenderService,
         InputManagerService,
-        CameraService
+        CameraService,
+        EnvironmentService
     ]
 })
 
