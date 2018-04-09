@@ -5,6 +5,53 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "node",
+            "request": "attach",
+            "name": "Attach",
+            "port": 9229,
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceFolder}/server/out/**/*.js"
+            ],
+            "sourceMapPathOverrides": {
+                "webpack:///./~/*": "${workspaceRoot}/node_modules/*",
+                "webpack:///./*": "${workspaceRoot}/*",
+                "webpack:///*": "*"
+            },
+            "trace": "all"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch via NPM",
+            "runtimeExecutable": "npm",
+            "cwd": "${workspaceRoot}/server/",
+            "runtimeArgs": [
+                "run",
+                "node"
+            ],
+            "outFiles": [
+                "${workspaceRoot}/out/server/app/**/*.js"
+            ],
+            "stopOnEntry": true,
+            "sourceMaps": true,
+            "port": 9229,
+            "restart":true
+        },
+        {
+            "name": "Launch TypeScript",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/server/app/server.ts",
+            "protocol": "auto",
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceFolder}/server/out/**/*.js"
+            ],
+            "stopOnEntry": true,
+            "smartStep": true
+        },
+        {
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome against localhost",
