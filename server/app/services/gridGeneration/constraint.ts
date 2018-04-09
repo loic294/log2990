@@ -1,4 +1,4 @@
-import Word from "../../../../common/lexical/word";
+import Word, { Orientation } from "../../../../common/lexical/word";
 
 export interface SubConstraint {
     wordIndex: number;
