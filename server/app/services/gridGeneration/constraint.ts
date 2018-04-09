@@ -3,7 +3,6 @@ import Word from "../../../../common/lexical/word";
 export interface SubConstraint {
     wordIndex: number;
     point: Array<number>;
-    subWord?: boolean;
 }
 
 export default class Constraint extends Word {

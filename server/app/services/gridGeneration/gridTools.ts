@@ -68,6 +68,26 @@ import { checkIntersection } from "line-intersect";
 
 // }
 
+export const sortWords: (words: Array<Constraint>) => Array<Constraint>
+    = (words: Array<Constraint>): Array<Constraint> => {
+
+    return words
+        .filter((word: Constraint) => {
+            return word.size > 1;
+        })
+        .sort((a: Constraint, b: Constraint): number => {
+            if (a.size < b.size) {
+                return 1;
+            }
+
+            if (a.size > b.size) {
+                return -1;
+            }
+
+            return 0;
+        });
+};
+
 export const intersects: (word1: Constraint, word2: Constraint) => Array<number>
     = (word1: Constraint, word2: Constraint): Array<number> => {
 
@@ -89,12 +109,15 @@ export const intersects: (word1: Constraint, word2: Constraint) => Array<number>
     return type === "intersecting" ? [point.y, point.x] : [];
 };
 
-// public siwtchPosition(orientation: Orientation, value1: number, value2: number): Array<number> {
-//     return Orientation.horizontal ? [value1, value2] : [value2, value1];
-// }
+export const siwtchPosition: (orientation: Orientation, value1: number, value2: number) => Array<number>
+    = (orientation: Orientation, value1: number, value2: number): Array<number> => {
+    return orientation === Orientation.horizontal ? [value1, value2] : [value2, value1];
+};
 
 export const traverseWord: (word: Constraint, fct: Function) => void | boolean = (word: Constraint, fct: Function): void | boolean => {
-    let count: number = 0, row: number = word.position[0], col: number = word.position[1];
+    let count: number = 0;
+    let row: number = word.position[0];
+    let col: number = word.position[1];
 
     do {
         const isDefinend: boolean | void = fct(row, col);
