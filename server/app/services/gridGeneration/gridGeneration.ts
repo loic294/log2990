@@ -57,6 +57,7 @@ export default class GridGeneration {
     private intersections: Array<Array<number>> = [];
 
     public constructor() {
+        console.time("generation");
         this._wordStack = [];
     }
 
@@ -72,8 +73,8 @@ export default class GridGeneration {
             }
         }
 
-        console.log("Fill grid");
-        console.log(this.printGrid());
+        // console.log("Fill grid");
+        // console.log(this.printGrid());
 
         return this._grid;
     }
@@ -101,8 +102,8 @@ export default class GridGeneration {
             this.fillGridWithBlackCells();
         }
 
-        console.log("Fill with black cells");
-        console.log(this.printGrid());
+        // console.log("Fill with black cells");
+        // console.log(this.printGrid());
     }
 
     public createWordSearchCondition(grid: Array<Array<Cell>>, word: Constraint): string {
@@ -130,11 +131,11 @@ export default class GridGeneration {
             // console.log('SUBCONSTRAINT', subConstraint)
 
             count += 1;
-            console.log("ADD COUNT", count, !!subConstraint, subConstraint && subConstraint.point)
+            // console.log("ADD COUNT", count, !!subConstraint, subConstraint && subConstraint.point)
 
             if (subConstraint !== undefined) {
                 const cellChar: string = grid[subConstraint.point[0]][subConstraint.point[1]].char;
-                console.log("CELL CHAR", cellChar)
+                // console.log("CELL CHAR", cellChar)
                 if (cellChar !== "◽") {
                     query += count > 1 ? `${count - 1}${cellChar}` : `${cellChar}`;
                     count = 0;
@@ -171,20 +172,20 @@ export default class GridGeneration {
             count += 1;
         } while (count < word.length);
 
-        console.log("ADDED", word.name);
+        // console.log("ADDED", word.name);
 
         return grid;
     }
 
     public shouldFindWord(grid: Array<Array<Cell>>, word: Constraint): boolean {
 
-        console.log(this.printGridWithWord(grid));
+        // console.log(this.printGridWithWord(grid));
 
         let shouldAddToGrid: boolean = false;
 
         this.traverseWord(word, (row: number, col: number) => {
             if (grid[row] && grid[row][col] && grid[row][col].char === "◽" && !grid[row][col].isBlack()) {
-                console.log("SHOULD ADD TO GRID", row, col, grid[row][col].char);
+                // console.log("SHOULD ADD TO GRID", row, col, grid[row][col].char);
                 shouldAddToGrid = true;
             }
         });
@@ -192,17 +193,48 @@ export default class GridGeneration {
         return shouldAddToGrid;
     }
 
-    public async checkRelatedDefinitions(word: Constraint, grid: Array<Array<Cell>>): Promise<boolean> {
-        const url: string = `http://localhost:3000/lexical/definition/${word.name}/easy`;
+    public async checkWordDefinition(query: string): Promise<string> {
+        const url: string = `http://localhost:3000/lexical/definition/${query}/easy`;
         const { data: { lexicalResult } }: { data: { lexicalResult: string} } = await axios.get(url);
         console.log("WORD DEFINITION CHECK", url, lexicalResult);
 
-        return lexicalResult !== "No definitions";
+        return lexicalResult;
+    }
+
+    public async checkRelatedDefinitions(word: Constraint, grid: Array<Array<Cell>>): Promise<boolean> {
+        const lexicalResult: string = await this.checkWordDefinition(word.name);
+
+        if (lexicalResult === "No definitions") {
+            return false;
+        }
+
+        for (const constraint of word.constraints) {
+            if (constraint.subWord) {
+                const subWord: Constraint = this._wordStack[constraint.wordIndex];
+                let buildWord: string = "";
+
+                this.traverseWord(subWord, (row: number, col: number) => {
+                    buildWord += grid[row][col].char;
+                });
+
+                console.log("SUBOWRD CHECK", buildWord);
+
+                if (/^[a-z]+$/ig.test(buildWord) && subWord && subWord.length > 1) {
+                    const result: string = await this.checkWordDefinition(buildWord);
+
+                    if (result === "No definitions") {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     public async recursion(words: Array<Constraint>, wordIndex: number, cycle: number, grid: Array<Array<Cell>>): Promise<boolean> {
 
-        console.log('CYCLE', cycle, wordIndex, grid[0][0].char);
+        // console.log('CYCLE', cycle, wordIndex, grid[0][0].char);
         const word: Constraint = words[wordIndex];
 
         if (cycle > 40 || !word) {
@@ -231,13 +263,13 @@ export default class GridGeneration {
                 isValid = await this.checkRelatedDefinitions(word, gridFreeze);
 
                 console.log("WORD CHECK COUNT", count);
-                if (count === 9 && wordIndex > 0) {
+                if (count === 19 && wordIndex > 0) {
                     console.log("WORD VALIDATION FAILED");
 
                     return true;
                 }
 
-            } while (!isValid && count++ < 10)
+            } while (!isValid && count++ < 20)
 
         }
 
@@ -264,6 +296,7 @@ export default class GridGeneration {
             console.log("Recursion completed");
             console.log(this.printGrid());
             console.log(this.printGridWithWord(this._grid));
+            console.timeEnd("generation");
         })
         .catch((err: Error) => console.error(err));
     }
@@ -310,10 +343,10 @@ export default class GridGeneration {
             }
         }
 
-        console.log('WORDS WITH CONSTRAINTS', words.map(word => ({ position: word.position, size: word.size, orientation: word.orientation, constraints: word.constraints })));
+        // console.log('WORDS WITH CONSTRAINTS', words.map(word => ({ position: word.position, size: word.size, orientation: word.orientation, constraints: word.constraints })));
 
-        console.log("WITH INTERSECTIONS");
-        console.log(this.printGrid());
+        // console.log("WITH INTERSECTIONS");
+        // console.log(this.printGrid());
 
         this.filterConstraints(words);
     }
@@ -334,30 +367,30 @@ export default class GridGeneration {
 
     public filterConstraints(words: Array<Constraint>): void {
 
-        console.log("WORDS BEFORE RECUSION", words.length);
-        console.log("WORDS STACK BEFORE RECUSION", this._wordStack.length);
+        // console.log("WORDS BEFORE RECUSION", words.length);
+        // console.log("WORDS STACK BEFORE RECUSION", this._wordStack.length);
         this._wordStack = [...words];
 
         words = words.filter((word: Constraint, filterIndex: number) => {
-            console.log("-------------------------------");
+            // console.log("-------------------------------");
 
             let count: number = 0;
             this.traverseWord(word, (row: number, col: number) => {
                 const intersects: boolean = word.constraints.some((constraint: SubConstraint, index: number): boolean => {
-                    console.log(row, constraint.point[0], col, constraint.point[1]);
+                    // console.log(row, constraint.point[0], col, constraint.point[1]);
                     const wordIsBigger: boolean = this._wordStack[constraint.wordIndex].size >= word.size
                         && !words[filterIndex].constraints[index].subWord;
 
                     return row === constraint.point[0] && col === constraint.point[1] && wordIsBigger;
                 });
 
-                console.log('INSTERSECTS', intersects);
+                // console.log('INSTERSECTS', intersects);
                 if (intersects) {
                     count++;
                 }
             });
 
-            console.log("COUNT", count, word.length);
+            // console.log("COUNT", count, word.length);
             const toKeep: boolean = count !== word.length;
             if (!toKeep) {
                 words = this.setSubConstraintAsSubWord(words, filterIndex);
@@ -366,12 +399,12 @@ export default class GridGeneration {
             return toKeep;
         });
 
-        console.log(this.printGrid());
-        console.log("WORDS AFTER CONSTRAINT", words.length);
-        console.log("WORDS STACK AFTER RECUSION", this._wordStack.length);
-        console.log("WORDS AFTER CONSTRAINT COMPLETE");
-        console.log(words.map((word: Constraint) => ({ position: word.position, size: word.size, orientation: word.orientation })));
-        console.log(words.map((word: Constraint) => word.constraints));
+        // console.log(this.printGrid());
+        // console.log("WORDS AFTER CONSTRAINT", words.length);
+        // console.log("WORDS STACK AFTER RECUSION", this._wordStack.length);
+        // console.log("WORDS AFTER CONSTRAINT COMPLETE");
+        // console.log(words.map((word: Constraint) => ({ position: word.position, size: word.size, orientation: word.orientation })));
+        // console.log(words.map((word: Constraint) => word.constraints));
 
         this.startRecursion(words);
     }
