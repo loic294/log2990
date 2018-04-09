@@ -17,11 +17,12 @@ export enum Difficulty {
 interface SubConstraint {
     wordIndex: number;
     point: Array<number>;
+    subWord?: boolean;
 }
 
 export class Constraint extends Word {
-    public constraints: Array<SubConstraint>;
-    public size: number;
+    public constraints?: Array<SubConstraint>;
+    public size?: number;
 
     constructor(
         public name: string,
@@ -47,7 +48,7 @@ export class Constraint extends Word {
 }
 export default class GridGeneration {
     private _grid: Array<Array<Cell>>;
-    private _wordStack: Array<Word>;
+    private _wordStack: Array<Constraint>;
     private _DEFAULT_SIZE: number = 10;
     private _gridSize: number = this._DEFAULT_SIZE;
     private blackCellCount: number = 0;
@@ -129,22 +130,30 @@ export default class GridGeneration {
             // console.log('SUBCONSTRAINT', subConstraint)
 
             count += 1;
-            console.log('ADD COUNT', count, !!subConstraint, subConstraint && subConstraint.point)
+            console.log("ADD COUNT", count, !!subConstraint, subConstraint && subConstraint.point)
 
             if (subConstraint !== undefined) {
                 const cellChar: string = grid[subConstraint.point[0]][subConstraint.point[1]].char;
-                console.log('CELL CHAR', cellChar)
+                console.log("CELL CHAR", cellChar)
                 if (cellChar !== "◽") {
                     query += count > 1 ? `${count - 1}${cellChar}` : `${cellChar}`;
                     count = 0;
                 }
             }
 
-
             if (i === word.length - 1 && count > 0) {
                 query += `${count}`;
+                count = 0;
             }
 
+        }
+
+        if (query.length === 0) {
+            return "" + count;
+        }
+
+        if (/^[a-z]+$/ig.test(query)) {
+            return `${query}${count}`;
         }
 
         return query;
@@ -162,30 +171,25 @@ export default class GridGeneration {
             count += 1;
         } while (count < word.length);
 
-        console.log('ADDED', word.name);
-        // console.log(this.printGridWithWord(grid));
+        console.log("ADDED", word.name);
 
         return grid;
     }
 
     public shouldFindWord(grid: Array<Array<Cell>>, word: Constraint): boolean {
 
-        let count: number = 0, row: number = word.position[0], col: number = word.position[1];
-
         console.log(this.printGridWithWord(grid));
 
-        while (count < word.length) {
-            word.orientation === Orientation.horizontal ? col += 1 : row += 1;
-            count += 1;
-            if (grid[row][col] && grid[row][col].char === "◽" && !grid[row][col].isBlack()) {
+        let shouldAddToGrid: boolean = false;
+
+        this.traverseWord(word, (row: number, col: number) => {
+            if (grid[row] && grid[row][col] && grid[row][col].char === "◽" && !grid[row][col].isBlack()) {
                 console.log("SHOULD ADD TO GRID", row, col, grid[row][col].char);
-
-                return true;
+                shouldAddToGrid = true;
             }
-        }
+        });
 
-
-        return true;
+        return shouldAddToGrid;
     }
 
     public async recursion(words: Array<Constraint>, wordIndex: number, cycle: number, grid: Array<Array<Cell>>): Promise<boolean> {
@@ -193,7 +197,7 @@ export default class GridGeneration {
         console.log('CYCLE', cycle, wordIndex, grid[0][0].char);
         const word: Constraint = words[wordIndex];
 
-        if (cycle > 20 || !word) {
+        if (cycle > 40 || !word) {
             return false;
         }
 
@@ -226,6 +230,8 @@ export default class GridGeneration {
     public startRecursion(words: Array<Constraint>): void {
         this.recursion(words, 0, 0, this._grid).then(() => {
             console.log("Recursion completed");
+            console.log(this.printGrid());
+            console.log(this.printGridWithWord(this._grid));
         })
         .catch((err: Error) => console.error(err));
     }
@@ -246,7 +252,7 @@ export default class GridGeneration {
             word2.orientation === Orientation.vertical ? word2.position[0] + word2.length : word2.position[0],
         );
 
-        return type === "intersecting" ? [point.y, point.x] : []
+        return type === "intersecting" ? [point.y, point.x] : [];
     }
 
     public createConstraints(words: Array<Constraint>): void {
@@ -277,6 +283,64 @@ export default class GridGeneration {
         console.log("WITH INTERSECTIONS");
         console.log(this.printGrid());
 
+        this.filterConstraints(words);
+    }
+
+    public setSubConstraintAsSubWord(words: Array<Constraint>, wordIndex: number): Array<Constraint> {
+        return words.map((word: Constraint) => {
+            word.constraints = word.constraints.map((constraint: SubConstraint) => {
+                if (constraint.wordIndex === wordIndex) {
+                    constraint.subWord = true;
+                }
+
+                return constraint;
+            });
+
+            return word;
+        });
+    }
+
+    public filterConstraints(words: Array<Constraint>): void {
+
+        console.log("WORDS BEFORE RECUSION", words.length);
+        console.log("WORDS STACK BEFORE RECUSION", this._wordStack.length);
+        this._wordStack = [...words];
+
+        words = words.filter((word: Constraint, filterIndex: number) => {
+            console.log("-------------------------------");
+
+            let count: number = 0;
+            this.traverseWord(word, (row: number, col: number) => {
+                const intersects: boolean = word.constraints.some((constraint: SubConstraint, index: number): boolean => {
+                    console.log(row, constraint.point[0], col, constraint.point[1]);
+                    const wordIsBigger: boolean = this._wordStack[constraint.wordIndex].size >= word.size
+                        && !words[filterIndex].constraints[index].subWord;
+
+                    return row === constraint.point[0] && col === constraint.point[1] && wordIsBigger;
+                });
+
+                console.log('INSTERSECTS', intersects);
+                if (intersects) {
+                    count++;
+                }
+            });
+
+            console.log("COUNT", count, word.length);
+            const toKeep: boolean = count !== word.length;
+            if (!toKeep) {
+                words = this.setSubConstraintAsSubWord(words, filterIndex);
+            }
+
+            return toKeep;
+        });
+
+        console.log(this.printGrid());
+        console.log("WORDS AFTER CONSTRAINT", words.length);
+        console.log("WORDS STACK AFTER RECUSION", this._wordStack.length);
+        console.log("WORDS AFTER CONSTRAINT COMPLETE");
+        console.log(words.map((word: Constraint) => ({ position: word.position, size: word.size, orientation: word.orientation })));
+        console.log(words.map((word: Constraint) => word.constraints));
+
         this.startRecursion(words);
     }
 
@@ -300,10 +364,6 @@ export default class GridGeneration {
 
                 return 0;
             });
-
-        // console.log("ALL WORDS", allWords.map(
-        //     (word: Constraint) => ({ position: word.position, size: word.size, orientation: word.orientation }))
-        // );
 
         this.createConstraints(allWords);
     }
@@ -335,8 +395,6 @@ export default class GridGeneration {
                 }
             }
         }
-
-        // console.log('HORIZONTAL WORD', wordsVertical.map(word => ({ position: word.position, size: word.size, orientation: word.orientation })));
 
         return wordsVertical;
     }
@@ -370,13 +428,24 @@ export default class GridGeneration {
             }
         }
 
-        // console.log('VERTICAL WORD', wordsVertical.map(word => ({ position: word.position, size: word.size, orientation: word.orientation })));
-
         return wordsVertical;
     }
 
     public siwtchPosition(orientation: Orientation, value1: number, value2: number): Array<number> {
         return Orientation.horizontal ? [value1, value2] : [value2, value1];
+    }
+
+    public traverseWord(word: Constraint, fct: Function): void | boolean {
+        let count: number = 0, row: number = word.position[0], col: number = word.position[1];
+
+        do {
+            const isDefinend: boolean | void = fct(row, col);
+            if (isDefinend) {
+                return isDefinend;
+            }
+            word.orientation === Orientation.horizontal ? col += 1 : row += 1;
+            count += 1;
+        } while (count < word.length);
     }
 
     public traverseGrid(fct: Function): void {
@@ -393,7 +462,7 @@ export default class GridGeneration {
         let output: string = "";
         this.traverseGrid((row: number, col: number) => {
             const cell: Cell = this._grid[row][col];
-            const t: boolean = this.intersections.some((int: Array<number>) => cell.x === int[0] && cell.y === int[1])
+            const t: boolean = this.intersections.some((int: Array<number>) => cell.x === int[0] && cell.y === int[1]);
             output += cell.isBlack() ? " ❌ " : ` ${t ? "🔵" : cell.char} `;
             if (col === this._grid.length - 1) {
                 output += "\n";
