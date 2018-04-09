@@ -291,6 +291,7 @@ export default class GridGeneration {
 
                     if (oldResult === word.name && oldResult !== "undefined") {
                         console.log("FORCE INDEX BACKWARD #1");
+                        await this.recursion(words, wordIndex - 1, cycle, gridFreeze)
 
                         return true;
                     }
@@ -305,6 +306,7 @@ export default class GridGeneration {
                 // console.log("WORD CHECK COUNT", count);
                 if (count === 9 && wordIndex > 0) {
                     console.log("FORCE INDEX BACKWARD #2");
+                    await this.recursion(words, wordIndex - 1, cycle, gridFreeze)
 
                     return true;
                 } else if (wordIndex === 0) {
