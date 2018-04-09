@@ -120,12 +120,11 @@ export class Car extends Object3D {
     }
 
     public async init(): Promise<void> {
-                                 
-        this.mesh = await this.load();
-        this.mesh.setRotationFromEuler(INITIAL_MODEL_ROTATION);
+        this._mesh = await this.load();
+        this._mesh.setRotationFromEuler(INITIAL_MODEL_ROTATION);
         this._headlightsManager = new HeadlightsManager();
-        this.mesh.add(this._headlightsManager);
-        this.add(this.mesh);
+        this._mesh.add(this._headlightsManager);
+        this.add(this._mesh);
     }
 
     public steerLeft(): void {
@@ -295,7 +294,6 @@ export class Car extends Object3D {
         return this.mass;
     }
 
-
     public get mesh(): Object3D {
         return this._mesh;
     }
@@ -303,8 +301,10 @@ export class Car extends Object3D {
     public set sound(engineSound: PositionalAudio) {
         this._sound = engineSound;
         this._mesh.add(this._sound);
-    }                             
+    }
+
     public toogleLight(): void {
         this.headlightsManager.toogleLight();
     }
+// tslint:disable-next-line:max-file-line-count
 }

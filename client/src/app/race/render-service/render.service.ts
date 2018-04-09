@@ -27,7 +27,8 @@ export class RenderService {
     private _trackLoaded: boolean;
     private _trackProgression: TrackProgression;
 
-    public constructor(private _cameraService: CameraService, private _audioService: AudioService, private _environmentService: EnvironmentService) {
+    public constructor(private _cameraService: CameraService, private _audioService: AudioService,
+                       private _environmentService: EnvironmentService) {
         this._car = new Car();
         this._bots = [];
         this._trackLoaded = false;
@@ -76,9 +77,7 @@ export class RenderService {
             this.scene.add(this._bots[i]);
         }
         await this._audioService.initializeSounds(this.car, this._bots);
-        this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
         this._environmentService.initialize(this._scene);
-                                                                
         this._cameraService.initialize(this._car, this.getAspectRatio());
         this._cameraService.changeCamera();
     }

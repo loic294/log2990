@@ -22,7 +22,7 @@ const SCALE_FACTOR: number = -10;
         RenderService,
         InputManagerService,
         CameraService,
-        AudioService
+        AudioService,
         EnvironmentService
 
     ]
