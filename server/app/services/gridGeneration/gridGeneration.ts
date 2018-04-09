@@ -16,6 +16,8 @@ export default class GridGeneration {
     private _gridSize: number = this._DEFAULT_SIZE;
     private _maxBlackCells: number = 0.3;
     private _definitionCache: Object = {};
+    private _wordIndexCache: Object = {};
+    private _gridCache: Object = {};
 
     private _intersections: Array<Array<number>> = [];
 
@@ -40,7 +42,6 @@ export default class GridGeneration {
         for (let i: number = wordStart; i < wordStart + word.length; i++) {
             const subConstraint: SubConstraint = cosntraints.find((constraint: SubConstraint) => constraint.point[index] === i);
             count++;
-
             if (subConstraint !== undefined) {
                 const cellChar: string = grid[subConstraint.point[0]][subConstraint.point[1]].char;
                 if (cellChar !== "◽") {
@@ -48,15 +49,16 @@ export default class GridGeneration {
                     count = 0;
                 }
             }
-
             if (i === word.length - 1 && count > 0) {
                 query += `${count}`;
                 count = 0;
             }
         }
 
-        if (containtsOnlyLetters(query)  || query.length === 0) {
-            return `${query}${count}`;
+        if (containtsOnlyLetters(query)) {
+            return count > 1 ? `${query}${count - 1}` : `${query}`;
+        } else if (query.length === 0) {
+            return `${count}`;
         }
 
         return query;
@@ -128,7 +130,8 @@ export default class GridGeneration {
         wordIndex: number,
         cycle: number,
         grid: Array<Array<Cell>>,
-        gridFreeze: Array<Array<Cell>>): Promise<Array<Array<Cell>> | boolean> {
+        gridFreeze: Array<Array<Cell>>): Promise<Array<Array<Cell>>> {
+            debugger
         const word: Constraint = words[wordIndex];
         const maxRecursion: number = 5;
 
@@ -148,12 +151,15 @@ export default class GridGeneration {
                     isValid = await this.checkRelatedDefinitions(lexicalResult[1], word, gridFreeze);
                 }
 
-                if (count === (maxRecursion - 1) && wordIndex > 0) {
+                if (count === (maxRecursion - 1) && !isValid) {
+                    debugger
                     console.log("NO VALID WORD FOUND");
 
-                    return true;
+                    return [];
                 }
             } while (!isValid && count++ < maxRecursion);
+
+            debugger
         }
 
         return grid;
@@ -162,33 +168,60 @@ export default class GridGeneration {
 
     // tslint:disable-next-line:max-func-body-length
     public async recursion(words: Array<Constraint>, wordIndex: number, cycle: number, grid: Array<Array<Cell>>): Promise<boolean> {
+        debugger
 
-        if (wordIndex >= words.length || cycle > 45) {
-            console.log("MAX CYCLE", cycle)
+        if(cycle > 40 || wordIndex < 0) {
+            console.log("NEW GRID")
+            debugger
+            // this.initializeGrid(this._gridSize);
+            // await this.findAllWordsSpaces();
+
+            return false;
+        }
+
+        if (!this._wordIndexCache[wordIndex]) {
+            this._wordIndexCache[wordIndex] = 0;
+        }
+        this._wordIndexCache[wordIndex]++;
+
+        console.log("WORD INDEX", wordIndex, this._wordIndexCache[wordIndex]);
+        if (this._wordIndexCache[wordIndex] % 3 === 0) {
+            console.log("MAX WORD INDEX REACHED", wordIndex);
+            const test: number = Math.floor(this._wordIndexCache[wordIndex] / 2) + 1;
+            this._wordIndexCache[wordIndex]++;
+            debugger
+            await this.recursion(words, wordIndex - test, cycle + 1, this._gridCache[wordIndex - test]);
+            debugger
+
+            return false;
+        }
+
+
+        if (wordIndex >= words.length) {
+            debugger
+            console.log("MAX CYCLE", cycle, wordIndex, words.length)
             return false;
         }
         const gridFreeze0: Array<Array<Cell>> = [...grid.map((row: Array<Cell>) => ([...row]))];
         const gridFreeze: Array<Array<Cell>> = [...grid.map((row: Array<Cell>) => ([...row]))];
 
-        const gridResult: Array<Array<Cell>>|boolean = await this.recursionInternal(words, wordIndex, cycle, grid, gridFreeze);
-        if (typeof gridResult === "boolean") {
-            console.log("FORCED RECUSION #1")
+        this._gridCache[wordIndex] = gridFreeze0;
+
+        const gridResult: Array<Array<Cell>> = await this.recursionInternal(words, wordIndex, cycle, grid, gridFreeze);
+        if (!gridResult.length) {
+            console.log("Forced exit of recursion", wordIndex, wordIndex - 1, cycle);
+            debugger
             await this.recursion(words, wordIndex - 1, cycle + 1, gridFreeze0);
-        }
 
-        const gridFreeze2: Array<Array<Cell>> = [...gridFreeze.map((row: Array<Cell>) => ([...row]))];
-
-        const recusionCall: boolean = await this.recursion(words, wordIndex + 1, cycle + 1, gridFreeze2);
-        console.log("CALL", recusionCall)
-        if (recusionCall) {
-            console.log("FORCE RECURSION RESTART", wordIndex)
-            if (wordIndex > 0) {
-                await this.recursion(words, wordIndex - 1, cycle + 1, gridFreeze);
-            }
-
+            debugger
             return false;
         }
 
+        const gridFreeze2: Array<Array<Cell>> = [...gridFreeze.map((row: Array<Cell>) => ([...row]))];
+        console.log("Exit normal recursion", wordIndex, wordIndex + 1, cycle);
+        await this.recursion(words, wordIndex + 1, cycle + 1, gridFreeze2);
+
+        debugger
         this._wordsFinal = words;
 
         return false;
@@ -202,7 +235,7 @@ export default class GridGeneration {
             console.log(printGridWithWord(this._grid));
 
             console.log(this._definitionCache);
-            console.log(this._wordsFinal);
+            // console.log(this._wordsFinal);
 
             console.timeEnd("generation");
         })
@@ -277,6 +310,10 @@ export default class GridGeneration {
 
     public get grid(): Cell[][] {
         return this._grid;
+    }
+
+    public get words(): Array<Constraint> {
+        return this._wordsFinal;
     }
 
 }
