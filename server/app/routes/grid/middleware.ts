@@ -10,7 +10,7 @@ export const generate: (req: Request, res: Response, next: NextFunction) => Prom
     const grid: GridGeneration = new GridGeneration();
     grid.fillGridWithCells(GRID_SIZE);
     grid.fillGridWithBlackCells();
-    grid.findAllWordsSpaces();
+    await grid.findAllWordsSpaces();
 
     res.json({ success: true });
 

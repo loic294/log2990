@@ -49,6 +49,7 @@ export class Constraint extends Word {
 export default class GridGeneration {
     private _grid: Array<Array<Cell>>;
     private _wordStack: Array<Constraint>;
+    private _wordsFinal: Array<Constraint>;
     private _DEFAULT_SIZE: number = 10;
     private _gridSize: number = this._DEFAULT_SIZE;
     private blackCellCount: number = 0;
@@ -269,8 +270,16 @@ export default class GridGeneration {
         const word: Constraint = words[wordIndex];
 
         if (cycle > 40 || !word) {
+            console.log("CYCLE OUT OF BOUND");
+            // this.fillGridWithCells(this._gridSize);
+            // this.fillGridWithBlackCells();
+            // this.findAllWordsSpaces();
+            // await this.recursion(words, 0, 0, this._grid);
+
             return false;
         }
+
+        // cycle = 0;
 
         const gridFreeze: Array<Array<Cell>> = [...grid.map((row: Array<Cell>) => ([...row]))];
 
@@ -281,20 +290,21 @@ export default class GridGeneration {
             let isValid: boolean = false;
             do {
 
-                let oldResult: string = ""
+                let oldResult: string = "";
                 do {
                     const url: string = `http://localhost:3000/lexical/wordAndDefinition/${query}/common/easy`;
                     const { data: { lexicalResult } }: { data: { lexicalResult: Array<string>} } = await axios.get(url);
 
+                    // CREATES INFINITE LOOP
+                    if (lexicalResult[1] === "No definitions" || (oldResult === lexicalResult[1] && oldResult !== "undefined")) {
+                        console.log("FORCE INDEX BACKWARD #1");
+                        await this.recursion(words, wordIndex - 1, cycle, gridFreeze);
+
+                        return false;
+                    }
+
                     word.name = lexicalResult[0];
                     word.desc = lexicalResult[1];
-
-                    if (oldResult === word.name && oldResult !== "undefined") {
-                        console.log("FORCE INDEX BACKWARD #1");
-                        await this.recursion(words, wordIndex - 1, cycle, gridFreeze)
-
-                        return true;
-                    }
 
                     oldResult = word.name;
                 } while (word.name === "undefined");
@@ -308,7 +318,7 @@ export default class GridGeneration {
                     console.log("FORCE INDEX BACKWARD #2");
                     await this.recursion(words, wordIndex - 1, cycle, gridFreeze)
 
-                    return true;
+                    return false;
                 } else if (wordIndex === 0) {
                     console.log("END WORD INDEX");
                 }
@@ -331,6 +341,8 @@ export default class GridGeneration {
             return false;
         }
 
+        this._wordsFinal = words;
+
         return false;
 
     }
@@ -342,6 +354,7 @@ export default class GridGeneration {
             console.log(this.printGridWithWord(this._grid));
 
             console.log(this._definitionCache);
+            console.log(this._wordsFinal);
 
             console.timeEnd("generation");
         })
