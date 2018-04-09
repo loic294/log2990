@@ -7,5 +7,7 @@ export const RAD_TO_DEG: number = STRAIGHT_ANGLE_DEG / Math.PI;
 export const CELL_HEIGHT: number = 50;
 export const PI_OVER_2: number = Math.PI / 2;
 export const BACK_SPACE_KEY_CODE: number = 8;
-export const DAY: string = "day/";
-export const NIGHT: string = "night/";
+export enum TIME_OF_DAY {
+    DAY,
+    NIGHT
+}

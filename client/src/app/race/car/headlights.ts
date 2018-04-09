@@ -1,6 +1,4 @@
 import { SpotLight, Vector3, Object3D } from "three";
-import { DAY, NIGHT } from "../../constants";
-
 enum LIGHT_POSITION {
     FRONT_LEFT,
     FRONT_RIGHT
@@ -44,14 +42,10 @@ export default class HeadlightsManager extends Object3D {
         }
     }
 
-    public changeState(environnementTime: string): void {
-        if (environnementTime === DAY && this.isActive) {
+    public toogleLight(): void {
+        if (this._isActive) {
             this.deactivate();
-        } else if (environnementTime === NIGHT && !this.isActive) {
-            this.activate();
-        } else if (environnementTime === "" && this._isActive) {
-            this.deactivate();
-        } else if (environnementTime === "" && !this._isActive) {
+        } else {
             this.activate();
         }
     }

@@ -112,10 +112,19 @@ export class RenderService {
         this.renderer.setSize(this._container.clientWidth, this._container.clientHeight);
     }
 
-    public changeLightState(environmentTime: string = ""): void {
-        this._car.changeLightsState(environmentTime);
+    public changeTimeOfDay(): void {
+        this._environmentService.changeMode();
+        if (!this._environmentService.isNight && this._car.headlightsManager.isActive) {
+            this.toogleLights();
+        } else if (this._environmentService.isNight && !this._car.headlightsManager.isActive) {
+            this.toogleLights();
+        }
+    }
+
+    public toogleLights(): void {
+        this._car.toogleLight();
         for (const bot of this.bots) {
-            bot.changeLightsState(environmentTime);
+            bot.toogleLight();
         }
     }
 

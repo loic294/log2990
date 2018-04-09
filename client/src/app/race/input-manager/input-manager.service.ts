@@ -11,7 +11,7 @@ import ChangeCameraViewCommand from "./CameraCommands/ChangeCameraViewCommand";
 import { RenderService } from "../render-service/render.service";
 import ZoomCameraCommand from "./CameraCommands/ZoomCameraCommand";
 import ChangeModeCommand from "./ChangeModeCommand";
-import ChangeLightStateCommand from "./ChangeLightStateCommand";
+import ToogleLightCommand from "./ToogleLightCommand";
 
 const ACCELERATE_KEYCODE: number = 87;  // w
 const LEFT_KEYCODE: number = 65;        // a
@@ -48,8 +48,8 @@ export default class InputManagerService {
             {keyCode: CHANGE_VIEW_KEYCODE, command: new ChangeCameraViewCommand(renderer.cameraService)},
             {keyCode: ZOOM_IN, command: new ZoomCameraCommand(renderer.cameraService, true)},
             {keyCode: ZOOM_OUT, command: new ZoomCameraCommand(renderer.cameraService, false)},
-            {keyCode: CHANGE_ENVIRONMENT, command: new ChangeModeCommand(renderer.environmentService, renderer)},
-            {keyCode: CHANGE_LIGHT_STATE, command: new ChangeLightStateCommand(renderer)}
+            {keyCode: CHANGE_ENVIRONMENT, command: new ChangeModeCommand(renderer)},
+            {keyCode: CHANGE_LIGHT_STATE, command: new ToogleLightCommand(renderer)}
 
         ];
 
