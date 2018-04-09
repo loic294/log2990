@@ -12,7 +12,7 @@ const OFFSET_FACTOR: number = -0.1;
 const DISTANCE_FACTOR: number = 1.5;
 const NUMBER_OF_LINE: number = 2;
 const LINE_POSITION_FACTOR: number = 3;
-const OFFTRACK_OFFSET: number = 0.02;
+const OFFTRACK_OFFSET: number = 0.03;
 const PLANE_OFFSET: number = 0.01;
 const OFFTRACK_DIMENSION: number = 10000;
 const TEXTURE_DIMENSION: number = 5;
@@ -20,10 +20,12 @@ const OFFTRACK_TEXTURE_PATH: string = "../../assets/grass.jpg";
 const TRACK_TEXTURE_PATH: string = "../../assets/track/asphalt.png";
 
 export class TrackBuilder {
+    private _planeVariation: number;
     private _circleGeometry: CircleGeometry;
     private _startingLines: Array<Mesh>;
     public constructor(private _scene: THREE.Scene, private _vertice: Array<Object3D>, private _edges: Array<LineSegment>,
                        private _playerCar: Car, private _botCars: Array<Car>) {
+        this._planeVariation = PLANE_OFFSET / 2;
         this._circleGeometry = new CircleGeometry(WIDTH / 2, CIRCLE_SEGMENTS);
         this._startingLines = new Array();
     }
@@ -90,8 +92,8 @@ export class TrackBuilder {
         } else {
             plane.rotateZ(angle);
         }
-        plane.position.setY(-PLANE_OFFSET);
-
+        plane.position.setY(-PLANE_OFFSET - this._planeVariation);
+        this._planeVariation = - this._planeVariation;
         this._scene.add(plane);
 
     }
