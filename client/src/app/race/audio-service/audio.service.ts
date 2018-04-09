@@ -14,6 +14,7 @@ export class AudioService {
 
     private _listener: AudioListener;
     private _audioLoader: AudioLoader;
+    private _countdown: Audio;
 
     public constructor() {
         this._audioLoader = new AudioLoader();
@@ -42,14 +43,13 @@ export class AudioService {
         for (const car of bots) {
             await this.addCarSound(ENGINE_PATH, car);
         }
+        await this.initializeCountdown();
 
     }
 
-    private playCountdouwn(): void {
-        const sound: Audio = new Audio(this._listener);
-        this.loadSound(sound, COUNTDOWN_PATH, false).then( () => {
-            sound.play();
-        });
+    private async initializeCountdown(): Promise<void>  {
+        this._countdown = new Audio(this._listener);
+        await this.loadSound(this._countdown, COUNTDOWN_PATH, false);
     }
 
     private async addCarSound(audioPath: string, car: Car): Promise<void> {
@@ -66,7 +66,7 @@ export class AudioService {
 
     public play(): void {
         this._listener.setMasterVolume(1);
-        this.playCountdouwn();
+        this._countdown.play();
     }
 
 }
