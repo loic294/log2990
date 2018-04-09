@@ -18,6 +18,9 @@ export class ResultsComponent implements OnInit {
     private _bestTimes: Array<String>;
     private _bestTimeName: String;
 
+    private _showGameResults: boolean;
+    private _positionedRaceTimes: Array<Array<String>>;
+
     public constructor( private resultsService: ResultsService) {
         this._isHidden = true;
         this._game =  {gameTime: "0.00", lapTimes: new Array(), gameIsFinished: false, currentLap: 1, botTimes: new Array()};
@@ -48,6 +51,7 @@ export class ResultsComponent implements OnInit {
                 this._bestTimes.push(time.toString());
             }
 
+
             return this._bestTimes;
         } else {
             return [];
@@ -64,6 +68,32 @@ export class ResultsComponent implements OnInit {
         return false;
     }
 
+    private completeRaceTimeBots(): Array<String> {
+        const completeRaceTimeBots: Array<String> = [];
+        for (const bot of this._game.botTimes) {
+            let completeTimeBot: number = 0;
+            for (const time of bot) {
+                completeTimeBot += parseFloat(time.toString());
+            }
+            completeRaceTimeBots.push(completeTimeBot.toString());
+        }
+
+        return completeRaceTimeBots;
+    }
+    private positionRaceTimes(): void {
+        this._positionedRaceTimes = [];
+        let botIndex: number = 0;
+        for (const time of this.completeRaceTimeBots()) {
+            this._positionedRaceTimes[botIndex].push("BOT " + botIndex.toString());
+            this._positionedRaceTimes[botIndex].push(time);
+            botIndex++;
+        }
+        const playerIndex: number = botIndex++;
+        this._positionedRaceTimes[playerIndex].push("YOU");
+        this._positionedRaceTimes[playerIndex].push(this._game.gameTime);
+        this._positionedRaceTimes = this._positionedRaceTimes.sort((n1, n2) => parseFloat(n1.toString()) - parseFloat(n2.toString()));
+    }
+
     public isFirst(): boolean {
         for (const bot of this._game.botTimes) {
             let completeTimeBot: number = 0;
@@ -74,12 +104,23 @@ export class ResultsComponent implements OnInit {
                 return false;
             }
         }
+
         return true;
     }
 
     public enterName(name: String): void {
         this._bestTimeName = name;
     }
+
+    public get showGameResults(): boolean {
+        return this._showGameResults;
+    }
+
+    public findGameResults(): void {
+        this._showGameResults = true;
+        this.positionRaceTimes();
+    }
+
     // tslint:disable-next-line:typedef
     public ngOnInit() {
         this.resultsService.game.subscribe( (game) => {
