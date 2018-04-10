@@ -1,6 +1,6 @@
 import {
-    Vector3, Mesh, Object3D,
-    PlaneGeometry, DoubleSide, CircleGeometry, TextureLoader, Texture, RepeatWrapping, MeshPhongMaterial, CubeGeometry} from "three";
+    Vector3, Mesh, Object3D, PlaneGeometry, DoubleSide, CircleGeometry,
+    TextureLoader, Texture, RepeatWrapping, MeshPhongMaterial, CubeGeometry } from "three";
 import { LineSegment } from "./DotCommand";
 import { PI_OVER_2 } from "../constants";
 import { Car } from "./car/car";
@@ -50,7 +50,7 @@ export class TrackBuilder {
         let lastVertex: Vector3 = this._vertice[this._vertice.length - 1].position;
         for (const vertex of this._vertice) {
             this.replaceSphere(vertex);
-            this.generatePlane(lastVertex, vertex.position);
+            this.generateTrackPortion(lastVertex, vertex.position);
             lastVertex = vertex.position;
         }
 
@@ -69,33 +69,20 @@ export class TrackBuilder {
         return texture;
     }
 
-    private generatePlane(firstVertex: Vector3, secondVertex: Vector3): void {
+    private generateTrackPortion(firstVertex: Vector3, secondVertex: Vector3): void {
+        // create length
         const length: number = firstVertex.distanceTo(secondVertex);
-
+        // create Material
         const material: MeshPhongMaterial = new MeshPhongMaterial({
             map: this.generateTexture(WIDTH, length, TRACK_TEXTURE_PATH),
             side: DoubleSide
         });
-
+        // initial position of track
         const planeGeometry: PlaneGeometry = new PlaneGeometry(WIDTH, length);
-        const plane: Mesh = new Mesh(planeGeometry, material);
-        plane.position.set(firstVertex.x, firstVertex.y, firstVertex.z);
+        const track: Mesh = new Mesh(planeGeometry, material);
+        track.position.set(firstVertex.x, firstVertex.y, firstVertex.z);
 
-        const dir: Vector3 = new Vector3;
-        dir.subVectors(secondVertex, firstVertex);
-        plane.translateOnAxis(dir, 1 / 2);
-        const xAxis: Vector3 = new Vector3(0, 0, 1);
-        const angle: number = xAxis.angleTo(dir);
-        plane.rotateX(PI_OVER_2);
-
-        if (xAxis.cross(dir).y > 0) {
-            plane.rotateZ(-angle);
-        } else {
-            plane.rotateZ(angle);
-        }
-        plane.position.setY(-PLANE_OFFSET - this._planeVariation);
-        this._planeVariation = - this._planeVariation;
-        this._scene.add(plane);
+        this._scene.add(this.placeObjectCorrectly(firstVertex, secondVertex, track));
 
         this.generateWall(firstVertex, secondVertex);
 
@@ -112,21 +99,42 @@ export class TrackBuilder {
         const wall: Mesh = new Mesh(new CubeGeometry(WIDTH / WALL_WIDTH_DIVISOR, length, WALL_HEIGHT), material);
         wall.position.set(firstVertex.x, firstVertex.y, firstVertex.z);
 
-        const dir: Vector3 = new Vector3;
-        dir.subVectors(secondVertex, firstVertex);
-        wall.translateOnAxis(dir, 1 / 2);
-        const xAxis: Vector3 = new Vector3(0, 0, 1);
-        const angle: number = xAxis.angleTo(dir);
-        wall.rotateX(PI_OVER_2);
+        this._scene.add(this.placeObjectCorrectly(firstVertex, secondVertex, wall));
+    }
 
-        if (xAxis.cross(dir).y > 0) {
-            wall.rotateZ(-angle);
+    private placeObjectCorrectly(firstVertex: Vector3, secondVertex: Vector3, object: Mesh): Mesh {
+
+        this.centerOnAxis(firstVertex, secondVertex, object);
+
+        object.rotateX(PI_OVER_2);
+
+        if (this.isToTheRightOfAxis(firstVertex, secondVertex)) {
+            object.rotateZ(-this.calculateCorrectionAngle(firstVertex, secondVertex));
         } else {
-            wall.rotateZ(angle);
+            object.rotateZ(this.calculateCorrectionAngle(firstVertex, secondVertex));
         }
-        wall.position.setY(-PLANE_OFFSET - this._planeVariation);
+        object.position.setY(-PLANE_OFFSET - this._planeVariation);
         this._planeVariation = - this._planeVariation;
-        this._scene.add(wall);
+
+        return object;
+    }
+
+    private centerOnAxis(firstVertex: Vector3, secondVertex: Vector3, object: Mesh): Mesh {
+        object.translateOnAxis(this.calculateAxis(firstVertex, secondVertex) , 1 / 2);
+
+        return object;
+    }
+
+    private calculateAxis(firstVertex: Vector3, secondVertex: Vector3): Vector3 {
+        return new Vector3().subVectors(secondVertex, firstVertex);
+    }
+
+    private calculateCorrectionAngle(firstVertex: Vector3, secondVertex: Vector3): number {
+        return new Vector3(0, 0, 1).angleTo(this.calculateAxis(firstVertex, secondVertex));
+    }
+
+    private isToTheRightOfAxis(firstVertex: Vector3, secondVertex: Vector3): boolean {
+        return new Vector3(0, 0, 1).cross(this.calculateAxis(firstVertex, secondVertex)).y > 0;
     }
 
     private removeLines(): void {

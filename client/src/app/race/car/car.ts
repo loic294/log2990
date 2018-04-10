@@ -282,4 +282,9 @@ export class Car extends Object3D {
     public toogleLight(): void {
         this.headlightsManager.toogleLight();
     }
+
+    public isGoingBackward(): boolean {
+        // tslint:disable-next-line:no-magic-numbers
+        return this.speed.normalize().dot(this.direction) < -0.05;
+    }
 }
