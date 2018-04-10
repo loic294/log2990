@@ -1,5 +1,5 @@
-import { Vector3, Matrix4, Object3D, ObjectLoader, Euler, Quaternion, Box3 } from "three";
-import { Engine } from "./engine";
+import { Vector3, Matrix4, Object3D, ObjectLoader, Euler, Quaternion, Box3, PositionalAudio } from "three";
+import { Engine, DEFAULT_SHIFT_RPM } from "./engine";
 import { MS_TO_SECONDS, GRAVITY, PI_OVER_2, RAD_TO_DEG } from "../../constants";
 import { Wheel } from "./wheel";
 import { Resistance } from "./resistance";
@@ -31,6 +31,7 @@ export class Car extends Object3D {
     private steeringWheelDirection: number;
     private _weightRear: number;
     private _boundingBox: Box3;
+    private _sound: PositionalAudio;
     private _headlightsManager: HeadlightsManager;
 
     public constructor(
@@ -133,7 +134,6 @@ export class Car extends Object3D {
         this._headlightsManager = new HeadlightsManager();
         this._mesh.add(this._headlightsManager);
         this.add(this._mesh);
-
     }
 
     public steerLeft(): void {
@@ -197,6 +197,12 @@ export class Car extends Object3D {
         const omega: number = this._speed.length() / R;
         this._mesh.rotateY(omega);
         this._boundingBox.setFromObject(this._mesh);
+        try {
+            this.updateSound();
+        } catch (error) {
+            console.error(error);
+        }
+
     }
 
     private physicsUpdate(deltaTime: number): void {
@@ -206,7 +212,7 @@ export class Car extends Object3D {
         this._speed.add(this.getDeltaSpeed(deltaTime));
         this._speed.setLength(this._speed.length() <= MINIMUM_SPEED ? 0 : this._speed.length());
         this._mesh.position.add(this.getDeltaPosition(deltaTime));
-        this._rearWheel.update(this._speed.length());
+        this.rearWheel.update(this._speed.length());
     }
 
     private getWeightDistribution(): number {
@@ -260,16 +266,21 @@ export class Car extends Object3D {
         return this.speed.normalize().dot(this.direction) > 0.05;
     }
 
-    public isGoingBackward(): boolean {
-        // tslint:disable-next-line:no-magic-numbers
-        return this.speed.normalize().dot(this.direction) < -0.05;
+    private updateSound(): void {
+        this._sound.setPlaybackRate(this.rpm / (DEFAULT_SHIFT_RPM / 2));
     }
 
     public getMass(): number {
         return this._mass;
     }
 
+    public set sound(engineSound: PositionalAudio) {
+        this._sound = engineSound;
+        this._mesh.add(this._sound);
+    }
+
     public toogleLight(): void {
         this.headlightsManager.toogleLight();
     }
+// tslint:disable-next-line:max-file-line-count
 }
