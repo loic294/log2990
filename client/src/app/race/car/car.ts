@@ -282,5 +282,4 @@ export class Car extends Object3D {
     public toogleLight(): void {
         this.headlightsManager.toogleLight();
     }
-// tslint:disable-next-line:max-file-line-count
 }

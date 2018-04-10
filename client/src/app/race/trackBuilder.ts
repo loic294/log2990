@@ -1,11 +1,13 @@
 import {
     Vector3, Mesh, Object3D,
-    PlaneGeometry, DoubleSide, CircleGeometry, TextureLoader, Texture, RepeatWrapping, MeshPhongMaterial} from "three";
+    PlaneGeometry, DoubleSide, CircleGeometry, TextureLoader, Texture, RepeatWrapping, MeshPhongMaterial, CubeGeometry} from "three";
 import { LineSegment } from "./DotCommand";
 import { PI_OVER_2 } from "../constants";
 import { Car } from "./car/car";
 
 const WIDTH: number = 10;
+const WALL_HEIGHT: number = 2;
+const WALL_WIDTH_DIVISOR: number = 10;
 const CIRCLE_SEGMENTS: number = 32;
 const OFFSET_FACTOR: number = -0.1;
 const DISTANCE_FACTOR: number = 1.5;
@@ -95,6 +97,36 @@ export class TrackBuilder {
         this._planeVariation = - this._planeVariation;
         this._scene.add(plane);
 
+        this.generateWall(firstVertex, secondVertex);
+
+    }
+
+    private generateWall(firstVertex: Vector3, secondVertex: Vector3): void {
+        const length: number = firstVertex.distanceTo(secondVertex);
+
+        const material: MeshPhongMaterial = new MeshPhongMaterial({
+            map: this.generateTexture(WIDTH, length, TRACK_TEXTURE_PATH),
+            side: DoubleSide
+        });
+
+        const wall: Mesh = new Mesh(new CubeGeometry(WIDTH / WALL_WIDTH_DIVISOR, length, WALL_HEIGHT), material);
+        wall.position.set(firstVertex.x, firstVertex.y, firstVertex.z);
+
+        const dir: Vector3 = new Vector3;
+        dir.subVectors(secondVertex, firstVertex);
+        wall.translateOnAxis(dir, 1 / 2);
+        const xAxis: Vector3 = new Vector3(0, 0, 1);
+        const angle: number = xAxis.angleTo(dir);
+        wall.rotateX(PI_OVER_2);
+
+        if (xAxis.cross(dir).y > 0) {
+            wall.rotateZ(-angle);
+        } else {
+            wall.rotateZ(angle);
+        }
+        wall.position.setY(-PLANE_OFFSET - this._planeVariation);
+        this._planeVariation = - this._planeVariation;
+        this._scene.add(wall);
     }
 
     private removeLines(): void {
