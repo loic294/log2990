@@ -69,13 +69,23 @@ export class TrackProgression {
         }
 
         if (this._playerCar.userData.lapsCompleted >= MAX_LAPS && !this._game.gameIsFinished) {
-            this._game.gameIsFinished = true;
-            this._playerCar.userData.clock.stop();
-            this._gameClock.stop();
-            this.estimateBotTimes();
+            this.stopGame();
         } else if (!this._game.gameIsFinished) {
             this._game.gameTime = this._gameClock.getElapsedTime().toFixed(2);
             this._game.lapTime = this._playerCar.userData.clock.getElapsedTime().toFixed(2);
+        }
+    }
+
+    private stopGame(): void {
+        this._game.gameIsFinished = true;
+        this._playerCar.userData.clock.stop();
+        this._gameClock.stop();
+        this.estimateBotTimes();
+
+        this._playerCar.brake();
+
+        for (const bot of this._botCars) {
+            bot.userData.allLapsCompleted = true;
         }
     }
 
@@ -90,6 +100,8 @@ export class TrackProgression {
 
             this._game.botTimes[botIndex].push(bot.userData.clock.getElapsedTime().toFixed(2));
             bot.userData.clock.start();
+        } else if (!bot.userData.isNewLap && carDistance > WIDTH && bot.userData.lapsCompleted >= MAX_LAPS) {
+            bot.userData.allLapsCompleted = true;
         } else if (!bot.userData.isNewLap && carDistance > WIDTH) {
             bot.userData.isNewLap = true;
         }
