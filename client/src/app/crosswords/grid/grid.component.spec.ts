@@ -53,8 +53,7 @@ describe("GridComponent", () => {
     const word: Word = new Word("Clue", "Definition of word clue", [2, 6], Orientation.vertical, 1);
     gridService.word = word;
     const expectedReturn: {} = {"height": "200px",
-                                "width": "50px",
-                                "border-color": "red"};
+                                "width": "50px"};
 
     expect(component.highlightStyle(isOther)).toEqual(expectedReturn);
   });
@@ -64,8 +63,7 @@ describe("GridComponent", () => {
     const word: Word = new Word("Clue", "Definition of word clue", [1, 6], Orientation.horizontal, 0);
     gridService.word = word;
     const expectedReturn: {} = {"height": "50px",
-                                "width": "200px",
-                                "border-color": "red"};
+                                "width": "200px"};
 
     expect(gridService.word).toEqual(word);
     expect(gridService.wordLength(isOther)).toEqual(4);
@@ -79,8 +77,7 @@ describe("GridComponent", () => {
     gridService.selectOtherPlayerWord(word);
 
     const expectedReturn: {} = {"height": "50px",
-                                "width": "200px",
-                                "border-color": "blue"};
+                                "width": "200px"};
 
     expect(component.highlightStyle(isOther)).toEqual(expectedReturn);
 
@@ -92,8 +89,7 @@ describe("GridComponent", () => {
     gridService.selectOtherPlayerWord(word);
 
     const expectedReturn: {} = {"height": "250px",
-                                "width": "50px",
-                                "border-color": "blue"};
+                                "width": "50px"};
 
     expect(component.highlightStyle(isOther)).toEqual(expectedReturn);
 
