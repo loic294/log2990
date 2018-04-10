@@ -2,6 +2,7 @@ import { Component, Inject } from "@angular/core";
 import { SocketService } from "../socket.service/socket.service";
 import { IGameModel } from "./../../../../../server/app/models/game";
 import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
+import { Mode } from "../../../../../common/grid/player";
 
 @Component({
     selector: "app-mode-component-mode",
@@ -43,7 +44,7 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     }
 
     public startSoloGame(): boolean {
-        return this.selectedMode === "Single Player" && this.showNameInput;
+        return this.selectedMode === Mode.SinglePlayer && this.showNameInput;
 
     }
 
@@ -52,7 +53,7 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
     }
 
     public isMultiPlayer(): boolean {
-        return this.showNameInput && this.selectedMode === "Two Players";
+        return this.showNameInput && this.selectedMode === Mode.MultiPlayer;
 
     }
 

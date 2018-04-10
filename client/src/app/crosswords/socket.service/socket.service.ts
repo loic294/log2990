@@ -6,6 +6,7 @@ import { IGameModel } from "./../../../../../server/app/models/game";
 import { difficultyName } from "../../../../../common/grid/difficulties";
 import Word from "../../../../../common/lexical/word";
 import { DifficultyService } from "./../difficulty.service/difficulty.service";
+import { Mode } from "../../../../../common/grid/player";
 
 @Injectable()
 export class SocketService {
@@ -66,7 +67,7 @@ export class SocketService {
         this._opponentScoreCount = 1;
         this._userScoreCount = 1;
         this._games = [];
-        this._modes = ["Single Player", "Two Players"];
+        this._modes = [Mode.SinglePlayer, Mode.MultiPlayer];
         this._selectedMode = "";
         this._showGames = false;
         this._updateUserConnected = this._userConnected.asObservable();
@@ -221,7 +222,7 @@ export class SocketService {
     }
 
     public createGame(mode: string): void {
-        if (mode === "Two Players") {
+        if (mode === Mode.MultiPlayer) {
             const gameId: string = this.player;
             const difficulty: String = this.difficulty;
             this._socket.emit("create_game", JSON.stringify({ gameId, difficulty}));
