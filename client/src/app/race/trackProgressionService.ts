@@ -4,6 +4,7 @@ import { Injectable } from "@angular/core";
 
 export interface IGameInformation {
     gameTime: String;
+    lapTime: String;
     lapTimes: Array<String>;
     currentLap: number;
     gameIsFinished: boolean;

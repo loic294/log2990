@@ -100,19 +100,28 @@ export default class LexicalService {
 
     public async wordSearch(researchCriteria: string, common: string): Promise<string> {
         let request: string;
+        let previousChar: string = "";
+        const tenWordLetterRepeat: number = 9;
         request = "";
 
         for (const item of researchCriteria) {
+
             if (item.match(/[a-z]/i)) {
                 request += item;
             }
-            request += "?".repeat(+item);
+            if (previousChar === "1" && item === "0") {
+                request += "?".repeat(tenWordLetterRepeat);
+            } else {
+                request += "?".repeat(+item);
+            }
+            previousChar = item;
         }
 
         const { data }: { data: Array<AxiosWords> } = await this.baseWordSearch(request);
 
         if (data === undefined || data.length === 0) {
-            return "undefined";
+            // tslint:disable-next-line:no-floating-promises
+            this.wordSearch(researchCriteria, common);
         }
 
         return this.commonFinder(common, data, request);
@@ -122,10 +131,16 @@ export default class LexicalService {
         const data: string[] = [];
         let word: string;
         let definition: string;
+        let timeOut: number = 5;
         do {
             word = await this.wordSearch(researchCriteria, common);
             definition = await this.wordDefinition(level, word);
-        } while (definition === "No definitions");
+            timeOut--;
+        } while (definition === "No definitions" && timeOut > 0);
+
+        if (definition === "No definitions") {
+            return data[0] = undefined, data[1] = undefined;
+        }
 
         data[0] = word;
         data[1] = definition;

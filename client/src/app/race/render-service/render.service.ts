@@ -1,20 +1,19 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
+import { EnvironmentService } from "../environment-service/environment.service";
 import {
-    WebGLRenderer, Scene, AmbientLight,
-    MeshBasicMaterial, TextureLoader, MultiMaterial, Mesh, DoubleSide, BoxGeometry, Vector3
+    WebGLRenderer, Scene
 } from "three";
 import { Car } from "../car/car";
 import { CameraService } from "../camera-service/camera.service";
 import { AiService } from "../ai-service/ai.service";
 import { TrackProgression } from "../trackProgression";
 import { TrackProgressionService } from "../trackProgressionService";
+import { RaceStarter } from "../raceStarter";
+import { TrackBuilder } from "../trackBuilder";
 
-const WHITE: number = 0xFFFFFF;
-const AMBIENT_LIGHT_OPACITY: number = 1;
-
-const SIZE_SKYBOX: number = 10000;
 const AMOUNT_OF_NPCS: number = 3;
+const MAX_COUNTDOWN: number = 3;
 
 @Injectable()
 export class RenderService {
@@ -27,13 +26,12 @@ export class RenderService {
     private _lastDate: number;
     private _bots: Array<Car>;
     private _aiService: AiService;
-    private _trackLoaded: boolean;
+    private _raceStarter: RaceStarter;
     private _trackProgression: TrackProgression;
 
-    public constructor(private _cameraService: CameraService) {
+    public constructor(private _cameraService: CameraService, private _environmentService: EnvironmentService) {
         this._car = new Car();
         this._bots = [];
-        this._trackLoaded = false;
 
         for (let i: number = 0; i < AMOUNT_OF_NPCS; i++) {
             this._bots[i] = new Car();
@@ -60,7 +58,7 @@ export class RenderService {
     private update(): void {
         const timeSinceLastFrame: number = Date.now() - this._lastDate;
         this._car.update(timeSinceLastFrame);
-        if (this._trackLoaded) {
+        if (this._aiService !== undefined) {
             this._aiService.update(timeSinceLastFrame);
         }
         this._cameraService.followCar();
@@ -76,16 +74,15 @@ export class RenderService {
             await this._bots[i].init();
             this.scene.add(this._bots[i]);
         }
-        this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
+        this._environmentService.initialize(this._scene);
 
         this._cameraService.initialize(this._car, this.getAspectRatio());
         this._cameraService.changeCamera();
     }
 
-    public start(startingLine: Vector3, service: TrackProgressionService): void {
+    public start(trackBuilder: TrackBuilder, service: TrackProgressionService): void {
         this._cameraService.initialize(this._car, this.getAspectRatio());
-        this.loadSkybox();
-        this._trackProgression = new TrackProgression(startingLine, this._car, this._bots, service);
+        this._raceStarter = new RaceStarter(this._scene, trackBuilder, service);
     }
 
     public getAspectRatio(): number {
@@ -107,6 +104,14 @@ export class RenderService {
         this.update();
         this.renderer.render(this.scene, this._cameraService.camera);
         this._stats.update();
+
+        if (this._raceStarter !== undefined && this._raceStarter.getCountdown() >= MAX_COUNTDOWN) {
+            this._aiService = new AiService(this._raceStarter.trackBuilder, this._bots);
+            this._trackProgression = new TrackProgression(this._raceStarter.trackBuilder.startingLines[0].position,
+                                                          this._car, this._bots,
+                                                          this._raceStarter.trackProgressionService);
+            this._raceStarter = undefined;
+        }
         if (this._trackProgression !== undefined) {
             this._trackProgression.checkRaceProgress();
         }
@@ -117,24 +122,20 @@ export class RenderService {
         this.renderer.setSize(this._container.clientWidth, this._container.clientHeight);
     }
 
-    private loadSkybox(): void {
-        const sidesOfSkybox: MeshBasicMaterial[] = [];
-        const imageDirectory: string = "../../../assets/skybox/";
-        const imageName: string = "stormydays_";
-        const imageSuffixes: string[] = ["ft", "bk", "up", "dn", "rt", "lf"];
-        const imageType: string = ".png";
-        let imageFilePath: string = "";
-
-        for (const imageSuffix of imageSuffixes) {
-            imageFilePath = `${imageDirectory}${imageName}${imageSuffix}${imageType}`;
-            sidesOfSkybox.push(new MeshBasicMaterial({ map: new TextureLoader().load(imageFilePath), side: DoubleSide }));
+    public changeTimeOfDay(): void {
+        this._environmentService.changeMode();
+        if (!this._environmentService.isNight && this._car.headlightsManager.isActive) {
+            this.toogleLights();
+        } else if (this._environmentService.isNight && !this._car.headlightsManager.isActive) {
+            this.toogleLights();
         }
+    }
 
-        const skyboxGeometry: BoxGeometry = new BoxGeometry(SIZE_SKYBOX, SIZE_SKYBOX, SIZE_SKYBOX);
-        const skyboxTexture: MultiMaterial = new MultiMaterial(sidesOfSkybox);
-        const skybox: Mesh = new Mesh(skyboxGeometry, skyboxTexture);
-
-        this._scene.add(skybox);
+    public toogleLights(): void {
+        this._car.toogleLight();
+        for (const bot of this.bots) {
+            bot.toogleLight();
+        }
     }
 
     public get renderer(): WebGLRenderer {
@@ -157,6 +158,10 @@ export class RenderService {
         return this._cameraService;
     }
 
+    public get environmentService(): EnvironmentService {
+        return this._environmentService;
+    }
+
     public get bots(): Array<Car> {
         return this._bots;
     }
@@ -165,8 +170,8 @@ export class RenderService {
         this._aiService = aiService;
     }
 
-    public set trackLoaded(trackLoaded: boolean) {
-        this._trackLoaded = trackLoaded;
+    public get raceStarter(): RaceStarter {
+        return this._raceStarter;
     }
 
 }
