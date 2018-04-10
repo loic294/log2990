@@ -24,7 +24,13 @@ export class ResultsComponent implements OnInit {
 
     public constructor( private resultsService: ResultsService) {
         this._isHidden = true;
-        this._game =  {gameTime: "0.00", lapTimes: new Array(), gameIsFinished: false, currentLap: 1, botTimes: new Array()};
+        this._game =  {
+            gameTime: "0.00",
+            lapTime: "0.00" ,
+            lapTimes: new Array(),
+            gameIsFinished: false,
+            currentLap: 1,
+            botTimes: new Array()};
     }
 
     public show(): void {
