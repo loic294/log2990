@@ -6,7 +6,6 @@ import { Vector3 } from "three";
 import { CameraService } from "../camera-service/camera.service";
 import { TrackInformation } from "../trackInformation";
 import { TrackBuilder } from "../trackBuilder";
-import { AiService } from "../ai-service/ai.service";
 import { EnvironmentService } from "../environment-service/environment.service";
 import { IGameInformation, TrackProgressionService } from "../trackProgressionService";
 
@@ -43,7 +42,7 @@ export class GameComponent implements AfterViewInit, OnInit {
         this._trackInformation.getTracksList();
 
         this._currentGame = {gameTime: "0.00", lapTime: "0.00",
-                             lapTimes: new Array(), gameIsFinished: false, currentLap: 1, botTimes: new Array()};
+                             lapTimes: new Array(), gameIsFinished: true, currentLap: 1, botTimes: new Array()};
     }
 
     @HostListener("window:resize", ["$event"])
@@ -78,6 +77,8 @@ export class GameComponent implements AfterViewInit, OnInit {
 
     public async start(): Promise<void> {
         if (this._trackLoaded) {
+            this._trackInformation.track.timesPlayed++;
+            await this._trackInformation.patchTrack();
 
             this.loadTrack();
             this.inputManager.init(this.renderService);
@@ -88,14 +89,12 @@ export class GameComponent implements AfterViewInit, OnInit {
                                                                 this.renderService.car,
                                                                 this.renderService.bots);
             trackBuilder.buildTrack();
-            this.renderService.start(trackBuilder.startingLines[0].position, this._trackProgressionService);
 
-            this.renderService.aiService = new AiService(trackBuilder, this.renderService.bots);
             this.renderService.trackLoaded = true;
             this._raceStarted = true;
 
-            this._trackInformation.track.timesPlayed++;
-            await this._trackInformation.patchTrack();
+            this.renderService.start(trackBuilder, this._trackProgressionService);
+
         }
     }
 
