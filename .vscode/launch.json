@@ -18,7 +18,7 @@
                 "webpack:///./*": "${workspaceRoot}/*",
                 "webpack:///*": "*"
             },
-            "trace": "all"
+						"trace": "all"
         },
         {
             "type": "node",
