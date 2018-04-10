@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, async } from "@angular/core/testing";
 
 import { ResultsComponent } from "./results.component";
 import { ResultsService } from "../results-service/results.service";
@@ -14,7 +14,9 @@ describe("ResultsComponent", () => {
           ResultsService
       ]
     })
-    .compileComponents();
+    .compileComponents().catch((error) => {
+        throw error;
+    });
   }));
 
   beforeEach(() => {
