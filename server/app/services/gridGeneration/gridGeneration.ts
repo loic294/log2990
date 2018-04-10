@@ -1,8 +1,8 @@
 import { Cell } from "../../../../common/grid/case";
 import { Orientation } from "../../../../common/lexical/word";
-import Constraint, { SubConstraint } from "./constraint";
+import Constraint from "./constraint";
 import { printGrid, printGridWithWord } from "./gridDebuggingTools";
-import { traverseWord, intersects, siwtchPosition, sortWords, sortSubConstraint, containtsOnlyLetters } from "./gridTools";
+import { traverseWord, intersects, siwtchPosition, sortWords, containtsOnlyLetters } from "./gridTools";
 import { fillGridWithCells, fillGridWithBlackCells } from "./gridInitialisation";
 import * as request from "request-promise-native";
 import { List } from "immutable";
@@ -42,6 +42,7 @@ export default class GridGeneration {
         let index: number = 0;
         traverseWord(word, (row: number, col: number) => {
             const cellChar: string = grid.get(row).get(col).char;
+            debugger
             if (cellChar !== "◻️") {
                 query += count > 1 ? `${count}${cellChar}` : `${cellChar}`;
                 count = 0;
@@ -49,7 +50,7 @@ export default class GridGeneration {
                 count++;
             }
 
-            if (index++ === word.length - 1 && count > 0) {
+            if (index++ === word.length && count > 0) {
                 query += `${count}`;
                 count = 0;
             }
@@ -116,6 +117,10 @@ export default class GridGeneration {
             traverseWord(subWord, (row: number, col: number) => {
                 buildWord += grid.get(row).get(col).char;
             });
+
+            if (buildWord.length === 2) {
+                return true;
+            }
 
             if (containtsOnlyLetters(buildWord) && subWord && subWord.length > 1) {
                 const result: string = await this.checkWordDefinition(buildWord);
@@ -262,32 +267,39 @@ export default class GridGeneration {
         this.createConstraints(sortWords(allWords));
     }
 
+    // tslint:disable-next-line:max-func-body-length
     public findWordsFromSpace(orientation: Orientation): Array<Constraint> {
         const words: Array<Constraint> = [];
         let word: Constraint = new Constraint("", "", [0, 0], orientation);
+        const GRID_SIZE: number = this._gridSize - 1;
 
         for (let first: number = 0; first < this._gridSize; first++) {
             word.position = siwtchPosition(orientation, first, 0);
+            // word.length = 1;
+            let w: number = 0;
 
-            for (let second: number = 0; second < this._gridSize; second++) {
-                let positions: Array<number> = siwtchPosition(orientation, first, second);
+            while (w < GRID_SIZE) {
+                let positions: Array<number> = siwtchPosition(orientation, first, w);
 
-                if (this._grid[positions[0]][positions[1]].isBlack()) {
-                    words.push(word);
-                    while (second < this._gridSize && this._grid[positions[0]][positions[1]].isBlack()) {
-                        second += 1;
-                        positions = siwtchPosition(orientation, first, second);
-                    }
-                    word = new Constraint("", "", siwtchPosition(orientation, first, second), orientation);
+                do {
+                    w++;
+                    word.length++;
+                    positions = siwtchPosition(orientation, first, w);
+                } while (positions[1] <= GRID_SIZE && positions[0] <= GRID_SIZE && !this._grid[positions[0]][positions[1]].isBlack())
+
+                words.push(word);
+
+                while (positions[1] <= GRID_SIZE && positions[0] <= GRID_SIZE && this._grid[positions[0]][positions[1]].isBlack()) {
+                    w++;
+                    positions = siwtchPosition(orientation, first, w);
                 }
-                word.length++;
 
-                if (second === this._gridSize - 1) {
-                    words.push(word);
-                    word = new Constraint("", "", [0, 0], orientation);
-                }
+                word = new Constraint("", "", siwtchPosition(orientation, first, w), orientation);
+
             }
         }
+
+        debugger
 
         return words;
     }
