@@ -19,6 +19,7 @@ export const DEFAULT_GEAR_RATIOS: number[] = [
 /* tslint:enable: no-magic-numbers */
 
 export class Engine {
+
     private _currentGear: number;
     private _rpm: number;
     private gearRatios: number[];
@@ -47,21 +48,17 @@ export class Engine {
         if (gearRatios === undefined || gearRatios.length === 0 || gearRatios.some((v) => v <= 0)) {
             gearRatios = DEFAULT_GEAR_RATIOS;
         }
-
         if (driveRatio <= 0) {
             driveRatio = DEFAULT_DRIVE_RATIO;
         }
-
         if (downshiftRPM <= 0 || minimumRpm <= 0 || shiftRPM <= downshiftRPM) {
             downshiftRPM = DEFAULT_DOWNSHIFT_RPM;
             minimumRpm = DEFAULT_MINIMUM_RPM;
             shiftRPM = DEFAULT_SHIFT_RPM;
         }
-
         if (transmissionEfficiency <= 0) {
             transmissionEfficiency = DEFAULT_TRANSMISSION_EFFICIENCY;
         }
-
         // tslint:disable-next-line:no-suspicious-comment
         // TODO: check all interactions with RPM values, such as downshift vs minimumrpm, upshift maximum, etc.
         this.gearRatios = gearRatios;
