@@ -1,12 +1,14 @@
 import { Clock } from "three";
 import { TrackBuilder } from "./trackBuilder";
 import { TrackProgressionService } from "./trackProgressionService";
+import { AudioService } from "./audio-service/audio.service";
 
 const MAX_COUNTDOWN: number = 3;
 
 export class RaceStarter {
     private _countdownClock: Clock;
     private _visual: String;
+    private _audioService: AudioService;
 
     public constructor(private _trackBuilder: TrackBuilder, private _trackProgressionService: TrackProgressionService) {
         this._countdownClock = new Clock();
@@ -19,7 +21,13 @@ export class RaceStarter {
         return this._countdownClock.getElapsedTime();
     }
 
-    private showCountdown(): void {
+    private async showCountdown(): Promise<void> {
+        if (this._audioService === undefined) {
+            this._audioService = new AudioService();
+            await this._audioService.initializeCountdown();
+            this._audioService.start();
+        }
+
         if (this._countdownClock.getElapsedTime() < 1) {
             this._visual = "3";
         } else if (this._countdownClock.getElapsedTime() < 2) {

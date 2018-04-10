@@ -24,6 +24,7 @@ export class AudioService {
     private _wallCollision: PositionalAudio;
 
     public constructor() {
+        this._listener = new AudioListener();
         this._audioLoader = new AudioLoader();
         this._carCollision = new Array<PositionalAudio>();
     }
@@ -51,13 +52,12 @@ export class AudioService {
         for (const car of bots) {
             await this.addCarSound(ENGINE_PATH, car);
         }
-        await this.initializeCountdown();
         await this.initializeCarCollisionSound();
         await this.initializeWallCollisionSounds();
 
     }
 
-    private async initializeCountdown(): Promise<void>  {
+    public async initializeCountdown(): Promise<void>  {
         this._countdown = new Audio(this._listener);
         await this.loadSound(this._countdown, COUNTDOWN_PATH, false);
     }
@@ -84,7 +84,6 @@ export class AudioService {
     }
 
     private addListener(car: Car): void {
-        this._listener = new AudioListener();
         car.mesh.add(this._listener);
     }
 
