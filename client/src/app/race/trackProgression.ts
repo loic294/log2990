@@ -12,7 +12,8 @@ export class TrackProgression {
     public constructor(private _startingLine: Vector3, private _playerCar: Car, private _botCars: Array<Car>,
                        private _trackProgressionService: TrackProgressionService) {
 
-        this._game = {gameTime: "0.00", lapTimes: new Array(), gameIsFinished: false, currentLap: 1, botTimes: new Array()};
+        this._game = {gameTime: "0.00", lapTime: "0.00", lapTimes: new Array(),
+                      gameIsFinished: false, currentLap: 1, botTimes: new Array()};
 
         let index: number = 0;
         while (index < this._botCars.length) {
@@ -74,6 +75,7 @@ export class TrackProgression {
             this.estimateBotTimes();
         } else if (!this._game.gameIsFinished) {
             this._game.gameTime = this._gameClock.getElapsedTime().toFixed(2);
+            this._game.lapTime = this._playerCar.userData.clock.getElapsedTime().toFixed(2);
         }
     }
 

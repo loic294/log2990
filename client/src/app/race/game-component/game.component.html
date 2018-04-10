@@ -15,17 +15,6 @@
 <br>
 <br>
 <br>
-<span>game time: {{_currentGame.gameTime}}</span><br>
-<span>FLAGGED laps: {{_currentGame.currentLap}}</span><br>
- <li *ngFor="let time of _currentGame.lapTimes">
-  {{time}} seconds
-</li>
-<p *ngFor="let botTimes of _currentGame.botTimes">
-  <li *ngFor="let time of botTimes">
-    {{time}} seconds
-  </li>
-  <br>
-</p>
 
 <div *ngIf="!_raceStarted">
 

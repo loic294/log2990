@@ -121,7 +121,7 @@ describe("GameComponent", () => {
         component.showTrack();
         await component.start();
         component.service.car.userData.currentLap = 2;
-        expect(Number(component._currentGame.gameTime)).toBeGreaterThan(Number(component._currentGame.lapTimes[2]));
+        expect(Number(component._currentGame.gameTime)).toBeGreaterThan(Number(component._currentGame.lapTime));
     });
 
     it("should not increment lap counter over 3", async () => {
