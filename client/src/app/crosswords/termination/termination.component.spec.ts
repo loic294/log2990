@@ -1,4 +1,5 @@
-// tslint:disable
+// tslint:disable:no-magic-numbers
+// tslint:disable:no-floating-promises
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { NgModule } from "@angular/core";
@@ -14,7 +15,7 @@ import { SocketService } from "../socket.service/socket.service";
 import { DifficultyService } from "../difficulty.service/difficulty.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import { Difficulty } from "../../../../../common/grid/difficulties";
-import { Type } from "../type"
+import { Type } from "../type";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
@@ -66,8 +67,7 @@ describe("TerminationComponent", () => {
         height: "450px",
         data: 0
     }).componentInstance;
-    spyOn(socketService, 'sendRequestRematch' );
-    
+    spyOn(socketService, "sendRequestRematch" );
   });
 
   it("should create", () => {
@@ -97,11 +97,9 @@ describe("TerminationComponent", () => {
 
     expect(dialog.showRematchOffer).toBeFalsy();
     expect(dialog.showWaitingRematchOffer).toBeFalsy();
-    
   });
 
   it("should keep user setting if play again option is selected", () => {
-    
     difficulty.onSelect(0);
     dialog.createSoloGame();
     expect(difficulty.selectedDifficulty).toEqual(Difficulty.Easy);
@@ -116,7 +114,6 @@ describe("TerminationComponent", () => {
         data: type
     }).componentInstance;
     expect(dialog.dialogType()).toEqual(type);
-    
   });
 
   it("should offer to rematch again same player in multiplayer mode ", () => {
@@ -126,8 +123,7 @@ describe("TerminationComponent", () => {
 
   it("should send rematch offer to other player", () => {
     dialog.requestRematch();
-    socketService.sendRequestRematch(); 
-  
+    socketService.sendRequestRematch();
     expect(socketService.sendRequestRematch).toHaveBeenCalled();
   });
 });
