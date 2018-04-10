@@ -9,7 +9,10 @@
       <div *ngIf="isBestTime() && isFirst()">
         <h1>CONGRATULATIONS YOU WON</h1>
         <div class="input-row">Please enter your name
-          <input (input)="enterName($event.target.value)" />
+          <input 
+          (input)="enterName($event.target.value)"
+          (keyup)="updateName($event)"
+          [disabled] = "updatedName"/>
         </div>
       </div>
 
@@ -22,9 +25,9 @@
         </tr>
         <tr *ngFor="let time of bestTimes(); let index = index">
           <td>{{index+1}}</td>
-          <td *ngIf = "isBestTime() && _game.gameTime === time; else other">{{bestTimeName}}</td>
-          <ng-template #other><td>NAME</td></ng-template>
-          <td>{{time}} seconds</td>
+          <td *ngIf = "_game.gameTime === time.gameTime; else other">{{bestTimeName}}</td>
+          <ng-template #other><td>{{time.player}}</td></ng-template>
+          <td>{{time.gameTime}} seconds</td>
         </tr>
       </table>
       <a routerLink="">

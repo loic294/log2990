@@ -1,6 +1,7 @@
 
 import { Document, Schema } from "mongoose";
 import mongoose from "../config/mongoose";
+import { PlayerStats } from "../../../common/race/playerStats";
 
 export interface ITrack {
     name?: String;
@@ -8,7 +9,7 @@ export interface ITrack {
     description?: String;
     timesPlayed?: number;
     vertice?: Array<Array<number>>;
-    completedTimes?: Array<String>;
+    completedTimes?: Array<PlayerStats>;
 }
 
 export interface ITrackInfo extends Document {
@@ -17,7 +18,7 @@ export interface ITrackInfo extends Document {
     description: String;
     timesPlayed: number;
     vertice: Array<Array<number>>;
-    completedTimes: Array<String>;
+    completedTimes: Array<PlayerStats>;
 }
 
 export const trackSchema: Schema = new Schema({
@@ -26,7 +27,7 @@ export const trackSchema: Schema = new Schema({
     description: String,
     timesPlayed: Number,
     vertice: Array<Array<Number>>(),
-    completedTimes: Array<String>()
+    completedTimes: Array<PlayerStats>()
 });
 
 export default mongoose.model<ITrackInfo>("Track", trackSchema);
