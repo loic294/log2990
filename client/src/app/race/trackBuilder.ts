@@ -97,7 +97,8 @@ export class TrackBuilder {
         });
 
         const wall: Mesh = new Mesh(new CubeGeometry(WIDTH / WALL_WIDTH_DIVISOR, length, WALL_HEIGHT), material);
-        wall.position.set(firstVertex.x, firstVertex.y, firstVertex.z);
+        const offset: number = (WIDTH / 2 - WIDTH / WALL_WIDTH_DIVISOR / 2);
+        wall.position.set(firstVertex.x - offset, firstVertex.y, firstVertex.z - offset);
 
         this._scene.add(this.placeObjectCorrectly(firstVertex, secondVertex, wall));
     }
