@@ -9,6 +9,7 @@ import { CameraService } from "../camera-service/camera.service";
 import { AiService } from "../ai-service/ai.service";
 import { TrackProgression } from "../trackProgression";
 import { TrackProgressionService } from "../trackProgressionService";
+import { AudioService } from "../audio-service/audio.service";
 
 const AMOUNT_OF_NPCS: number = 3;
 
@@ -26,7 +27,8 @@ export class RenderService {
     private _trackLoaded: boolean;
     private _trackProgression: TrackProgression;
 
-    public constructor(private _cameraService: CameraService, private _environmentService: EnvironmentService) {
+    public constructor(private _cameraService: CameraService, private _audioService: AudioService,
+                       private _environmentService: EnvironmentService) {
         this._car = new Car();
         this._bots = [];
         this._trackLoaded = false;
@@ -67,13 +69,15 @@ export class RenderService {
         this._scene = new Scene();
 
         await this._car.init();
+
         this.scene.add(this._car);
+
         for (let i: number = 0; i < AMOUNT_OF_NPCS; i++) {
             await this._bots[i].init();
             this.scene.add(this._bots[i]);
         }
+        await this._audioService.initializeSounds(this.car, this._bots);
         this._environmentService.initialize(this._scene);
-
         this._cameraService.initialize(this._car, this.getAspectRatio());
         this._cameraService.changeCamera();
     }
@@ -81,6 +85,7 @@ export class RenderService {
     public start(startingLine: Vector3, service: TrackProgressionService): void {
         this._cameraService.initialize(this._car, this.getAspectRatio());
         this._trackProgression = new TrackProgression(startingLine, this._car, service);
+        this._audioService.start();
     }
 
     public getAspectRatio(): number {
