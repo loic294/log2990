@@ -9,7 +9,6 @@ import { TrackBuilder } from "../trackBuilder";
 import { EnvironmentService } from "../environment-service/environment.service";
 import { IGameInformation, TrackProgressionService } from "../trackProgressionService";
 import { ResultsService } from "../results-service/results.service";
-import { PlayerStats } from "../../../../../common/race/playerStats";
 
 const SCALE_FACTOR: number = -10;
 

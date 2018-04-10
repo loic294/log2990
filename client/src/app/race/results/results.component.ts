@@ -19,9 +19,7 @@ export class ResultsComponent implements OnInit {
     private _bestTimes: Array<PlayerStats>;
     private _bestTimeName: String;
     private _updatedName: boolean;
-
     private _trackInfo: TrackInformation;
-
     private _showGameResults: boolean;
     private _positionedRaceStats: Array<PlayerStats>;
 
@@ -160,6 +158,9 @@ export class ResultsComponent implements OnInit {
             }
             await this._trackInfo.patchTrack();
         }
+    }
+
+    public playAgain(): void {
     }
 
     // tslint:disable-next-line:typedef

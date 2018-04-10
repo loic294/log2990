@@ -30,10 +30,17 @@
           <td>{{time.gameTime}} seconds</td>
         </tr>
       </table>
-      <a routerLink="">
-          <button>Main menu</button>
-      </a>
-      <button (click)="findGameResults()">Game results</button>
+  
+      <div *ngIf = "updatedName">
+        <a routerLink="">
+            <button >Main menu</button>
+        </a>
+        
+        <button (click)="playAgain()">Play Again</button>
+        
+        <button (click)="findGameResults()">Game results</button>
+      </div>
+      
     </div>
     
   
