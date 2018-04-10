@@ -55,7 +55,6 @@ export class RaceStarter {
         this._visual.position.set(this._trackBuilder.startingLines[0].position.x,
                                   this._trackBuilder.startingLines[0].position.y,
                                   this._trackBuilder.startingLines[0].position.z);
-        console.log(this._visual);
 
         this._scene.add(this._visual);
     }
