@@ -7,7 +7,9 @@ import { CameraService } from "../camera-service/camera.service";
 import { TrackInformation } from "../trackInformation";
 import { TrackBuilder } from "../trackBuilder";
 import { AiService } from "../ai-service/ai.service";
+import { EnvironmentService } from "../environment-service/environment.service";
 import { IGameInformation, TrackProgressionService } from "../trackProgressionService";
+import { AudioService } from "../audio-service/audio.service";
 
 const SCALE_FACTOR: number = -10;
 
@@ -19,7 +21,10 @@ const SCALE_FACTOR: number = -10;
     providers: [
         RenderService,
         InputManagerService,
-        CameraService
+        CameraService,
+        AudioService,
+        EnvironmentService
+
     ]
 })
 
@@ -31,7 +36,7 @@ export class GameComponent implements AfterViewInit, OnInit {
     private _trackLoaded: boolean;
     private _trackInformation: TrackInformation;
     private _dotCommand: DotCommand;
-    private _currentGame: IGameInformation;
+    public _currentGame: IGameInformation;
 
     public constructor(private renderService: RenderService, private inputManager: InputManagerService,
                        private _trackProgressionService: TrackProgressionService) {
@@ -40,7 +45,7 @@ export class GameComponent implements AfterViewInit, OnInit {
         this._trackInformation = new TrackInformation();
         this._trackInformation.getTracksList();
 
-        this._currentGame = {gameTime: 0, lapTimes: new Array(), gameIsFinished: false, currentLap: 1};
+        this._currentGame = {gameTime: 0, lapTime: 0, lapTimes: new Array(), gameIsFinished: false, currentLap: 0};
     }
 
     @HostListener("window:resize", ["$event"])

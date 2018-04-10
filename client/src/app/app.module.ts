@@ -47,7 +47,7 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         TrackCreationComponent,
         TerminationComponent,
         TerminationDialogComponent,
-        ModeDialogComponent
+        ModeDialogComponent,
     ],
     entryComponents: [
         ModeDialogComponent,
