@@ -197,7 +197,7 @@ export class TrackBuilder {
         car.meshPosition = new Vector3().addVectors(line.position, direction);
 
         const angle: number = this.findZRotationAngle(line.position, this._vertice[1].position);
-        car.getMesh().rotateY(-angle + Math.PI);
+        car.mesh.rotateY(-angle + Math.PI);
     }
 
     private findPerpendicularVector(vector: Vector3): Vector3 {
