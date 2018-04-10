@@ -1,7 +1,7 @@
 <div *ngIf="_game.gameIsFinished">
   <div id="resultsModal" class="modal">
 
-    <div *ngIf="isBestTime() && isFirst()" class="modal-content">
+    <div *ngIf="isBestTime() && isFirst() && !showGameResults" class="modal-content">
       <h1>CONGRATULATIONS YOU WON</h1>
       <div class="input-row">Please enter your name
         <input (input)="enterName($event.target.value)" />
@@ -14,7 +14,7 @@
     <button (click)="findGameResults()">Game results</button>
     </div>
 
-    <div *ngIf="!isBestTime()" class="modal-content">
+    <div *ngIf="!isBestTime() && !showGameResults" class="modal-content">
       <h1>BETTER LUCK NEXT TIME</h1>
       <h1>BEST TIMES</h1>
       <li *ngFor="let time of bestTimes()">
@@ -45,16 +45,7 @@
             </tr>
         </ng-container>
       </table>
-      <!-- <li *ngFor="let stat of positionedRaceStats">
-        <span>{{stat.player}} :</span>
-        <span>{{stat.gameTime}} seconds</span>
-        <div *ngFor= "let lapTime of stat.lapTimes; let index = index">
-          <span>lap {{index+1}}: {{lapTime}} seconds</span>
-        </div>
-      </li> -->
   </div>
-  
-
   </div>
   
 </div>
