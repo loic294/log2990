@@ -3,6 +3,12 @@ import { TrackProgressionService, IGameInformation } from "../trackProgressionSe
 import { ResultsService } from "../results-service/results.service";
 // import { TrackInformationService } from "../../../../../server/app/services/trackInformation/trackInformationService";
 
+interface PlayerStats {
+    player: String;
+    gameTime: String;
+    lapTimes: Array<String>;
+}
+
 @Component({
     selector: "app-results",
     templateUrl: "./results.component.html",
@@ -19,7 +25,7 @@ export class ResultsComponent implements OnInit {
     private _bestTimeName: String;
 
     private _showGameResults: boolean;
-    private _positionedRaceTimes: Array<Array<String>>;
+    private _positionedRaceStats: Array<PlayerStats>;
 
     public constructor( private resultsService: ResultsService) {
         this._isHidden = true;
@@ -51,7 +57,6 @@ export class ResultsComponent implements OnInit {
                 this._bestTimes.push(time.toString());
             }
 
-
             return this._bestTimes;
         } else {
             return [];
@@ -67,35 +72,46 @@ export class ResultsComponent implements OnInit {
 
         return false;
     }
-
-    private completeRaceTimeBots(): Array<String> {
-        const completeRaceTimeBots: Array<String> = [];
-        for (const bot of this._game.botTimes) {
-            let completeTimeBot: number = 0;
-            for (const time of bot) {
-                completeTimeBot += parseFloat(time.toString());
-            }
-            completeRaceTimeBots.push(completeTimeBot.toString());
+    private calculateCompleteTime(times: Array<String>): String {
+        let completedTime: number = 0;
+        for (const time of times) {
+            completedTime += parseFloat(time.toString());
         }
 
-        return completeRaceTimeBots;
+        return completedTime.toString();
     }
-    private positionRaceTimes(): void {
-        this._positionedRaceTimes = [];
+
+    private getPlayerStats(): Array<PlayerStats> {
         let botIndex: number = 0;
-        for (const time of this.completeRaceTimeBots()) {
-            this._positionedRaceTimes.push(new Array());
-            this._positionedRaceTimes[botIndex].push("BOT " + botIndex.toString());
-            this._positionedRaceTimes[botIndex].push(time);
+        const stats: Array<PlayerStats> = [];
+        for (const bot of this._game.botTimes) {
+            const botStat: PlayerStats = {
+                player: "BOT " + botIndex.toString(),
+                gameTime: this.calculateCompleteTime(bot),
+                lapTimes: bot
+            };
             botIndex++;
+            stats.push(botStat);
         }
-        this._positionedRaceTimes.push(new Array());
-        const playerIndex: number = botIndex++;
-        this._positionedRaceTimes[playerIndex].push("YOU");
-        this._positionedRaceTimes[playerIndex].push(this._game.gameTime);
-        this._positionedRaceTimes = this._positionedRaceTimes.sort((n1, n2) => parseFloat(n1[1].toString()) - parseFloat(n2[1].toString()));
+
+        const playerStats: PlayerStats = {
+            player: "YOU",
+            gameTime: this._game.gameTime,
+            lapTimes: this._game.lapTimes
+        };
+
+        stats.push(playerStats);
+
+        return stats;
     }
-    
+
+    private positionPlayerStats(): void {
+        this._positionedRaceStats = this.getPlayerStats().sort((n1, n2) =>
+        parseFloat(n1.gameTime.toString()) - parseFloat(n2.gameTime.toString()));
+    }
+    public get positionedRaceStats(): Array<PlayerStats> {
+        return this._positionedRaceStats;
+    }
 
     public isFirst(): boolean {
         for (const bot of this._game.botTimes) {
@@ -121,7 +137,7 @@ export class ResultsComponent implements OnInit {
 
     public findGameResults(): void {
         this._showGameResults = true;
-        this.positionRaceTimes();
+        this.positionPlayerStats();
     }
 
     // tslint:disable-next-line:typedef
