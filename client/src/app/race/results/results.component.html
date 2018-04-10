@@ -1,27 +1,38 @@
 <div *ngIf="_game.gameIsFinished">
   <div id="resultsModal" class="modal">
+    <div *ngIf="!showGameResults"  class="modal-content">
 
-    <div *ngIf="isBestTime() && isFirst() && !showGameResults" class="modal-content">
-      <h1>CONGRATULATIONS YOU WON</h1>
-      <div class="input-row">Please enter your name
-        <input (input)="enterName($event.target.value)" />
+      <div *ngIf="!isBestTime()">
+        <h1>BETTER LUCK NEXT TIME</h1>
       </div>
-      <h1>BEST TIMES</h1>
-      <li *ngFor="let time of bestTimes()">
-          <span *ngIf = "time === _game.gameTime" class = "bestTime">{{bestTimeName}}</span>
-          <span>{{time}} seconds</span>
-      </li>
-    <button (click)="findGameResults()">Game results</button>
-    </div>
 
-    <div *ngIf="!isBestTime() && !showGameResults" class="modal-content">
-      <h1>BETTER LUCK NEXT TIME</h1>
-      <h1>BEST TIMES</h1>
-      <li *ngFor="let time of bestTimes()">
-        <span>{{time}} seconds</span>
-      </li>
-    <button (click)="findGameResults()">Game results</button>
+      <div *ngIf="isBestTime() && isFirst()">
+        <h1>CONGRATULATIONS YOU WON</h1>
+        <div class="input-row">Please enter your name
+          <input (input)="enterName($event.target.value)" />
+        </div>
+      </div>
+
+      <h1>TOP 5 TRACK TIMES</h1>
+      <table>
+        <tr>
+          <th>Rank</th>
+          <th>Name</th>
+          <th>Time</th>
+        </tr>
+        <tr *ngFor="let time of bestTimes(); let index = index">
+          <td>{{index+1}}</td>
+          <td *ngIf = "isBestTime() && _game.gameTime === time; else other">{{bestTimeName}}</td>
+          <ng-template #other><td>NAME</td></ng-template>
+          <td>{{time}} seconds</td>
+        </tr>
+      </table>
+      <a routerLink="">
+          <button>Main menu</button>
+      </a>
+      <button (click)="findGameResults()">Game results</button>
     </div>
+    
   
 
   <div *ngIf="showGameResults" class="modal-content">
@@ -45,7 +56,8 @@
             </tr>
         </ng-container>
       </table>
-  </div>
+      <button (click)="hideGameResults()">Back</button>
+    </div>
   </div>
   
 </div>

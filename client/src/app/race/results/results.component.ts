@@ -135,6 +135,10 @@ export class ResultsComponent implements OnInit {
         this.positionPlayerStats();
     }
 
+    public hideGameResults(): void {
+        this._showGameResults = false;
+    }
+
     // tslint:disable-next-line:typedef
     public ngOnInit() {
         this.resultsService.game.subscribe( (game) => {
