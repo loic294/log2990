@@ -82,7 +82,7 @@ export class RenderService {
 
     public start(trackBuilder: TrackBuilder, service: TrackProgressionService): void {
         this._cameraService.initialize(this._car, this.getAspectRatio());
-        this._raceStarter = new RaceStarter(this._scene, trackBuilder, service);
+        this._raceStarter = new RaceStarter(trackBuilder, service);
     }
 
     public getAspectRatio(): number {
