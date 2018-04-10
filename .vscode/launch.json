@@ -36,7 +36,7 @@
             "stopOnEntry": true,
             "sourceMaps": true,
             "port": 9229,
-            "restart":true
+            "restart":false
         },
         {
             "name": "Launch TypeScript",
