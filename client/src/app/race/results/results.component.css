@@ -46,3 +46,13 @@ input:focus {
     color: red;
 
 }
+
+li {
+  list-style-type: none;
+}
+
+th, td {
+    border: 2px solid black;
+    padding: 15px;
+    text-align: left;
+}

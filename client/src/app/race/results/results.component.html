@@ -11,6 +11,7 @@
           <span *ngIf = "time === _game.gameTime" class = "bestTime">{{bestTimeName}}</span>
           <span>{{time}} seconds</span>
       </li>
+    <button (click)="findGameResults()">Game results</button>
     </div>
 
     <div *ngIf="!isBestTime()" class="modal-content">
@@ -19,18 +20,40 @@
       <li *ngFor="let time of bestTimes()">
         <span>{{time}} seconds</span>
       </li>
+    <button (click)="findGameResults()">Game results</button>
     </div>
   
 
   <div *ngIf="showGameResults" class="modal-content">
       <h1>THIS RACE RESULTS</h1>
-      <li *ngFor="let position of _positionedRaceTimes">
-        <span>{{position[0]}} :</span>
-        <span>{{position[1]}} seconds</span>
-      </li>
+      <table>
+        <tr>
+          <th>Position</th>
+          <th>Player</th>
+          <th>Game Time</th>
+          <th>Lap Times</th>
+        </tr>
+        <ng-container *ngFor="let stat of positionedRaceStats; let index = index">
+            <tr>
+              <td>{{index+1}}</td>
+              <td>{{stat.player}}</td>
+              <td>{{stat.gameTime}}</td>
+              <td><li *ngFor= "let lapTime of stat.lapTimes; let index = index">
+                <span>lap {{index+1}}: {{lapTime}}s</span>
+              </li>
+              </td>
+            </tr>
+        </ng-container>
+      </table>
+      <!-- <li *ngFor="let stat of positionedRaceStats">
+        <span>{{stat.player}} :</span>
+        <span>{{stat.gameTime}} seconds</span>
+        <div *ngFor= "let lapTime of stat.lapTimes; let index = index">
+          <span>lap {{index+1}}: {{lapTime}} seconds</span>
+        </div>
+      </li> -->
   </div>
   
-  <button (click)="findGameResults()">Game results</button>
 
   </div>
   
