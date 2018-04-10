@@ -1,13 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { TrackProgressionService, IGameInformation } from "../trackProgressionService";
 import { ResultsService } from "../results-service/results.service";
+import { PlayerStats } from "../../../../../common/race/playerStats";
 // import { TrackInformationService } from "../../../../../server/app/services/trackInformation/trackInformationService";
-
-interface PlayerStats {
-    player: String;
-    gameTime: String;
-    lapTimes: Array<String>;
-}
 
 @Component({
     selector: "app-results",
