@@ -58,7 +58,7 @@ export default class GridGeneration {
         }
 
         if (containtsOnlyLetters(query)) {
-            return count > 1 ? `${query}${count - 1}` : `${query}`;
+            return count > 0 ? `${query}${count - 1}` : `${query}`;
         } else if (query.length === 0) {
             return `${count}`;
         }
@@ -177,27 +177,27 @@ export default class GridGeneration {
 
         do {
 
-            console.log("INDEX", wordIndex);
             debugger
 
             const prevWord: string = this._wordStack[wordIndex].name;
+            const immutableGird: List<List<Cell>> = List(this._gridCache[wordIndex].map((row: Array<Cell>) => List(row)));
+
+            this._gridCache[wordIndex] = immutableGird;
+            const gridFreeze: List<List<Cell>> = await this.recursionInternal(words, wordIndex, immutableGird);
+
+            console.log("INDEX", wordIndex);
             console.log("PREV WORD", prevWord);
-
-            const immutableList: List<List<Cell>> = List(this._gridCache[wordIndex].map((row: Array<Cell>) => List(row)));
-            console.log(printGridWithWord(immutableList.map((row: List<Cell>) => row.toArray()).toArray()));
-
-            this._gridCache[wordIndex] = immutableList;
-            const gridFreeze: List<List<Cell>> = await this.recursionInternal(words, wordIndex, immutableList);
+            console.log("NEW WORD", this._wordStack[wordIndex].name);
+            console.log(printGridWithWord(gridFreeze.map((row: List<Cell>) => row.toArray()).toArray()));
             debugger
 
-            console.log("NEW WORD", this._wordStack[wordIndex].name);
             if (prevWord ===  this._wordStack[wordIndex].name || !gridFreeze.size) {
                 debugger
                 next = false;
             } else {
                 next = true;
                 this._gridCache[wordIndex + 1] = gridFreeze;
-                console.log(printGridWithWord(gridFreeze.map((row: List<Cell>) => row.toArray()).toArray()));
+                // console.log(printGridWithWord(gridFreeze.map((row: List<Cell>) => row.toArray()).toArray()));
                 debugger
             }
 
