@@ -38,6 +38,14 @@
     outline: none;
 }
 
+.selected{
+    border-color: red;
+}
+
+.selected-other{
+    border-color: blue;
+}
+
 .validate {
     background: lightcoral !important;
 }
