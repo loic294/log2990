@@ -90,7 +90,6 @@ export class GameComponent implements AfterViewInit, OnInit {
                                                                 this.renderService.bots);
             trackBuilder.buildTrack();
 
-            this.renderService.trackLoaded = true;
             this._raceStarted = true;
 
             this.renderService.start(trackBuilder, this._trackProgressionService);
