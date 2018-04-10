@@ -1,9 +1,10 @@
 import {
     Vector3, Mesh, Object3D, PlaneGeometry, DoubleSide, CircleGeometry,
-    TextureLoader, Texture, RepeatWrapping, MeshPhongMaterial, CubeGeometry } from "three";
+    TextureLoader, Texture, RepeatWrapping, MeshPhongMaterial, CubeGeometry, MeshBasicMaterial } from "three";
 import { LineSegment } from "./DotCommand";
 import { PI_OVER_2 } from "../constants";
 import { Car } from "./car/car";
+import TrackSegment from "./trackSegment";
 
 const WIDTH: number = 10;
 const WALL_HEIGHT: number = 2;
@@ -24,11 +25,13 @@ export class TrackBuilder {
     private _planeVariation: number;
     private _circleGeometry: CircleGeometry;
     private _startingLines: Array<Mesh>;
+    private _trackSegments: Array<TrackSegment>;
     public constructor(private _scene: THREE.Scene, private _vertice: Array<Object3D>, private _edges: Array<LineSegment>,
                        private _playerCar: Car, private _botCars: Array<Car>) {
         this._planeVariation = PLANE_OFFSET / 2;
         this._circleGeometry = new CircleGeometry(WIDTH / 2, CIRCLE_SEGMENTS);
         this._startingLines = new Array();
+        this._trackSegments = [];
     }
 
     private generateOffTrack(): void {
@@ -84,23 +87,32 @@ export class TrackBuilder {
 
         this._scene.add(this.placeObjectCorrectly(firstVertex, secondVertex, track));
 
-        this.generateWall(firstVertex, secondVertex);
-
+        this._trackSegments.push(new TrackSegment(firstVertex, secondVertex, track));
     }
 
     private generateWall(firstVertex: Vector3, secondVertex: Vector3): void {
         const length: number = firstVertex.distanceTo(secondVertex);
-
+        /*
         const material: MeshPhongMaterial = new MeshPhongMaterial({
             map: this.generateTexture(WIDTH, length, TRACK_TEXTURE_PATH),
+            side: DoubleSide
+        });
+        */
+
+        const material: MeshBasicMaterial = new MeshBasicMaterial({
+        // tslint:disable-next-line:number-literal-format
+            color: 0x000fff,
             side: DoubleSide
         });
 
         const wall: Mesh = new Mesh(new CubeGeometry(WIDTH / WALL_WIDTH_DIVISOR, length, WALL_HEIGHT), material);
         const offset: number = (WIDTH / 2 - WIDTH / WALL_WIDTH_DIVISOR / 2);
+        const otherWall: Mesh = wall.clone();
+        otherWall.position.set(firstVertex.x + offset, firstVertex.y, firstVertex.z + offset);
         wall.position.set(firstVertex.x - offset, firstVertex.y, firstVertex.z - offset);
 
         this._scene.add(this.placeObjectCorrectly(firstVertex, secondVertex, wall));
+        this._scene.add(this.placeObjectCorrectly(firstVertex, secondVertex, otherWall));
     }
 
     private placeObjectCorrectly(firstVertex: Vector3, secondVertex: Vector3, object: Mesh): Mesh {
