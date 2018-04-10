@@ -36,29 +36,24 @@ export default class GridGeneration {
 
     // tslint:disable-next-line:max-func-body-length
     public createWordSearchCondition(grid: List<List<Cell>>, word: Constraint): string {
-        const index: number = word.orientation === Orientation.horizontal ? 1 : 0;
-        const cosntraints: Array<SubConstraint> = sortSubConstraint(word.constraints, index);
         let count: number = 0;
         let query: string = "";
-        const wordStart: number = word.orientation === Orientation.horizontal ? word.position[1] : word.position[0];
 
-        for (let i: number = wordStart; i < wordStart + word.length; i++) {
-            const subConstraint: SubConstraint = cosntraints.find((constraint: SubConstraint) => constraint.point[index] === i);
-            count += 1;
-
-            if (subConstraint !== undefined) {
-                const cellChar: string = grid.get(subConstraint.point[0]).get(subConstraint.point[1]).char;
-                if (cellChar !== "◻️") {
-                    query += count > 1 ? `${count - 1}${cellChar}` : `${cellChar}`;
-                    count = 0;
-                }
+        let index: number = 0;
+        traverseWord(word, (row: number, col: number) => {
+            const cellChar: string = grid.get(row).get(col).char;
+            if (cellChar !== "◻️") {
+                query += count > 1 ? `${count}${cellChar}` : `${cellChar}`;
+                count = 0;
+            } else {
+                count++;
             }
 
-            if (i === word.length - 1 && count > 0) {
+            if (index++ === word.length - 1 && count > 0) {
                 query += `${count}`;
                 count = 0;
             }
-        }
+        });
 
         if (query.length === 0) {
             return "" + count;
