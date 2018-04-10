@@ -33,7 +33,7 @@
       <span>description: </span>{{_trackInformation.track.description}}<br>
       <span>times played: </span>{{_trackInformation.track.timesPlayed}}<br>
       <li *ngFor="let time of _trackInformation.track.completedTimes">
-        {{time}} seconds
+        {{time.player}}: {{time.gameTime}} seconds
       </li>
   </div>
 </div>
