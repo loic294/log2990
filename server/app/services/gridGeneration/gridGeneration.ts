@@ -34,6 +34,7 @@ export default class GridGeneration {
         this._grid = fillGridWithBlackCells(this._grid, this._maxBlackCells, size);
     }
 
+    // tslint:disable-next-line:max-func-body-length
     public createWordSearchCondition(grid: List<List<Cell>>, word: Constraint): string {
         const index: number = word.orientation === Orientation.horizontal ? 1 : 0;
         const cosntraints: Array<SubConstraint> = sortSubConstraint(word.constraints, index);
@@ -43,24 +44,28 @@ export default class GridGeneration {
 
         for (let i: number = wordStart; i < wordStart + word.length; i++) {
             const subConstraint: SubConstraint = cosntraints.find((constraint: SubConstraint) => constraint.point[index] === i);
-            count++;
+            count += 1;
+
             if (subConstraint !== undefined) {
                 const cellChar: string = grid.get(subConstraint.point[0]).get(subConstraint.point[1]).char;
-                if (cellChar !== "◽") {
+                if (cellChar !== "◻️") {
                     query += count > 1 ? `${count - 1}${cellChar}` : `${cellChar}`;
                     count = 0;
                 }
             }
+
             if (i === word.length - 1 && count > 0) {
                 query += `${count}`;
                 count = 0;
             }
         }
 
-        if (containtsOnlyLetters(query)) {
-            return count > 0 ? `${query}${count - 1}` : `${query}`;
-        } else if (query.length === 0) {
-            return `${count}`;
+        if (query.length === 0) {
+            return "" + count;
+        }
+
+        if (/^[a-z]+$/ig.test(query)) {
+            return `${query}${count}`;
         }
 
         return query;
@@ -85,7 +90,7 @@ export default class GridGeneration {
 
         let shouldAddToGrid: boolean = false;
         traverseWord(word, (row: number, col: number) => {
-            if (grid.get(row) && grid.get(row).get(col) && grid.get(row).get(col).char === "◽" && !grid.get(row).get(col).isBlack()) {
+            if (grid.get(row) && grid.get(row).get(col) && grid.get(row).get(col).char === "◻️" && !grid.get(row).get(col).isBlack()) {
                 shouldAddToGrid = true;
             }
         });
@@ -138,6 +143,7 @@ export default class GridGeneration {
         const word: Constraint = words[wordIndex];
         const maxRecursion: number = 10;
 
+        console.log("SHOULD FIND WORD", this.shouldFindWord(grid, word));
         if (this.shouldFindWord(grid, word)) {
             const query: string = this.createWordSearchCondition(grid, word);
 
@@ -188,7 +194,8 @@ export default class GridGeneration {
             console.log("INDEX", wordIndex);
             console.log("PREV WORD", prevWord);
             console.log("NEW WORD", this._wordStack[wordIndex].name);
-            console.log(printGridWithWord(gridFreeze.map((row: List<Cell>) => row.toArray()).toArray()));
+            if (gridFreeze.size > 0)
+                console.log(printGridWithWord(gridFreeze.map((row: List<Cell>) => row.toArray()).toArray()));
             debugger
 
             if (prevWord ===  this._wordStack[wordIndex].name || !gridFreeze.size) {
@@ -202,6 +209,7 @@ export default class GridGeneration {
             }
 
             next ? wordIndex++ : wordIndex--;
+            this._grid = gridFreeze.map((row: List<Cell>) => row.toArray()).toArray();
 
         } while (wordIndex < words.length && wordIndex > 0);
 

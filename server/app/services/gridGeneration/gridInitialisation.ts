@@ -8,7 +8,7 @@ export const fillGridWithCells: (size: number) => Array<Array<Cell>> = (size: nu
     for (let row: number = 0; row < size; row++) {
         grid[row] = [];
         for (let col: number = 0; col < size; col++) {
-            grid[row][col] = new Cell("◽", row, col);
+            grid[row][col] = new Cell("◻️", row, col);
         }
     }
 
