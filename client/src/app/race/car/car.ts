@@ -284,6 +284,10 @@ export class Car extends Object3D {
         return this.mass;
     }
 
+    public getMesh(): Object3D {
+        return this.mesh;
+    }
+
     public toogleLight(): void {
         this.headlightsManager.toogleLight();
     }

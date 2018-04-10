@@ -42,7 +42,8 @@ export class GameComponent implements AfterViewInit, OnInit {
         this._trackInformation = new TrackInformation();
         this._trackInformation.getTracksList();
 
-        this._currentGame = {gameTime: 0, lapTime: 0, lapTimes: new Array(), gameIsFinished: false, currentLap: 0};
+        this._currentGame = {gameTime: "0.00", lapTime: "0.00",
+                             lapTimes: new Array(), gameIsFinished: false, currentLap: 1, botTimes: new Array()};
     }
 
     @HostListener("window:resize", ["$event"])
@@ -150,7 +151,6 @@ export class GameComponent implements AfterViewInit, OnInit {
         if (game.gameIsFinished && this._raceStarted) {
             this._raceStarted = false;
             this._trackLoaded = false;
-
             this.saveTime().catch();
         }
     }

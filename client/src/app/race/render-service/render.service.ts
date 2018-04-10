@@ -80,7 +80,7 @@ export class RenderService {
 
     public start(startingLine: Vector3, service: TrackProgressionService): void {
         this._cameraService.initialize(this._car, this.getAspectRatio());
-        this._trackProgression = new TrackProgression(startingLine, this._car, service);
+        this._trackProgression = new TrackProgression(startingLine, this._car, this._bots, service);
     }
 
     public getAspectRatio(): number {
