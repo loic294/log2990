@@ -4,7 +4,7 @@ import { Cell } from "../../../../../common/grid/cell";
 import { Observable } from "rxjs/Observable";
 import { of } from "rxjs/observable/of";
 import Word, { Orientation } from "../../../../../common/lexical/word";
-import { GridTools } from "./grid.tools";
+import { GridToolsService} from "./grid.tools.service";
 
 import { WordService } from "../word.service/word.service";
 import { SocketService } from "../socket.service/socket.service";
@@ -18,14 +18,14 @@ export class GridService {
     private _selectedWord: Cell;
     private _word: Word;
     private _otherWord: Word;
-    private _gridTools: GridTools;
+    private _gridTools: GridToolsService;
 
     public constructor(
         private _wordService: WordService,
         private socketService: SocketService
     ) {
 
-        this._gridTools = new GridTools();
+        this._gridTools = new GridToolsService();
         this.initGrid();
         this.initServicesListeners();
     }
@@ -278,7 +278,7 @@ export class GridService {
         this._word = word;
     }
 
-    public get gridTools(): GridTools {
+    public get GridToolsService(): GridToolsService {
         return this._gridTools;
     }
 }

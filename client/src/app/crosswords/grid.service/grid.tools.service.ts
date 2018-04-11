@@ -5,7 +5,7 @@ import Word, { Orientation } from "../../../../../common/lexical/word";
 import CLUES from "../mock-words";
 
 @Injectable()
-export class GridTools {
+export class GridToolsService {
 
     private _row: number;
     private _col: number;
