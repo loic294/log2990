@@ -155,13 +155,6 @@ export class TrackBuilder {
         this._scene.add(line);
     }
 
-    private findZRotationAngle(position: Vector3, destination: Vector3): number {
-        const perpendicularToPosition: Vector3 = this.findPerpendicularVector(position);
-        const perpendicularToPerpendicular: Vector3 = this.findPerpendicularVector(perpendicularToPosition);
-
-        return perpendicularToPerpendicular.angleTo(destination);
-    }
-
     private positionRacers(): void {
 
         this.chooseLine(this._playerCar);
@@ -186,32 +179,36 @@ export class TrackBuilder {
     }
 
     private chooseLineSide(car: Car, line: Mesh): void {
-        const perpendicular: Vector3 = this.findPerpendicularVector(line.position);
+        const perpendiculars: Array<Vector3> = this.findPerpendicularVectors(line.position);
         if (Math.random() * NUMBER_OF_LINE <= 1 && !line.userData.leftPositionTaken) {
+            this.placeOnLine(car, line, perpendiculars[0]);
             line.userData.leftPositionTaken = true;
         } else if (!line.userData.rightPositionTaken) {
-            perpendicular.x = -perpendicular.x;
-            perpendicular.y = -perpendicular.y;
+            this.placeOnLine(car, line, perpendiculars[1]);
             line.userData.rightPositionTaken = true;
         } else {
+            this.placeOnLine(car, line, perpendiculars[0]);
             line.userData.leftPositionTaken = true;
         }
-        this.placeOnLine(car, line, perpendicular);
     }
 
     private placeOnLine(car: Car, line: Mesh, perpendicular: Vector3): void {
-        const direction: Vector3 = new Vector3(perpendicular.x * WIDTH / LINE_POSITION_FACTOR, 0,
-                                               perpendicular.y * WIDTH / LINE_POSITION_FACTOR);
-        car.meshPosition = new Vector3().addVectors(line.position, direction);
+        car.meshPosition = line.position;
+        const direction: Vector3 = car.direction;
+        car.mesh.rotateY(direction.angleTo(this._vertice[1].position));
+        car.meshPosition = new Vector3(perpendicular.x * LINE_POSITION_FACTOR, 0, perpendicular.y * LINE_POSITION_FACTOR);
 
-        const angle: number = this.findZRotationAngle(line.position, this._vertice[1].position);
-        car.mesh.rotateY(-angle + Math.PI);
     }
 
-    private findPerpendicularVector(vector: Vector3): Vector3 {
-        const orthogonal: Vector3 = new Vector3(0, 0, 1);
+    private findPerpendicularVectors(vector: Vector3): Array<Vector3> {
+        const orthogonal1: Vector3 = new Vector3(0, 0, 1);
+        const orthogonal2: Vector3 = new Vector3(0, 0, -1);
+        const perpendiculars: Array<Vector3> = new Array();
 
-        return new Vector3().crossVectors(vector, orthogonal).normalize();
+        perpendiculars.push(new Vector3().crossVectors(vector, orthogonal1).normalize());
+        perpendiculars.push(new Vector3().crossVectors(vector, orthogonal2).normalize());
+
+        return perpendiculars;
     }
 
     public get vertices(): Array<Object3D> {
