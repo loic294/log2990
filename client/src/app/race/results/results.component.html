@@ -1,4 +1,4 @@
-<div *ngIf="_game.gameIsFinished">
+<div *ngIf="_game.gameIsFinished && showModal">
   <div id="resultsModal" class="modal">
     <div *ngIf="!showGameResults"  class="modal-content">
 
@@ -31,7 +31,7 @@
         </tr>
       </table>
   
-      <div *ngIf = "updatedName">
+      <div *ngIf = "updatedName || !isBestTime()">
         <a routerLink="">
             <button >Main menu</button>
         </a>

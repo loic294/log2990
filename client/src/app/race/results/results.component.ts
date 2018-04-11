@@ -14,7 +14,6 @@ const ENTER_KEYCODE: number = 13;
 })
 export class ResultsComponent implements OnInit {
     private _game: IGameInformation;
-    private _isHidden: boolean;
     private _trackTimes: Array<PlayerStats>;
     private _bestTimes: Array<PlayerStats>;
     private _bestTimeName: String;
@@ -22,9 +21,10 @@ export class ResultsComponent implements OnInit {
     private _trackInfo: TrackInformation;
     private _showGameResults: boolean;
     private _positionedRaceStats: Array<PlayerStats>;
+    private _showModal: boolean;
 
     public constructor( private resultsService: ResultsService) {
-        this._isHidden = true;
+        this._showModal = true;
         this._game =  {
             gameTime: "0.00",
             lapTime: "0.00" ,
@@ -35,17 +35,14 @@ export class ResultsComponent implements OnInit {
         this._updatedName = false;
     }
 
-    public show(): void {
-        this._isHidden = false;
+    public get showModal(): boolean {
+        return this._showModal;
     }
 
     public get updatedName(): boolean {
         return this._updatedName;
     }
 
-    public get isHidden(): boolean {
-        return this._isHidden;
-    }
     public get bestTimeName(): String {
         return this._bestTimeName;
     }
@@ -161,6 +158,7 @@ export class ResultsComponent implements OnInit {
     }
 
     public playAgain(): void {
+        this._showModal = false;
     }
 
     // tslint:disable-next-line:typedef
