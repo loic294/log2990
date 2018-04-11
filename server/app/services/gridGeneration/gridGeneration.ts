@@ -34,15 +34,12 @@ export default class GridGeneration {
         this._grid = fillGridWithBlackCells(this._grid, this._maxBlackCells, size);
     }
 
-    // tslint:disable-next-line:max-func-body-length
     public createWordSearchCondition(grid: List<List<Cell>>, word: Constraint): string {
         let count: number = 0;
         let query: string = "";
-
         let index: number = 0;
         traverseWord(word, (row: number, col: number) => {
             const cellChar: string = grid.get(row).get(col).char;
-            debugger
             if (cellChar !== "◻️") {
                 query += count > 1 ? `${count}${cellChar}` : `${cellChar}`;
                 count = 0;
@@ -50,7 +47,7 @@ export default class GridGeneration {
                 count++;
             }
 
-            if (index++ === word.length && count > 0) {
+            if (index++ === word.length - 1 && count > 0) {
                 query += `${count}`;
                 count = 0;
             }
@@ -122,7 +119,8 @@ export default class GridGeneration {
                 return true;
             }
 
-            if (containtsOnlyLetters(buildWord) && subWord && subWord.length > 1) {
+            const cow: boolean = containtsOnlyLetters(buildWord);
+            if (cow && subWord && subWord.length > 1) {
                 const result: string = await this.checkWordDefinition(buildWord);
 
                 if (result === NO_DEFINITION) {
@@ -179,11 +177,8 @@ export default class GridGeneration {
         let next: boolean = true;
 
         this._gridCache[0] = [...grid.map((row: Array<Cell>) => ([...row]))];
-        debugger
 
         do {
-
-            debugger
 
             const prevWord: string = this._wordStack[wordIndex].name;
             const immutableGird: List<List<Cell>> = List(this._gridCache[wordIndex].map((row: Array<Cell>) => List(row)));
@@ -199,13 +194,11 @@ export default class GridGeneration {
             debugger
 
             if (prevWord ===  this._wordStack[wordIndex].name || !gridFreeze.size) {
-                debugger
                 next = false;
             } else {
                 next = true;
                 this._gridCache[wordIndex + 1] = gridFreeze;
                 // console.log(printGridWithWord(gridFreeze.map((row: List<Cell>) => row.toArray()).toArray()));
-                debugger
             }
 
             next ? wordIndex++ : wordIndex--;
@@ -298,8 +291,6 @@ export default class GridGeneration {
 
             }
         }
-
-        debugger
 
         return words;
     }
