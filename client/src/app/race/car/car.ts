@@ -22,7 +22,7 @@ export class Car extends Object3D {
     private readonly engine: Engine;
     private readonly _mass: number;
     private readonly _rearWheel: Wheel;
-    private readonly wheelbase: number;
+    private readonly _wheelbase: number;
     private readonly _dragCoefficient: number;
 
     private _speed: Vector3;
@@ -57,7 +57,7 @@ export class Car extends Object3D {
 
         this.engine = engine;
         this._rearWheel = rearWheel;
-        this.wheelbase = wheelbase;
+        this._wheelbase = wheelbase;
         this._mass = mass;
         this._dragCoefficient = dragCoefficient;
 
@@ -219,7 +219,7 @@ export class Car extends Object3D {
         const acceleration: number = this.getAcceleration().length();
         /* tslint:disable:no-magic-numbers */
         const distribution: number =
-            this._mass + (1 / this.wheelbase) * this._mass * acceleration / 2;
+            this._mass + (1 / this._wheelbase) * this._mass * acceleration / 2;
 
         return Math.min(Math.max(0.25, distribution), 0.75);
         /* tslint:enable:no-magic-numbers */
