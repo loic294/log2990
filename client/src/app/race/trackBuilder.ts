@@ -1,6 +1,6 @@
 import {
-    Vector3, Mesh, Object3D,
-    PlaneGeometry, DoubleSide, CircleGeometry, TextureLoader, Texture, RepeatWrapping, MeshPhongMaterial} from "three";
+    Vector3, Mesh, Object3D, PlaneGeometry, DoubleSide, CircleGeometry,
+    TextureLoader, Texture, RepeatWrapping, MeshPhongMaterial } from "three";
 import { LineSegment } from "./DotCommand";
 import { PI_OVER_2 } from "../constants";
 import { Car } from "./car/car";
@@ -22,11 +22,14 @@ export class TrackBuilder {
     private _planeVariation: number;
     private _circleGeometry: CircleGeometry;
     private _startingLines: Array<Mesh>;
+    private _trackSegments: Array<Mesh>;
+
     public constructor(private _scene: THREE.Scene, private _vertice: Array<Object3D>, private _edges: Array<LineSegment>,
                        private _playerCar: Car, private _botCars: Array<Car>) {
         this._planeVariation = PLANE_OFFSET / 2;
         this._circleGeometry = new CircleGeometry(WIDTH / 2, CIRCLE_SEGMENTS);
         this._startingLines = new Array();
+        this._trackSegments = [];
     }
 
     private generateOffTrack(): void {
@@ -48,7 +51,7 @@ export class TrackBuilder {
         let lastVertex: Vector3 = this._vertice[this._vertice.length - 1].position;
         for (const vertex of this._vertice) {
             this.replaceSphere(vertex);
-            this.generatePlane(lastVertex, vertex.position);
+            this.generateTrackSegment(lastVertex, vertex.position);
             lastVertex = vertex.position;
         }
 
@@ -66,34 +69,57 @@ export class TrackBuilder {
         return texture;
     }
 
-    private generatePlane(firstVertex: Vector3, secondVertex: Vector3): void {
+    private generateTrackSegment(firstVertex: Vector3, secondVertex: Vector3): void {
+        // create length
         const length: number = firstVertex.distanceTo(secondVertex);
-
+        // create Material
         const material: MeshPhongMaterial = new MeshPhongMaterial({
             map: this.generateTexture(WIDTH, length, TRACK_TEXTURE_PATH),
             side: DoubleSide
         });
-
+        // initial position of track
         const planeGeometry: PlaneGeometry = new PlaneGeometry(WIDTH, length);
-        const plane: Mesh = new Mesh(planeGeometry, material);
-        plane.position.set(firstVertex.x, firstVertex.y, firstVertex.z);
+        const track: Mesh = new Mesh(planeGeometry, material);
+        track.position.set(firstVertex.x, firstVertex.y, firstVertex.z);
 
-        const dir: Vector3 = new Vector3;
-        dir.subVectors(secondVertex, firstVertex);
-        plane.translateOnAxis(dir, 1 / 2);
-        const xAxis: Vector3 = new Vector3(0, 0, 1);
-        const angle: number = xAxis.angleTo(dir);
-        plane.rotateX(PI_OVER_2);
+        this._scene.add(this.placeObjectCorrectly(firstVertex, secondVertex, track));
 
-        if (xAxis.cross(dir).y > 0) {
-            plane.rotateZ(-angle);
+        this._trackSegments.push(track);
+    }
+
+    private placeObjectCorrectly(firstVertex: Vector3, secondVertex: Vector3, object: Mesh): Mesh {
+
+        this.centerOnAxis(firstVertex, secondVertex, object);
+
+        object.rotateX(PI_OVER_2);
+
+        if (this.isToTheRightOfAxis(firstVertex, secondVertex)) {
+            object.rotateZ(-this.calculateCorrectionAngle(firstVertex, secondVertex));
         } else {
-            plane.rotateZ(angle);
+            object.rotateZ(this.calculateCorrectionAngle(firstVertex, secondVertex));
         }
-        plane.position.setY(-PLANE_OFFSET - this._planeVariation);
+        object.position.setY(-PLANE_OFFSET - this._planeVariation);
         this._planeVariation = - this._planeVariation;
-        this._scene.add(plane);
 
+        return object;
+    }
+
+    private centerOnAxis(firstVertex: Vector3, secondVertex: Vector3, object: Mesh): Mesh {
+        object.translateOnAxis(this.calculateAxis(firstVertex, secondVertex) , 1 / 2);
+
+        return object;
+    }
+
+    private calculateAxis(firstVertex: Vector3, secondVertex: Vector3): Vector3 {
+        return new Vector3().subVectors(secondVertex, firstVertex);
+    }
+
+    private calculateCorrectionAngle(firstVertex: Vector3, secondVertex: Vector3): number {
+        return new Vector3(0, 0, 1).angleTo(this.calculateAxis(firstVertex, secondVertex));
+    }
+
+    private isToTheRightOfAxis(firstVertex: Vector3, secondVertex: Vector3): boolean {
+        return new Vector3(0, 0, 1).cross(this.calculateAxis(firstVertex, secondVertex)).y > 0;
     }
 
     private removeLines(): void {
