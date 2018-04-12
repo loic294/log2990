@@ -50,3 +50,12 @@ div {
     top: 40px;
     align-content: center;
 }
+
+.countdown{
+    color: blue;
+    font-size: 100px;
+    z-index: 1;
+    position: absolute;
+    left: 50%;
+    top: 20%;
+}

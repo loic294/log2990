@@ -17,14 +17,23 @@ export class AiService {
 
     public constructor(private _track: TrackBuilder, private _npcs: Array<Car>) {
         this._pointIndex = 0;
+        for (const npc of this._npcs) {
+            npc.userData.pointIndex = 0;
+            npc.userData.maxIndex = this._track.vertices.length;
+            npc.userData.allLapsCompleted = false;
+        }
     }
 
     public update(timeSinceLastFrame: number): void {
         for (const car of this._npcs) {
-            this._currentCar = car;
-            this.movement();
-            this.steering();
-            this._currentCar.update(timeSinceLastFrame);
+            if (car.userData.allLapsCompleted) {
+                car.brake();
+            } else {
+                this._currentCar = car;
+                this.movement();
+                this.steering();
+                this._currentCar.update(timeSinceLastFrame);
+            }
         }
     }
 
@@ -92,6 +101,8 @@ export class AiService {
     }
 
     private nextPointIndex(): number {
+        this._currentCar.userData.pointIndex = (this._pointIndex >= this._track.vertices.length - 1 ? 0 : this._pointIndex + 1);
+
         return (this._pointIndex >= this._track.vertices.length - 1 ? 0 : this._pointIndex + 1);
     }
 
