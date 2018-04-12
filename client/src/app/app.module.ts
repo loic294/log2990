@@ -29,7 +29,6 @@ import { HomeComponent } from "./home/home.component";
 import { TrackInformationService } from "../../../server/app/services/trackInformation/trackInformationService";
 import { TrackProgressionService } from "./race/trackProgressionService";
 import { TerminationComponent, TerminationDialogComponent } from "./crosswords/termination/termination.component";
-// import { GridToolsService } from "./crosswords/grid.service/grid.tools.service";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
@@ -71,7 +70,6 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
     providers: [
         RenderService,
         WordService,
-        // GridToolsService,
         GridService,
         SocketService,
         DifficultyService,
