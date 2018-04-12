@@ -1,15 +1,16 @@
 // tslint:disable:await-promise
 import Game, { IGameModel } from "../models/game";
 import { Socket } from "./socket.io-types";
+import { SocketMessage } from "../../../common/communication/message";
 
 export default (socket: Socket) => {
-    socket.on("get_games", async (difficulty: String): Promise<void> => {
+    socket.on(SocketMessage.getGames, async (difficulty: String): Promise<void> => {
         const games: IGameModel[] = await Game.find({
             $and: [
                 {"players": {"$size": 1}},
                 {"difficulty": {"$eq": difficulty}
             }]
         });
-        socket.emit("add_games", games);
+        socket.emit(SocketMessage.addGame, games);
     });
 };

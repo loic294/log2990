@@ -20,15 +20,20 @@ export class AiService {
         for (const npc of this._npcs) {
             npc.userData.pointIndex = 0;
             npc.userData.maxIndex = this._track.vertices.length;
+            npc.userData.allLapsCompleted = false;
         }
     }
 
     public update(timeSinceLastFrame: number): void {
         for (const car of this._npcs) {
-            this._currentCar = car;
-            this.movement();
-            this.steering();
-            this._currentCar.update(timeSinceLastFrame);
+            if (car.userData.allLapsCompleted) {
+                car.brake();
+            } else {
+                this._currentCar = car;
+                this.movement();
+                this.steering();
+                this._currentCar.update(timeSinceLastFrame);
+            }
         }
     }
 

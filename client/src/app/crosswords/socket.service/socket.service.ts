@@ -4,8 +4,10 @@ import { Observable } from "rxjs/Observable";
 import { Subject } from "rxjs/Subject";
 import { IGameModel } from "./../../../../../server/app/models/game";
 import { difficultyName } from "../../../../../common/grid/difficulties";
+import { SocketMessage } from "../../../../../common/communication/message";
 import Word from "../../../../../common/lexical/word";
 import { DifficultyService } from "./../difficulty.service/difficulty.service";
+import { Mode } from "../../../../../common/grid/player";
 
 @Injectable()
 export class SocketService {
@@ -66,7 +68,7 @@ export class SocketService {
         this._opponentScoreCount = 1;
         this._userScoreCount = 1;
         this._games = [];
-        this._modes = ["Single Player", "Two Players"];
+        this._modes = [Mode.SinglePlayer, Mode.MultiPlayer];
         this._selectedMode = "";
         this._showGames = false;
         this._updateUserConnected = this._userConnected.asObservable();
@@ -91,31 +93,31 @@ export class SocketService {
     public initializeSocket(): void {
         this._socket.connect();
 
-        this._socket.on("add_games", (games: IGameModel[]) => {
+        this._socket.on(SocketMessage.addGame, (games: IGameModel[]) => {
             this._games = games;
         });
 
-        this._socket.on("receive_word", (data: string): void => {
+        this._socket.on(SocketMessage.receiveWord, (data: string): void => {
             this._highlightCell.next(data);
         });
 
-        this._socket.on("push_validation", (data: string): void => {
+        this._socket.on(SocketMessage.pushValidation, (data: string): void => {
            this.pushValidation(data);
         });
 
-        this._socket.on("second_player_joined", (data: IGameModel) => {
+        this._socket.on(SocketMessage.secondPlayerJoined, (data: IGameModel) => {
            this.secondPlayerJoined(data);
         });
 
-        this._socket.on("opponent_disconnected", (data: boolean) => {
+        this._socket.on(SocketMessage.opponentDisconnected, (data: boolean) => {
             this._opponentDisconnected.next(true);
         });
 
-        this._socket.on("rematch_invitation", (data: string) => {
+        this._socket.on(SocketMessage.rematchInvitation, (data: string) => {
             this._requestRematch.next(data);
         });
 
-        this._socket.on("rematch_accepted", (data: boolean) => {
+        this._socket.on(SocketMessage.rematchAccepted, (data: boolean) => {
             this._acceptRematch.next(true);
         });
     }
@@ -209,7 +211,7 @@ export class SocketService {
     }
 
     public addGames(): void {
-        this._socket.emit("get_games", this.difficulty);
+        this._socket.emit(SocketMessage.getGames, this.difficulty);
     }
 
     public toggleShowGames(): void {
@@ -221,16 +223,16 @@ export class SocketService {
     }
 
     public createGame(mode: string): void {
-        if (mode === "Two Players") {
+        if (mode === Mode.MultiPlayer) {
             const gameId: string = this.player;
             const difficulty: String = this.difficulty;
-            this._socket.emit("create_game", JSON.stringify({ gameId, difficulty}));
+            this._socket.emit(SocketMessage.createGame, JSON.stringify({ gameId, difficulty}));
             this.joinGame(gameId);
         }
     }
 
     public joinGame(gameId: string): void {
-        this._socket.emit("connect_to_game", JSON.stringify({ gameId, value: this.player }));
+        this._socket.emit(SocketMessage.connectToGame, JSON.stringify({ gameId, value: this.player }));
     }
 
     public get player(): string {
@@ -241,11 +243,11 @@ export class SocketService {
     }
 
     public syncWord(word: Word): void {
-        this._socket.emit("sync_word", JSON.stringify({word}));
+        this._socket.emit(SocketMessage.syncWord, JSON.stringify({word}));
     }
 
     public sendValidation(word: Word): void {
-        this._socket.emit("send_validation", JSON.stringify({word}));
+        this._socket.emit(SocketMessage.sendValidation, JSON.stringify({word}));
         this._userScore.next(this._userScoreCount++);
     }
 
@@ -262,12 +264,12 @@ export class SocketService {
 
     public sendRequestRematch(): void {
         this.createGame(this.selectedMode);
-        this._socket.emit("request_rematch", this.player);
+        this._socket.emit(SocketMessage.requestRematch, this.player);
     }
 
     public acceptRequestRematch(gameID: string): void {
         this.joinGame(gameID);
-        this._socket.emit("accept_rematch", gameID);
+        this._socket.emit(SocketMessage.acceptRematch, gameID);
         this._gridValidated.next(true);
     }
 

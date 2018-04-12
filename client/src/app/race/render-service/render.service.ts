@@ -11,6 +11,7 @@ import { TrackProgression } from "../trackProgression";
 import { TrackProgressionService } from "../trackProgressionService";
 import { RaceStarter } from "../raceStarter";
 import { TrackBuilder } from "../trackBuilder";
+import { AudioService } from "../audio-service/audio.service";
 
 const AMOUNT_OF_NPCS: number = 3;
 const MAX_COUNTDOWN: number = 3;
@@ -29,7 +30,8 @@ export class RenderService {
     private _raceStarter: RaceStarter;
     private _trackProgression: TrackProgression;
 
-    public constructor(private _cameraService: CameraService, private _environmentService: EnvironmentService) {
+    public constructor(private _cameraService: CameraService, private _audioService: AudioService,
+                       private _environmentService: EnvironmentService) {
         this._car = new Car();
         this._bots = [];
 
@@ -69,20 +71,22 @@ export class RenderService {
         this._scene = new Scene();
 
         await this._car.init();
+
         this.scene.add(this._car);
+
         for (let i: number = 0; i < AMOUNT_OF_NPCS; i++) {
             await this._bots[i].init();
             this.scene.add(this._bots[i]);
         }
+        await this._audioService.initializeSounds(this.car, this._bots);
         this._environmentService.initialize(this._scene);
-
         this._cameraService.initialize(this._car, this.getAspectRatio());
         this._cameraService.changeCamera();
     }
 
     public start(trackBuilder: TrackBuilder, service: TrackProgressionService): void {
         this._cameraService.initialize(this._car, this.getAspectRatio());
-        this._raceStarter = new RaceStarter(this._scene, trackBuilder, service);
+        this._raceStarter = new RaceStarter(trackBuilder, service, this._audioService);
     }
 
     public getAspectRatio(): number {
@@ -107,9 +111,11 @@ export class RenderService {
 
         if (this._raceStarter !== undefined && this._raceStarter.getCountdown() >= MAX_COUNTDOWN) {
             this._aiService = new AiService(this._raceStarter.trackBuilder, this._bots);
+
             this._trackProgression = new TrackProgression(this._raceStarter.trackBuilder.startingLines[0].position,
                                                           this._car, this._bots,
-                                                          this._raceStarter.trackProgressionService);
+                                                          this._raceStarter.trackProgressionService,
+                                                          this._raceStarter.trackBuilder.vertices);
             this._raceStarter = undefined;
         }
         if (this._trackProgression !== undefined) {

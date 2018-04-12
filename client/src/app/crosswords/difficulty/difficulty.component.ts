@@ -19,7 +19,7 @@ export class DifficultyComponent {
             Difficulty.Easy,
             Difficulty.Normal,
             Difficulty.Hard
-        ];
+            ];
     }
 
     public onSelect(diff: Difficulty): void {

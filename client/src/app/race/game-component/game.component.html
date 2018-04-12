@@ -6,8 +6,9 @@
   </ul>
 
   <p class="lap">Lap: {{_currentGame.currentLap}} / 3</p>
-    <p class="time"> Time: {{_currentGame.gameTime}} seconds</p>
-    <p class="lap-time"> Lap Time: {{_currentGame.lapTime}} seconds</p>
+  <p class="time"> Time: {{_currentGame.gameTime}} seconds</p>
+  <p class="lap-time"> Lap Time: {{_currentGame.lapTime}} seconds</p>
+  <p *ngIf="renderService.raceStarter" class="countdown">{{renderService.raceStarter.visual}}</p>
 
 </div>
 

@@ -3,9 +3,9 @@ import { async, ComponentFixture, TestBed, inject } from "@angular/core/testing"
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { ClickOutsideModule } from "ng-click-outside";
+import { Mode } from "../../../../../common/grid/player";
 
 import { SocketIoModule, SocketIoConfig } from "ng-socket-io";
-// import { Observable } from "rxjs/Observable";
 import "rxjs/add/observable/of";
 
 import { DifficultyComponent } from "../difficulty/difficulty.component";
@@ -74,7 +74,7 @@ describe("ModeComponent", () => {
     it("should show two modes of play, single and two players", () => {
 
         const modes: string [] = dialog.modes;
-        const expected: string[] = ["Single Player", "Two Players"];
+        const expected: string[] = [Mode.SinglePlayer, Mode.MultiPlayer];
 
         expect(modes).toEqual(expected);
 
@@ -106,14 +106,14 @@ describe("ModeComponent", () => {
 
     it("should show difficulties upon Single Player selection", () => {
 
-        dialog.onSelect("Single Player");
+        dialog.onSelect(Mode.SinglePlayer);
         expect(dialog.showDifficulty).toBeTruthy();
 
     });
 
     it("should show show difficulties upon Two Player selection", () => {
 
-        dialog.onSelect("Two Players");
+        dialog.onSelect(Mode.MultiPlayer);
         expect(dialog.showDifficulty).toBeTruthy();
 
     });
@@ -121,7 +121,7 @@ describe("ModeComponent", () => {
     describe("Create a game for two players", () => {
         it("should wait for player upon Two players game creation", () => {
 
-            const mode: string = "Two Players";
+            const mode: string = Mode.MultiPlayer;
 
             dialog.createGame(mode);
             expect(dialog.waitingForPlayer).toBeTruthy();
@@ -130,7 +130,7 @@ describe("ModeComponent", () => {
 
         it("should emit 'create_game' from socketService createGame function",  inject([SocketService], (socketService: SocketService) => {
 
-            const mode: string = "Two Players";
+            const mode: string = Mode.MultiPlayer;
             spy = spyOn(socketService.socket, "emit");
 
             dialog.createGame(mode);
@@ -141,7 +141,7 @@ describe("ModeComponent", () => {
 
         it("should call the socketService joinGame function",  inject([SocketService], (socketService: SocketService) => {
 
-            const mode: string = "Two Players";
+            const mode: string = Mode.MultiPlayer;
             spy = spyOn(socketService, "joinGame");
 
             dialog.createGame(mode);

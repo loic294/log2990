@@ -13,8 +13,7 @@ interface AxiosWords {
 export default class LexicalService {
 
     private async baseDefinition(word: string): Promise<AxiosResponse> {
-        let WORDNIK_URL: string;
-        WORDNIK_URL = `http://api.wordnik.com:80/v4/word.json/${word}/definitions?limit=200&${KEYS.WORDNIK_KEY}`;
+        const WORDNIK_URL: string = `http://api.wordnik.com:80/v4/word.json/${word}/definitions?limit=200&${KEYS.WORDNIK_KEY}`;
         try {
             const response: AxiosResponse = await axios.get(WORDNIK_URL);
 
@@ -25,8 +24,7 @@ export default class LexicalService {
     }
 
     private async baseWordSearch(requirements: string): Promise<AxiosResponse> {
-        let DATAMUSE_URL: string;
-        DATAMUSE_URL = `https://api.datamuse.com/words?sp=${requirements}&md=f&max=1500`;
+        const DATAMUSE_URL: string = `https://api.datamuse.com/words?sp=${requirements}&md=f&max=1500`;
 
         try {
             return axios.get(DATAMUSE_URL);
