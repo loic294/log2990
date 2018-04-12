@@ -161,8 +161,7 @@ export class ResultsComponent implements OnInit {
         this._showModal = false;
     }
 
-    // tslint:disable-next-line:typedef
-    public ngOnInit() {
+    public ngOnInit(): void {
         this.resultsService.game.subscribe( (game) => {
             this._game = game;
         });
