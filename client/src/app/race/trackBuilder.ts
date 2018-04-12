@@ -8,7 +8,7 @@ import { Car } from "./car/car";
 const WIDTH: number = 10;
 const CIRCLE_SEGMENTS: number = 32;
 const OFFSET_FACTOR: number = -0.1;
-const DISTANCE_FACTOR: number = 1.5;
+const DISTANCE_FACTOR: number = 1.3;
 const NUMBER_OF_LINE: number = 2;
 const LINE_POSITION_FACTOR: number = 3;
 const OFFTRACK_OFFSET: number = 0.03;
@@ -55,7 +55,6 @@ export class TrackBuilder {
         this.removeLines();
         this.placeStartingLines();
         this.positionRacers();
-
     }
 
     private generateTexture(textureWidth: number, textureLength: number, texturePath: string): Texture {
@@ -125,18 +124,30 @@ export class TrackBuilder {
         const firstLine: Mesh = new Mesh(lineGeometry, lineMaterial);
         const secondLine: Mesh = new Mesh(lineGeometry, lineMaterial);
 
-        this.positionStartingLine(firstLine, WIDTH / DISTANCE_FACTOR);
-        this.positionStartingLine(secondLine, WIDTH * DISTANCE_FACTOR);
+        this.positionMesh(firstLine, WIDTH / DISTANCE_FACTOR);
+        this.initiateLineStats(firstLine);
+        this.positionMesh(secondLine, WIDTH * DISTANCE_FACTOR);
+        this.initiateLineStats(secondLine);
     }
 
-    private positionStartingLine(line: Mesh, distance: number): void {
-        const translationDirection: Vector3 = new Vector3(this._vertice[1].position.x,
-                                                          this._vertice[1].position.z,
-                                                          this._vertice[1].position.y);
-        translationDirection.normalize();
+    private positionMesh(mesh: Mesh, distance: number): void {
+        const dir: Vector3 = new Vector3;
+        dir.subVectors(this._vertice[1].position, this._vertice[0].position);
+        dir.normalize();
+        mesh.translateOnAxis(dir, distance);
+        const xAxis: Vector3 = new Vector3(0, 0, 1);
+        const angle: number = xAxis.angleTo(dir);
+        mesh.rotateX(PI_OVER_2);
 
-        line.rotateX(PI_OVER_2);
-        line.translateOnAxis(translationDirection, distance);
+        if (xAxis.cross(dir).y > 0) {
+            mesh.rotateZ(-angle);
+        } else {
+            mesh.rotateZ(angle);
+        }
+        mesh.rotateZ(Math.PI / 2);
+    }
+
+    private initiateLineStats(line: Mesh): void {
         line.userData.leftPositionTaken = false;
         line.userData.rightPositionTaken = false;
         this._startingLines.push(line);
@@ -167,29 +178,35 @@ export class TrackBuilder {
     }
 
     private chooseLineSide(car: Car, line: Mesh): void {
-        const perpendicular: Vector3 = this.findPerpendicularVector(line.position);
+        const perpendiculars: Array<Vector3> = this.findPerpendicularVectors(line.position);
         if (Math.random() * NUMBER_OF_LINE <= 1 && !line.userData.leftPositionTaken) {
+            this.placeOnLine(car, line, perpendiculars[0]);
             line.userData.leftPositionTaken = true;
         } else if (!line.userData.rightPositionTaken) {
-            perpendicular.x = -perpendicular.x;
-            perpendicular.y = -perpendicular.y;
+            this.placeOnLine(car, line, perpendiculars[1]);
             line.userData.rightPositionTaken = true;
         } else {
+            this.placeOnLine(car, line, perpendiculars[0]);
             line.userData.leftPositionTaken = true;
         }
-        this.placeOnLine(car, line, perpendicular);
     }
 
     private placeOnLine(car: Car, line: Mesh, perpendicular: Vector3): void {
-        const direction: Vector3 = new Vector3(perpendicular.x * WIDTH / LINE_POSITION_FACTOR, 0,
-                                               perpendicular.y * WIDTH / LINE_POSITION_FACTOR);
-        car.meshPosition = new Vector3().addVectors(line.position, direction);
+        car.meshPosition = line.position;
+        const direction: Vector3 = car.direction;
+        car.mesh.rotateY(direction.angleTo(this._vertice[1].position));
+        car.meshPosition = new Vector3(perpendicular.x * LINE_POSITION_FACTOR, 0, perpendicular.z * LINE_POSITION_FACTOR);
     }
 
-    private findPerpendicularVector(vector: Vector3): Vector3 {
-        const orthogonal: Vector3 = new Vector3(0, 0, 1);
+    private findPerpendicularVectors(vector: Vector3): Array<Vector3> {
+        const orthogonal1: Vector3 = new Vector3(0, 1, 0);
+        const orthogonal2: Vector3 = new Vector3(0, -1, 0);
+        const perpendiculars: Array<Vector3> = new Array();
 
-        return new Vector3().crossVectors(vector, orthogonal).normalize();
+        perpendiculars.push(new Vector3().crossVectors(vector, orthogonal1).normalize());
+        perpendiculars.push(new Vector3().crossVectors(vector, orthogonal2).normalize());
+
+        return perpendiculars;
     }
 
     public get vertices(): Array<Object3D> {
