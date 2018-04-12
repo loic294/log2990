@@ -2,19 +2,17 @@ import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import { EnvironmentService } from "../environment-service/environment.service";
 import {
-    WebGLRenderer, Scene
+    WebGLRenderer, Scene, Vector3
 } from "three";
 import { Car } from "../car/car";
 import { CameraService } from "../camera-service/camera.service";
 import { AiService } from "../ai-service/ai.service";
 import { TrackProgression } from "../trackProgression";
 import { TrackProgressionService } from "../trackProgressionService";
-import { RaceStarter } from "../raceStarter";
-import { TrackBuilder } from "../trackBuilder";
+import Collision from "../car/collision";
 import { AudioService } from "../audio-service/audio.service";
 
 const AMOUNT_OF_NPCS: number = 3;
-const MAX_COUNTDOWN: number = 3;
 
 @Injectable()
 export class RenderService {
@@ -27,13 +25,14 @@ export class RenderService {
     private _lastDate: number;
     private _bots: Array<Car>;
     private _aiService: AiService;
-    private _raceStarter: RaceStarter;
+    private _trackLoaded: boolean;
     private _trackProgression: TrackProgression;
 
     public constructor(private _cameraService: CameraService, private _audioService: AudioService,
                        private _environmentService: EnvironmentService) {
         this._car = new Car();
         this._bots = [];
+        this._trackLoaded = false;
 
         for (let i: number = 0; i < AMOUNT_OF_NPCS; i++) {
             this._bots[i] = new Car();
@@ -60,7 +59,23 @@ export class RenderService {
     private update(): void {
         const timeSinceLastFrame: number = Date.now() - this._lastDate;
         this._car.update(timeSinceLastFrame);
-        if (this._aiService !== undefined) {
+        this._bots.forEach((bot) => {
+            if (Collision.detectCollision(this._car, bot)) {
+                const resultSpeeds: Array<Vector3> = Collision.collide(this._car, bot);
+                bot.speed = resultSpeeds[1];
+                this._car.speed = resultSpeeds[0];
+            }
+        });
+        for (let i: number = 0; i < this._bots.length; i++) {
+            for (let j: number = i + 1; j < this._bots.length; j++) {
+                if (Collision.detectCollision(this._bots[i], this._bots[j])) {
+                    const resultSpeeds: Array<Vector3> = Collision.collide(this._bots[i], this._bots[j]);
+                    this._bots[j].speed = resultSpeeds[1];
+                    this._bots[i].speed = resultSpeeds[0];
+                }
+            }
+        }
+        if (this._trackLoaded) {
             this._aiService.update(timeSinceLastFrame);
         }
         this._cameraService.followCar();
@@ -84,9 +99,10 @@ export class RenderService {
         this._cameraService.changeCamera();
     }
 
-    public start(trackBuilder: TrackBuilder, service: TrackProgressionService): void {
+    public start(startingLine: Vector3, service: TrackProgressionService): void {
         this._cameraService.initialize(this._car, this.getAspectRatio());
-        this._raceStarter = new RaceStarter(trackBuilder, service, this._audioService);
+        this._trackProgression = new TrackProgression(startingLine, this._car, service);
+        this._audioService.start();
     }
 
     public getAspectRatio(): number {
@@ -108,16 +124,6 @@ export class RenderService {
         this.update();
         this.renderer.render(this.scene, this._cameraService.camera);
         this._stats.update();
-
-        if (this._raceStarter !== undefined && this._raceStarter.getCountdown() >= MAX_COUNTDOWN) {
-            this._aiService = new AiService(this._raceStarter.trackBuilder, this._bots);
-
-            this._trackProgression = new TrackProgression(this._raceStarter.trackBuilder.startingLines[0].position,
-                                                          this._car, this._bots,
-                                                          this._raceStarter.trackProgressionService,
-                                                          this._raceStarter.trackBuilder.vertices);
-            this._raceStarter = undefined;
-        }
         if (this._trackProgression !== undefined) {
             this._trackProgression.checkRaceProgress();
         }
@@ -176,8 +182,8 @@ export class RenderService {
         this._aiService = aiService;
     }
 
-    public get raceStarter(): RaceStarter {
-        return this._raceStarter;
+    public set trackLoaded(trackLoaded: boolean) {
+        this._trackLoaded = trackLoaded;
     }
 
 }
