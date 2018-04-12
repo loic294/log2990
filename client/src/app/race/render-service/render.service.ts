@@ -2,16 +2,19 @@ import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import { EnvironmentService } from "../environment-service/environment.service";
 import {
-    WebGLRenderer, Scene, Vector3
+    WebGLRenderer, Scene
 } from "three";
 import { Car } from "../car/car";
 import { CameraService } from "../camera-service/camera.service";
 import { AiService } from "../ai-service/ai.service";
 import { TrackProgression } from "../trackProgression";
 import { TrackProgressionService } from "../trackProgressionService";
+import { RaceStarter } from "../raceStarter";
+import { TrackBuilder } from "../trackBuilder";
 import { AudioService } from "../audio-service/audio.service";
 
 const AMOUNT_OF_NPCS: number = 3;
+const MAX_COUNTDOWN: number = 3;
 
 @Injectable()
 export class RenderService {
@@ -24,14 +27,13 @@ export class RenderService {
     private _lastDate: number;
     private _bots: Array<Car>;
     private _aiService: AiService;
-    private _trackLoaded: boolean;
+    private _raceStarter: RaceStarter;
     private _trackProgression: TrackProgression;
 
     public constructor(private _cameraService: CameraService, private _audioService: AudioService,
                        private _environmentService: EnvironmentService) {
         this._car = new Car();
         this._bots = [];
-        this._trackLoaded = false;
 
         for (let i: number = 0; i < AMOUNT_OF_NPCS; i++) {
             this._bots[i] = new Car();
@@ -58,7 +60,7 @@ export class RenderService {
     private update(): void {
         const timeSinceLastFrame: number = Date.now() - this._lastDate;
         this._car.update(timeSinceLastFrame);
-        if (this._trackLoaded) {
+        if (this._aiService !== undefined) {
             this._aiService.update(timeSinceLastFrame);
         }
         this._cameraService.followCar();
@@ -82,10 +84,9 @@ export class RenderService {
         this._cameraService.changeCamera();
     }
 
-    public start(startingLine: Vector3, service: TrackProgressionService): void {
+    public start(trackBuilder: TrackBuilder, service: TrackProgressionService): void {
         this._cameraService.initialize(this._car, this.getAspectRatio());
-        this._trackProgression = new TrackProgression(startingLine, this._car, service);
-        this._audioService.start();
+        this._raceStarter = new RaceStarter(trackBuilder, service, this._audioService);
     }
 
     public getAspectRatio(): number {
@@ -107,6 +108,16 @@ export class RenderService {
         this.update();
         this.renderer.render(this.scene, this._cameraService.camera);
         this._stats.update();
+
+        if (this._raceStarter !== undefined && this._raceStarter.getCountdown() >= MAX_COUNTDOWN) {
+            this._aiService = new AiService(this._raceStarter.trackBuilder, this._bots);
+
+            this._trackProgression = new TrackProgression(this._raceStarter.trackBuilder.startingLines[0].position,
+                                                          this._car, this._bots,
+                                                          this._raceStarter.trackProgressionService,
+                                                          this._raceStarter.trackBuilder.vertices);
+            this._raceStarter = undefined;
+        }
         if (this._trackProgression !== undefined) {
             this._trackProgression.checkRaceProgress();
         }
@@ -165,8 +176,8 @@ export class RenderService {
         this._aiService = aiService;
     }
 
-    public set trackLoaded(trackLoaded: boolean) {
-        this._trackLoaded = trackLoaded;
+    public get raceStarter(): RaceStarter {
+        return this._raceStarter;
     }
 
 }
