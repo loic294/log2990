@@ -1,15 +1,11 @@
 import {
     Vector3, Mesh, Object3D, PlaneGeometry, DoubleSide, CircleGeometry,
-    TextureLoader, Texture, RepeatWrapping, MeshPhongMaterial, CubeGeometry, MeshBasicMaterial
-} from "three";
+    TextureLoader, Texture, RepeatWrapping, MeshPhongMaterial } from "three";
 import { LineSegment } from "./DotCommand";
 import { PI_OVER_2 } from "../constants";
 import { Car } from "./car/car";
-import TrackSegment from "./trackSegment";
 
 const WIDTH: number = 10;
-const WALL_HEIGHT: number = 2;
-const WALL_WIDTH_DIVISOR: number = 10;
 const CIRCLE_SEGMENTS: number = 32;
 const OFFSET_FACTOR: number = -0.1;
 const DISTANCE_FACTOR: number = 1.5;
@@ -26,7 +22,8 @@ export class TrackBuilder {
     private _planeVariation: number;
     private _circleGeometry: CircleGeometry;
     private _startingLines: Array<Mesh>;
-    private _trackSegments: Array<TrackSegment>;
+    private _trackSegments: Array<Mesh>;
+
     public constructor(private _scene: THREE.Scene, private _vertice: Array<Object3D>, private _edges: Array<LineSegment>,
                        private _playerCar: Car, private _botCars: Array<Car>) {
         this._planeVariation = PLANE_OFFSET / 2;
@@ -56,12 +53,6 @@ export class TrackBuilder {
             this.replaceSphere(vertex);
             this.generateTrackSegment(lastVertex, vertex.position);
             lastVertex = vertex.position;
-        }
-
-        let lastTrackSegment: TrackSegment = this._trackSegments[this._trackSegments.length - 1];
-        for (const trackSegment of this._trackSegments) {
-            this.generateWall(lastTrackSegment, trackSegment);
-            lastTrackSegment = trackSegment;
         }
 
         this.removeLines();
@@ -94,32 +85,7 @@ export class TrackBuilder {
 
         this._scene.add(this.placeObjectCorrectly(firstVertex, secondVertex, track));
 
-        this._trackSegments.push(new TrackSegment(firstVertex, secondVertex, track));
-    }
-
-    private generateWall(firstTrackSegment: TrackSegment, secondTrackSegment: TrackSegment): void {
-        const length: number = firstTrackSegment.initialPosition.distanceTo(firstTrackSegment.finalPosition);
-        /*
-        const material: MeshPhongMaterial = new MeshPhongMaterial({
-            map: this.generateTexture(WIDTH, length, TRACK_TEXTURE_PATH),
-            side: DoubleSide
-        });
-        */
-
-        const material: MeshBasicMaterial = new MeshBasicMaterial({
-            // tslint:disable-next-line:number-literal-format
-            color: 0x000fff,
-            side: DoubleSide
-        });
-
-        const wall: Mesh = new Mesh(new CubeGeometry(WIDTH / WALL_WIDTH_DIVISOR, WALL_HEIGHT, length), material);
-        // const offset: number = (WIDTH / 2 - WIDTH / WALL_WIDTH_DIVISOR / 2);
-        // const otherWall: Mesh = wall.clone();
-        wall.position.set(firstTrackSegment.initialPosition.x,
-                          firstTrackSegment.initialPosition.y,
-                          firstTrackSegment.initialPosition.z);
-
-        this._scene.add(wall);
+        this._trackSegments.push(track);
     }
 
     private placeObjectCorrectly(firstVertex: Vector3, secondVertex: Vector3, object: Mesh): Mesh {
@@ -140,7 +106,7 @@ export class TrackBuilder {
     }
 
     private centerOnAxis(firstVertex: Vector3, secondVertex: Vector3, object: Mesh): Mesh {
-        object.translateOnAxis(this.calculateAxis(firstVertex, secondVertex), 1 / 2);
+        object.translateOnAxis(this.calculateAxis(firstVertex, secondVertex) , 1 / 2);
 
         return object;
     }
