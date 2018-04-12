@@ -11,9 +11,15 @@ import { DifficultyService } from "./../difficulty.service/difficulty.service";
 export class DifficultyComponent {
 
     private _selectedDifficulty: Difficulty;
+    private difficulties: Array<Difficulty>;
 
     public constructor( private difficultyService: DifficultyService  ) {
         this._selectedDifficulty = null;
+        this.difficulties = [
+            Difficulty.Easy,
+            Difficulty.Normal,
+            Difficulty.Hard
+            ];
     }
 
     public onSelect(diff: Difficulty): void {
