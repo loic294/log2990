@@ -1,28 +1,9 @@
-/* tslint:disable:no-shadowed-variable */
-
 import { Component } from "@angular/core";
 
 import { Cell } from "../../../../../common/grid/cell";
 import { GridService } from "../grid.service/grid.service";
 import { CELL_HEIGHT } from "../../constants";
 
-/** TEMPORARY MOCKED CONTENT
-   * Example table
-   * **/
-/*
-const grid: Array<String> = [
-    "- - - - - - - - _ -",
-    "- - - - _ - _ _ _ _",
-    "_ _ _ _ _ - _ - _ -",
-    "_ - - - _ - _ - _ -",
-    "_ - - - _ - _ - - -",
-    "_ - _ _ _ _ _ _ - _",
-    "_ - - - _ - _ - - _",
-    "- _ _ _ _ - _ - - _",
-    "- - - - _ - _ - - _",
-    "_ _ _ _ _ - _ _ _ _",
-];
-*/
 @Component({
     selector: "app-grid",
     templateUrl: "./grid.component.html",

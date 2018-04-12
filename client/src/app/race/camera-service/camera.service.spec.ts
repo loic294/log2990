@@ -1,3 +1,4 @@
+/* tslint:disable: no-magic-numbers */
 import { TestBed, inject } from "@angular/core/testing";
 
 import { CameraService } from "./camera.service";
@@ -5,7 +6,6 @@ import { Car } from "../car/car";
 import { Engine } from "../car/engine";
 import { OrthographicCamera, PerspectiveCamera } from "three";
 
-/* tslint:disable: no-magic-numbers */
 class MockEngine extends Engine {
     public getDriveTorque(): number {
         return 10000;

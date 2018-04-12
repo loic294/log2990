@@ -1,6 +1,7 @@
 // tslint:disable:await-promise
 import Game, {IGameModel} from "../models/game";
 import { Socket } from "./socket.io-types";
+import { SocketMessage } from "../../../common/communication/message";
 
 interface DataReceived {
     gameId: string;
@@ -11,7 +12,7 @@ const joinFirstPlayer: Function = async (socket: Socket, game: IGameModel, room:
     socket.join(room);
 
     await Game.findOneAndUpdate({ name: game.name}, { players: [value] }, {new: true});
-    socket.emit("connected_to_game", JSON.stringify({
+    socket.emit(SocketMessage.connectedToGame, JSON.stringify({
         game
     }));
 };
@@ -21,9 +22,9 @@ const joinSecondPlayer: Function = async (socket: Socket, game: IGameModel, room
 
     game = await Game.findOneAndUpdate({ name: game.name}, { players: [game.players[0], value] }, {new: true});
 
-    socket.server.in(room).emit("second_player_joined", game);
+    socket.server.in(room).emit(SocketMessage.secondPlayerJoined, game);
 
-    socket.emit("connected_to_game", JSON.stringify({
+    socket.emit(SocketMessage.connectedToGame, JSON.stringify({
         game
     }));
 };
@@ -31,12 +32,12 @@ const joinSecondPlayer: Function = async (socket: Socket, game: IGameModel, room
 const rematch: Function = async (socket: Socket, data: string, game: IGameModel): Promise<void> => {
         const { gameId: room }: DataReceived = JSON.parse(data);
 
-        socket.on("request_rematch", async (content: string) => {
-            socket.to(room).emit("rematch_invitation", content);
+        socket.on(SocketMessage.requestRematch, async (content: string) => {
+            socket.to(room).emit(SocketMessage.rematchInvitation, content);
         });
 
-        socket.on("accept_rematch", async (content: string) => {
-            socket.to(room).emit("rematch_accepted", content);
+        socket.on(SocketMessage.acceptRematch, async (content: string) => {
+            socket.to(room).emit(SocketMessage.rematchAccepted, content);
         });
 
 };
@@ -44,18 +45,18 @@ const rematch: Function = async (socket: Socket, data: string, game: IGameModel)
 const validation: Function = async (socket: Socket, data: string, game: IGameModel): Promise<void> => {
     const { gameId: room }: DataReceived = JSON.parse(data);
 
-    socket.on("sync_word", (content: string) => {
-        socket.to(room).emit("receive_word", content);
+    socket.on(SocketMessage.syncWord, (content: string) => {
+        socket.to(room).emit(SocketMessage.receiveWord, content);
     });
 
-    socket.on("send_validation", (content: string) => {
-        socket.to(room).emit("push_validation", content);
+    socket.on(SocketMessage.sendValidation, (content: string) => {
+        socket.to(room).emit(SocketMessage.pushValidation, content);
     });
 
 };
 
 export default (socket: Socket) => {
-    socket.on("connect_to_game", async (data: string) => {
+    socket.on(SocketMessage.connectToGame, async (data: string) => {
         const { gameId: room, value }: DataReceived = JSON.parse(data);
         const game: IGameModel = await Game.findOne({
             name: room
@@ -66,8 +67,8 @@ export default (socket: Socket) => {
             joinSecondPlayer(socket, game, room, value);
         }
 
-        socket.on("disconnect", async (content: boolean) => {
-            socket.to(room).emit("opponent_disconnected", true);
+        socket.on(SocketMessage.disconnect, async (content: boolean) => {
+            socket.to(room).emit(SocketMessage.opponentDisconnected, true);
             await game.remove();
         });
 

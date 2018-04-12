@@ -26,19 +26,19 @@ describe("GridService", () => {
     });
 
     it("'b' should be a letter", () => {
-        expect(gridService.gridTools.isLetter("b")).toBe(true);
+        expect(gridService.GridToolsService.isLetter("b")).toBe(true);
     });
 
     it("'B' should be a letter", () => {
-        expect(gridService.gridTools.isLetter("B")).toBe(true);
+        expect(gridService.GridToolsService.isLetter("B")).toBe(true);
     });
 
     it("'4' shouldn't be a letter", () => {
-        expect(gridService.gridTools.isLetter("4")).toBe(false);
+        expect(gridService.GridToolsService.isLetter("4")).toBe(false);
     });
 
     it("'{' shouldn't be a letter", () => {
-        expect(gridService.gridTools.isLetter("{")).toBe(false);
+        expect(gridService.GridToolsService.isLetter("{")).toBe(false);
     });
 
     it("Word 'hey' should be validated after entering 'hey'", () => {

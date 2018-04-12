@@ -1,5 +1,6 @@
 import Game, { IGameModel } from "../models/game";
 import { Socket } from "./socket.io-types";
+import { SocketMessage } from "../../../common/communication/message";
 
 interface GameData {
     gameId: string;
@@ -7,7 +8,7 @@ interface GameData {
 }
 
 export default (socket: Socket) => {
-    socket.on("create_game", async (data: string): Promise<void> => {
+    socket.on(SocketMessage.createGame, async (data: string): Promise<void> => {
 
         const { gameId: room, difficulty: difficulty }: GameData = JSON.parse(data);
         const game: IGameModel = new Game({
@@ -19,6 +20,6 @@ export default (socket: Socket) => {
         });
         await game.save();
 
-        socket.emit("created_game", game);
+        socket.emit(SocketMessage.createdGame, game);
     });
 };

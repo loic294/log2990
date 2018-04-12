@@ -6,7 +6,6 @@ import { ClickOutsideModule } from "ng-click-outside";
 import { Mode } from "../../../../../common/grid/player";
 
 import { SocketIoModule, SocketIoConfig } from "ng-socket-io";
-// import { Observable } from "rxjs/Observable";
 import "rxjs/add/observable/of";
 
 import { DifficultyComponent } from "../difficulty/difficulty.component";
