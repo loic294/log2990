@@ -86,7 +86,7 @@ export class RenderService {
 
     public start(trackBuilder: TrackBuilder, service: TrackProgressionService): void {
         this._cameraService.initialize(this._car, this.getAspectRatio());
-        this._raceStarter = new RaceStarter(trackBuilder, service);
+        this._raceStarter = new RaceStarter(trackBuilder, service, this._audioService);
     }
 
     public getAspectRatio(): number {
@@ -111,9 +111,11 @@ export class RenderService {
 
         if (this._raceStarter !== undefined && this._raceStarter.getCountdown() >= MAX_COUNTDOWN) {
             this._aiService = new AiService(this._raceStarter.trackBuilder, this._bots);
+
             this._trackProgression = new TrackProgression(this._raceStarter.trackBuilder.startingLines[0].position,
                                                           this._car, this._bots,
-                                                          this._raceStarter.trackProgressionService);
+                                                          this._raceStarter.trackProgressionService,
+                                                          this._raceStarter.trackBuilder.vertices);
             this._raceStarter = undefined;
         }
         if (this._trackProgression !== undefined) {

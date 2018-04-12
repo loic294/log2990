@@ -55,7 +55,6 @@ export class TrackBuilder {
         this.removeLines();
         this.placeStartingLines();
         this.positionRacers();
-
     }
 
     private generateTexture(textureWidth: number, textureLength: number, texturePath: string): Texture {
@@ -196,13 +195,12 @@ export class TrackBuilder {
         car.meshPosition = line.position;
         const direction: Vector3 = car.direction;
         car.mesh.rotateY(direction.angleTo(this._vertice[1].position));
-        car.meshPosition = new Vector3(perpendicular.x * LINE_POSITION_FACTOR, 0, perpendicular.y * LINE_POSITION_FACTOR);
-
+        car.meshPosition = new Vector3(perpendicular.x * LINE_POSITION_FACTOR, 0, perpendicular.z * LINE_POSITION_FACTOR);
     }
 
     private findPerpendicularVectors(vector: Vector3): Array<Vector3> {
-        const orthogonal1: Vector3 = new Vector3(0, 0, 1);
-        const orthogonal2: Vector3 = new Vector3(0, 0, -1);
+        const orthogonal1: Vector3 = new Vector3(0, 1, 0);
+        const orthogonal2: Vector3 = new Vector3(0, -1, 0);
         const perpendiculars: Array<Vector3> = new Array();
 
         perpendiculars.push(new Vector3().crossVectors(vector, orthogonal1).normalize());

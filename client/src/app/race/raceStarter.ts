@@ -8,9 +8,9 @@ const MAX_COUNTDOWN: number = 3;
 export class RaceStarter {
     private _countdownClock: Clock;
     private _visual: String;
-    private _audioService: AudioService;
 
-    public constructor(private _trackBuilder: TrackBuilder, private _trackProgressionService: TrackProgressionService) {
+    public constructor(private _trackBuilder: TrackBuilder, private _trackProgressionService: TrackProgressionService,
+                       private _audioService: AudioService) {
         this._countdownClock = new Clock();
         this._countdownClock.start();
     }
@@ -22,11 +22,7 @@ export class RaceStarter {
     }
 
     private async showCountdown(): Promise<void> {
-        if (this._audioService === undefined) {
-            this._audioService = new AudioService();
-            await this._audioService.initializeCountdown();
-            this._audioService.start();
-        }
+        this._audioService.start();
 
         if (this._countdownClock.getElapsedTime() < 1) {
             this._visual = "3";
