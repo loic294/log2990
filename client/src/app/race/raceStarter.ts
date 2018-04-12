@@ -21,7 +21,7 @@ export class RaceStarter {
         return this._countdownClock.getElapsedTime();
     }
 
-    private async showCountdown(): Promise<void> {
+    private showCountdown(): void {
         this._audioService.start();
 
         if (this._countdownClock.getElapsedTime() < 1) {
