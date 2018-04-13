@@ -56,17 +56,13 @@ export class ResultsComponent implements OnInit {
     }
 
     public bestTimes(): Array<PlayerStats> {
-        if (this._game.gameIsFinished) {
-            const start: number = 0;
-            const end: number = 5;
-            this._bestTimes = [];
-            this._bestTimes = this._trackTimes.sort((n1, n2) =>
-            parseFloat(n1.gameTime.toString()) - parseFloat(n2.gameTime.toString())).slice(start, end);
+        const start: number = 0;
+        const end: number = 5;
+        this._bestTimes = [];
+        this._bestTimes = this._trackTimes.sort((n1, n2) =>
+        parseFloat(n1.gameTime.toString()) - parseFloat(n2.gameTime.toString())).slice(start, end);
 
-            return this._bestTimes;
-        } else {
-            return [];
-        }
+        return this._bestTimes;
     }
 
     public isBestTime(): boolean {
