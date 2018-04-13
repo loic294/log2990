@@ -4,6 +4,7 @@ export class Cell {
     public isOtherPlayer: boolean;
     public isValidatedByOther: boolean;
     public shared: boolean;
+    public _black: boolean;
 
     public constructor(
         private _char: string = "-",
@@ -11,13 +12,13 @@ export class Cell {
         private _y: number = 0,
         private _isSelected: boolean = false,
         private _isValidated: boolean = false,
-        private _black: boolean = false,
         private _isStartOfSelected: boolean = false,
         private _isStartSelectedByOther: boolean = false) {
 
         this.wordIndexes = [];
         this.isOtherPlayer = false;
         this.isValidatedByOther = false;
+        this._black = false;
     }
     public isShared(): void {
         this.shared = true;

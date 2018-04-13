@@ -8,6 +8,7 @@ import { WordService } from "../word.service/word.service";
 import { SocketService } from "../socket.service/socket.service";
 import { BACK_SPACE_KEY_CODE } from "../../constants";
 import { GridLoadingService } from "../../grid-loading.service/grid-loaing.service";
+
 @Injectable()
 export class GridService {
 
@@ -251,12 +252,14 @@ export class GridService {
     }
 
     private initGrid(grid: Array<Array<Cell>>): void {
-        this._grid = grid;
+        this._grid = grid.map((row: Array<Cell>) =>
+            row.map((cell: Cell) => new Cell(cell.char, cell.x, cell.y, false, false, cell._black))
+        );
 
         this._gridTools.iterateGrid(this._grid, (row: number, col: number) => {
             this._grid[row][col].x = row;
             this._grid[row][col].y = col;
-            if (this._grid[row][col].char === "_") {
+            if (this._grid[row][col]) {
                 this._grid[row][col].char = "";
             }
 
