@@ -32,17 +32,17 @@ input {
     margin: 10px 0;
     padding: 8px 16px;
     border-radius: 6px;
+    border-color: #0099dd;
 }
 
 input:focus {
     outline: none;
-    border-color: red;
 }
 
 
 .bestTime {
     font-weight: bolder;
-    color: red;
+    color: #0099dd;
 
 }
 
@@ -58,4 +58,8 @@ th, td {
 
 h3 {
     display: inline;
+}
+
+.player {
+    border-color: #0099dd;
 }
