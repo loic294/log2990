@@ -18,18 +18,19 @@ export default class GridGeneration {
     private _gridSize: number = this._DEFAULT_SIZE;
     private _maxBlackCells: number = 0.3;
     private _definitionCache: Object = {};
-    // private _wordIndexCache: Object = {};
     private _gridCache: Object = {};
-
     private _intersections: Array<Array<number>> = [];
 
     public constructor() {
         console.time("generation");
-        this._wordStack = [];
     }
 
     public initializeGrid(size: number): void {
         this._gridSize = size !== undefined ? size : this._DEFAULT_SIZE;
+        this._wordStack = [];
+        this._definitionCache = [];
+        this._gridCache = [];
+        this._intersections = [];
         this._grid = fillGridWithCells(this._gridSize);
         this._grid = fillGridWithBlackCells(this._grid, this._maxBlackCells, size);
     }
@@ -109,6 +110,11 @@ export default class GridGeneration {
 
         for (const constraint of word.constraints) {
             const subWord: Constraint = this._wordStack[constraint.wordIndex];
+
+            if (subWord.invalid) {
+                return true;
+            }
+
             let buildWord: string = "";
 
             traverseWord(subWord, (row: number, col: number) => {
@@ -132,16 +138,14 @@ export default class GridGeneration {
         return true;
     }
 
-    // tslint:disable-next-line:max-func-body-length
     public async recursionInternal(
         words: Array<Constraint>,
         wordIndex: number,
         grid: List<List<Cell>>): Promise<List<List<Cell>>> {
 
         const word: Constraint = words[wordIndex];
-        const maxRecursion: number = 10;
+        const maxRecursion: number = 5;
 
-        console.log("SHOULD FIND WORD", this.shouldFindWord(grid, word));
         if (this.shouldFindWord(grid, word)) {
             const query: string = this.createWordSearchCondition(grid, word);
 
@@ -160,71 +164,53 @@ export default class GridGeneration {
                 }
 
                 if (count === (maxRecursion - 1) && !isValid) {
-                    console.log("NO VALID WORD FOUND");
-
                     return List();
                 }
             } while (!isValid && count++ < maxRecursion);
         }
 
         return grid;
-
     }
 
-    // tslint:disable-next-line:max-func-body-length
     public async recursion(words: Array<Constraint>, grid: Array<Array<Cell>>): Promise<void> {
         let wordIndex: number = 0;
-        let next: boolean = true;
 
         this._gridCache[0] = [...grid.map((row: Array<Cell>) => ([...row]))];
 
         do {
-
-            const prevWord: string = this._wordStack[wordIndex].name;
             const immutableGird: List<List<Cell>> = List(this._gridCache[wordIndex].map((row: Array<Cell>) => List(row)));
-
             this._gridCache[wordIndex] = immutableGird;
             const gridFreeze: List<List<Cell>> = await this.recursionInternal(words, wordIndex, immutableGird);
 
-            console.log("INDEX", wordIndex);
-            console.log("PREV WORD", prevWord);
-            console.log("NEW WORD", this._wordStack[wordIndex].name);
-            if (gridFreeze.size > 0)
-                console.log(printGridWithWord(gridFreeze.map((row: List<Cell>) => row.toArray()).toArray()));
-            debugger
-
-            if (prevWord ===  this._wordStack[wordIndex].name || !gridFreeze.size) {
-                next = false;
-            } else {
-                next = true;
-                this._gridCache[wordIndex + 1] = gridFreeze;
-                // console.log(printGridWithWord(gridFreeze.map((row: List<Cell>) => row.toArray()).toArray()));
+            if (words.map((word: Constraint) => word.name).includes((word: Constraint) => words[wordIndex])) {
+                this.initializeGrid(this._gridSize);
             }
 
-            next ? wordIndex++ : wordIndex--;
-            this._grid = gridFreeze.map((row: List<Cell>) => row.toArray()).toArray();
+            const nextGrid: List<List<Cell>> = gridFreeze.size > 0 ? gridFreeze : this._gridCache[wordIndex];
+            console.log(printGridWithWord(nextGrid.map((row: List<Cell>) => row.toArray()).toArray()));
+            this._gridCache[wordIndex + 1] = nextGrid;
+            this._grid = nextGrid.map((row: List<Cell>) => row.toArray()).toArray();
+            this._wordStack[wordIndex].invalid = gridFreeze.size === 0;
+            wordIndex++;
 
         } while (wordIndex < words.length && wordIndex > 0);
 
-        this._wordsFinal = words;
+        this._wordsFinal = words.filter((word: Constraint) => word.name.length > 0 && word.desc !== NO_DEFINITION);
 
     }
 
-    public startRecursion(words: Array<Constraint>): void {
-        this.recursion(words, this._grid).then(() => {
-            console.log("Recursion completed");
+    public startRecursion(words: Array<Constraint>): Promise<void> {
+        return this.recursion(words, this._grid).then(() => {
             console.log(printGrid(this._grid, this._intersections));
             console.log(printGridWithWord(this._grid));
-
-            console.log(this._definitionCache);
-            // console.log(this._wordsFinal);
+            console.log(this._wordsFinal.reduce((final, item) => { final[item.name] = item.desc; return final; }, {}));
 
             console.timeEnd("generation");
         })
         .catch((err: Error) => console.error(err));
     }
 
-    public createConstraints(words: Array<Constraint>): void {
+    public async createConstraints(words: Array<Constraint>): void {
         const WORDS_COUNT: number = words.length;
 
         for (let first: number = 0; first < WORDS_COUNT; first++) {
@@ -249,26 +235,26 @@ export default class GridGeneration {
         }
 
         this._wordStack = [...words];
-        this.startRecursion(words);
+        await this.startRecursion(words);
     }
 
-    public findAllWordsSpaces(): void {
+    public async findAllWordsSpaces(): void {
         const horizontalWords: Array<Constraint> = this.findWordsFromSpace(Orientation.horizontal);
         const verticalWords: Array<Constraint> = this.findWordsFromSpace(Orientation.vertical);
 
         const allWords: Array<Constraint> = [...horizontalWords, ...verticalWords];
-        this.createConstraints(sortWords(allWords));
+        await this.createConstraints(sortWords(allWords));
     }
 
-    // tslint:disable-next-line:max-func-body-length
+
     public findWordsFromSpace(orientation: Orientation): Array<Constraint> {
         const words: Array<Constraint> = [];
         let word: Constraint = new Constraint("", "", [0, 0], orientation);
+        word.invalid = false;
         const GRID_SIZE: number = this._gridSize - 1;
 
         for (let first: number = 0; first < this._gridSize; first++) {
             word.position = siwtchPosition(orientation, first, 0);
-            // word.length = 1;
             let w: number = 0;
 
             while (w < GRID_SIZE) {
@@ -278,17 +264,15 @@ export default class GridGeneration {
                     w++;
                     word.length++;
                     positions = siwtchPosition(orientation, first, w);
-                } while (positions[1] <= GRID_SIZE && positions[0] <= GRID_SIZE && !this._grid[positions[0]][positions[1]].isBlack())
-
+                } while (positions[1] <= GRID_SIZE && positions[0] <= GRID_SIZE && !this._grid[positions[0]][positions[1]].isBlack());
                 words.push(word);
-
                 while (positions[1] <= GRID_SIZE && positions[0] <= GRID_SIZE && this._grid[positions[0]][positions[1]].isBlack()) {
                     w++;
                     positions = siwtchPosition(orientation, first, w);
                 }
 
                 word = new Constraint("", "", siwtchPosition(orientation, first, w), orientation);
-
+                word.invalid = false;
             }
         }
 
@@ -301,11 +285,6 @@ export default class GridGeneration {
 
     public get words(): Array<Constraint> {
         return this._wordsFinal;
-    }
-
-    public printGrid(): void {
-        console.log(printGrid(this._grid, this._intersections))
-        console.log(printGridWithWord(this._grid))
     }
 
 }
