@@ -76,10 +76,7 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         DifficultyService,
         {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: true}},
         TrackInformationService,
-<<<<<<< HEAD
         TrackProgressionService,
-=======
->>>>>>> 882c18c64bc36806f661cc9557ba1fa31967c821
         GridLoadingService
     ],
     exports: [
