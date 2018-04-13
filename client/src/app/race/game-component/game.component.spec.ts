@@ -4,6 +4,8 @@ import { FormsModule } from "@angular/forms";
 import { GameComponent } from "./game.component";
 import { TrackProgressionService } from "../trackProgressionService";
 import { Raycaster, Vector3, Intersection } from "three";
+import { ResultsComponent } from "../results/results.component";
+import { ResultsService } from "../results-service/results.service";
 
 describe("GameComponent", () => {
     let component: GameComponent;
@@ -12,8 +14,8 @@ describe("GameComponent", () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [FormsModule],
-            declarations: [GameComponent],
-            providers: [TrackProgressionService]
+            declarations: [GameComponent, ResultsComponent],
+            providers: [TrackProgressionService, ResultsService]
         })
             .compileComponents().catch((error) => {
                 throw error;
