@@ -1,4 +1,6 @@
-declare module 'line-intersect' {
+// tslint:disable:only-arrow-functions
+// Requis puisque ça ne fonctionne pas avec une arrow function
+declare module "line-intersect" {
 
     function checkIntersection(
         x1: number,
@@ -9,6 +11,6 @@ declare module 'line-intersect' {
         y3: number,
         x4: number,
         y4: number
-    ) : { point: { x: number; y: number; }; type: string; };
+    ): { point: { x: number; y: number; }; type: string; };
 
 }

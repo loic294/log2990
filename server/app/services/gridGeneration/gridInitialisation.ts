@@ -24,10 +24,12 @@ export const hasMinWordSpace: (grid: Array<Array<Cell>>, row: number, col: numbe
         && !grid[row][col - MIN_WORD_LENGTH].isBlack());
 
     return vertical && horizontal;
-}
+};
 
 export const isIsolatedCell: (grid: Array<Array<Cell>>, row: number, col: number) => boolean
     = (grid: Array<Array<Cell>>, row: number, col: number): boolean => {
+
+    const SIDES: number = 4;
 
     let count: number = 0;
 
@@ -47,7 +49,7 @@ export const isIsolatedCell: (grid: Array<Array<Cell>>, row: number, col: number
         count++;
     }
 
-    return count === 4;
+    return count === SIDES;
 };
 
 export const fillGridWithBlackCells: (grid: Array<Array<Cell>>, maxBlackCells: number, size: number) => Array<Array<Cell>>

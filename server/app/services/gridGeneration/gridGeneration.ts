@@ -103,8 +103,8 @@ export default class GridGeneration {
         }
 
         const uri: string = `http://localhost:3000/lexical/definition/${query}/easy`;
+        // tslint:disable-next-line:await-promise
         const { lexicalResult }: { lexicalResult: string } = await request({ uri, json: true });
-
         this._definitionCache[query] = lexicalResult;
 
         return lexicalResult;
@@ -157,6 +157,7 @@ export default class GridGeneration {
             let isValid: boolean = false;
             do {
                 const uri: string = `http://localhost:3000/lexical/wordAndDefinition/${query}/common/easy`;
+                // tslint:disable-next-line:await-promise
                 const { lexicalResult }: { lexicalResult: Array<string> } = await request({ uri, json: true });
 
                 word.name = lexicalResult[0];
@@ -256,7 +257,6 @@ export default class GridGeneration {
         await this.createConstraints(sortWords(allWords));
     }
 
-
     public findWordsFromSpace(orientation: Orientation): Array<Constraint> {
         const words: Array<Constraint> = [];
         let word: Constraint = new Constraint("", "", [0, 0], orientation);
@@ -296,5 +296,4 @@ export default class GridGeneration {
     public get words(): Array<Constraint> {
         return this._wordsFinal;
     }
-
 }

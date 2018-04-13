@@ -8,7 +8,7 @@ import { checkIntersection } from "line-intersect";
 export const containtsOnlyLetters: (query: string) => boolean
     = (query: string): boolean => {
 
-    return /^[a-z]+$/ig.test(query)
+    return /^[a-z]+$/ig.test(query);
 };
 
 export const sortSubConstraint: (subconstraints: Array<SubConstraint>, index: number) => Array<SubConstraint>

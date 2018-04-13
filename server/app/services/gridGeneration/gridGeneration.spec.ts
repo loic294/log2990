@@ -1,4 +1,5 @@
-//  /* tslint:disable */
+/* tslint:disable */
+
 //  import { default as GridGenerationService } from "./gridGeneration";
 //  import { Cell } from "../../../../common/grid/case";
 // //  import { Orientation } from "../../../../common/lexical/word";
