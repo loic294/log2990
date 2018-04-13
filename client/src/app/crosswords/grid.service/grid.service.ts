@@ -1,14 +1,13 @@
 import { Injectable } from "@angular/core";
-import { Cell } from "../../../../common/grid/cell";
+import { Cell } from "../../../../../common/grid/cell";
 import { Observable } from "rxjs/Observable";
 import { of } from "rxjs/observable/of";
 import Word, { Orientation } from "../../../../../common/lexical/word";
 import { GridToolsService} from "./grid.tools.service";
-
 import { WordService } from "../word.service/word.service";
 import { SocketService } from "../socket.service/socket.service";
-import { GridLoadingService } from "../grid-loading.service/grid-loaing.service";
-import { BACK_SPACE_KEY_CODE } from "../constants";
+import { BACK_SPACE_KEY_CODE } from "../../constants";
+import { GridLoadingService } from "../../grid-loading.service/grid-loaing.service";
 
 @Injectable()
 export class GridService {
@@ -17,7 +16,7 @@ export class GridService {
     private _selectedWord: Cell;
     private _word: Word;
     private _otherWord: Word;
-    private _gridTools: GridTools;
+    private _gridTools: GridToolsService;
     private _clues: Array<Word>;
 
     public constructor(
@@ -26,8 +25,8 @@ export class GridService {
         private gridLoadingService: GridLoadingService
     ) {
 
+        this._gridTools = new GridToolsService();
         this._clues = [];
-        this._gridTools = new GridTools();
         this.initServicesListeners();
         this.initLoadingServices();
     }

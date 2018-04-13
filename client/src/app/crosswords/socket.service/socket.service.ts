@@ -8,7 +8,7 @@ import { SocketMessage } from "../../../../../common/communication/message";
 import Word from "../../../../../common/lexical/word";
 import { DifficultyService } from "./../difficulty.service/difficulty.service";
 import { Mode } from "../../../../../common/grid/player";
-import { GridLoadingService } from "../grid-loading.service/grid-loaing.service";
+import { GridLoadingService } from "../../grid-loading.service/grid-loaing.service";
 
 @Injectable()
 export class SocketService {
@@ -65,7 +65,7 @@ export class SocketService {
         this._selectedMode = "";
         this._showGames = false;
         this._updateUserConnected = this._userConnected.asObservable();
-        this._updateHighlightCell = this._highlightCell.asObservable();
+        this._updateHighligthCell = this._highlightCell.asObservable();
         this._updateUserScore = this._userScore.asObservable();
         this._updateOpponentScore = this._opponentScore.asObservable();
         this._updateWordValidated = this._wordToValidate.asObservable();
@@ -201,7 +201,7 @@ export class SocketService {
     }
 
     public get cellToHighligh(): Observable<string> {
-        return this._updateHighlightCell;
+        return this._updateHighligthCell;
     }
 
     public get wordIsValidated(): Observable<string> {
