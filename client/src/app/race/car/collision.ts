@@ -10,8 +10,8 @@ export default class Collision {
     public static collide(carA: Car, carB: Car): Array<Vector3> {
         const resultSpeeds: Array<Vector3> = [];
 
-        resultSpeeds.push(Collision.calculateSpeed(carA, carA.mass + carB.mass));
         resultSpeeds.push(Collision.calculateSpeed(carB, carA.mass + carB.mass));
+        resultSpeeds.push(Collision.calculateSpeed(carA, carA.mass + carB.mass));
 
         return resultSpeeds;
     }
