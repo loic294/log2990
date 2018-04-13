@@ -8,6 +8,7 @@ export interface SubConstraint {
 export default class Constraint extends Word {
     public constraints?: Array<SubConstraint>;
     public size?: number;
+    public invalid?: boolean;
 
     constructor(
         public name: string,
