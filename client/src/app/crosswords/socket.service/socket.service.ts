@@ -9,6 +9,7 @@ import Word from "../../../../../common/lexical/word";
 import { DifficultyService } from "./../difficulty.service/difficulty.service";
 import { Mode } from "../../../../../common/grid/player";
 import { GridLoadingService } from "../../grid-loading.service/grid-loaing.service";
+import { Cell } from "../../../../../common/grid/cell";
 
 @Injectable()
 export class SocketService {
@@ -20,7 +21,7 @@ export class SocketService {
     private _games: IGameModel[];
     private _showGames: boolean;
     private _wordCount: number;
-    private _grid: Array<String>;
+    private _grid: Array<Array<Cell>>;
     private _clues: Array<Word>;
 
     private _updateUserConnected: Observable<boolean>;
@@ -87,7 +88,7 @@ export class SocketService {
     }
 
     public initializeObservables(): void {
-        this.gridLoadingService.newGrid.subscribe((grid: Array<String>) => {
+        this.gridLoadingService.newGrid.subscribe((grid: Array<Array<Cell>>) => {
             this._grid = grid;
         });
 

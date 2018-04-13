@@ -122,12 +122,8 @@ export default class LexicalService {
         const data: string[] = [];
         let word: string;
         let definition: string;
-        let timeOut: number = 3;
-        do {
-            word = await this.wordSearch(researchCriteria, common);
-            definition = await this.wordDefinition(level, word);
-            timeOut--;
-        } while (definition === "No definitions" && timeOut > 0);
+        word = await this.wordSearch(researchCriteria, common);
+        definition = await this.wordDefinition(level, word);
 
         data[0] = word;
         data[1] = definition;

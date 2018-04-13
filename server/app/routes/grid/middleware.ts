@@ -16,7 +16,7 @@ export const generate: (req: Request, res: Response, next: NextFunction) => Prom
     res.json({
         gridString,
         grid: grid.grid,
-        words: grid.words
+        clues: grid.words
     });
 
 };
