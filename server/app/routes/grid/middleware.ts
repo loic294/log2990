@@ -10,7 +10,12 @@ export const generate: (req: Request, res: Response, next: NextFunction) => Prom
     const grid: GridGeneration = new GridGeneration();
     grid.initializeGrid(GRID_SIZE);
     await grid.findAllWordsSpaces();
+    const gridString: String|void = await grid.startRecursion();
 
-    res.json({ success: true });
+    res.json({
+        gridString,
+        grid: grid.grid,
+        words: grid.words
+    });
 
 };

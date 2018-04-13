@@ -1,12 +1,11 @@
-import { Cell } from "../../../../common/grid/case";
+import { Cell } from "../../../../common/grid/cell";
 import { Orientation } from "../../../../common/lexical/word";
 import Constraint from "./constraint";
-import { printGrid, printGridWithWord } from "./gridDebuggingTools";
+import { printGridWithWord } from "./gridDebuggingTools";
 import { traverseWord, intersects, siwtchPosition, sortWords, containtsOnlyLetters, traverseGrid } from "./gridTools";
 import { fillGridWithCells, fillGridWithBlackCells } from "./gridInitialisation";
 import * as request from "request-promise-native";
 import { List } from "immutable";
-// tslint:disable:no-console
 
 const NO_DEFINITION: string = "No definitions";
 const BLACK_CELL: string = "◻️";
@@ -20,10 +19,6 @@ export default class GridGeneration {
     private _definitionCache: Object = {};
     private _gridCache: Object = {};
     private _intersections: Array<Array<number>> = [];
-
-    public constructor() {
-        console.time("generation");
-    }
 
     public initializeGrid(size: number): void {
         this._gridSize = size !== undefined ? size : this._DEFAULT_SIZE;
@@ -183,7 +178,7 @@ export default class GridGeneration {
 
     public wordRepeats(words: Array<Constraint>, index: number): boolean {
         const wordCount: Object = {};
-        for (const word in words) {
+        for (const word of words) {
             if (wordCount[word.name]++) {
                 return true;
             }
@@ -219,12 +214,9 @@ export default class GridGeneration {
 
     }
 
-    public startRecursion(words: Array<Constraint>): Promise<void> {
-        return this.recursion(words, this._grid).then(() => {
-            console.log(printGrid(this._grid, this._intersections));
-            console.log(printGridWithWord(this._grid));
-            console.log(this._wordsFinal.reduce((final, item) => { final[item.name] = item.desc; return final; }, {}));
-            console.timeEnd("generation");
+    public async startRecursion(): Promise<String | void> {
+        return this.recursion(this._wordStack, this._grid).then((): String | void => {
+            return printGridWithWord(this._grid);
         })
         .catch((err: Error) => console.error(err));
     }
@@ -254,7 +246,6 @@ export default class GridGeneration {
         }
 
         this._wordStack = [...words];
-        await this.startRecursion(words);
     }
 
     public async findAllWordsSpaces(): Promise<void> {

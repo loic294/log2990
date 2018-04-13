@@ -128,10 +128,6 @@ export default class LexicalService {
             timeOut--;
         } while (definition === "No definitions" && timeOut > 0);
 
-        if (definition === "No definitions") {
-            return data[0] = undefined, data[1] = undefined;
-        }
-
         data[0] = word;
         data[1] = definition;
 
