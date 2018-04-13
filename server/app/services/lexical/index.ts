@@ -16,7 +16,6 @@ export default class LexicalService {
         const WORDNIK_URL: string = `http://api.wordnik.com:80/v4/word.json/${word}/definitions?limit=200&${KEYS.WORDNIK_KEY}`;
         try {
             const response: AxiosResponse = await axios.get(WORDNIK_URL);
-
             return response.data;
         } catch (err) {
             throw err;

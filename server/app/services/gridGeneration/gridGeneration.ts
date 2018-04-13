@@ -296,4 +296,5 @@ export default class GridGeneration {
     public get words(): Array<Constraint> {
         return this._wordsFinal;
     }
+
 }
