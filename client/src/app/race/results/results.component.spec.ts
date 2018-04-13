@@ -14,9 +14,7 @@ describe("ResultsComponent", () => {
           ResultsService
       ]
     })
-    .compileComponents().catch((error) => {
-        throw error;
-    });
+    .compileComponents();
   }));
 
   beforeEach(() => {
