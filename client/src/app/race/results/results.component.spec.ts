@@ -36,8 +36,7 @@ const mockTimes: Array<PlayerStats> = [
     {player: "7", gameTime: "70.00", lapTimes: ["30", "20", "20"]}
 ];
 
-
-fdescribe("ResultsComponent", () => {
+describe("ResultsComponent", () => {
   let component: ResultsComponent;
   let fixture: ComponentFixture<ResultsComponent>;
   let service: ResultsService;
