@@ -14,7 +14,9 @@ describe("ResultsComponent", () => {
           ResultsService
       ]
     })
-    .compileComponents();
+    .compileComponents().catch((e) => {
+        console.error(e.message);
+    });
   }));
 
   beforeEach(() => {
