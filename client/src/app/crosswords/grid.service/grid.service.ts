@@ -24,7 +24,6 @@ export class GridService {
         private socketService: SocketService,
         private gridLoadingService: GridLoadingService
     ) {
-
         this._gridTools = new GridToolsService();
         this._clues = [];
         this.initServicesListeners();
@@ -253,7 +252,12 @@ export class GridService {
 
     private initGrid(grid: Array<Array<Cell>>): void {
         this._grid = grid.map((row: Array<Cell>) =>
-            row.map((cell: Cell) => new Cell(cell.char, cell.x, cell.y, false, false, cell.black))
+            row.map((cell: Cell) => {
+                const newCell: Cell = new Cell(cell.char, cell.x, cell.y);
+                newCell.setBlack(cell.black);
+
+                return newCell;
+            })
         );
 
         this._gridTools.iterateGrid(this._grid, (row: number, col: number) => {
