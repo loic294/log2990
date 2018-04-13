@@ -1,6 +1,6 @@
 // tslint:disable:no-console no-suspicious-comment max-func-body-length
 // TODO: Remove disable!!
-import { Cell } from "../../../../common/grid/case";
+import { Cell } from "../../../../common/grid/cell";
 import { Orientation } from "../../../../common/lexical/word";
 import Constraint, { SubConstraint } from "./constraint";
 import { checkIntersection } from "line-intersect";

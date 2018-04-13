@@ -1,4 +1,4 @@
-import { Cell } from "../../../../common/grid/case";
+import { Cell } from "../../../../common/grid/cell";
 import { traverseGrid } from "./gridTools";
 
 export const fillGridWithCells: (size: number) => Array<Array<Cell>> = (size: number): Array<Array<Cell>> => {

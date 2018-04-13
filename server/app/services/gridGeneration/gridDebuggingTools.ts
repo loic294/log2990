@@ -3,7 +3,7 @@
  * Ces outils sont uniquement utilisés pour débogguer la génération de grille et
  * offrir une version visuelle de la grille.
  * **/
-import { Cell } from "../../../../common/grid/case";
+import { Cell } from "../../../../common/grid/cell";
 import { traverseGrid } from "./gridTools";
 
 export const printGrid: (grid: Array<Array<Cell>>, intersections: Array<Array<number>>) => String

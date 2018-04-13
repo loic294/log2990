@@ -148,7 +148,7 @@ export default class GridGeneration {
         grid: List<List<Cell>>): Promise<List<List<Cell>>> {
 
         const word: Constraint = words[wordIndex];
-        const maxRecursion: number = 5;
+        const maxRecursion: number = 3;
 
         if (this.shouldFindWord(grid, word)) {
             const query: string = this.createWordSearchCondition(grid, word);
