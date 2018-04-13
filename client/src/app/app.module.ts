@@ -29,6 +29,8 @@ import { HomeComponent } from "./home/home.component";
 import { TrackInformationService } from "../../../server/app/services/trackInformation/trackInformationService";
 import { TrackProgressionService } from "./race/trackProgressionService";
 import { TerminationComponent, TerminationDialogComponent } from "./crosswords/termination/termination.component";
+import { ResultsComponent } from "./race/results/results.component";
+import { ResultsService } from "./race/results-service/results.service";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
@@ -48,6 +50,7 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         TerminationComponent,
         TerminationDialogComponent,
         ModeDialogComponent,
+        ResultsComponent
     ],
     entryComponents: [
         ModeDialogComponent,
@@ -75,7 +78,8 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
         DifficultyService,
         {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: true}},
         TrackInformationService,
-        TrackProgressionService
+        TrackProgressionService,
+        ResultsService
     ],
     exports: [
         MatProgressSpinnerModule,
