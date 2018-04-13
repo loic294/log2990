@@ -49,8 +49,8 @@ fdescribe("ResultsComponent", () => {
           ResultsService
       ]
     })
-    .compileComponents().catch((error) => {
-        throw error;
+    .compileComponents().catch((e) => {
+        console.error(e.message);
     });
 
   }));
