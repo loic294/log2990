@@ -1,63 +1,30 @@
-import { Vector3 } from "three";
+import { Vector3, Matrix4 } from "three";
 import { Car } from "./car";
 
 export default class Collision {
-    private static carA: Car;
-    private static carB: Car;
-    public static detectCollision(carA: Car, carB: Car): boolean {
-        return carA.boundingBox.intersectsBox(carB.boundingBox);
+
+    public static detectCollision(firstCar: Car, secondCar: Car): boolean {
+        return firstCar.boundingBox.intersectsBox(secondCar.boundingBox);
     }
 
-    public static collide(carA: Car, carB: Car): void {
-        this.carA = carA;
-        this.carB = carB;
+    public static collide(carA: Car, carB: Car): Array<Vector3> {
+        const resultSpeeds: Array<Vector3> = [];
 
-        Collision.calculateSpeedForB();
-        Collision.calculateSpeedForA();
+        resultSpeeds.push(Collision.calculateSpeed(carA, carA.mass + carB.mass));
+        resultSpeeds.push(Collision.calculateSpeed(carB, carA.mass + carB.mass));
+
+        return resultSpeeds;
     }
 
-    private static calculateNormalVector(): Vector3 {
-        return new Vector3().addVectors(Collision.getCenter(this.carA), Collision.getCenter(this.carB)).normalize();
+    private static calculateSpeed(car: Car, combinedMasses: number): Vector3 {
+        return Collision.calculateMomentum(car).multiplyScalar(2).divideScalar(combinedMasses);
     }
 
-    private static getCenter(car: Car): Vector3 {
-        return car.boundingBox.getCenter();
+    private static calculateMomentum(car: Car): Vector3 {
+        return Collision.calculateMatrixedSpeed(car).multiplyScalar(car.mass);
     }
 
-    private static calculateSpeedARelativeToBReferentialO(): Vector3 {
-        return new Vector3().addVectors(this.carA.speed, this.carB.speed.negate());
-    }
-
-    private static projectSpeedARelativeToBOnNormalReferentialO(): number {
-        return Collision.calculateSpeedARelativeToBReferentialO().dot(Collision.calculateNormalVector());
-    }
-
-    private static divideMasses(car1: Car, car2: Car): number {
-        return car1.getMass() / car2.getMass();
-    }
-
-    private static projectSpeedARelativeToBOnNormal(): number {
-        return ((1 - Collision.divideMasses(this.carB, this.carA)) / (Collision.divideMasses(this.carB, this.carA) + 1))
-            * Collision.projectSpeedARelativeToBOnNormalReferentialO();
-    }
-
-    private static calculateSpeedBRelativeToB(): Vector3 {
-        return Collision.calculateNormalVector().multiplyScalar((-Collision.divideMasses(this.carA, this.carB)) *
-            (Collision.projectSpeedARelativeToBOnNormal() -
-                Collision.projectSpeedARelativeToBOnNormalReferentialO()));
-    }
-
-    private static calculateSpeedARelativeToB(): Vector3 {
-        return new Vector3().addVectors(Collision.calculateSpeedARelativeToBReferentialO(), Collision.calculateNormalVector()
-                .multiplyScalar(Collision.projectSpeedARelativeToBOnNormal() -
-                Collision.projectSpeedARelativeToBOnNormalReferentialO()));
-    }
-
-    private static calculateSpeedForB(): void {
-        this.carB.speed.addVectors(Collision.calculateSpeedBRelativeToB(), this.carB.speed);
-    }
-
-    private static calculateSpeedForA(): void {
-        this.carA.speed.addVectors(Collision.calculateSpeedARelativeToB(), this.carB.speed);
+    private static calculateMatrixedSpeed(car: Car): Vector3 {
+        return car.speed.applyMatrix4(new Matrix4().extractRotation(car.mesh.matrix));
     }
 }
