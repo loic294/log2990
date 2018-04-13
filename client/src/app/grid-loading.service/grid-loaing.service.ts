@@ -21,6 +21,7 @@ export class GridLoadingService {
     public async loadNewGrid(): Promise<void> {
 
         const url: string = "http://localhost:3000/grid/generate";
+        // tslint:disable-next-line:no-use-before-declare await-promise
         const { data: { grid, clues } }: { data: { grid: Array<Array<Cell>>, clues: Array<Word> }} = await axios.get(url);
 
         let count: number = 0;

@@ -5,7 +5,6 @@ import { SocketService } from "./socket.service";
 import { DifficultyService } from "./../difficulty.service/difficulty.service";
 import { GridLoadingService } from "../grid-loading.service/grid-loaing.service";
 
-
 describe("SocketService", () => {
 
     const config: SocketIoConfig = { url: "http://localhost:4200", options: {} };

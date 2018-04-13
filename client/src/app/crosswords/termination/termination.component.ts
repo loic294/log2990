@@ -37,9 +37,9 @@ import { GridLoadingService } from "../../grid-loading.service/grid-loaing.servi
         return this._dialogType;
     }
 
-    public createSoloGame(): void {
+    public async createSoloGame(): Promise<void> {
 
-        this.gridLoadingService.loadNewGrid();
+        await this.gridLoadingService.loadNewGrid();
         this.closeDialog();
 
     }

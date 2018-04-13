@@ -29,8 +29,8 @@ import { GridLoadingService } from "../../grid-loading.service/grid-loaing.servi
 
         }
 
-    public newGame(): void {
-        this.gridLoadingService.loadNewGrid();
+    public async newGame(): Promise<void> {
+        await this.gridLoadingService.loadNewGrid();
         this.closeDialog();
     }
 
