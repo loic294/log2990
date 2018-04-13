@@ -35,7 +35,6 @@ export class GridService {
             (grid: Array<Array<Cell>>) => {
                 this.initGrid(grid);
             });
-
         this.gridLoadingService.newClues.subscribe(
             (clues: Array<Word>) => {
                 this._clues = clues;
