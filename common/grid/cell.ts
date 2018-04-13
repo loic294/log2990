@@ -4,7 +4,7 @@ export class Cell {
     public isOtherPlayer: boolean;
     public isValidatedByOther: boolean;
     public shared: boolean;
-    public _black: boolean;
+    public black: boolean;
 
     public constructor(
         private _char: string = "-",
@@ -18,7 +18,7 @@ export class Cell {
         this.wordIndexes = [];
         this.isOtherPlayer = false;
         this.isValidatedByOther = false;
-        this._black = false;
+        this.black = false;
     }
     public isShared(): void {
         this.shared = true;
@@ -109,11 +109,11 @@ export class Cell {
     }
 
     public isBlack() : boolean {
-        return this._black;
+        return this.black;
     }
 
     public setBlack(black : boolean) : void {
-        this._black = black;
+        this.black = black;
     }
 
     public getValidatedValue(): string {

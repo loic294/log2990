@@ -253,13 +253,13 @@ export class GridService {
 
     private initGrid(grid: Array<Array<Cell>>): void {
         this._grid = grid.map((row: Array<Cell>) =>
-            row.map((cell: Cell) => new Cell(cell.char, cell.x, cell.y, false, false, cell._black))
+            row.map((cell: Cell) => new Cell(cell.char, cell.x, cell.y, false, false, cell.black))
         );
 
         this._gridTools.iterateGrid(this._grid, (row: number, col: number) => {
             this._grid[row][col].x = row;
             this._grid[row][col].y = col;
-            if (this._grid[row][col]) {
+            if (!this._grid[row][col].black) {
                 this._grid[row][col].char = "";
             }
 
