@@ -101,22 +101,23 @@ export class TrackProgression {
         } else if (!this._game.gameIsFinished) {
             this._game.gameTime = this._gameClock.getElapsedTime().toFixed(2);
             this._game.lapTime = this._playerCar.userData.clock.getElapsedTime().toFixed(2);
+        } else {
+            this._playerCar.brake();
         }
 
         this.checkForNextVertex();
     }
 
     private stopGame(): void {
-        this._game.gameIsFinished = true;
         this._playerCar.userData.clock.stop();
         this._gameClock.stop();
         this.estimateBotTimes();
 
-        this._playerCar.brake();
-
         for (const bot of this._botCars) {
             bot.userData.allLapsCompleted = true;
         }
+
+        this._game.gameIsFinished = true;
     }
 
     private updateBotInformation(bot: Car, botIndex: number): void {
