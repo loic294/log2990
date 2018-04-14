@@ -161,4 +161,20 @@ export class TrackProgression {
     private calculateSubsequentRoundTime(bot: Car, botIndex: number): number {
         return (bot.userData.maxIndex * Number(this._game.botTimes[botIndex][0])) / bot.userData.pointIndex;
     }
+
+    public get player(): Car {
+        return this._playerCar;
+    }
+
+    public get bots(): Array<Car> {
+        return this._botCars;
+    }
+
+    public get game(): IGameInformation {
+        return this._game;
+    }
+
+    public get vertice(): Array<Object3D> {
+        return this._vertice;
+    }
 }
