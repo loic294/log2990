@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import { EnvironmentService } from "../environment-service/environment.service";
 import {
-    WebGLRenderer, Scene
+    WebGLRenderer, Scene, Vector3
 } from "three";
 import { Car } from "../car/car";
 import { CameraService } from "../camera-service/camera.service";
@@ -12,6 +12,7 @@ import { TrackProgressionService } from "../trackProgressionService";
 import { RaceStarter } from "../raceStarter";
 import { TrackBuilder } from "../trackBuilder";
 import { AudioService } from "../audio-service/audio.service";
+import Collision from "../car/collision";
 
 const AMOUNT_OF_NPCS: number = 3;
 const MAX_COUNTDOWN: number = 3;
@@ -63,6 +64,24 @@ export class RenderService {
         if (this._aiService !== undefined) {
             this._aiService.update(timeSinceLastFrame);
         }
+
+        this._bots.forEach((bot) => {
+            if (Collision.detectCollision(this._car, bot)) {
+                const resultSpeeds: Array<Vector3> = Collision.collide(this._car, bot);
+                bot.speed = resultSpeeds[1];
+                this._car.speed = resultSpeeds[0];
+            }
+        });
+        for (let i: number = 0; i < this._bots.length; i++) {
+            for (let j: number = i + 1; j < this._bots.length; j++) {
+                if (Collision.detectCollision(this._bots[i], this._bots[j])) {
+                    const resultSpeeds: Array<Vector3> = Collision.collide(this._bots[i], this._bots[j]);
+                    this._bots[j].speed = resultSpeeds[1];
+                    this._bots[i].speed = resultSpeeds[0];
+                }
+            }
+        }
+
         this._cameraService.followCar();
         this._lastDate = Date.now();
     }
