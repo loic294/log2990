@@ -4,6 +4,7 @@ import { ResultsService } from "../results-service/results.service";
 import { PlayerStats } from "../../../../../common/race/playerStats";
 import { TrackInformation } from "../trackInformation";
 const ENTER_KEYCODE: number = 13;
+const MAX_TIMES: number = 5;
 
 @Component({
     selector: "app-results",
@@ -113,6 +114,14 @@ export class ResultsComponent implements OnInit {
         parseFloat(n1.gameTime.toString()) - parseFloat(n2.gameTime.toString()));
     }
 
+    private clipNumberOfBestTimes(): void {
+        const fiveBestTimes: Array<PlayerStats> = new Array();
+        for (let i: number = 0; i < MAX_TIMES; i++) {
+            fiveBestTimes.push(this._trackInfo.track.completedTimes[i]);
+        }
+        this._trackInfo.track.completedTimes = fiveBestTimes;
+    }
+
     public isFirst(): boolean {
         for (const bot of this._game.botTimes) {
             let completeTimeBot: number = 0;
@@ -148,6 +157,9 @@ export class ResultsComponent implements OnInit {
                 if ( stat.player === "" && stat.gameTime === this._game.gameTime) {
                     stat.player = this.bestTimeName;
                 }
+            }
+            if (this._trackInfo.track.completedTimes.length > MAX_TIMES) {
+                this.clipNumberOfBestTimes();
             }
             await this._trackInfo.patchTrack();
         }
