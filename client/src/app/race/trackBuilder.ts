@@ -160,16 +160,26 @@ export class TrackBuilder {
         dir.subVectors(this._vertice[1].position, this._vertice[0].position);
         dir.normalize();
         mesh.translateOnAxis(dir, distance);
-        const xAxis: Vector3 = new Vector3(0, 0, 1);
-        const angle: number = xAxis.angleTo(dir);
+        const zAxis: Vector3 = new Vector3(0, 0, 1);
+        const angle: number = zAxis.angleTo(dir);
         mesh.rotateX(PI_OVER_2);
 
-        if (xAxis.cross(dir).y > 0) {
+        if (zAxis.cross(dir).y > 0) {
             mesh.rotateZ(-angle);
         } else {
             mesh.rotateZ(angle);
         }
         mesh.rotateZ(Math.PI / 2);
+    }
+
+    private findAngle(firstVector: Vector3, secondVector: Vector3): number {
+        let angle: number = firstVector.angleTo(secondVector);
+
+        if (firstVector.cross(secondVector).y < 0) {
+            angle = -angle;
+        }
+
+        return angle;
     }
 
     private initiateLineStats(line: Mesh): void {
@@ -218,8 +228,8 @@ export class TrackBuilder {
 
     private placeOnLine(car: Car, line: Mesh, perpendicular: Vector3): void {
         car.meshPosition = line.position;
-        const direction: Vector3 = car.direction;
-        car.mesh.rotateY(direction.angleTo(this._vertice[1].position));
+        const angle: number = this.findAngle(car.direction, this._vertice[1].position);
+        car.mesh.rotateY(angle);
         car.meshPosition = new Vector3(perpendicular.x * LINE_POSITION_FACTOR, 0, perpendicular.z * LINE_POSITION_FACTOR);
     }
 
