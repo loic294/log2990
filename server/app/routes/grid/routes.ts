@@ -11,13 +11,6 @@ export default {
             middleware: [
                 grid.generate
             ]
-        },
-        {
-            method: "GET",
-            path: "/mock",
-            middleware: [
-                grid.mock
-            ]
         }
     ]
 };
