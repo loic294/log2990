@@ -4,6 +4,7 @@ import { IGameInformation, TrackProgressionService } from "./trackProgressionSer
 
 const WIDTH: number = 10;
 const MAX_LAPS: number = 3;
+const TIME_FACTOR: number = 0.1;
 
 export class TrackProgression {
     private _game: IGameInformation;
@@ -140,18 +141,20 @@ export class TrackProgression {
 
     private estimateBotTimes(): void {
         let botIndex: number = 0;
+        let timeFactor: number = 1.05;
         for (const bot of this._botCars) {
-
             if (this._game.botTimes[botIndex].length === 0) {
                 this._game.botTimes[botIndex].push(this.calculateFirstRoundTime(bot).toFixed(2));
                 bot.userData.lapsCompleted++;
             }
 
             while (bot.userData.lapsCompleted < MAX_LAPS) {
-                this._game.botTimes[botIndex].push(this.calculateSubsequentRoundTime(bot, botIndex).toFixed(2));
+                this._game.botTimes[botIndex].push(this.calculateSubsequentRoundTime(bot, botIndex, timeFactor).toFixed(2));
                 bot.userData.lapsCompleted++;
+                timeFactor += TIME_FACTOR;
             }
             botIndex++;
+
         }
     }
 
@@ -159,8 +162,8 @@ export class TrackProgression {
         return (bot.userData.maxIndex * bot.userData.clock.getElapsedTime()) / bot.userData.pointIndex;
     }
 
-    private calculateSubsequentRoundTime(bot: Car, botIndex: number): number {
-        return (bot.userData.maxIndex * Number(this._game.botTimes[botIndex][0])) / bot.userData.pointIndex;
+    private calculateSubsequentRoundTime(bot: Car, botIndex: number, timeFactor: number): number {
+        return Number(this._game.botTimes[botIndex][0]) * timeFactor;
     }
 
     public get player(): Car {
