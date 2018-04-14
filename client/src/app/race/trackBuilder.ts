@@ -220,4 +220,12 @@ export class TrackBuilder {
     public get startingLines(): Array<Mesh> {
         return this._startingLines;
     }
+
+    public get playerCar(): Car {
+        return this._playerCar;
+    }
+
+    public get bots(): Array<Car> {
+        return this._botCars;
+    }
 }

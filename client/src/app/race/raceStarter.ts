@@ -45,4 +45,8 @@ export class RaceStarter {
         return this._visual;
     }
 
+    public get audioService(): AudioService {
+        return this._audioService;
+    }
+
 }
