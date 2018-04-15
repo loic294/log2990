@@ -54,13 +54,21 @@ export class TrackProgression {
 
     }
 
-    private isLapCompleted(carDistance: number): boolean {
-        return this._playerCar.userData.isNewLap && this._playerCar.userData.verticeIndex === this._vertice.length - 1 &&
-               carDistance < WIDTH / 2 && !this._game.gameIsFinished;
+    private isLapCompleted(car: Car): boolean {
+        return this.isAtStartingLine(car) && this._playerCar.userData.verticeIndex === this._vertice.length - 1 &&
+               !this._game.gameIsFinished;
     }
 
-    private isPassedStartingLine(carDistance: number): boolean {
-        return !this._playerCar.userData.isNewLap && carDistance > WIDTH;
+    private isAtStartingLine(car: Car): boolean {
+        const carDistance: number = this.getCarDistance(this._startingLine, car);
+
+        return car.userData.isNewLap && carDistance < WIDTH / 2;
+    }
+
+    private isPassedStartingLine(car: Car): boolean {
+        const carDistance: number = this.getCarDistance(this._startingLine, car);
+
+        return !car.userData.isNewLap && carDistance > WIDTH;
     }
 
     private asJustCompleted3Laps(): boolean {
@@ -68,24 +76,22 @@ export class TrackProgression {
     }
 
     private checkForNextVertex(): void {
-        const carDistance: number = this.getCarDistance(this._vertice[this._playerCar.userData.verticeIndex].position);
+        const carDistance: number = this.getCarDistance(this._vertice[this._playerCar.userData.verticeIndex].position, this._playerCar);
 
         if (carDistance <= WIDTH * 2 && this._playerCar.userData.verticeIndex < this._vertice.length - 1) {
             this._playerCar.userData.verticeIndex++;
         }
     }
 
-    private getCarDistance(destination: Vector3): number {
+    private getCarDistance(destination: Vector3, car: Car): number {
         const carPosition: Vector3 = new Vector3;
-        carPosition.subVectors(destination, this._playerCar.meshPosition);
+        carPosition.subVectors(destination, car.meshPosition);
 
         return carPosition.length();
     }
 
     private updatePlayerInformation(): void {
-        const carDistance: number = this.getCarDistance(this._startingLine);
-
-        if (this.isLapCompleted(carDistance)) {
+        if (this.isLapCompleted(this._playerCar)) {
             this._playerCar.userData.lapsCompleted++;
             this._playerCar.userData.isNewLap = false;
             this._playerCar.userData.verticeIndex = 1;
@@ -93,7 +99,7 @@ export class TrackProgression {
             this._game.currentLap++;
             this._game.lapTimes.push(this._playerCar.userData.clock.getElapsedTime().toFixed(2));
             this._playerCar.userData.clock.start();
-        } else if (this.isPassedStartingLine(carDistance)) {
+        } else if (this.isPassedStartingLine(this._playerCar)) {
             this._playerCar.userData.isNewLap = true;
         }
 
@@ -122,19 +128,15 @@ export class TrackProgression {
     }
 
     private updateBotInformation(bot: Car, botIndex: number): void {
-        const carPosition: Vector3 = new Vector3;
-        carPosition.subVectors(this._startingLine, bot.meshPosition);
-        const carDistance: number = carPosition.length();
-
-        if (bot.userData.isNewLap && carDistance < WIDTH / 2 && bot.userData.lapsCompleted < MAX_LAPS) {
+        if (this.isAtStartingLine(bot) && bot.userData.lapsCompleted < MAX_LAPS) {
             bot.userData.lapsCompleted++;
             bot.userData.isNewLap = false;
 
             this._game.botTimes[botIndex].push(bot.userData.clock.getElapsedTime().toFixed(2));
             bot.userData.clock.start();
-        } else if (!bot.userData.isNewLap && carDistance > WIDTH && bot.userData.lapsCompleted >= MAX_LAPS) {
+        } else if (this.isPassedStartingLine(bot) && bot.userData.lapsCompleted >= MAX_LAPS) {
             bot.userData.allLapsCompleted = true;
-        } else if (!bot.userData.isNewLap && carDistance > WIDTH) {
+        } else if (this.isPassedStartingLine(bot)) {
             bot.userData.isNewLap = true;
         }
     }

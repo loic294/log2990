@@ -172,16 +172,6 @@ export class TrackBuilder {
         mesh.rotateZ(Math.PI / 2);
     }
 
-    private findAngle(firstVector: Vector3, secondVector: Vector3): number {
-        let angle: number = firstVector.angleTo(secondVector);
-
-        if (firstVector.cross(secondVector).y < 0) {
-            angle = -angle;
-        }
-
-        return angle;
-    }
-
     private initiateLineStats(line: Mesh): void {
         line.userData.leftPositionTaken = false;
         line.userData.rightPositionTaken = false;
@@ -231,6 +221,16 @@ export class TrackBuilder {
         const angle: number = this.findAngle(car.direction, this._vertice[1].position);
         car.mesh.rotateY(angle);
         car.meshPosition = new Vector3(perpendicular.x * LINE_POSITION_FACTOR, 0, perpendicular.z * LINE_POSITION_FACTOR);
+    }
+
+    private findAngle(firstVector: Vector3, secondVector: Vector3): number {
+        let angle: number = firstVector.angleTo(secondVector);
+
+        if (firstVector.cross(secondVector).y < 0) {
+            angle = -angle;
+        }
+
+        return angle;
     }
 
     private findPerpendicularVectors(vector: Vector3): Array<Vector3> {
