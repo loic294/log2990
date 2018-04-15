@@ -24,7 +24,7 @@ export class LineSegment extends LineSegments {
     }
 }
 
-export class DotCommand {
+export class TrackCreationRenderer {
 
     private _trackIsCompleted: boolean;
     private _vertices: Array<Object3D>;
