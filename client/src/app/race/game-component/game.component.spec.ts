@@ -85,7 +85,7 @@ describe("GameComponent", () => {
     });
 
     it("should show lap count at 0 on creation", async () => {
-        expect(component._currentGame.currentLap).toEqual(1);
+        expect(component._currentGame.currentLap).toEqual(0);
     });
 
     it("should show game time at 0 on creation", async () => {
@@ -115,6 +115,9 @@ describe("GameComponent", () => {
         expect(component._currentGame.currentLap).toEqual(2);
         component.service.car.userData.currentLap = 3;
         expect(component._currentGame.currentLap).toEqual(3);
+        component.service.car.userData.currentLap = 4;
+        expect(component._currentGame.currentLap).toEqual(3);
+
     });
 
     it("should reset lap time when a lap is completed", async () => {

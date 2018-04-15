@@ -14,7 +14,7 @@ export class TrackProgression {
                        private _trackProgressionService: TrackProgressionService, private _vertice: Array<Object3D>) {
 
         this._game = {gameTime: "0.00", lapTime: "0.00", lapTimes: new Array(),
-                      gameIsFinished: false, currentLap: 1, botTimes: new Array()};
+                      gameIsFinished: false, currentLap: 0, botTimes: new Array()};
 
         let index: number = 0;
         while (index < this._botCars.length) {
