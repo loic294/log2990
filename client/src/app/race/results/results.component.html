@@ -31,14 +31,14 @@
         </tr>
       </table>
   
-      <div *ngIf = "updatedName || !isBestTime()">
+      <div id = "options">
         <a routerLink="">
-            <button >Main menu</button>
+            <button [disabled] = "!updatedName && isBestTime()">Main menu</button>
         </a>
         
-        <button (click)="playAgain()">Play Again</button>
+        <button [disabled] = "!updatedName && isBestTime()" (click)="playAgain()">Play Again</button>
         
-        <button (click)="findGameResults()">Game results</button>
+        <button [disabled] = "!updatedName && isBestTime()" (click)="findGameResults()">Game results</button>
       </div>
       
     </div>
