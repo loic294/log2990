@@ -1,4 +1,4 @@
-import { Vector3, Matrix4, Mesh } from "three";
+import { Vector3, Matrix4, Mesh, Raycaster, Intersection } from "three";
 import { Car } from "./car";
 
 const ADJUST_POSITION: number = 0.1;
@@ -16,8 +16,31 @@ export default class Collision {
         corners.push( new Vector3(car.boundingBox.max.x, car.boundingBox.min.y - ADJUST_POSITION, car.boundingBox.min.z));
         corners.push( new Vector3(car.boundingBox.max.x, car.boundingBox.min.y - ADJUST_POSITION, car.boundingBox.max.z));
 
-    }
+        for (const corner of corners) {
+            const ray: Raycaster = new Raycaster(car.boundingBox.getCenter(), corner.normalize());
+            const collisionResults: Intersection[] = ray.intersectObjects(track);
+            if (collisionResults.length > 0 && collisionResults[0].distance < corner.length()) {
 
+            }
+        }
+    }
+/*
+	var originPoint = MovingCube.position.clone();
+
+	clearText();
+	
+	for (var vertexIndex = 0; vertexIndex < MovingCube.geometry.vertices.length; vertexIndex++)
+	{		
+		var localVertex = MovingCube.geometry.vertices[vertexIndex].clone();
+		var globalVertex = localVertex.applyMatrix4( MovingCube.matrix );
+		var directionVector = globalVertex.sub( MovingCube.position );
+		
+		var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
+		var collisionResults = ray.intersectObjects( collidableMeshList );
+		if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) 
+			appendText(" Hit ");
+	}
+*/
     public static collide(carA: Car, carB: Car): Array<Vector3> {
         const resultSpeeds: Array<Vector3> = [];
 
