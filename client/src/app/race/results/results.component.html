@@ -23,9 +23,9 @@
           <th>Name</th>
           <th>Time</th>
         </tr>
-        <tr *ngFor="let time of bestTimes(); let index = index">
+        <tr *ngFor="let time of bestTimes(); let index = index" [ngClass] = "{'player': isPlayerTime(time)}">
           <td>{{index+1}}</td>
-          <td class = "player" *ngIf = "_game.gameTime === time.gameTime; else other">{{bestTimeName}}</td>
+          <td *ngIf = "isPlayerTime(time); else other">{{bestTimeName}}</td>
           <ng-template #other><td>{{time.player}}</td></ng-template>
           <td>{{time.gameTime}} seconds</td>
         </tr>

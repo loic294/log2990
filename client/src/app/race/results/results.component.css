@@ -50,6 +50,10 @@ li {
   list-style-type: none;
 }
 
+table { 
+    border-collapse: collapse;
+}
+
 th, td {
     border: 2px solid black;
     padding: 15px;
@@ -61,5 +65,5 @@ h3 {
 }
 
 .player {
-    border-color: #0099dd;
+    background-color: #0099dd;
 }
