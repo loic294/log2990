@@ -71,6 +71,9 @@ export class RenderService {
                 bot.speed = resultSpeeds[1];
                 this._car.speed = resultSpeeds[0];
             }
+            if (Collision.detectOutOfBounds(this._car, this._raceStarter.trackBuilder.trackSegments)) {
+
+            }
         });
         for (let i: number = 0; i < this._bots.length; i++) {
             for (let j: number = i + 1; j < this._bots.length; j++) {

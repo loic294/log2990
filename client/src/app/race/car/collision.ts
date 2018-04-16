@@ -20,6 +20,8 @@ export default class Collision {
             const ray: Raycaster = new Raycaster(car.boundingBox.getCenter(), corner.normalize());
             const collisionResults: Intersection[] = ray.intersectObjects(track);
             if (collisionResults.length <= 0) {
+                console.log("TEST: IS THIS WORKING?");
+
                 return true;
             }
         }

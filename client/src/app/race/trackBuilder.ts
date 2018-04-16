@@ -245,4 +245,8 @@ export class TrackBuilder {
     public get startingLines(): Array<Mesh> {
         return this._startingLines;
     }
+
+    public get trackSegments(): Array<Mesh> {
+        return this._trackSegments;
+    }
 }
