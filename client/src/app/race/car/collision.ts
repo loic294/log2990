@@ -1,10 +1,21 @@
-import { Vector3, Matrix4 } from "three";
+import { Vector3, Matrix4, Mesh } from "three";
 import { Car } from "./car";
+
+const ADJUST_POSITION: number = 0.1;
 
 export default class Collision {
 
     public static detectCollision(firstCar: Car, secondCar: Car): boolean {
         return firstCar.boundingBox.intersectsBox(secondCar.boundingBox);
+    }
+
+    public static detectOutOfBounds(car: Car, track: Mesh[]): void {
+        const corners: Vector3[] = [];
+        corners.push( new Vector3(car.boundingBox.min.x, car.boundingBox.min.y - ADJUST_POSITION, car.boundingBox.min.z));
+        corners.push( new Vector3(car.boundingBox.min.x, car.boundingBox.min.y - ADJUST_POSITION, car.boundingBox.max.z));
+        corners.push( new Vector3(car.boundingBox.max.x, car.boundingBox.min.y - ADJUST_POSITION, car.boundingBox.min.z));
+        corners.push( new Vector3(car.boundingBox.max.x, car.boundingBox.min.y - ADJUST_POSITION, car.boundingBox.max.z));
+
     }
 
     public static collide(carA: Car, carB: Car): Array<Vector3> {
