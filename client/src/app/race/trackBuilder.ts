@@ -1,7 +1,7 @@
 import {
     Vector3, Mesh, Object3D,
     PlaneGeometry, DoubleSide, CircleGeometry, TextureLoader, Texture, RepeatWrapping, MeshPhongMaterial} from "three";
-import { LineSegment } from "./DotCommand";
+import { LineSegment } from "./trackCreationRenderer";
 import { PI_OVER_2 } from "../constants";
 import { Car } from "./car/car";
 
