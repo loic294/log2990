@@ -9,7 +9,7 @@ export default class Collision {
         return firstCar.boundingBox.intersectsBox(secondCar.boundingBox);
     }
 
-    public static detectOutOfBounds(car: Car, track: Mesh[]): void {
+    public static detectOutOfBounds(car: Car, track: Mesh[]): boolean {
         const corners: Vector3[] = [];
         corners.push( new Vector3(car.boundingBox.min.x, car.boundingBox.min.y - ADJUST_POSITION, car.boundingBox.min.z));
         corners.push( new Vector3(car.boundingBox.min.x, car.boundingBox.min.y - ADJUST_POSITION, car.boundingBox.max.z));
@@ -19,28 +19,14 @@ export default class Collision {
         for (const corner of corners) {
             const ray: Raycaster = new Raycaster(car.boundingBox.getCenter(), corner.normalize());
             const collisionResults: Intersection[] = ray.intersectObjects(track);
-            if (collisionResults.length > 0 && collisionResults[0].distance < corner.length()) {
-
+            if (collisionResults.length <= 0) {
+                return true;
             }
         }
-    }
-/*
-	var originPoint = MovingCube.position.clone();
 
-	clearText();
-	
-	for (var vertexIndex = 0; vertexIndex < MovingCube.geometry.vertices.length; vertexIndex++)
-	{		
-		var localVertex = MovingCube.geometry.vertices[vertexIndex].clone();
-		var globalVertex = localVertex.applyMatrix4( MovingCube.matrix );
-		var directionVector = globalVertex.sub( MovingCube.position );
-		
-		var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
-		var collisionResults = ray.intersectObjects( collidableMeshList );
-		if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) 
-			appendText(" Hit ");
-	}
-*/
+        return false;
+    }
+
     public static collide(carA: Car, carB: Car): Array<Vector3> {
         const resultSpeeds: Array<Vector3> = [];
 
