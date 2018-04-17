@@ -1,33 +1,31 @@
 import { Cell } from "../../../../common/grid/cell";
 import { Orientation } from "../../../../common/lexical/word";
-import Constraint from "./constraint";
-import { printGridWithWord } from "./gridDebuggingTools";
-import { traverseWord, intersects, siwtchPosition, sortWords, containtsOnlyLetters, traverseGrid } from "./gridTools";
+import Constraint, { createConstraints } from "./constraint";
+import {traverseWord, switchPosition, sortWords, AxiosResponseData, isNextNotBlack, isNextBlack,
+    containtsOnlyLetters, traverseGrid, HashString, HashList, wordRepeats} from "./gridTools";
 import { fillGridWithCells, fillGridWithBlackCells } from "./gridInitialisation";
-import * as request from "request-promise-native";
+import axios from "axios";
 import { List } from "immutable";
+import { GRID_SIZE, BLACK_CELL } from "../../../../common/grid/difficulties";
 
-const NO_DEFINITION: string = "No definitions";
-const BLACK_CELL: string = "◻️";
+export const NO_DEFINITION: string = "No definitions";
+const MAX_BLACK_CELL: number = 0.3;
+
 export default class GridGeneration {
     private _grid: Array<Array<Cell>>;
     private _wordStack: Array<Constraint>;
     private _wordsFinal: Array<Constraint>;
-    private _DEFAULT_SIZE: number = 10;
-    private _gridSize: number = this._DEFAULT_SIZE;
-    private _maxBlackCells: number = 0.3;
-    private _definitionCache: Object = {};
-    private _gridCache: Object = {};
-    private _intersections: Array<Array<number>> = [];
+    private _gridSize: number;
+    private _definitionCache: HashString = {};
+    private _gridCache: HashList = {};
 
     public initializeGrid(size: number): void {
-        this._gridSize = size !== undefined ? size : this._DEFAULT_SIZE;
+        this._gridSize = size !== undefined ? size : GRID_SIZE;
         this._wordStack = [];
-        this._definitionCache = [];
-        this._gridCache = [];
-        this._intersections = [];
+        this._definitionCache = {};
+        this._gridCache = {};
         this._grid = fillGridWithCells(this._gridSize);
-        this._grid = fillGridWithBlackCells(this._grid, this._maxBlackCells, size);
+        this._grid = fillGridWithBlackCells(this._grid, MAX_BLACK_CELL, size);
     }
 
     public fillErrorBlackCase(): void {
@@ -103,8 +101,9 @@ export default class GridGeneration {
         }
 
         const uri: string = `http://localhost:3000/lexical/definition/${query}/easy`;
+        // Note: Axios sends a valid Promise but the linter doesn't detect it. It's a document bug on GitHub.
         // tslint:disable-next-line:await-promise
-        const { lexicalResult }: { lexicalResult: string } = await request({ uri, json: true });
+        const { data: {lexicalResult} }: AxiosResponseData = await axios.get(uri);
         this._definitionCache[query] = lexicalResult;
 
         return lexicalResult;
@@ -141,7 +140,7 @@ export default class GridGeneration {
         return true;
     }
 
-    public async recursionInternal(
+    public async findWordAndDefinition(
         words: Array<Constraint>,
         wordIndex: number,
         grid: List<List<Cell>>): Promise<List<List<Cell>>> {
@@ -157,7 +156,7 @@ export default class GridGeneration {
             do {
                 const uri: string = `http://localhost:3000/lexical/wordAndDefinition/${query}/common/easy`;
                 // tslint:disable-next-line:await-promise
-                const { lexicalResult }: { lexicalResult: Array<string> } = await request({ uri, json: true });
+                const { data: {lexicalResult} }: AxiosResponseData = await axios.get(uri);
 
                 word.name = lexicalResult[0];
                 word.desc = lexicalResult[1];
@@ -176,28 +175,16 @@ export default class GridGeneration {
         return grid;
     }
 
-    public wordRepeats(words: Array<Constraint>, index: number): boolean {
-        const wordCount: Object = {};
-        for (const word of words) {
-            if (wordCount[word.name]++ > 0) {
-                return true;
-            }
-        }
 
-        return false;
-    }
-
-    public async recursion(words: Array<Constraint>, grid: Array<Array<Cell>>): Promise<void> {
+    public async findAllWords(words: Array<Constraint>, grid: Array<Array<Cell>>): Promise<void> {
         let wordIndex: number = 0;
 
-        this._gridCache[0] = [...grid.map((row: Array<Cell>) => ([...row]))];
-
         do {
-            const immutableGird: List<List<Cell>> = List(this._gridCache[wordIndex].map((row: Array<Cell>) => List(row)));
+            const immutableGird: List<List<Cell>> = List(this._gridCache[wordIndex].map((row: List<Cell>) => List(row)));
             this._gridCache[wordIndex] = immutableGird;
-            const gridFreeze: List<List<Cell>> = await this.recursionInternal(words, wordIndex, immutableGird);
+            const gridFreeze: List<List<Cell>> = await this.findWordAndDefinition(words, wordIndex, immutableGird);
 
-            if (this.wordRepeats(words, wordIndex)) {
+            if (wordRepeats(words, wordIndex)) {
                 this.initializeGrid(this._gridSize);
             }
 
@@ -210,42 +197,13 @@ export default class GridGeneration {
         } while (wordIndex < words.length && wordIndex > 0);
 
         this.fillErrorBlackCase();
-        this._wordsFinal = words.filter((word: Constraint) => word.name.length > 0 && !word.invalid && word.desc !== NO_DEFINITION);
+        this._wordsFinal = words.filter((word: Constraint) => this.isValidWord(word));
 
     }
 
-    public async startRecursion(): Promise<String | void> {
-        return this.recursion(this._wordStack, this._grid).then((): String | void => {
-            return printGridWithWord(this._grid);
-        })
+    public async startRecursion(): Promise<void> {
+        return this.findAllWords(this._wordStack, this._grid).then((): void => null)
         .catch((err: Error) => console.error(err));
-    }
-
-    public async createConstraints(words: Array<Constraint>): Promise<void> {
-        const WORDS_COUNT: number = words.length;
-
-        for (let first: number = 0; first < WORDS_COUNT; first++) {
-            for (let second: number = first; second < WORDS_COUNT; second++) {
-                const intersection: Array<number> = intersects(words[first], words[second]);
-                if (intersection.length > 0) {
-
-                    this._intersections.push(intersection);
-
-                    words[first].constraints.push({
-                        wordIndex: second,
-                        point: intersection
-                    });
-
-                    words[second].constraints.push({
-                        wordIndex: first,
-                        point: intersection
-                    });
-
-                }
-            }
-        }
-
-        this._wordStack = [...words];
     }
 
     public async findAllWordsSpaces(): Promise<void> {
@@ -253,34 +211,34 @@ export default class GridGeneration {
         const verticalWords: Array<Constraint> = this.findWordsFromSpace(Orientation.vertical);
 
         const allWords: Array<Constraint> = [...horizontalWords, ...verticalWords];
-        await this.createConstraints(sortWords(allWords));
+        this._wordStack = await createConstraints(sortWords(allWords));
     }
 
     public findWordsFromSpace(orientation: Orientation): Array<Constraint> {
         const words: Array<Constraint> = [];
         let word: Constraint = new Constraint("", "", [0, 0], orientation);
         word.invalid = false;
-        const GRID_SIZE: number = this._gridSize - 1;
+        const gridSize: number = this._gridSize - 1;
 
         for (let first: number = 0; first < this._gridSize; first++) {
-            word.position = siwtchPosition(orientation, first, 0);
+            word.position = switchPosition(orientation, first, 0);
             let w: number = 0;
 
-            while (w < GRID_SIZE) {
-                let positions: Array<number> = siwtchPosition(orientation, first, w);
+            while (w < gridSize) {
+                let positions: Array<number> = switchPosition(orientation, first, w);
 
                 do {
                     w++;
                     word.length++;
-                    positions = siwtchPosition(orientation, first, w);
-                } while (positions[1] <= GRID_SIZE && positions[0] <= GRID_SIZE && !this._grid[positions[0]][positions[1]].isBlack());
+                    positions = switchPosition(orientation, first, w);
+                } while (isNextNotBlack(positions, gridSize, this._grid));
                 words.push(word);
-                while (positions[1] <= GRID_SIZE && positions[0] <= GRID_SIZE && this._grid[positions[0]][positions[1]].isBlack()) {
+                while (isNextBlack(positions, gridSize, this._grid)) {
                     w++;
-                    positions = siwtchPosition(orientation, first, w);
+                    positions = switchPosition(orientation, first, w);
                 }
 
-                word = new Constraint("", "", siwtchPosition(orientation, first, w), orientation);
+                word = new Constraint("", "", switchPosition(orientation, first, w), orientation);
                 word.invalid = false;
             }
         }

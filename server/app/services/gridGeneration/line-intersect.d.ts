@@ -1,5 +1,6 @@
 // tslint:disable:only-arrow-functions
-// Requis puisque ça ne fonctionne pas avec une arrow function
+// Requis puisque ça ne fonctionne pas avec une arrow function puisque
+// ça doit suivre la signature de la function dans la librairie utilisée.
 declare module "line-intersect" {
 
     function checkIntersection(

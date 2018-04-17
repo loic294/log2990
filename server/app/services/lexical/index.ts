@@ -4,7 +4,7 @@
 import axios, { AxiosResponse } from "axios";
 import KEYS from "./../../config/index";
 import { Level } from "./../../../../common/lexical/level";
-
+import { NO_DEFINITION } from "../gridGeneration/gridGeneration";
 interface AxiosWords {
     word: string;
     tags: Array<string>;
@@ -67,7 +67,7 @@ export default class LexicalService {
         const filteredDefinitions: string[] = await this.filterDefinitions(word);
 
         if (filteredDefinitions.length === 0) {
-            return "No definitions";
+            return NO_DEFINITION;
         }
         switch (level) {
             case Level.Easy:

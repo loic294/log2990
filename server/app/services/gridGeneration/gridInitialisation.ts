@@ -1,5 +1,6 @@
 import { Cell } from "../../../../common/grid/cell";
 import { traverseGrid } from "./gridTools";
+const MIN_WORD_LENGTH: number = 2;
 
 export const fillGridWithCells: (size: number) => Array<Array<Cell>> = (size: number): Array<Array<Cell>> => {
 
@@ -17,8 +18,6 @@ export const fillGridWithCells: (size: number) => Array<Array<Cell>> = (size: nu
 
 export const hasMinWordSpace: (grid: Array<Array<Cell>>, row: number, col: number) => boolean
     = (grid: Array<Array<Cell>>, row: number, col: number): boolean => {
-
-    const MIN_WORD_LENGTH: number = 2;
     const vertical: boolean = row === 1 || (grid[row - MIN_WORD_LENGTH] && !grid[row - MIN_WORD_LENGTH][col].isBlack());
     const horizontal: boolean = col === 1 || (grid[row][col - MIN_WORD_LENGTH]
         && !grid[row][col - MIN_WORD_LENGTH].isBlack());
@@ -29,7 +28,7 @@ export const hasMinWordSpace: (grid: Array<Array<Cell>>, row: number, col: numbe
 export const isIsolatedCell: (grid: Array<Array<Cell>>, row: number, col: number) => boolean
     = (grid: Array<Array<Cell>>, row: number, col: number): boolean => {
 
-    const SIDES: number = 4;
+    const sides: number = 4;
 
     let count: number = 0;
 
@@ -49,7 +48,7 @@ export const isIsolatedCell: (grid: Array<Array<Cell>>, row: number, col: number
         count++;
     }
 
-    return count === SIDES;
+    return count === sides;
 };
 
 export const fillGridWithBlackCells: (grid: Array<Array<Cell>>, maxBlackCells: number, size: number) => Array<Array<Cell>>

@@ -9,6 +9,7 @@ import { TrackBuilder } from "../trackBuilder";
 import { EnvironmentService } from "../environment-service/environment.service";
 import { IGameInformation, TrackProgressionService } from "../trackProgressionService";
 import { AudioService } from "../audio-service/audio.service";
+import { ResultsService } from "../results-service/results.service";
 
 const SCALE_FACTOR: number = -10;
 
@@ -38,7 +39,8 @@ export class GameComponent implements AfterViewInit, OnInit {
     public _currentGame: IGameInformation;
 
     public constructor(private renderService: RenderService, private inputManager: InputManagerService,
-                       private _trackProgressionService: TrackProgressionService) {
+                       private _trackProgressionService: TrackProgressionService,
+                       private resultsService: ResultsService) {
         this._raceStarted = false;
         this._trackLoaded = false;
         this._trackInformation = new TrackInformation();
@@ -148,16 +150,19 @@ export class GameComponent implements AfterViewInit, OnInit {
 
     private actOnProgress(game: IGameInformation): void {
         this._currentGame = game;
-
         if (game.gameIsFinished && this._raceStarted) {
             this._raceStarted = false;
             this._trackLoaded = false;
             this.saveTime().catch();
+            this.resultsService.selectTrackInformation(this._trackInformation);
+            this.resultsService.selectGame(game);
+            this.resultsService.selectTrackTimes(this._trackInformation.track.completedTimes);
         }
     }
 
     private async saveTime(): Promise<void> {
-        this._trackInformation.track.completedTimes.push(this._currentGame.gameTime);
+        this._trackInformation.track.completedTimes.push(
+            {player: "", gameTime: this._currentGame.gameTime, lapTimes: this._currentGame.lapTimes});
         await this._trackInformation.patchTrack();
     }
 
