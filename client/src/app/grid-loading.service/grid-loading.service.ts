@@ -31,8 +31,8 @@ export class GridLoadingService {
         const augmentedWords: Array<Word> = clues.map((clue) =>
             new Word(clue.name, clue.desc, clue.position, clue.orientation, count++, clue.isValidated));
 
-        this._gridLoad.next(grid);
         this._cluesLoad.next(augmentedWords);
+        this._gridLoad.next(grid);
     }
 
     public setNewGrid(grid: Array<Array<Cell>>, clues: Array<Word>): void {

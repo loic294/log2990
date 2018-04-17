@@ -31,13 +31,13 @@ export class GridService {
     }
 
     private initLoadingServices(): void {
-        this.gridLoadingService.newGrid.subscribe(
-            (grid: Array<Array<Cell>>) => {
-                this.initGrid(grid);
-            });
         this.gridLoadingService.newClues.subscribe(
             (clues: Array<Word>) => {
                 this._clues = clues;
+            });
+        this.gridLoadingService.newGrid.subscribe(
+            (grid: Array<Array<Cell>>) => {
+                this.initGrid(grid);
             });
     }
 
