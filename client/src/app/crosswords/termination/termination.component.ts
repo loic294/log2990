@@ -4,6 +4,8 @@ import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
 import { Type } from "../type";
 import { Mode } from "../../../../../common/grid/player";
 import { GridLoadingService } from "../../grid-loading.service/grid-loading.service";
+import { DifficultyService } from "./../difficulty.service/difficulty.service";
+import { Difficulty } from "./../../../../../common/grid/difficulties";
 
 @Component({
     selector: "app-termination-component-termination",
@@ -11,6 +13,7 @@ import { GridLoadingService } from "../../grid-loading.service/grid-loading.serv
     styleUrls: ["./termination.component.css"]
   })
   export class TerminationDialogComponent {
+    public _level: Difficulty;
     private _dialogType: Number;
     private _loadingGrid: boolean;
     public showRematchOffer: boolean;
@@ -22,6 +25,7 @@ import { GridLoadingService } from "../../grid-loading.service/grid-loading.serv
         public dialogRef: MatDialogRef<TerminationComponent>,
         public dialog: MatDialog,
         private gridLoadingService: GridLoadingService,
+        private difficultyService: DifficultyService,
         @Inject(MAT_DIALOG_DATA) public data: Type) {
 
             this.showRematchOffer = false;
@@ -33,9 +37,15 @@ import { GridLoadingService } from "../../grid-loading.service/grid-loading.serv
             this.receiveAcceptRematch();
         }
 
+    public initDifficulty(): void {
+        this.difficultyService.difficulty.subscribe((level: Difficulty) => {
+            this._level = level;
+        });
+    }
+
     public async loadNewGrid(): Promise<void> {
         this._loadingGrid = true;
-        await this.gridLoadingService.loadNewGrid();
+        await this.gridLoadingService.loadNewGrid(this._level);
         this._loadingGrid = false;
     }
 

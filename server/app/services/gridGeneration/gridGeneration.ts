@@ -18,9 +18,11 @@ export default class GridGeneration {
     private _gridSize: number;
     private _definitionCache: HashString = {};
     private _gridCache: HashList = {};
+    private _level: string;
 
-    public initializeGrid(size: number): void {
+    public initializeGrid(size: number, level: string): void {
         this._gridSize = size !== undefined ? size : GRID_SIZE;
+        this._level = level;
         this._wordStack = [];
         this._definitionCache = {};
         this._gridCache = {};
@@ -104,7 +106,7 @@ export default class GridGeneration {
             return this._definitionCache[query];
         }
 
-        const uri: string = `http://localhost:3000/lexical/definition/${query}/easy`;
+        const uri: string = `http://localhost:3000/lexical/definition/${query}/${this._level}`;
         // Note: Axios sends a valid Promise but the linter doesn't detect it. It's a document bug on GitHub.
         // tslint:disable-next-line:await-promise
         const { data: {lexicalResult} }: AxiosResponseData = await axios.get(uri);
@@ -158,7 +160,7 @@ export default class GridGeneration {
             let count: number = 0;
             let isValid: boolean = false;
             do {
-                const uri: string = `http://localhost:3000/lexical/wordAndDefinition/${query}/common/easy`;
+                const uri: string = `http://localhost:3000/lexical/wordAndDefinition/${query}/common/${this._level}`;
                 // tslint:disable-next-line:await-promise
                 const { data: {lexicalResult} }: AxiosResponseData = await axios.get(uri);
 
@@ -190,7 +192,7 @@ export default class GridGeneration {
             const gridFreeze: List<List<Cell>> = await this.findWordAndDefinition(words, wordIndex, immutableGird);
 
             if (wordRepeats(words, wordIndex)) {
-                this.initializeGrid(this._gridSize);
+                this.initializeGrid(this._gridSize, this._level);
             }
 
             const nextGrid: List<List<Cell>> = gridFreeze.size > 0 ? gridFreeze : this._gridCache[wordIndex];

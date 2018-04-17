@@ -7,7 +7,7 @@ export default {
     routes: [
         {
             method: "GET",
-            path: "/generate",
+            path: "/generate/:level",
             middleware: [
                 grid.generate
             ]

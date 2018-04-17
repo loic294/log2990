@@ -4,6 +4,8 @@ import { Subject } from "rxjs/Subject";
 import Word from "../../../../common/lexical/word";
 import axios from "axios";
 import { Cell } from "../../../../common/grid/cell";
+import { Difficulty, difficultyName } from "../../../../common/grid/difficulties";
+
 @Injectable()
 export class GridLoadingService {
 
@@ -18,9 +20,9 @@ export class GridLoadingService {
         this._loadNewClues = this._cluesLoad.asObservable();
     }
 
-    public async loadNewGrid(): Promise<void> {
+    public async loadNewGrid(level: Difficulty): Promise<void> {
 
-        const url: string = "http://localhost:3000/grid/generate";
+        const url: string = `http://localhost:3000/grid/generate/${difficultyName(level).toLocaleLowerCase()}`;
         // Note: Nécessaire puisque le linter ne supporte pas AxiosPromise même si ça extend Promise
         // tslint:disable-next-line:no-use-before-declare await-promise
         const { data: { grid, clues } }: { data: { grid: Array<Array<Cell>>, clues: Array<Word> }} = await axios.get(url);
