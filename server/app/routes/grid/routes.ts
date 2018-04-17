@@ -6,7 +6,7 @@ export default {
     base: "/grid",
     routes: [{
         method: "GET",
-        path: "/",
+        path: "/generate",
         middleware: [
             grid.generate
         ]
