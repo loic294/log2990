@@ -45,7 +45,7 @@ export default class GridGeneration {
         traverseWord(word, (row: number, col: number) => {
             const cellChar: string = grid.get(row).get(col).char;
             if (cellChar !== BLACK_CELL) {
-                query += count > 1 ? `${count}${cellChar}` : `${cellChar}`;
+                query += count > 0 ? `${count}${cellChar}` : `${cellChar}`;
                 count = 0;
             } else {
                 count++;
@@ -129,8 +129,7 @@ export default class GridGeneration {
                 return true;
             }
 
-            const cow: boolean = containtsOnlyLetters(buildWord);
-            if (cow && subWord && subWord.length > 1) {
+            if (containtsOnlyLetters(buildWord) && subWord && subWord.length > 1) {
                 const result: string = await this.checkWordDefinition(buildWord);
 
                 if (result === NO_DEFINITION) {
@@ -180,7 +179,7 @@ export default class GridGeneration {
     public wordRepeats(words: Array<Constraint>, index: number): boolean {
         const wordCount: Object = {};
         for (const word of words) {
-            if (wordCount[word.name]++) {
+            if (wordCount[word.name]++ > 0) {
                 return true;
             }
         }
@@ -211,7 +210,7 @@ export default class GridGeneration {
         } while (wordIndex < words.length && wordIndex > 0);
 
         this.fillErrorBlackCase();
-        this._wordsFinal = words.filter((word: Constraint) => word.name.length > 0 && word.desc !== NO_DEFINITION);
+        this._wordsFinal = words.filter((word: Constraint) => word.name.length > 0 && !word.invalid && word.desc !== NO_DEFINITION);
 
     }
 

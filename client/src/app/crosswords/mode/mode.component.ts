@@ -16,6 +16,7 @@ import { GridLoadingService } from "../../grid-loading.service/grid-loaing.servi
     public showNameInput: boolean = false;
     public showStartSoloGame: boolean = false;
     public waitingForPlayer: boolean = false;
+    public loadingGrid: boolean = false;
     public scoreOpponent: number = 0;
 
     public constructor (
@@ -30,7 +31,9 @@ import { GridLoadingService } from "../../grid-loading.service/grid-loaing.servi
         }
 
     public async newGame(): Promise<void> {
+        this.loadingGrid = true;
         await this.gridLoadingService.loadNewGrid();
+        this.loadingGrid = false;
         this.closeDialog();
     }
 
@@ -48,6 +51,10 @@ import { GridLoadingService } from "../../grid-loading.service/grid-loaing.servi
 
     public isWaitingForPlayer(): boolean {
         return this.waitingForPlayer;
+    }
+
+    public isLoadingGrid(): boolean {
+        return this.loadingGrid;
     }
 
     public startSoloGame(): boolean {

@@ -1,4 +1,4 @@
-<div *ngIf="!isWaitingForPlayer()">
+<div *ngIf="!isWaitingForPlayer() && !isLoadingGrid()">
     <h1>Welcome {{player}}!</h1>
   
     <div class="input-row">
@@ -43,9 +43,10 @@
     </div>
   </div>
   
-  <div *ngIf="isWaitingForPlayer()">
+  <div *ngIf="isWaitingForPlayer() || isLoadingGrid()">
     <div class="waiting-connection">
-      <h2>Waiting for another player to join</h2>
+      <h2 *ngIf="isWaitingForPlayer()">Waiting for another player to join</h2>
+      <h2 *ngIf="isLoadingGrid()">Loading the grid</h2>
       <div class="spinner">
           <mat-spinner color="warn"></mat-spinner>
       </div>
