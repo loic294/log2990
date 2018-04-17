@@ -1,9 +1,18 @@
 import { Request, Response, NextFunction } from "express";
+import GridGeneration from "../../services/gridGeneration/gridGeneration";
+import { GRID_SIZE } from "../../../../common/grid/difficulties";
 
-// Test lexical service
 export const generate: (req: Request, res: Response, next: NextFunction) => Promise<void> =
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
-    res.json({ success: true });
+    const grid: GridGeneration = new GridGeneration();
+    grid.initializeGrid(GRID_SIZE);
+    await grid.findAllWordsSpaces();
+    await grid.startRecursion();
+
+    res.json({
+        grid: grid.grid,
+        words: grid.words
+    });
 
 };
