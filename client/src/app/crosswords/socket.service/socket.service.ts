@@ -130,13 +130,13 @@ export class SocketService {
     }
 
     public initializeGridSocket(): void {
-        this._socket.on("sync_grid_send", (data: string) => {
+        this._socket.on(SocketMessage.syncGridSend, (data: string) => {
             const { grid, clues } = JSON.parse(data);
             this.gridLoadingService.setNewGrid(grid, clues);
         });
-        this._socket.on("ready_to_sync", (data: IGameModel) => {
+        this._socket.on(SocketMessage.readyToSync, (data: IGameModel) => {
             const content: string = JSON.stringify({ grid: this._grid, clues: this._clues });
-            this.socket.emit("sync_grid", content);
+            this.socket.emit(SocketMessage.syncGrid, content);
         });
     }
 

@@ -12,9 +12,9 @@ import { GridLoadingService } from "../../grid-loading.service/grid-loading.serv
   })
   export class TerminationDialogComponent {
     private _dialogType: Number;
-    public showRematchOffer: boolean = false;
-    public showWaitingRematchOffer: boolean = false;
-    public loadingGrid: boolean = false;
+    private _loadingGrid: boolean;
+    public showRematchOffer: boolean;
+    public showWaitingRematchOffer: boolean;
     public opponentID: string;
 
     public constructor (
@@ -24,6 +24,9 @@ import { GridLoadingService } from "../../grid-loading.service/grid-loading.serv
         private gridLoadingService: GridLoadingService,
         @Inject(MAT_DIALOG_DATA) public data: Type) {
 
+            this.showRematchOffer = false;
+            this.showWaitingRematchOffer = false;
+            this._loadingGrid = false;
             dialogRef.disableClose = true;
             this._dialogType = data;
             this.rematchOffer();
@@ -31,13 +34,13 @@ import { GridLoadingService } from "../../grid-loading.service/grid-loading.serv
         }
 
     public async loadNewGrid(): Promise<void> {
-        this.loadingGrid = true;
+        this._loadingGrid = true;
         await this.gridLoadingService.loadNewGrid();
-        this.loadingGrid = false;
+        this._loadingGrid = false;
     }
 
     public isLoadingGrid(): boolean {
-        return this.loadingGrid;
+        return this._loadingGrid;
     }
 
     public closeDialog(): void {
