@@ -7,6 +7,15 @@ import { GridService } from "./grid.service";
 import Word, { Orientation } from "../../../../../common/lexical/word";
 import { DifficultyService } from "./../difficulty.service/difficulty.service";
 import { GridLoadingService } from "../../grid-loading.service/grid-loaing.service";
+import { Cell } from "../../../../../common/grid/cell";
+
+const GRID: Array<Array<Cell>> = [
+    [new Cell("t"), new Cell("e"), new Cell("s"), new Cell("t"), new Cell()],
+    [new Cell(), new Cell(), new Cell(), new Cell(), new Cell()],
+    [new Cell(), new Cell(), new Cell(), new Cell(), new Cell()],
+    [new Cell(), new Cell(), new Cell(), new Cell(), new Cell()],
+    [new Cell(), new Cell(), new Cell(), new Cell(), new Cell()],
+];
 
 describe("GridService", () => {
 
@@ -28,6 +37,7 @@ describe("GridService", () => {
             new SocketService(new Socket(config), new DifficultyService(), new GridLoadingService()),
             new GridLoadingService()
         );
+        gridService["initGrid"](GRID);
     });
 
     it("'b' should be a letter", () => {
@@ -51,6 +61,8 @@ describe("GridService", () => {
         const elem: HTMLElement = document.createElement("div");
         gridService.validateWord("hey", elem);
         expect(gridService.word.isValidated).toBe(true);
+        console.log('GRID', gridService.grid);
+
         expect(gridService.grid[0][0].validated).toBe(true);
         expect(gridService.grid[0][1].validated).toBe(true);
         expect(gridService.grid[0][2].validated).toBe(true);
@@ -117,9 +129,6 @@ describe("GridService", () => {
             expect(gridService.grid[0][3].validatedByOther).toBe(true);
         });
 
-        it("should highlight other player's current selection in a different color", () => {
-
-        });
     });
 
 });

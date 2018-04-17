@@ -3,7 +3,7 @@ import { Socket, SocketIoConfig, SocketIoModule } from "ng-socket-io";
 
 import { SocketService } from "./socket.service";
 import { DifficultyService } from "./../difficulty.service/difficulty.service";
-import { GridLoadingService } from "../grid-loading.service/grid-loaing.service";
+import { GridLoadingService } from "../../grid-loading.service/grid-loaing.service";
 
 describe("SocketService", () => {
 

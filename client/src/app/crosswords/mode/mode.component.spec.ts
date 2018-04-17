@@ -155,27 +155,6 @@ describe("ModeComponent", () => {
     });
 
     describe("Join a two player game", () => {
-        it("with game name 'test' should call socketService joinGame('test')",  inject([SocketService], (socketService: SocketService) => {
-
-            const gameId: string = "test";
-            spy = spyOn(socketService, "joinGame");
-
-            dialog.joinGame(gameId);
-
-            expect(socketService.joinGame).toHaveBeenCalledWith("test");
-
-        }));
-
-        it("should emit 'connect_to_game' from socketService joinGame",  inject([SocketService], (socketService: SocketService) => {
-
-            const gameId: string = "test";
-            spy = spyOn(socketService.socket, "emit");
-
-            dialog.joinGame(gameId);
-
-            expect(socketService.socket.emit).toHaveBeenCalledWith("connect_to_game", '{"gameId":"test","value":""}');
-
-        }));
 
         it("socketService isUserConnected should return true",  inject([SocketService], (socketService: SocketService) => {
 
