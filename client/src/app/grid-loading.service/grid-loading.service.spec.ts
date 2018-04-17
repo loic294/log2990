@@ -3,7 +3,7 @@ import { SocketIoModule, SocketIoConfig } from "ng-socket-io";
 
 import { SocketService } from "../crosswords/socket.service/socket.service";
 import { DifficultyService } from "../crosswords/difficulty.service/difficulty.service";
-import { GridLoadingService } from "./grid-loaing.service";
+import { GridLoadingService } from "./grid-loading.service";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 

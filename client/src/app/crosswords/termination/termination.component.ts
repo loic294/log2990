@@ -3,7 +3,7 @@ import { SocketService } from "../socket.service/socket.service";
 import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
 import { Type } from "../type";
 import { Mode } from "../../../../../common/grid/player";
-import { GridLoadingService } from "../../grid-loading.service/grid-loaing.service";
+import { GridLoadingService } from "../../grid-loading.service/grid-loading.service";
 
 @Component({
     selector: "app-termination-component-termination",

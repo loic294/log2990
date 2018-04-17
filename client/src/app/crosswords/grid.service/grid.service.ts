@@ -7,7 +7,7 @@ import { GridToolsService} from "./grid.tools.service";
 import { WordService } from "../word.service/word.service";
 import { SocketService } from "../socket.service/socket.service";
 import { BACK_SPACE_KEY_CODE } from "../../constants";
-import { GridLoadingService } from "../../grid-loading.service/grid-loaing.service";
+import { GridLoadingService } from "../../grid-loading.service/grid-loading.service";
 
 @Injectable()
 export class GridService {

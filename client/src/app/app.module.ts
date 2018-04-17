@@ -19,7 +19,7 @@ import { GridService } from "./crosswords/grid.service/grid.service";
 import { SocketIoModule, SocketIoConfig } from "ng-socket-io";
 import { ModeComponent, ModeDialogComponent } from "./crosswords/mode/mode.component";
 import { SocketService } from "./crosswords/socket.service/socket.service";
-import { GridLoadingService } from "./grid-loading.service/grid-loaing.service";
+import { GridLoadingService } from "./grid-loading.service/grid-loading.service";
 import { AdminComponent } from "./race/admin-component/admin.component";
 import {MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS} from "@angular/material/dialog";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";

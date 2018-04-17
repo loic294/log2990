@@ -3,7 +3,7 @@ import { SocketService } from "../socket.service/socket.service";
 import Word from "../../../../../common/lexical/word";
 
 import { WordService } from "../word.service/word.service";
-import { GridLoadingService } from "../../grid-loading.service/grid-loaing.service";
+import { GridLoadingService } from "../../grid-loading.service/grid-loading.service";
 
 @Component({
     selector: "app-clues",

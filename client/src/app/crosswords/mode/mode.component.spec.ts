@@ -15,7 +15,7 @@ import {MatProgressSpinnerModule} from "@angular/material";
 import { SocketService } from "../socket.service/socket.service";
 import { DifficultyService } from "../difficulty.service/difficulty.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import { GridLoadingService } from "../../grid-loading.service/grid-loaing.service";
+import { GridLoadingService } from "../../grid-loading.service/grid-loading.service";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
