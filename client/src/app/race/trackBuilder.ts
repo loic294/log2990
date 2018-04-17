@@ -8,7 +8,8 @@ import { Car } from "./car/car";
 const WIDTH: number = 10;
 const CIRCLE_SEGMENTS: number = 32;
 const OFFSET_FACTOR: number = -0.1;
-const DISTANCE_FACTOR: number = 1.3;
+const DISTANCE_FACTOR: number = 2;
+const CAR_LINE_DISTANCE_FACTOR: number = 5;
 const NUMBER_OF_LINE: number = 2;
 const LINE_POSITION_FACTOR: number = 3;
 const OFFTRACK_OFFSET: number = 0.03;
@@ -146,13 +147,18 @@ export class TrackBuilder {
         const lineMaterial: MeshPhongMaterial = new MeshPhongMaterial({ map: texture, side: DoubleSide });
         lineMaterial.polygonOffset = true;
         lineMaterial.polygonOffsetFactor = OFFSET_FACTOR;
-        const firstLine: Mesh = new Mesh(lineGeometry, lineMaterial);
-        const secondLine: Mesh = new Mesh(lineGeometry, lineMaterial);
+        const startingLine: Mesh = new Mesh(lineGeometry, lineMaterial);
+        const firstCarLine: Mesh = new Mesh(lineGeometry, lineMaterial);
+        const secondCarLine: Mesh = new Mesh(lineGeometry, lineMaterial);
 
-        this.positionMesh(firstLine, WIDTH / DISTANCE_FACTOR);
-        this.initiateLineStats(firstLine);
-        this.positionMesh(secondLine, WIDTH * DISTANCE_FACTOR);
-        this.initiateLineStats(secondLine);
+        this.positionMesh(startingLine, WIDTH * DISTANCE_FACTOR);
+        this._startingLines.push(startingLine);
+        this._scene.add(startingLine);
+
+        this.positionMesh(firstCarLine, WIDTH * DISTANCE_FACTOR - DISTANCE_FACTOR * 2);
+        this.initiateCarLineStats(firstCarLine);
+        this.positionMesh(secondCarLine, WIDTH * DISTANCE_FACTOR - DISTANCE_FACTOR * CAR_LINE_DISTANCE_FACTOR);
+        this.initiateCarLineStats(secondCarLine);
     }
 
     private positionMesh(mesh: Mesh, distance: number): void {
@@ -172,11 +178,10 @@ export class TrackBuilder {
         mesh.rotateZ(Math.PI / 2);
     }
 
-    private initiateLineStats(line: Mesh): void {
+    private initiateCarLineStats(line: Mesh): void {
         line.userData.leftPositionTaken = false;
         line.userData.rightPositionTaken = false;
         this._startingLines.push(line);
-        this._scene.add(line);
     }
 
     private positionRacers(): void {
@@ -193,12 +198,12 @@ export class TrackBuilder {
     }
 
     private chooseLine(car: Car): void {
-        if (Math.random() * NUMBER_OF_LINE <= 1 && this.lineAsFreePosition(this._startingLines[0])) {
-            this.chooseLineSide(car, this._startingLines[0]);
-        } else if (this.lineAsFreePosition(this._startingLines[1])) {
+        if (Math.random() * NUMBER_OF_LINE <= 1 && this.lineAsFreePosition(this._startingLines[1])) {
             this.chooseLineSide(car, this._startingLines[1]);
+        } else if (this.lineAsFreePosition(this._startingLines[2])) {
+            this.chooseLineSide(car, this._startingLines[2]);
         } else {
-            this.chooseLineSide(car, this._startingLines[0]);
+            this.chooseLineSide(car, this._startingLines[1]);
         }
     }
 
