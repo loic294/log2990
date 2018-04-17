@@ -30,10 +30,14 @@ import { GridLoadingService } from "../../grid-loading.service/grid-loaing.servi
 
         }
 
-    public async newGame(): Promise<void> {
+    public async loadNewGrid(): Promise<void> {
         this.loadingGrid = true;
         await this.gridLoadingService.loadNewGrid();
         this.loadingGrid = false;
+    }
+
+    public async newGame(): Promise<void> {
+        await this.loadNewGrid();
         this.closeDialog();
     }
 
@@ -116,8 +120,10 @@ import { GridLoadingService } from "../../grid-loading.service/grid-loaing.servi
         this.waitingForPlayer = true;
     }
 
-    public joinGame(gameId: string): void {
+    public async joinGame(gameId: string): Promise<void> {
+        await this.loadNewGrid();
         this.socketService.joinGame(gameId);
+        this.closeDialog();
     }
 }
 

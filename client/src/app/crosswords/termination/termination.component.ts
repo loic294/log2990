@@ -14,6 +14,7 @@ import { GridLoadingService } from "../../grid-loading.service/grid-loaing.servi
     private _dialogType: Number;
     public showRematchOffer: boolean = false;
     public showWaitingRematchOffer: boolean = false;
+    public loadingGrid: boolean = false;
     public opponentID: string;
 
     public constructor (
@@ -29,6 +30,16 @@ import { GridLoadingService } from "../../grid-loading.service/grid-loaing.servi
             this.receiveAcceptRematch();
         }
 
+    public async loadNewGrid(): Promise<void> {
+        this.loadingGrid = true;
+        await this.gridLoadingService.loadNewGrid();
+        this.loadingGrid = false;
+    }
+
+    public isLoadingGrid(): boolean {
+        return this.loadingGrid;
+    }
+
     public closeDialog(): void {
         this.dialog.closeAll();
     }
@@ -39,7 +50,7 @@ import { GridLoadingService } from "../../grid-loading.service/grid-loaing.servi
 
     public async createSoloGame(): Promise<void> {
 
-        await this.gridLoadingService.loadNewGrid();
+        await this.loadNewGrid();
         this.closeDialog();
 
     }
@@ -56,7 +67,8 @@ import { GridLoadingService } from "../../grid-loading.service/grid-loaing.servi
        });
     }
 
-    public acceptRematchOffer(): void {
+    public async acceptRematchOffer(): Promise<void> {
+        await this.loadNewGrid();
         this.socketService.acceptRequestRematch(this.opponentID);
         this.closeDialog();
     }
