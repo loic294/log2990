@@ -61,7 +61,6 @@ describe("GridService", () => {
         const elem: HTMLElement = document.createElement("div");
         gridService.validateWord("hey", elem);
         expect(gridService.word.isValidated).toBe(true);
-        console.log('GRID', gridService.grid);
 
         expect(gridService.grid[0][0].validated).toBe(true);
         expect(gridService.grid[0][1].validated).toBe(true);

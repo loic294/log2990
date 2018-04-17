@@ -2,7 +2,7 @@ import { Cell } from "../../../../common/grid/cell";
 import { Orientation } from "../../../../common/lexical/word";
 import Constraint, { createConstraints } from "./constraint";
 import {traverseWord, switchPosition, sortWords, AxiosResponseData, isNextNotBlack, isNextBlack,
-    containtsOnlyLetters, traverseGrid, HashString, HashList, wordRepeats} from "./gridTools";
+    containtsOnlyLetters, traverseGrid, HashString, HashList, wordRepeats, isValidWord} from "./gridTools";
 import { fillGridWithCells, fillGridWithBlackCells } from "./gridInitialisation";
 import axios from "axios";
 import { List } from "immutable";
@@ -175,7 +175,6 @@ export default class GridGeneration {
         return grid;
     }
 
-
     public async findAllWords(words: Array<Constraint>, grid: Array<Array<Cell>>): Promise<void> {
         let wordIndex: number = 0;
 
@@ -197,7 +196,7 @@ export default class GridGeneration {
         } while (wordIndex < words.length && wordIndex > 0);
 
         this.fillErrorBlackCase();
-        this._wordsFinal = words.filter((word: Constraint) => this.isValidWord(word));
+        this._wordsFinal = words.filter((word: Constraint) => isValidWord(word));
 
     }
 
