@@ -253,7 +253,7 @@ export class GridService {
         this._grid = grid.map((row: Array<Cell>) =>
             row.map((cell: Cell) => {
                 const newCell: Cell = new Cell(cell.char, cell.x, cell.y);
-                newCell.setBlack(cell.black);
+                newCell.setBlack(cell.isBlack());
 
                 return newCell;
             })
@@ -262,7 +262,7 @@ export class GridService {
         this._gridTools.iterateGrid(this._grid, (row: number, col: number) => {
             this._grid[row][col].x = row;
             this._grid[row][col].y = col;
-            if (!this._grid[row][col].black) {
+            if (!this._grid[row][col].isBlack()) {
                 this._grid[row][col].char = "";
             }
 
