@@ -1,8 +1,8 @@
 import { Cell } from "../../../../common/grid/cell";
 import { Orientation } from "../../../../common/lexical/word";
 import Constraint, { SubConstraint } from "./constraint";
-import { checkIntersection } from "line-intersect";
 import { List } from "immutable";
+import { NO_DEFINITION } from "./gridGeneration";
 export interface HashString {
     [name: string]: string;
 }
@@ -18,6 +18,24 @@ export interface HashCells {
 export interface HashList {
     [name: number]: List<List<Cell>>;
 }
+
+export interface AxiosResponseData {
+    data: {lexicalResult: string};
+}
+
+export const isNextNotBlack: (positions: Array<number>, gridSize: number, grid: Array<Array<Cell>>) => boolean
+    = (positions: Array<number>, gridSize: number, grid: Array<Array<Cell>>) => {
+    return positions[1] <= gridSize && positions[0] <= gridSize && !grid[positions[0]][positions[1]].isBlack();
+};
+
+export const isNextBlack: (positions: Array<number>, gridSize: number, grid: Array<Array<Cell>>) => boolean
+    = (positions: Array<number>, gridSize: number, grid: Array<Array<Cell>>) => {
+    return positions[1] <= gridSize && positions[0] <= gridSize && !grid[positions[0]][positions[1]].isBlack();
+};
+
+export const isValidWord: (word: Constraint) => boolean = (word: Constraint) => {
+    return word.name.length > 0 && word.desc !== NO_DEFINITION;
+};
 
 export const containtsOnlyLetters: (query: string) => boolean
     = (query: string): boolean => {
@@ -60,27 +78,6 @@ export const sortWords: (words: Array<Constraint>) => Array<Constraint>
         });
 };
 
-export const intersects: (word1: Constraint, word2: Constraint) => Array<number>
-    = (word1: Constraint, word2: Constraint): Array<number> => {
-
-    if (word1.orientation === word2.orientation) {
-        return [];
-    }
-
-    const { point, type }: { point: { x: number, y: number }, type: string } = checkIntersection(
-        word1.position[1],
-        word1.position[0],
-        word1.orientation === Orientation.horizontal ? word1.position[1] + word1.length : word1.position[1],
-        word1.orientation === Orientation.vertical ? word1.position[0] + word1.length : word1.position[0],
-        word2.position[1],
-        word2.position[0],
-        word2.orientation === Orientation.horizontal ? word2.position[1] + word2.length : word2.position[1],
-        word2.orientation === Orientation.vertical ? word2.position[0] + word2.length : word2.position[0],
-    );
-
-    return type === "intersecting" ? [point.y, point.x] : [];
-};
-
 export const switchPosition: (orientation: Orientation, value1: number, value2: number) => Array<number>
     = (orientation: Orientation, value1: number, value2: number): Array<number> => {
     return orientation === Orientation.horizontal ? [value1, value2] : [value2, value1];
@@ -109,4 +106,15 @@ export const traverseGrid: (grid: Array<Array<Cell>>, fct: Function) => void = (
             }
         }
     }
+};
+
+export const wordRepeats: (words: Array<Constraint>, index: number) => boolean = (words: Array<Constraint>, index: number) => {
+    const wordCount: HashNumber = {};
+    for (const word of words) {
+        if (wordCount[word.name]++) {
+            return true;
+        }
+    }
+
+    return false;
 };
