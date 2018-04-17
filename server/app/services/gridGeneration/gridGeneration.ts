@@ -6,7 +6,7 @@ import {traverseWord, switchPosition, sortWords, AxiosResponseData, isNextNotBla
 import { fillGridWithCells, fillGridWithBlackCells } from "./gridInitialisation";
 import axios from "axios";
 import { List } from "immutable";
-import { GRID_SIZE, NORMAL_CELL } from "../../../../common/grid/difficulties";
+import { GRID_SIZE, EMPTY_CELL } from "../../../../common/grid/difficulties";
 
 export const NO_DEFINITION: string = "No definitions";
 const MAX_BLACK_CELL: number = 0.3;
@@ -30,7 +30,7 @@ export default class GridGeneration {
 
     public fillErrorBlackCase(): void {
         traverseGrid(this._grid, (row: number, col: number) => {
-            if (this._grid[row][col].char === NORMAL_CELL) {
+            if (this._grid[row][col].char === EMPTY_CELL) {
                 this._grid[row][col].setBlack(true);
             }
         });
@@ -42,7 +42,7 @@ export default class GridGeneration {
         let index: number = 0;
         traverseWord(word, (row: number, col: number) => {
             const cellChar: string = grid.get(row).get(col).char;
-            if (cellChar !== NORMAL_CELL) {
+            if (cellChar !== EMPTY_CELL) {
                 query += count > 0 ? `${count}${cellChar}` : `${cellChar}`;
                 count = 0;
             } else {
@@ -81,12 +81,16 @@ export default class GridGeneration {
         return grid;
     }
 
+    public isNormalCellAndBlack(grid: List<List<Cell>>, row: number, col: number): boolean {
+        return grid.get(row) && grid.get(row).get(col) && grid.get(row).get(col).char === EMPTY_CELL
+            && !grid.get(row).get(col).isBlack();
+    }
+
     public shouldFindWord(grid: List<List<Cell>>, word: Constraint): boolean {
 
         let shouldAddToGrid: boolean = false;
         traverseWord(word, (row: number, col: number) => {
-            if (grid.get(row) && grid.get(row).get(col) && grid.get(row).get(col).char === NORMAL_CELL
-            && !grid.get(row).get(col).isBlack()) {
+            if (this.isNormalCellAndBlack(grid, row, col)) {
                 shouldAddToGrid = true;
             }
         });

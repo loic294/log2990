@@ -110,9 +110,10 @@ export default class LexicalService {
 
         const { data }: { data: Array<AxiosWords> } = await this.baseWordSearch(request);
 
+        // On a une "magic string" mais le linter ne chiale pas (ça semble être accepté puisqu'on valide un type)
+        // On vérifie undefined puisque c'est ce qui est renvoyé par l'API
         if (typeof data === "undefined" || data.length === 0) {
-            // tslint:disable-next-line:no-floating-promises
-            this.wordSearch(researchCriteria, common);
+            await this.wordSearch(researchCriteria, common);
         }
 
         return this.commonFinder(common, data, request);
@@ -134,7 +135,6 @@ export default class LexicalService {
     private commonFinder(common: string, rawResponse: Array<AxiosWords>, requestString: string): string {
 
         let responseLength: number = rawResponse.length;
-        // tslint:disable-next-line:no-inferrable-types
         const NON_NUMBERS_INDEX: number = 2;
         const FREQ_CUTOFF: Number = 8;
 
