@@ -14,23 +14,15 @@ export default class LexicalService {
 
     private async baseDefinition(word: string): Promise<AxiosResponse> {
         const WORDNIK_URL: string = `http://api.wordnik.com:80/v4/word.json/${word}/definitions?limit=200&${KEYS.WORDNIK_KEY}`;
-        try {
-            const response: AxiosResponse = await axios.get(WORDNIK_URL);
+        const response: AxiosResponse = await axios.get(WORDNIK_URL);
 
-            return response.data;
-        } catch (err) {
-            throw err;
-        }
+        return response.data;
     }
 
     private async baseWordSearch(requirements: string): Promise<AxiosResponse> {
         const DATAMUSE_URL: string = `https://api.datamuse.com/words?sp=${requirements}&md=f&max=1500`;
 
-        try {
-            return axios.get(DATAMUSE_URL);
-        } catch (err) {
-            throw err;
-        }
+        return axios.get(DATAMUSE_URL);
     }
     private removeExamplesDefinitions(definitions: string []): void {
         for (const def in definitions) {
@@ -90,10 +82,9 @@ export default class LexicalService {
     }
 
     public async wordSearch(researchCriteria: string, common: string): Promise<string> {
-        let request: string;
+        let request: string = "";
         let previousChar: string = "";
         const tenWordLetterRepeat: number = 9;
-        request = "";
 
         for (const item of researchCriteria) {
 
@@ -108,15 +99,18 @@ export default class LexicalService {
             previousChar = item;
         }
 
-        const { data }: { data: Array<AxiosWords> } = await this.baseWordSearch(request);
+        try {
+            const maxTries: number = 5;
+            let count: number = 0;
+            let rawResponse: { data: Array<AxiosWords> };
+            do {
+                rawResponse = await this.baseWordSearch(request);
+            } while (rawResponse.data.length === 0 && count++ < maxTries);
 
-        // On a une "magic string" mais le linter ne chiale pas (ça semble être accepté puisqu'on valide un type)
-        // On vérifie undefined puisque c'est ce qui est renvoyé par l'API
-        if (typeof data === "undefined" || data.length === 0) {
-            await this.wordSearch(researchCriteria, common);
+            return this.commonFinder(common, rawResponse.data, request);
+        } catch (err) {
+            return NO_DEFINITION;
         }
-
-        return this.commonFinder(common, data, request);
     }
 
     public async wordAndDefinition(researchCriteria: string, common: string, level: string): Promise<string[]> {

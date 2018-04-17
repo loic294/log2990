@@ -2,7 +2,7 @@ export class Cell {
 
     private validatedByOther: boolean;
     private shared: boolean;
-    private black: boolean;
+    public black: boolean; // NOTE POUR MATHIEU: Je t'en avais parlé puisqu'on doit y accéder pour batir les constructeurs dans le frontend
     public wordIndexes: Array<number>;
     public isOtherPlayer: boolean;
 

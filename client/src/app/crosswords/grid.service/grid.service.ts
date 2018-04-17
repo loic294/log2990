@@ -253,7 +253,7 @@ export class GridService {
         this._grid = grid.map((row: Array<Cell>) =>
             row.map((cell: Cell) => {
                 const newCell: Cell = new Cell(cell.char, cell.x, cell.y);
-                newCell.setBlack(cell.isBlack());
+                newCell.setBlack(cell.black);
 
                 return newCell;
             })
