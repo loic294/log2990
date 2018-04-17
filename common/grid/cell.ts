@@ -1,10 +1,10 @@
 export class Cell {
 
+    private validatedByOther: boolean;
+    private shared: boolean;
+    private black: boolean;
     public wordIndexes: Array<number>;
     public isOtherPlayer: boolean;
-    public isValidatedByOther: boolean;
-    public shared: boolean;
-    public black: boolean;
 
     public constructor(
         private _char: string = "-",
@@ -17,7 +17,7 @@ export class Cell {
 
         this.wordIndexes = [];
         this.isOtherPlayer = false;
-        this.isValidatedByOther = false;
+        this.validatedByOther = false;
         this.black = false;
     }
     public isShared(): void {
@@ -27,13 +27,12 @@ export class Cell {
     public get sharedValidation(): boolean{
         return this.shared;
     }
-    public get validatedByOther(): boolean {
-        return this.isValidatedByOther;
+    public get isValidatedByOther(): boolean {
+        return this.validatedByOther;
     }
     
     public validateOther(): void {
-        this.isValidatedByOther = true;
-       
+        this.validatedByOther = true;
     }
 
     public set char(c: string) {

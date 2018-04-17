@@ -3,9 +3,9 @@
     <div class="row" *ngFor="let row of _gridService.grid;" >
       <div class="col" *ngFor="let cell of row;">
 					<input 
-            [disabled]="cell.validated || cell.validatedByOther" 
+            [disabled]="cell.validated || cell.isValidatedByOther" 
             [class.validate]="cell.validated"
-            [class.validateOther]="cell.validatedByOther"
+            [class.validateOther]="cell.isValidatedByOther"
             [class.sharedValidation]= "cell.sharedValidation"
             class="square"
 						[ngModel]="cell.char" 

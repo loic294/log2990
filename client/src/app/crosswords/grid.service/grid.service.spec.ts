@@ -122,10 +122,10 @@ describe("GridService", () => {
 
             gridService.applyValidation(wordFromOther, isOther);
 
-            expect(gridService.grid[0][0].validatedByOther).toBe(true);
-            expect(gridService.grid[0][1].validatedByOther).toBe(true);
-            expect(gridService.grid[0][2].validatedByOther).toBe(true);
-            expect(gridService.grid[0][3].validatedByOther).toBe(true);
+            expect(gridService.grid[0][0].isValidatedByOther).toBe(true);
+            expect(gridService.grid[0][1].isValidatedByOther).toBe(true);
+            expect(gridService.grid[0][2].isValidatedByOther).toBe(true);
+            expect(gridService.grid[0][3].isValidatedByOther).toBe(true);
         });
 
     });
