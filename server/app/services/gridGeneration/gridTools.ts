@@ -1,9 +1,23 @@
-// tslint:disable:no-console no-suspicious-comment max-func-body-length
-// TODO: Remove disable!!
 import { Cell } from "../../../../common/grid/cell";
 import { Orientation } from "../../../../common/lexical/word";
 import Constraint, { SubConstraint } from "./constraint";
 import { checkIntersection } from "line-intersect";
+import { List } from "immutable";
+export interface HashString {
+    [name: string]: string;
+}
+
+export interface HashNumber {
+    [name: string]: number;
+}
+
+export interface HashCells {
+    [name: number]: Array<Array<Cell>>;
+}
+
+export interface HashList {
+    [name: number]: List<List<Cell>>;
+}
 
 export const containtsOnlyLetters: (query: string) => boolean
     = (query: string): boolean => {
@@ -67,7 +81,7 @@ export const intersects: (word1: Constraint, word2: Constraint) => Array<number>
     return type === "intersecting" ? [point.y, point.x] : [];
 };
 
-export const siwtchPosition: (orientation: Orientation, value1: number, value2: number) => Array<number>
+export const switchPosition: (orientation: Orientation, value1: number, value2: number) => Array<number>
     = (orientation: Orientation, value1: number, value2: number): Array<number> => {
     return orientation === Orientation.horizontal ? [value1, value2] : [value2, value1];
 };
