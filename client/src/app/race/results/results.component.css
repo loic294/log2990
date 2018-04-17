@@ -32,22 +32,27 @@ input {
     margin: 10px 0;
     padding: 8px 16px;
     border-radius: 6px;
+    border-color: #0099dd;
 }
 
 input:focus {
     outline: none;
-    border-color: red;
 }
 
 
 .bestTime {
     font-weight: bolder;
-    color: red;
+    color: #0099dd;
 
 }
 
 li {
   list-style-type: none;
+}
+
+table { 
+    width: 100%;
+    border-collapse: collapse;
 }
 
 th, td {
@@ -58,4 +63,17 @@ th, td {
 
 h3 {
     display: inline;
+}
+
+.player {
+    background-color: #50b0da;
+}
+
+#options {
+    margin-top: 2%;
+    vertical-align: middle;
+}
+
+#options > button:last-child {
+    float: right;
 }
