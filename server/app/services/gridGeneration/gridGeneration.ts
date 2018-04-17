@@ -203,7 +203,7 @@ export default class GridGeneration {
     }
 
     public async startRecursion(): Promise<void> {
-        return this.findAllWords(this._wordStack, this._grid).then((): void => {})
+        return this.findAllWords(this._wordStack, this._grid).then((): void => null)
         .catch((err: Error) => console.error(err));
     }
 
