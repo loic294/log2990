@@ -6,7 +6,7 @@ import {traverseWord, switchPosition, sortWords, AxiosResponseData, isNextNotBla
 import { fillGridWithCells, fillGridWithBlackCells } from "./gridInitialisation";
 import axios from "axios";
 import { List } from "immutable";
-import { GRID_SIZE, BLACK_CELL } from "../../../../common/grid/difficulties";
+import { GRID_SIZE, NORMAL_CELL } from "../../../../common/grid/difficulties";
 
 export const NO_DEFINITION: string = "No definitions";
 const MAX_BLACK_CELL: number = 0.3;
@@ -30,7 +30,7 @@ export default class GridGeneration {
 
     public fillErrorBlackCase(): void {
         traverseGrid(this._grid, (row: number, col: number) => {
-            if (this._grid[row][col].char === BLACK_CELL) {
+            if (this._grid[row][col].char === NORMAL_CELL) {
                 this._grid[row][col].setBlack(true);
             }
         });
@@ -42,7 +42,7 @@ export default class GridGeneration {
         let index: number = 0;
         traverseWord(word, (row: number, col: number) => {
             const cellChar: string = grid.get(row).get(col).char;
-            if (cellChar !== BLACK_CELL) {
+            if (cellChar !== NORMAL_CELL) {
                 query += count > 0 ? `${count}${cellChar}` : `${cellChar}`;
                 count = 0;
             } else {
@@ -85,7 +85,7 @@ export default class GridGeneration {
 
         let shouldAddToGrid: boolean = false;
         traverseWord(word, (row: number, col: number) => {
-            if (grid.get(row) && grid.get(row).get(col) && grid.get(row).get(col).char === BLACK_CELL
+            if (grid.get(row) && grid.get(row).get(col) && grid.get(row).get(col).char === NORMAL_CELL
             && !grid.get(row).get(col).isBlack()) {
                 shouldAddToGrid = true;
             }
@@ -178,6 +178,8 @@ export default class GridGeneration {
     public async findAllWords(words: Array<Constraint>, grid: Array<Array<Cell>>): Promise<void> {
         let wordIndex: number = 0;
 
+        this._gridCache[0] = List(grid.map((row: Array<Cell>) => List(row)));
+
         do {
             const immutableGird: List<List<Cell>> = List(this._gridCache[wordIndex].map((row: List<Cell>) => List(row)));
             this._gridCache[wordIndex] = immutableGird;
@@ -193,7 +195,7 @@ export default class GridGeneration {
             this._wordStack[wordIndex].invalid = gridFreeze.size === 0;
             wordIndex++;
 
-        } while (wordIndex < words.length && wordIndex > 0);
+        } while (wordIndex > 0 && wordIndex < words.length);
 
         this.fillErrorBlackCase();
         this._wordsFinal = words.filter((word: Constraint) => isValidWord(word));
@@ -201,7 +203,7 @@ export default class GridGeneration {
     }
 
     public async startRecursion(): Promise<void> {
-        return this.findAllWords(this._wordStack, this._grid).then((): void => null)
+        return this.findAllWords(this._wordStack, this._grid).then((): void => {})
         .catch((err: Error) => console.error(err));
     }
 
