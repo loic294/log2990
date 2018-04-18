@@ -1,51 +1,84 @@
-/* tslint:disable */
+ /* tslint:disable */ 
+import GridGeneration from "./gridGeneration";
+import { traverseGrid } from "./gridTools";
+import { assert } from "chai";
 
-//  import { default as GridGenerationService } from "./gridGeneration";
-//  import { Cell } from "../../../../common/grid/case";
-// //  import { Orientation } from "../../../../common/lexical/word";
-//  import { assert } from "chai";
+describe("Grid Generation", async () => {
+    describe("Generate complete grid", async () => {
+        it("Should create a grid 5 x 5", async function () {
 
-//  const service: GridGenerationService = new GridGenerationService;
+            this.timeout(60000);
 
-//  describe("Grid Initialization", function() {
-// 	//  it("Should create a grid 10 x 10", function() {
-// 	// 	 const grid: Array<Array<Cell>> = service.fillGridWithCells(10)
-// 	// 	 assert.equal(grid.length, 10)
-// 	// 	 assert.equal(grid[0].length, 10)
-// 	//  });
-// 	//  it("Should create a grid 18 x 18", function() {
-// 	// 	 const grid: Array<Array<Cell>> = service.fillGridWithCells(18)
-// 	// 	 assert.equal(grid.length, 18)
-// 	// 	 assert.equal(grid[0].length, 18)
-// 	//  });
-// 	//  it("Should create a grid 0 x 0", function() {
-//     //      const grid: Array<Array<Cell>> = service.fillGridWithCells(0)
-//     //      console.log('GRID', grid)
-// 	// 	 assert.equal(grid.length, 0)
-// 	// 	 assert.equal(grid[0], undefined)
-//     //  });
-//  });
+            try {
 
-//  describe("Intersections", function() {
-// 	//  it("Should intersect at [0,0]", function() {
-//     //      const c1: Constraint = new Constraint("", "", [0, 0], Orientation.horizontal);
-//     //      c1.size = 6;
-//     //      const c2: Constraint = new Constraint("", "", [0, 0], Orientation.vertical);
-//     //      c2.size = 6;
-//     //      assert.equal(service.intersects(c1, c2), true);
-// 	//  });
-// 	//  it("Should intersect at [1,1]", function() {
-//     //      const c1: Constraint = new Constraint("", "", [0, 1], Orientation.horizontal);
-//     //      c1.size = 2;
-//     //      const c2: Constraint = new Constraint("", "", [1, 0], Orientation.vertical);
-//     //      c2.size = 2;
-//     //      assert.equal(service.intersects(c1, c2), true);
-// 	//  });
-// 	//  it("Should intersect at [1,1]", function() {
-//     //      const c1: Constraint = new Constraint("", "", [0, 1], Orientation.vertical);
-//     //      c1.size = 3;
-//     //      const c2: Constraint = new Constraint("", "", [1, 0], Orientation.horizontal);
-//     //      c2.size = 3;
-//     //      assert.equal(service.intersects(c1, c2), true);
-// 	//  });
-//  });
+                const grid: GridGeneration = new GridGeneration();
+                grid.initializeGrid(5, "easy");
+                await grid.findAllWordsSpaces();
+                await grid.startRecursion();
+                let countBlack: number = 0;
+                let countLetters: number = 0;
+                let countUndefined: number = 0;
+
+                traverseGrid(grid.grid, (row: number, col: number) => {
+                    if (grid.grid[row][col].isBlack()) {
+                        countBlack++
+                    } else if (grid.grid[row][col].char !== "-") {
+                        countLetters++;
+                    } else {
+                        countUndefined++;
+                    }
+                });
+
+                assert.equal(grid.words.length > 0, true);
+                assert.equal(countBlack > 5, true);
+                assert.equal(countLetters < 22, true);
+                assert.equal(countUndefined, 0);
+
+
+            } catch (err) {
+                console.error("ERROR RUNING GRID GENERATION", err)
+                throw err;
+            }
+
+            
+        });
+        it("Should create a grid 6 x 6", async function () {
+
+            this.timeout(30000);
+
+            try {
+
+                const grid: GridGeneration = new GridGeneration();
+                grid.initializeGrid(6, "easy");
+                await grid.findAllWordsSpaces();
+                await grid.startRecursion();
+                let countBlack: number = 0;
+                let countLetters: number = 0;
+                let countUndefined: number = 0;
+
+                traverseGrid(grid.grid, (row: number, col: number) => {
+                    if (grid.grid[row][col].isBlack()) {
+                        countBlack++
+                    } else if (grid.grid[row][col].char !== "-") {
+                        countLetters++;
+                    } else {
+                        countUndefined++;
+                    }
+                });
+
+                assert.equal(grid.words.length > 0, true);
+                assert.equal(countBlack > 7, true);
+                assert.equal(countLetters < 30, true);
+                assert.equal(countUndefined, 0);
+
+
+            } catch (err) {
+                console.error("ERROR RUNING GRID GENERATION", err)
+                throw err;
+            }
+ 
+        });
+    });
+});
+
+
