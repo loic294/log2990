@@ -111,12 +111,16 @@ export class GameComponent implements AfterViewInit, OnInit {
             this._trackInformation.track.timesPlayed++;
             await this._trackInformation.patchTrack();
 
+            this.renderService.isRestarting = true;
+
             await this.restartPlayerCar();
             await this.restartBots();
             await this.reinitializeServices();
             this.repositionCars();
             this.checkBotDirections();
             this.restartRaceProgress();
+
+            this.renderService.isRestarting = false;
         }
     }
 
