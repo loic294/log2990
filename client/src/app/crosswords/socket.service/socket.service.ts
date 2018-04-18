@@ -177,7 +177,6 @@ export class SocketService {
     public resetScore(): void {
         this._opponentScore.next(this._opponentScoreCount = 0);
         this._userScore.next(this._userScoreCount = 0);
-        this._opponentScoreCount = 1;
         this._userScoreCount = 1;
     }
 
