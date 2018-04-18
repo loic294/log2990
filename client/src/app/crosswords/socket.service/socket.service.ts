@@ -36,10 +36,9 @@ export class SocketService {
     private _opponentName: Subject<string> = new Subject<string>();
     private _updateUserScore: Observable<number>;
     private _userScore: Subject<number> = new Subject<number>();
-    private _userScoreCount: number;
+    private _userScoreCount: number; private _opponentScoreCount: number;
     private _updateOpponentScore: Observable<number>;
     private _opponentScore: Subject<number> = new Subject<number>();
-    private _opponentScoreCount: number;
     private _updateGridValidated: Observable<boolean>;
     private _gridValidated: Subject<boolean> = new Subject<boolean>();
     private _updateRequestRematch: Observable<string>;
@@ -59,8 +58,7 @@ export class SocketService {
         this.difficultyService.difficulty.subscribe((diff) => {
             this._difficulty = difficultyName(diff);
         });
-        this._opponentScoreCount = 1;
-        this._userScoreCount = 1;
+        this._opponentScoreCount = 1; this._userScoreCount = 1;
         this._games = [];
         this._modes = [Mode.SinglePlayer, Mode.MultiPlayer];
         this._selectedMode = "";
@@ -80,7 +78,6 @@ export class SocketService {
         this.initializeSocket();
         this.initializeGridSocket();
         this.initializeObservables();
-
     }
 
     public get socket(): Socket {
@@ -91,7 +88,6 @@ export class SocketService {
         this.gridLoadingService.newGrid.subscribe((grid: Array<Array<Cell>>) => {
             this._grid = grid;
         });
-
         this.gridLoadingService.newClues.subscribe((clues: Array<Word>) => {
             this._clues = clues;
         });
@@ -99,7 +95,6 @@ export class SocketService {
 
     public initializeSocket(): void {
         this._socket.connect();
-
         this._socket.on(SocketMessage.addGame, (games: IGameModel[]) => {
             this._games = games;
         });
