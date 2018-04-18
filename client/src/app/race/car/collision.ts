@@ -69,9 +69,12 @@ export default class Collision {
     private static collideOutOfBounds(car: Car, intersections: Intersection[]): Vector3 {
         for (const intersection of intersections) {
             if (intersection !== null) {
-                const angle: number = car.direction.angleTo(Collision.trackPerpendicular(intersection.object));
-                const incidenceVector: Vector3 = Collision.trackPerpendicular(intersection.object);
-                incidenceVector.applyAxisAngle(incidenceVector, angle);
+                const perpendicular: Vector3 = (Collision.isToTheRightOfLine(car, intersection.object) ?
+                                        Collision.trackPerpendicular(intersection.object, 1) :
+                                        Collision.trackPerpendicular(intersection.object, -1));
+                const angle: number = car.direction.angleTo(perpendicular);
+                const incidenceVector: Vector3 = perpendicular;
+                incidenceVector.applyAxisAngle(incidenceVector.normalize(), angle);
                 incidenceVector.multiplyScalar(car.speed.length());
 
                 return incidenceVector;
@@ -85,13 +88,16 @@ export default class Collision {
         const arrows: ArrowHelper[] = [];
         for (const intersection of intersections) {
             if (intersection !== null) {
-                const angle: number = car.direction.angleTo(Collision.trackPerpendicular(intersection.object));
-                const incidenceVector: Vector3 = Collision.trackPerpendicular(intersection.object);
+                const perpendicular: Vector3 = (Collision.isToTheRightOfLine(car, intersection.object) ?
+                                        Collision.trackPerpendicular(intersection.object, -1) :
+                                        Collision.trackPerpendicular(intersection.object, 1));
+                const angle: number = car.direction.angleTo(perpendicular);
+                const incidenceVector: Vector3 = perpendicular;
                 incidenceVector.applyAxisAngle(incidenceVector.normalize(), angle);
                 incidenceVector.multiplyScalar(car.speed.length());
 
                 arrows.push(new ArrowHelper(incidenceVector.normalize(), car.boundingBox.getCenter(), LENGTH / 2, OTHER_OTHER_COLOUR));
-                arrows.push(new ArrowHelper(Collision.trackPerpendicular(intersection.object).normalize(), // orange
+                arrows.push(new ArrowHelper(perpendicular.normalize(),
                                             car.boundingBox.getCenter(), LENGTH * 2, OTER_COLOUR)); // lime
 
                 return arrows;
@@ -102,15 +108,30 @@ export default class Collision {
     }
     // perpendiuclar vector to both the direction vectors, find the angle
 
-    public static trackPerpendicular(track: Object3D): Vector3 {
+    private static isToTheRightOfLine(car: Car, track: Object3D): boolean {
+        return Collision.trackDirection(track).normalize().cross(car.direction.normalize()).y < 0;
+    }
+
+    private static trackPerpendicular(track: Object3D, positive: number): Vector3 {
         const rotationMatrix: Matrix4 = new Matrix4();
-        const trackDirection: Vector3 = new Vector3(-1, 0, 0); // Initial perpendicular for the track
+        const trackDirection: Vector3 = new Vector3(positive * -1, 0, 0); // Initial perpendicular for the track
 
         rotationMatrix.extractRotation(track.matrix);
         trackDirection.applyMatrix4(rotationMatrix);
 
         return trackDirection;
     }
+
+    private static trackDirection(track: Object3D): Vector3 {
+        const rotationMatrix: Matrix4 = new Matrix4();
+        const trackDirection: Vector3 = new Vector3(0, 1, 0); // Initial perpendicular for the track
+
+        rotationMatrix.extractRotation(track.matrix);
+        trackDirection.applyMatrix4(rotationMatrix);
+
+        return trackDirection;
+    }
+
     private static initializeCorners(): void {
         Collision.corners = [];
         Collision.corners.push(new Vector3(ABSOLUTE_CAR_LENGTH_X, ABSOLUTE_CAR_LENGTH_Y, ABSOLUTE_CAR_LENGTH_Z));
