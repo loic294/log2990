@@ -22,10 +22,8 @@ export class ResultsComponent implements OnInit {
     private _trackInfo: TrackInformation;
     private _showGameResults: boolean;
     private _positionedRaceStats: Array<PlayerStats>;
-    private _showModal: boolean;
 
     public constructor( private resultsService: ResultsService) {
-        this._showModal = true;
         this._game =  {
             gameTime: "0.00",
             lapTime: "0.00" ,
@@ -34,10 +32,6 @@ export class ResultsComponent implements OnInit {
             currentLap: 1,
             botTimes: new Array()};
         this._updatedName = false;
-    }
-
-    public get showModal(): boolean {
-        return this._showModal;
     }
 
     public get updatedName(): boolean {
@@ -169,13 +163,8 @@ export class ResultsComponent implements OnInit {
         return this._game.gameTime === time.gameTime && time.player === "";
     }
 
-    public playAgain(): void {
-        this._showModal = false;
-    }
-
     public restart(): void {
         this.resultsService.restartRace(true);
-        this._showModal = true;
         this._game =  {
             gameTime: "0.00",
             lapTime: "0.00" ,
@@ -184,6 +173,7 @@ export class ResultsComponent implements OnInit {
             currentLap: 1,
             botTimes: new Array()};
         this._updatedName = false;
+        this._bestTimeName = "";
     }
 
     public ngOnInit(): void {
