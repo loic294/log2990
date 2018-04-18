@@ -83,7 +83,7 @@ export default class GridGeneration {
         return grid;
     }
 
-    public isNormalCellAndBlack(grid: List<List<Cell>>, row: number, col: number): boolean {
+    public isEmptyCellAndBlack(grid: List<List<Cell>>, row: number, col: number): boolean {
         return grid.get(row) && grid.get(row).get(col) && grid.get(row).get(col).char === EMPTY_CELL
             && !grid.get(row).get(col).isBlack();
     }
@@ -92,7 +92,7 @@ export default class GridGeneration {
 
         let shouldAddToGrid: boolean = false;
         traverseWord(word, (row: number, col: number) => {
-            if (this.isNormalCellAndBlack(grid, row, col)) {
+            if (this.isEmptyCellAndBlack(grid, row, col)) {
                 shouldAddToGrid = true;
             }
         });
