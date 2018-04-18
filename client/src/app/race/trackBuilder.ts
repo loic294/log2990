@@ -183,7 +183,7 @@ export class TrackBuilder {
         this._startingLines.push(line);
     }
 
-    private positionRacers(): void {
+    public positionRacers(): void {
 
         this.chooseLine(this._playerCar);
 
@@ -264,7 +264,15 @@ export class TrackBuilder {
         return this._playerCar;
     }
 
+    public set playerCar(car: Car) {
+        this._playerCar = car;
+    }
+
     public get bots(): Array<Car> {
         return this._botCars;
+    }
+
+    public set bots(bots: Array<Car>) {
+        this._botCars = bots;
     }
 }

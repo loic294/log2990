@@ -71,7 +71,7 @@ export class TrackProgression {
         return !car.userData.isNewLap && carDistance > WIDTH;
     }
 
-    private asJustCompleted3Laps(): boolean {
+    private hasJustCompleted3Laps(): boolean {
         return this._playerCar.userData.lapsCompleted >= MAX_LAPS && !this._game.gameIsFinished;
     }
 
@@ -103,13 +103,13 @@ export class TrackProgression {
             this._playerCar.userData.isNewLap = true;
         }
 
-        if (this.asJustCompleted3Laps()) {
+        if (this.hasJustCompleted3Laps()) {
             this.stopGame();
         } else if (!this._game.gameIsFinished) {
             this._game.gameTime = this._gameClock.getElapsedTime().toFixed(2);
             this._game.lapTime = this._playerCar.userData.clock.getElapsedTime().toFixed(2);
         } else {
-            this._playerCar.brake();
+            this._playerCar.speed = new Vector3(0, 0, 0);
         }
 
         this.checkForNextVertex();

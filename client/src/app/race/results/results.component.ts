@@ -173,6 +173,19 @@ export class ResultsComponent implements OnInit {
         this._showModal = false;
     }
 
+    public restart(): void {
+        this.resultsService.restartRace(true);
+        this._showModal = true;
+        this._game =  {
+            gameTime: "0.00",
+            lapTime: "0.00" ,
+            lapTimes: new Array(),
+            gameIsFinished: false,
+            currentLap: 1,
+            botTimes: new Array()};
+        this._updatedName = false;
+    }
+
     public ngOnInit(): void {
         this.resultsService.game.subscribe( (game) => {
             this._game = game;

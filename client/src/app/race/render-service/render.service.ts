@@ -179,6 +179,10 @@ export class RenderService {
         return this._car;
     }
 
+    public set car(car: Car) {
+        this._car = car;
+    }
+
     public get cameraService(): CameraService {
         return this._cameraService;
     }
@@ -191,12 +195,24 @@ export class RenderService {
         return this._bots;
     }
 
+    public set bots(bots: Array<Car>) {
+        this._bots = bots;
+    }
+
     public set aiService(aiService: AiService) {
         this._aiService = aiService;
     }
 
     public get raceStarter(): RaceStarter {
         return this._raceStarter;
+    }
+
+    public set trackProgression(trackProgression: TrackProgression) {
+        this._trackProgression = trackProgression;
+    }
+
+    public get audioService(): AudioService {
+        return this._audioService;
     }
 
 }

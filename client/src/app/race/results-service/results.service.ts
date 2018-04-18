@@ -16,10 +16,14 @@ export class ResultsService {
     private _trackInformation: Observable<TrackInformation>;
     private _trackInformationSubject: Subject<TrackInformation> = new Subject<TrackInformation>();
 
+    private _shouldRestart: Observable<boolean>;
+    private _shouldRestartSubject: Subject<boolean> = new Subject<boolean>();
+
     public constructor() {
         this._game = this._gameSubject.asObservable();
         this._times = this._timesSubject.asObservable();
         this._trackInformation = this._trackInformationSubject.asObservable();
+        this._shouldRestart = this._shouldRestartSubject.asObservable();
     }
 
     public get game(): Observable<IGameInformation> {
@@ -44,6 +48,14 @@ export class ResultsService {
 
     public selectTrackTimes(times: Array<PlayerStats>): void {
         this._timesSubject.next(times);
+    }
+
+    public get restart(): Observable<boolean> {
+        return this._shouldRestart;
+    }
+
+    public restartRace(shouldRestart: boolean): void {
+        this._shouldRestartSubject.next(shouldRestart);
     }
 
 }
