@@ -6,7 +6,7 @@ const ABSOLUTE_CAR_LENGTH_Y: number = -0.007726105637907718;
 const ABSOLUTE_CAR_LENGTH_Z: number = -1.8093634648776054;
 const COLOUR: number = 0xFFFF00;
 const OTHER_COLOUR: number = 0xFF0000;
-const OTHER_OTHER_COLOUR: number = 0x0FF000;
+const OTHER_OTHER_COLOUR: number = 0xFF9900;
 const OTER_COLOUR: number = 0x00FF00;
 const LENGTH: number = 10;
 
@@ -30,10 +30,10 @@ export default class Collision {
             const collisionResults: Intersection[] = ray.intersectObjects(track);
             if (collisionResults.length <= 0) {
                 outOfBounds = true;
-                arrows.push(new ArrowHelper(directionVector.normalize(), car.boundingBox.getCenter(), LENGTH, OTHER_COLOUR));
+                arrows.push(new ArrowHelper(directionVector.normalize(), car.boundingBox.getCenter(), LENGTH, OTHER_COLOUR)); // red
             } else {
                 intersectionResults = [...intersectionResults, ...collisionResults];
-                arrows.push(new ArrowHelper(directionVector.normalize(), car.boundingBox.getCenter(), LENGTH, COLOUR));
+                arrows.push(new ArrowHelper(directionVector.normalize(), car.boundingBox.getCenter(), LENGTH, COLOUR)); // yellow
             }
         }
         if (outOfBounds) {
@@ -87,12 +87,12 @@ export default class Collision {
             if (intersection !== null) {
                 const angle: number = car.direction.angleTo(Collision.trackPerpendicular(intersection.object));
                 const incidenceVector: Vector3 = Collision.trackPerpendicular(intersection.object);
-                incidenceVector.applyAxisAngle(incidenceVector, angle);
+                incidenceVector.applyAxisAngle(incidenceVector.normalize(), angle);
                 incidenceVector.multiplyScalar(car.speed.length());
 
-                arrows.push(new ArrowHelper(incidenceVector.normalize(), car.boundingBox.getCenter(), LENGTH, OTHER_OTHER_COLOUR));
-                arrows.push(new ArrowHelper(Collision.trackPerpendicular(intersection.object).normalize(), 
-                                            car.boundingBox.getCenter(), LENGTH, OTER_COLOUR));
+                arrows.push(new ArrowHelper(incidenceVector.normalize(), car.boundingBox.getCenter(), LENGTH / 2, OTHER_OTHER_COLOUR));
+                arrows.push(new ArrowHelper(Collision.trackPerpendicular(intersection.object).normalize(), // orange
+                                            car.boundingBox.getCenter(), LENGTH * 2, OTER_COLOUR)); // lime
 
                 return arrows;
             }
@@ -104,7 +104,7 @@ export default class Collision {
 
     public static trackPerpendicular(track: Object3D): Vector3 {
         const rotationMatrix: Matrix4 = new Matrix4();
-        const trackDirection: Vector3 = new Vector3(0, 0, 1); // Initial perpendicular for the track
+        const trackDirection: Vector3 = new Vector3(-1, 0, 0); // Initial perpendicular for the track
 
         rotationMatrix.extractRotation(track.matrix);
         trackDirection.applyMatrix4(rotationMatrix);
