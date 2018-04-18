@@ -153,6 +153,10 @@ export class ResultsComponent implements OnInit {
         }
     }
 
+    public isPlayerTime(time: PlayerStats): boolean {
+        return this._game.gameTime === time.gameTime && time.player === "";
+    }
+
     public playAgain(): void {
         this._showModal = false;
     }

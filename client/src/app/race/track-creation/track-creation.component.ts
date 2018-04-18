@@ -1,7 +1,8 @@
 import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from "@angular/core";
 import { OrthographicCamera, WebGLRenderer, Scene, Vector3, Color } from "three";
-import { DotCommand } from "../DotCommand";
+import { TrackCreationRenderer } from "../trackCreationRenderer";
 import { TrackInformation } from "../trackInformation";
+import { ActivatedRoute } from "@angular/router";
 
 const FAR_CLIPPING_PLANE: number = 100000;
 const NEAR_CLIPPING_PLANE: number = 1;
@@ -13,6 +14,10 @@ const COLOR_LINE_ERROR: number = 0xEF1F1F;
 const LEFT_CLICK: number = 1;
 const RIGHT_CLICK: number = 3;
 
+interface Params {
+    id: string;
+}
+
 @Component({
     selector: "app-track-creation",
     templateUrl: "./track-creation.component.html",
@@ -23,25 +28,34 @@ export class TrackCreationComponent implements AfterViewInit {
     private _scene: THREE.Scene;
     private _camera: THREE.OrthographicCamera;
     private _renderer: THREE.WebGLRenderer;
-    private _dotCommand: DotCommand;
+    private _trackCreationRenderer: TrackCreationRenderer;
     private _trackInformation: TrackInformation;
     private _isSaved: boolean;
+    private _id: string;
 
     @ViewChild("container")
     private container: ElementRef;
 
-    public constructor() {
+    public constructor(private route: ActivatedRoute) {
         this._scene = new Scene();
         this._renderer = new WebGLRenderer();
         this._isSaved = false;
         this._trackInformation = new TrackInformation();
-        this._trackInformation.getTracksList();
+        this._trackInformation.getTracksList().then(async () => {
+            await this.getTrackInfo(this.route.snapshot.params.id);
+        })
+        .catch((err) => console.error(err));
         this._trackInformation.resetTrack();
+
+        this.route.params.subscribe(async (params: Params) => {
+            this._id = params.id;
+            await this.getTrackInfo(this._id);
+        });
     }
 
     public startNewTrack(): void {
-        while (this._dotCommand.getVertices().length !== 0) {
-            this._dotCommand.remove();
+        while (this._trackCreationRenderer.getVertices().length !== 0) {
+            this._trackCreationRenderer.remove();
         }
         this._trackInformation.resetTrack();
         this._isSaved = false;
@@ -54,7 +68,7 @@ export class TrackCreationComponent implements AfterViewInit {
 
     private separateVertice(): void {
         const trackVertices: Array<Array<number>> = new Array();
-        for (const vertex of this._dotCommand.getVertices()) {
+        for (const vertex of this._trackCreationRenderer.getVertices()) {
             trackVertices.push(new Array<number>(vertex.position.x, vertex.position.y, vertex.position.z));
         }
         this._trackInformation.track.vertice = trackVertices;
@@ -62,10 +76,10 @@ export class TrackCreationComponent implements AfterViewInit {
 
     public loadTrack(): void {
         for (const vertex of this._trackInformation.track.vertice) {
-                this._dotCommand.addObjects(new Vector3(vertex[0], vertex[1], vertex[2]));
+                this._trackCreationRenderer.addObjects(new Vector3(vertex[0], vertex[1], vertex[2]));
             }
-        this._dotCommand.connectToFirst();
-        this._dotCommand.complete();
+        this._trackCreationRenderer.connectToFirst();
+        this._trackCreationRenderer.complete();
     }
 
     public async getTrackInfo(trackName: String): Promise<void> {
@@ -95,18 +109,23 @@ export class TrackCreationComponent implements AfterViewInit {
         let trackIsValid: boolean = true;
         const errorColor: Color = new Color(COLOR_LINE_ERROR);
 
-        for (const i of this._dotCommand.getEdges()) {
+        for (const i of this._trackCreationRenderer.getEdges()) {
             if (i.material.color.r === errorColor.r) {
                 trackIsValid = false;
             }
         }
 
-        this._isSaved = (trackIsValid && this._dotCommand.getTrackIsCompleted() && this._trackInformation.track.name !== "");
+        this._isSaved = (trackIsValid && this._trackCreationRenderer.getTrackIsCompleted() && this._trackInformation.track.name !== "");
 
         if (this._isSaved) {
             this.separateVertice();
             this.sendToDb();
         }
+
+        const duration: number = 1000;
+        setTimeout(
+            () => { this._isSaved = false; },
+            duration);
     }
 
     @HostListener("window:resize", ["$event"])
@@ -131,7 +150,7 @@ export class TrackCreationComponent implements AfterViewInit {
 
     public onKeyUp(event: MouseEvent): void {
         if (event.which === LEFT_CLICK) {
-            this._dotCommand.unselect();
+            this._trackCreationRenderer.unselect();
         }
     }
 
@@ -141,17 +160,17 @@ export class TrackCreationComponent implements AfterViewInit {
     }
 
     private drag(event: MouseEvent): void {
-        this._dotCommand.dragDot(event);
+        this._trackCreationRenderer.dragDot(event);
         this.render();
     }
 
     private placeDot(event: MouseEvent): void {
-        this._dotCommand.add(event);
+        this._trackCreationRenderer.add(event);
         this.render();
     }
 
     private remove(): void {
-        this._dotCommand.remove();
+        this._trackCreationRenderer.remove();
         this.render();
     }
 
@@ -173,7 +192,7 @@ export class TrackCreationComponent implements AfterViewInit {
         this._scene.add(this._camera);
 
         this._renderer.render(this._scene, this._camera);
-        this._dotCommand = new DotCommand(this._scene, this._renderer, this._camera);
+        this._trackCreationRenderer = new TrackCreationRenderer(this._scene, this._renderer, this._camera);
 
     }
 
@@ -188,8 +207,8 @@ export class TrackCreationComponent implements AfterViewInit {
         return this._scene;
     }
 
-    public get dotCommand(): DotCommand {
-        return this._dotCommand;
+    public get trackCreationRenderer(): TrackCreationRenderer {
+        return this._trackCreationRenderer;
     }
 
     public get trackInformation(): TrackInformation {

@@ -6,6 +6,7 @@
         "sourceRoot": "app",
         "sourceMap": true,
         "outDir": "out",
+        "mapRoot": "compiled",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "noImplicitAny": true,

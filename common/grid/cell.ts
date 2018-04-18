@@ -1,9 +1,10 @@
 export class Cell {
 
+    private validatedByOther: boolean;
+    private shared: boolean;
+    public black: boolean; // NOTE POUR MATHIEU: Je t'en avais parlé puisqu'on doit y accéder pour batir les constructeurs dans le frontend
     public wordIndexes: Array<number>;
     public isOtherPlayer: boolean;
-    public isValidatedByOther: boolean;
-    public shared: boolean;
 
     public constructor(
         private _char: string = "-",
@@ -11,13 +12,13 @@ export class Cell {
         private _y: number = 0,
         private _isSelected: boolean = false,
         private _isValidated: boolean = false,
-        private _black: boolean = false,
         private _isStartOfSelected: boolean = false,
         private _isStartSelectedByOther: boolean = false) {
 
         this.wordIndexes = [];
         this.isOtherPlayer = false;
-        this.isValidatedByOther = false;
+        this.validatedByOther = false;
+        this.black = false;
     }
     public isShared(): void {
         this.shared = true;
@@ -26,13 +27,12 @@ export class Cell {
     public get sharedValidation(): boolean{
         return this.shared;
     }
-    public get validatedByOther(): boolean {
-        return this.isValidatedByOther;
+    public get isValidatedByOther(): boolean {
+        return this.validatedByOther;
     }
     
     public validateOther(): void {
-        this.isValidatedByOther = true;
-       
+        this.validatedByOther = true;
     }
 
     public set char(c: string) {
@@ -108,11 +108,11 @@ export class Cell {
     }
 
     public isBlack() : boolean {
-        return this._black;
+        return this.black;
     }
 
     public setBlack(black : boolean) : void {
-        this._black = black;
+        this.black = black;
     }
 
     public getValidatedValue(): string {

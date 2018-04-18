@@ -3,6 +3,9 @@ import { SocketService } from "../socket.service/socket.service";
 import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
 import { Type } from "../type";
 import { Mode } from "../../../../../common/grid/player";
+import { GridLoadingService } from "../../grid-loading.service/grid-loading.service";
+import { DifficultyService } from "./../difficulty.service/difficulty.service";
+import { Difficulty } from "./../../../../../common/grid/difficulties";
 
 @Component({
     selector: "app-termination-component-termination",
@@ -10,22 +13,45 @@ import { Mode } from "../../../../../common/grid/player";
     styleUrls: ["./termination.component.css"]
   })
   export class TerminationDialogComponent {
+    public _level: Difficulty;
     private _dialogType: Number;
-    public showRematchOffer: boolean = false;
-    public showWaitingRematchOffer: boolean = false;
+    private _loadingGrid: boolean;
+    public showRematchOffer: boolean;
+    public showWaitingRematchOffer: boolean;
     public opponentID: string;
 
     public constructor (
         private socketService: SocketService,
         public dialogRef: MatDialogRef<TerminationComponent>,
         public dialog: MatDialog,
+        private gridLoadingService: GridLoadingService,
+        private difficultyService: DifficultyService,
         @Inject(MAT_DIALOG_DATA) public data: Type) {
 
+            this.showRematchOffer = false;
+            this.showWaitingRematchOffer = false;
+            this._loadingGrid = false;
             dialogRef.disableClose = true;
             this._dialogType = data;
             this.rematchOffer();
             this.receiveAcceptRematch();
         }
+
+    public initDifficulty(): void {
+        this.difficultyService.difficulty.subscribe((level: Difficulty) => {
+            this._level = level;
+        });
+    }
+
+    public async loadNewGrid(): Promise<void> {
+        this._loadingGrid = true;
+        await this.gridLoadingService.loadNewGrid(this._level);
+        this._loadingGrid = false;
+    }
+
+    public isLoadingGrid(): boolean {
+        return this._loadingGrid;
+    }
 
     public closeDialog(): void {
         this.dialog.closeAll();
@@ -35,15 +61,9 @@ import { Mode } from "../../../../../common/grid/player";
         return this._dialogType;
     }
 
-    public createSoloGame(): void {
-        // *************************************************************************************************************
-        // tslint:disable-next-line:no-suspicious-comment
-        // TODO @berj @cbm @lobel
-        // Was not implemented because Grid generation is missing.
-        // Implementation will need to be based on a function that
-        // request a new generation
-        // this.socketService.difficulty;
-        // **************************************************************************************************************
+    public async createSoloGame(): Promise<void> {
+
+        await this.loadNewGrid();
         this.closeDialog();
 
     }
@@ -60,7 +80,8 @@ import { Mode } from "../../../../../common/grid/player";
        });
     }
 
-    public acceptRematchOffer(): void {
+    public async acceptRematchOffer(): Promise<void> {
+        await this.loadNewGrid();
         this.socketService.acceptRequestRematch(this.opponentID);
         this.closeDialog();
     }

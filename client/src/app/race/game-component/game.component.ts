@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, ViewChild, HostListener, OnInit } from "@angular/core";
 import { RenderService } from "../render-service/render.service";
 import InputManagerService, { Release } from "../input-manager/input-manager.service";
-import { DotCommand } from "../DotCommand";
+import { TrackCreationRenderer } from "../trackCreationRenderer";
 import { Vector3 } from "three";
 import { CameraService } from "../camera-service/camera.service";
 import { TrackInformation } from "../trackInformation";
@@ -10,8 +10,12 @@ import { EnvironmentService } from "../environment-service/environment.service";
 import { IGameInformation, TrackProgressionService } from "../trackProgressionService";
 import { AudioService } from "../audio-service/audio.service";
 import { ResultsService } from "../results-service/results.service";
+import { ActivatedRoute } from "@angular/router";
 
 const SCALE_FACTOR: number = -10;
+interface Params {
+    id: string;
+}
 
 @Component({
     moduleId: module.id,
@@ -24,7 +28,6 @@ const SCALE_FACTOR: number = -10;
         CameraService,
         AudioService,
         EnvironmentService
-
     ]
 })
 
@@ -35,19 +38,26 @@ export class GameComponent implements AfterViewInit, OnInit {
     private _raceStarted: boolean;
     private _trackLoaded: boolean;
     private _trackInformation: TrackInformation;
-    private _dotCommand: DotCommand;
+    private _trackCreationRenderer: TrackCreationRenderer;
     public _currentGame: IGameInformation;
+    private _id: string;
 
     public constructor(private renderService: RenderService, private inputManager: InputManagerService,
                        private _trackProgressionService: TrackProgressionService,
-                       private resultsService: ResultsService) {
+                       private resultsService: ResultsService,
+                       private route: ActivatedRoute) {
         this._raceStarted = false;
         this._trackLoaded = false;
         this._trackInformation = new TrackInformation();
-        this._trackInformation.getTracksList();
+        this._trackInformation.getTracksList().catch((err: Error) => console.error(err));
+        this._id = this.route.snapshot.params.id;
 
         this._currentGame = {gameTime: "0.00", lapTime: "0.00",
                              lapTimes: new Array(), gameIsFinished: true, currentLap: 0, botTimes: new Array()};
+
+        this.route.params.subscribe((params: Params) => {
+            this._id = params.id;
+        });
     }
 
     @HostListener("window:resize", ["$event"])
@@ -73,6 +83,12 @@ export class GameComponent implements AfterViewInit, OnInit {
         await this.renderService
             .initialize(this.containerRef.nativeElement);
 
+        if (this._id) {
+            await this.getTrackInfo(this._id);
+            this.loadTrack();
+            await this.start();
+        }
+
     }
 
     public ngOnInit(): void {
@@ -89,8 +105,8 @@ export class GameComponent implements AfterViewInit, OnInit {
             this.inputManager.init(this.renderService);
 
             const trackBuilder: TrackBuilder = new TrackBuilder(this.renderService.scene,
-                                                                this._dotCommand.getVertices(),
-                                                                this._dotCommand.getEdges(),
+                                                                this._trackCreationRenderer.getVertices(),
+                                                                this._trackCreationRenderer.getEdges(),
                                                                 this.renderService.car,
                                                                 this.renderService.bots);
             trackBuilder.buildTrack();
@@ -103,24 +119,24 @@ export class GameComponent implements AfterViewInit, OnInit {
     }
 
     private clearScene(): void {
-        if (this._dotCommand !== undefined) {
-            while (this._dotCommand.getVertices().length !== 0) {
-                this._dotCommand.remove();
+        if (this._trackCreationRenderer !== undefined) {
+            while (this._trackCreationRenderer.getVertices().length !== 0) {
+                this._trackCreationRenderer.remove();
             }
         }
     }
 
     private shiftTrack(): void {
-        this._dotCommand.addObjects(new Vector3(0, 0, 0));
+        this._trackCreationRenderer.addObjects(new Vector3(0, 0, 0));
 
         const firstVertex: Array<number> = this._trackInformation.track.vertice[0];
         let nextVertex: Array<number>;
         let vertexIndex: number = 1;
         while (vertexIndex !== this._trackInformation.track.vertice.length) {
             nextVertex = this._trackInformation.track.vertice[vertexIndex];
-            this._dotCommand.addObjects(new Vector3((nextVertex[0] - firstVertex[0]) * SCALE_FACTOR,
-                                                    (nextVertex[1] - firstVertex[1]) * SCALE_FACTOR,
-                                                    (nextVertex[2] - firstVertex[2]) * SCALE_FACTOR));
+            this._trackCreationRenderer.addObjects(new Vector3((nextVertex[0] - firstVertex[0]) * SCALE_FACTOR,
+                                                               (nextVertex[1] - firstVertex[1]) * SCALE_FACTOR,
+                                                               (nextVertex[2] - firstVertex[2]) * SCALE_FACTOR));
             vertexIndex++;
         }
     }
@@ -129,22 +145,22 @@ export class GameComponent implements AfterViewInit, OnInit {
         this.clearScene();
 
         this.shiftTrack();
-        this._dotCommand.connectToFirst();
-        this._dotCommand.complete();
+        this._trackCreationRenderer.connectToFirst();
+        this._trackCreationRenderer.complete();
     }
 
     public showTrack(): void {
         this.clearScene();
 
-        this._dotCommand = new DotCommand(this.renderService.scene,
-                                          this.renderService.renderer,
-                                          this.renderService.camera);
+        this._trackCreationRenderer = new TrackCreationRenderer(this.renderService.scene,
+                                                                this.renderService.renderer,
+                                                                this.renderService.camera);
 
         for (const vertex of this._trackInformation.track.vertice) {
-            this._dotCommand.addObjects(new Vector3(vertex[0], vertex[1], vertex[2]));
+            this._trackCreationRenderer.addObjects(new Vector3(vertex[0], vertex[1], vertex[2]));
         }
-        this._dotCommand.connectToFirst();
-        this._dotCommand.complete();
+        this._trackCreationRenderer.connectToFirst();
+        this._trackCreationRenderer.complete();
         this._trackLoaded = true;
     }
 

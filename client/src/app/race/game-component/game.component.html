@@ -1,40 +1,78 @@
-<div class="canvas-container" #container>
-  <ul class="stats">
-    <li>Speed: {{this.renderService.car.speed.length() * 3.6 | number :'2.2-2'}} km/h</li>
-    <li>Gear: {{this.renderService.car.currentGear + 1}}</li>
-    <li>RPM: {{this.renderService.car.rpm | number:'2.0-0'}}</li>
-  </ul>
 
-  <p class="lap">Lap: {{_currentGame.currentLap}} / 3</p>
-  <p class="time"> Time: {{_currentGame.gameTime}} seconds</p>
-  <p class="lap-time"> Lap Time: {{_currentGame.lapTime}} seconds</p>
-  <p *ngIf="renderService.raceStarter" class="countdown">{{renderService.raceStarter.visual}}</p>
+<div class="game-container" [class.hide]="!this._id">
+  <div class="canvas-container" #container>
+    <div class="stats">
+      <li>Gear: {{this.renderService.car.currentGear + 1}}</li>
+      <li>RPM: {{this.renderService.car.rpm | number:'2.0-0'}}</li>
+    </div>
+  
+    <p class="lap">{{_currentGame.currentLap}}/3</p>
 
+    <div class="time-container">
+      <li> Time: {{_currentGame.gameTime}} seconds</li>
+      <li> Lap Time: {{_currentGame.lapTime}} seconds</li>
+    </div>
+    
+  
+    <p *ngIf="renderService.raceStarter" class="countdown">{{renderService.raceStarter.visual}}</p>
+
+    <div class="speedometer">
+      <div id="loader-wrapper">
+        <div class="loader">
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="subline"></div>
+          <div class="subline"></div>
+          <div class="subline"></div>
+          <div class="subline"></div>
+          <div class="subline"></div>
+          <div class="loader-circle-1"><div class="loader-circle-2"></div></div>
+          <div class="needle" [style.transform]="'rotate(' + this.renderService.car.speed.length() * 3.6 + 'deg)'">
+            <div class="moving-needle"></div>
+          </div>
+          <div class="loading">{{this.renderService.car.speed.length() * 3.6 | number :'2.2-2'}} km/h</div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
 </div>
 
-<br>
-<br>
-<br>
-<br>
-
 <app-results></app-results>
-<div *ngIf="!_raceStarted">
 
-  <button (click)="start()">start race</button>
+<div class="game-choice" *ngIf="!this._id">
 
+  <div class="tracks-container">
 
-    <li *ngFor="let track of _trackInformation.tracks">
-      <button (click)="getTrackInfo(track)">{{track}}</button>
-    </li>
-    <br><br><br>
-  
-  <div *ngIf="_trackInformation.track">
-      <span>name: </span>{{_trackInformation.track.name}}<br>
-      <span>type: </span>{{_trackInformation.track.type}}<br>
-      <span>description: </span>{{_trackInformation.track.description}}<br>
-      <span>times played: </span>{{_trackInformation.track.timesPlayed}}<br>
-      <li *ngFor="let time of _trackInformation.track.completedTimes">
-        {{time.player}}: {{time.gameTime}} seconds
-      </li>
+      
+      <div class="traks-list">
+        <h1>Games</h1>
+        <div class="track" *ngFor="let track of _trackInformation.tracks">
+          <h2>{{track}}</h2>
+          <button (click)="getTrackInfo(track)">View info</button>
+          <a routerLink="/race/{{track}}">
+            <button class="green-button">Start game</button>
+          </a>
+        </div>
+      </div>
+      
+      <div class="track info" *ngIf="_trackInformation.track">
+        <b>Name:</b> {{_trackInformation.track.name}}<br/>
+        <b>Type:</b> {{_trackInformation.track.type}}<br/>
+        <b>Times played:</b> {{_trackInformation.track.timesPlayed}}<br/>
+        <b>Description:</b><br/>
+        {{_trackInformation.track.description}}<br/>
+        
+        <b>Completed times</b>
+        <li *ngFor="let time of _trackInformation.track.completedTimes">
+          {{time.player}}: {{time.gameTime}} seconds
+        </li>
+      </div>
+
   </div>
+
 </div>
