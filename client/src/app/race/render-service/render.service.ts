@@ -31,6 +31,7 @@ export class RenderService {
     private _raceStarter: RaceStarter;
     private _trackProgression: TrackProgression;
     private _track: Array<Mesh>;
+    private _isRestarting: boolean;
 
     public constructor(private _cameraService: CameraService, private _audioService: AudioService,
                        private _environmentService: EnvironmentService) {
@@ -40,7 +41,7 @@ export class RenderService {
         for (let i: number = 0; i < AMOUNT_OF_NPCS; i++) {
             this._bots[i] = new Car();
         }
-
+        this._isRestarting = false;
     }
 
     public async initialize(container: HTMLDivElement): Promise<void> {
@@ -186,6 +187,10 @@ export class RenderService {
         return this._car;
     }
 
+    public set car(car: Car) {
+        this._car = car;
+    }
+
     public get cameraService(): CameraService {
         return this._cameraService;
     }
@@ -198,12 +203,28 @@ export class RenderService {
         return this._bots;
     }
 
+    public set bots(bots: Array<Car>) {
+        this._bots = bots;
+    }
+
     public set aiService(aiService: AiService) {
         this._aiService = aiService;
     }
 
     public get raceStarter(): RaceStarter {
         return this._raceStarter;
+    }
+
+    public set trackProgression(trackProgression: TrackProgression) {
+        this._trackProgression = trackProgression;
+    }
+
+    public get audioService(): AudioService {
+        return this._audioService;
+    }
+
+    public set isRestarting(restart: boolean) {
+        this._isRestarting = restart;
     }
 
 }

@@ -59,8 +59,7 @@ export class Engine {
         if (transmissionEfficiency <= 0) {
             transmissionEfficiency = DEFAULT_TRANSMISSION_EFFICIENCY;
         }
-        // tslint:disable-next-line:no-suspicious-comment
-        // TODO: check all interactions with RPM values, such as downshift vs minimumrpm, upshift maximum, etc.
+
         this.gearRatios = gearRatios;
         this.driveRatio = driveRatio;
         this.downshiftRPM = downshiftRPM;
@@ -102,7 +101,7 @@ export class Engine {
         }
 
         const wheelAngularVelocity: number = speed / wheelRadius;
-        // tslint:disable-next-line: no-magic-numbers
+
         let rpm: number = (wheelAngularVelocity / (Math.PI * 2)) * MIN_TO_SEC * this.driveRatio * this.gearRatios[this._currentGear];
         rpm = rpm < this.minimumRPM ? this.minimumRPM : rpm;
 

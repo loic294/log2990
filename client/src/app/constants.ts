@@ -11,3 +11,6 @@ export enum TIME_OF_DAY {
     DAY,
     NIGHT
 }
+export const MAX_COUNTDOWN: number = 3;
+export const WIDTH: number = 10;
+export const MAX_LAPS: number = 3;

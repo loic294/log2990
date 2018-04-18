@@ -10,8 +10,13 @@ import { EnvironmentService } from "../environment-service/environment.service";
 import { IGameInformation, TrackProgressionService } from "../trackProgressionService";
 import { AudioService } from "../audio-service/audio.service";
 import { ResultsService } from "../results-service/results.service";
+import { Car } from "../car/car";
+import { ActivatedRoute } from "@angular/router";
 
 const SCALE_FACTOR: number = -10;
+interface Params {
+    id: string;
+}
 
 @Component({
     moduleId: module.id,
@@ -24,7 +29,6 @@ const SCALE_FACTOR: number = -10;
         CameraService,
         AudioService,
         EnvironmentService
-
     ]
 })
 
@@ -37,17 +41,25 @@ export class GameComponent implements AfterViewInit, OnInit {
     private _trackInformation: TrackInformation;
     private _trackCreationRenderer: TrackCreationRenderer;
     public _currentGame: IGameInformation;
+    private _trackBuilder: TrackBuilder;
+    private _id: string;
 
     public constructor(private renderService: RenderService, private inputManager: InputManagerService,
                        private _trackProgressionService: TrackProgressionService,
-                       private resultsService: ResultsService) {
+                       private resultsService: ResultsService,
+                       private route: ActivatedRoute) {
         this._raceStarted = false;
         this._trackLoaded = false;
         this._trackInformation = new TrackInformation();
-        this._trackInformation.getTracksList();
+        this._trackInformation.getTracksList().catch((err: Error) => console.error(err));
+        this._id = this.route.snapshot.params.id;
 
         this._currentGame = {gameTime: "0.00", lapTime: "0.00",
                              lapTimes: new Array(), gameIsFinished: true, currentLap: 0, botTimes: new Array()};
+
+        this.route.params.subscribe((params: Params) => {
+            this._id = params.id;
+        });
     }
 
     @HostListener("window:resize", ["$event"])
@@ -73,11 +85,19 @@ export class GameComponent implements AfterViewInit, OnInit {
         await this.renderService
             .initialize(this.containerRef.nativeElement);
 
+        if (this._id) {
+            await this.getTrackInfo(this._id);
+            this.loadTrack();
+            await this.start();
+        }
+
     }
 
     public ngOnInit(): void {
         this._trackProgressionService.game
             .subscribe((_game) => this.actOnProgress(_game));
+        this.resultsService.restart
+            .subscribe(async (_shouldRestart) => this.restart(_shouldRestart));
     }
 
     public async start(): Promise<void> {
@@ -88,18 +108,78 @@ export class GameComponent implements AfterViewInit, OnInit {
             this.loadTrack();
             this.inputManager.init(this.renderService);
 
-            const trackBuilder: TrackBuilder = new TrackBuilder(this.renderService.scene,
-                                                                this._trackCreationRenderer.getVertices(),
-                                                                this._trackCreationRenderer.getEdges(),
-                                                                this.renderService.car,
-                                                                this.renderService.bots);
-            trackBuilder.buildTrack();
+            this._trackBuilder = new TrackBuilder(this.renderService.scene,
+                                                  this._trackCreationRenderer.getVertices(),
+                                                  this._trackCreationRenderer.getEdges(),
+                                                  this.renderService.car,
+                                                  this.renderService.bots);
+            this._trackBuilder.buildTrack();
 
             this._raceStarted = true;
 
-            this.renderService.start(trackBuilder, this._trackProgressionService);
+            this.renderService.start(this._trackBuilder, this._trackProgressionService);
 
         }
+    }
+
+    private async restart(shouldRestart: boolean): Promise<void> {
+        if (shouldRestart) {
+            this._trackInformation.track.timesPlayed++;
+            await this._trackInformation.patchTrack();
+
+            this.renderService.isRestarting = true;
+
+            await this.restartPlayerCar();
+            await this.restartBots();
+            await this.reinitializeServices();
+            this.repositionCars();
+            this.checkBotDirections();
+            this.restartRaceProgress();
+
+            this.renderService.isRestarting = false;
+        }
+    }
+
+    private async restartPlayerCar(): Promise<void> {
+        this.renderService.scene.remove(this.renderService.car);
+        this.renderService.car = new Car();
+        await this.renderService.car.init();
+        this.renderService.scene.add(this.renderService.car);
+        this._trackBuilder.playerCar = this.renderService.car;
+    }
+
+    private async restartBots(): Promise<void> {
+        for (const bot of this.renderService.bots) {
+            this.renderService.scene.remove(bot);
+        }
+        this.renderService.bots = new Array(new Car(), new Car(), new Car());
+        for (const bot of this.renderService.bots) {
+            await bot.init();
+            this.renderService.scene.add(bot);
+        }
+        this._trackBuilder.bots = this.renderService.bots;
+    }
+
+    private repositionCars(): void {
+        for (const line of this._trackBuilder.startingLines) {
+            line.userData.leftPositionTaken = false;
+            line.userData.rightPositionTaken = false;
+        }
+        this._trackBuilder.positionRacers();
+    }
+
+    private checkBotDirections(): void {
+        for (const bot of this.renderService.bots) {
+            if (bot.direction.angleTo(this._trackBuilder.vertices[1].position) >= Math.PI / 2) {
+                bot.mesh.rotateY(Math.PI / 2);
+            }
+        }
+    }
+
+    private restartRaceProgress(): void {
+        this.renderService.trackProgression = undefined;
+        this.renderService.start(this._trackBuilder, this._trackProgressionService);
+        this._raceStarted = true;
     }
 
     private clearScene(): void {
@@ -123,6 +203,11 @@ export class GameComponent implements AfterViewInit, OnInit {
                                                                (nextVertex[2] - firstVertex[2]) * SCALE_FACTOR));
             vertexIndex++;
         }
+    }
+
+    private async reinitializeServices(): Promise<void> {
+        await this.renderService.audioService.initializeSounds(this.renderService.car, this._trackBuilder.bots);
+        this.inputManager.init(this.renderService);
     }
 
     public loadTrack(): void {
@@ -153,10 +238,10 @@ export class GameComponent implements AfterViewInit, OnInit {
         if (game.gameIsFinished && this._raceStarted) {
             this._raceStarted = false;
             this._trackLoaded = false;
-            this.saveTime().catch();
             this.resultsService.selectTrackInformation(this._trackInformation);
             this.resultsService.selectGame(game);
             this.resultsService.selectTrackTimes(this._trackInformation.track.completedTimes);
+            this.saveTime().catch();
         }
     }
 

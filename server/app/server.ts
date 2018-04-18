@@ -10,7 +10,6 @@ import * as SocketIO from "socket.io";
 const PORT: number = 3000;
 let app: express.Application = express();
 
-// Config
 app.use(logger("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
