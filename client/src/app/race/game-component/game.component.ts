@@ -40,7 +40,7 @@ export class GameComponent implements AfterViewInit, OnInit {
     private _trackLoaded: boolean;
     private _trackInformation: TrackInformation;
     private _trackCreationRenderer: TrackCreationRenderer;
-    public _currentGame: IGameInformation;
+    private _currentGame: IGameInformation;
     private _trackBuilder: TrackBuilder;
     private _id: string;
 
