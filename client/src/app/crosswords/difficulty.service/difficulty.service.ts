@@ -19,4 +19,5 @@ export class DifficultyService {
     public selectDifficulty(diff: Difficulty): void {
         this._difficultySubject.next(diff);
     }
+
 }

@@ -3,6 +3,9 @@ import { SocketService } from "../socket.service/socket.service";
 import { IGameModel } from "./../../../../../server/app/models/game";
 import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
 import { Mode } from "../../../../../common/grid/player";
+import { GridLoadingService } from "../../grid-loading.service/grid-loading.service";
+import { DifficultyService } from "./../difficulty.service/difficulty.service";
+import { Difficulty } from "./../../../../../common/grid/difficulties";
 
 @Component({
     selector: "app-mode-component-mode",
@@ -11,21 +14,50 @@ import { Mode } from "../../../../../common/grid/player";
   })
   export class ModeDialogComponent {
 
-    public showDifficulty: boolean = false;
-    public showNameInput: boolean = false;
-    public showStartSoloGame: boolean = false;
-    public waitingForPlayer: boolean = false;
-    public scoreOpponent: number = 0;
+    public _level: Difficulty;
+    public showDifficulty: boolean;
+    public showNameInput: boolean;
+    public showStartSoloGame: boolean;
+    public waitingForPlayer: boolean;
+    public loadingGrid: boolean;
+    public scoreOpponent: number;
 
     public constructor (
         private socketService: SocketService,
         public dialogRef: MatDialogRef<ModeComponent>,
         public dialog: MatDialog,
+        private gridLoadingService: GridLoadingService,
+        private difficultyService: DifficultyService,
         @Inject(MAT_DIALOG_DATA) public data: {}) {
+            this.showDifficulty = false;
+            this.showNameInput = false;
+            this.showStartSoloGame = false;
+            this.waitingForPlayer = false;
+            this.loadingGrid = false;
+            this.scoreOpponent = 0;
+
+            this.initDifficulty();
             this.waitingConnection();
             dialogRef.disableClose = true;
 
         }
+
+    public initDifficulty(): void {
+        this.difficultyService.difficulty.subscribe((level: Difficulty) => {
+            this._level = level;
+        });
+    }
+
+    public async loadNewGrid(): Promise<void> {
+        this.loadingGrid = true;
+        await this.gridLoadingService.loadNewGrid(this._level);
+        this.loadingGrid = false;
+    }
+
+    public async newGame(): Promise<void> {
+        await this.loadNewGrid();
+        this.closeDialog();
+    }
 
     public closeDialog(): void {
         this.dialogRef.close();
@@ -41,6 +73,10 @@ import { Mode } from "../../../../../common/grid/player";
 
     public isWaitingForPlayer(): boolean {
         return this.waitingForPlayer;
+    }
+
+    public isLoadingGrid(): boolean {
+        return this.loadingGrid;
     }
 
     public startSoloGame(): boolean {
@@ -102,8 +138,10 @@ import { Mode } from "../../../../../common/grid/player";
         this.waitingForPlayer = true;
     }
 
-    public joinGame(gameId: string): void {
+    public async joinGame(gameId: string): Promise<void> {
+        await this.loadNewGrid();
         this.socketService.joinGame(gameId);
+        this.closeDialog();
     }
 }
 

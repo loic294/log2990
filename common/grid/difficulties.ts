@@ -1,5 +1,5 @@
 export const GRID_SIZE: number = 10;
-export const BLACK_CELL: string = "_";
+export const EMPTY_CELL: string = "_";
 
 export enum Difficulty {
     Easy = 0,
