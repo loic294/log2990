@@ -45,6 +45,7 @@ import { Difficulty } from "./../../../../../common/grid/difficulties";
 
     public async loadNewGrid(): Promise<void> {
         this._loadingGrid = true;
+        this.socketService.resetScore();
         await this.gridLoadingService.loadNewGrid(this._level);
         this._loadingGrid = false;
     }

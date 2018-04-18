@@ -173,6 +173,14 @@ export class SocketService {
     public opponentScoreCount(): number {
         return this._opponentScoreCount;
     }
+
+    public resetScore(): void {
+        this._opponentScore.next(this._opponentScoreCount = 0);
+        this._userScore.next(this._userScoreCount = 0);
+        this._opponentScoreCount = 1;
+        this._userScoreCount = 1;
+    }
+
     public get gridValidated(): Observable<boolean> {
         return this._updateGridValidated;
     }
