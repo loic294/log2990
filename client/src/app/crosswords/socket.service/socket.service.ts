@@ -30,7 +30,6 @@ export class SocketService {
 
     private _userScoreCount: number; private _opponentScoreCount: number;
 
-
     public constructor(
         private _socket: Socket,
         private difficultyService: DifficultyService,

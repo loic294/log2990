@@ -34,7 +34,7 @@ export const isNextBlack: (positions: Array<number>, gridSize: number, grid: Arr
 };
 
 export const isValidWord: (word: Constraint) => boolean = (word: Constraint) => {
-    return word.name.length > 0 && word.desc !== NO_DEFINITION;
+    return word.name.length > 0 && !word.invalid && word.desc !== NO_DEFINITION;
 };
 
 export const containtsOnlyLetters: (query: string) => boolean
