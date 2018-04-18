@@ -25,7 +25,7 @@ export class SocketService {
     private _grid: Array<Array<Cell>>;
     private _clues: Array<Word>;
 
-    private _socketObservale: Observable<IOMessage>;
+    private _socketObservable: Observable<IOMessage>;
     private _observableMessage: Subject<IOMessage> = new Subject<IOMessage>();
 
     private _userScoreCount: number;
@@ -45,7 +45,7 @@ export class SocketService {
         this._modes = [Mode.SinglePlayer, Mode.MultiPlayer];
         this._selectedMode = "";
         this._showGames = false;
-        this._socketObservale = this._observableMessage.asObservable();
+        this._socketObservable = this._observableMessage.asObservable();
 
         this.initializeSocket();
         this.initializeGridSocket();
@@ -112,8 +112,8 @@ export class SocketService {
         this._observableMessage.next({ type: MessageType.wordToValidate, data });
     }
 
-    public get socketObservale(): Observable<IOMessage> {
-        return this._socketObservale;
+    public get socketObservable(): Observable<IOMessage> {
+        return this._socketObservable;
     }
 
     private secondPlayerJoined(data: IGameModel): void {

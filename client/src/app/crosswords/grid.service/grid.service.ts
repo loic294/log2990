@@ -51,7 +51,7 @@ export class GridService {
                 }
             });
 
-        this.socketService.socketObservale.subscribe((data: IOString) => {
+        this.socketService.socketObservable.subscribe((data: IOString) => {
 
             if (data.type === MessageType.highligthCell) {
                 const { word }: { word: Word } = JSON.parse(data.data);
