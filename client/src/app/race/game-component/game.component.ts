@@ -82,7 +82,6 @@ export class GameComponent implements AfterViewInit, OnInit {
     }
 
     public async ngAfterViewInit(): Promise<void> {
-        console.log('ELEMENT', this.containerRef);
         await this.renderService
             .initialize(this.containerRef.nativeElement);
 
