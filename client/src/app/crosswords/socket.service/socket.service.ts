@@ -10,6 +10,7 @@ import { DifficultyService } from "./../difficulty.service/difficulty.service";
 import { Mode } from "../../../../../common/grid/player";
 import { GridLoadingService } from "../../grid-loading.service/grid-loading.service";
 import { Cell } from "../../../../../common/grid/cell";
+import { IOMessage, MessageType } from "./observableMessages";
 
 @Injectable()
 export class SocketService {
@@ -24,31 +25,11 @@ export class SocketService {
     private _grid: Array<Array<Cell>>;
     private _clues: Array<Word>;
 
-    private _updateUserConnected: Observable<boolean>;
-    private _userConnected: Subject<boolean> = new Subject<boolean>();
-    private _updateHighligthCell: Observable<string>;
-    private _highlightCell: Subject<string> = new Subject<string>();
-    private _updateWordValidated: Observable<string>;
-    private _wordToValidate: Subject<string> = new Subject<string>();
-    private _updateOpponentDisconnected: Observable<boolean>;
-    private _opponentDisconnected: Subject<boolean> = new Subject<boolean>();
-    private _updateOpponentName: Observable<string>;
-    private _opponentName: Subject<string> = new Subject<string>();
-    private _updateUserScore: Observable<number>;
-    private _userScore: Subject<number> = new Subject<number>();
+    private _socketObservale: Observable<IOMessage>;
+    private _observableMessage: Subject<IOMessage> = new Subject<IOMessage>();
+
     private _userScoreCount: number; private _opponentScoreCount: number;
-    private _updateOpponentScore: Observable<number>;
-    private _opponentScore: Subject<number> = new Subject<number>();
-    private _updateGridValidated: Observable<boolean>;
-    private _gridValidated: Subject<boolean> = new Subject<boolean>();
-    private _updateRequestRematch: Observable<string>;
-    private _requestRematch: Subject<string> = new Subject<string>();
-    private _updateRequestModeMenu: Observable<boolean>;
-    private _requestModeMenu: Subject<boolean> = new Subject<boolean>();
-    private _updateAcceptRematch: Observable<boolean>;
-    private _acceptRematch: Subject<boolean> = new Subject<boolean>();
-    private _updateGridValidation: Observable<number>;
-    private _gridValidation: Subject<number> = new Subject<number>();
+
 
     public constructor(
         private _socket: Socket,
@@ -58,23 +39,14 @@ export class SocketService {
         this.difficultyService.difficulty.subscribe((diff) => {
             this._difficulty = difficultyName(diff);
         });
-        this._opponentScoreCount = 1; this._userScoreCount = 1;
+        this._opponentScoreCount = 1;
+        this._userScoreCount = 1;
         this._games = [];
         this._modes = [Mode.SinglePlayer, Mode.MultiPlayer];
         this._selectedMode = "";
         this._showGames = false;
-        this._updateUserConnected = this._userConnected.asObservable();
-        this._updateHighligthCell = this._highlightCell.asObservable();
-        this._updateUserScore = this._userScore.asObservable();
-        this._updateOpponentScore = this._opponentScore.asObservable();
-        this._updateWordValidated = this._wordToValidate.asObservable();
-        this._updateOpponentDisconnected = this._opponentDisconnected.asObservable();
-        this._updateOpponentName = this._opponentName.asObservable();
-        this._updateGridValidated = this._gridValidated.asObservable();
-        this._updateRequestRematch = this._requestRematch.asObservable();
-        this._updateRequestModeMenu = this._requestModeMenu.asObservable();
-        this._updateAcceptRematch = this._acceptRematch.asObservable();
-        this._updateGridValidation = this._gridValidation.asObservable();
+        this._socketObservale = this._observableMessage.asObservable();
+
         this.initializeSocket();
         this.initializeGridSocket();
         this.initializeObservables();
@@ -100,7 +72,7 @@ export class SocketService {
         });
 
         this._socket.on(SocketMessage.receiveWord, (data: string): void => {
-            this._highlightCell.next(data);
+            this._observableMessage.next({ type: MessageType.highligthCell, data });
         });
 
         this._socket.on(SocketMessage.pushValidation, (data: string): void => {
@@ -112,15 +84,15 @@ export class SocketService {
         });
 
         this._socket.on(SocketMessage.opponentDisconnected, (data: boolean) => {
-            this._opponentDisconnected.next(true);
+            this._observableMessage.next({ type: MessageType.opponentDisconnected, data: true });
         });
 
         this._socket.on(SocketMessage.rematchInvitation, (data: string) => {
-            this._requestRematch.next(data);
+            this._observableMessage.next({ type: MessageType.requestRematch, data });
         });
 
         this._socket.on(SocketMessage.rematchAccepted, (data: boolean) => {
-            this._acceptRematch.next(true);
+            this._observableMessage.next({ type: MessageType.acceptRematch, data: true });
         });
     }
 
@@ -136,29 +108,21 @@ export class SocketService {
     }
 
     private pushValidation(data: string): void {
-        this._opponentScore.next(this._opponentScoreCount++);
-        this._wordToValidate.next(data);
+        this._observableMessage.next({ type: MessageType.opponentScore, data: this._opponentScoreCount++ });
+        this._observableMessage.next({ type: MessageType.wordToValidate, data });
+    }
+
+    public get socketObservale(): Observable<IOMessage> {
+        return this._socketObservale;
     }
 
     private secondPlayerJoined(data: IGameModel): void {
-        this._userConnected.next(true);
+        this._observableMessage.next({ type: MessageType.userConnected, data: true });
         if (this.player === data.players[0]) {
-            this._opponentName.next(data.players[1].toString());
+            this._observableMessage.next({ type: MessageType.opponentName, data: data.players[1].toString() });
         } else {
-            this._opponentName.next(data.players[0].toString());
+            this._observableMessage.next({ type: MessageType.opponentName, data: data.players[0].toString() });
         }
-    }
-
-    public acceptRematch(): Observable<boolean> {
-        return this._updateAcceptRematch;
-    }
-
-    public get requestModeMenu(): Observable<boolean> {
-        return this._updateRequestModeMenu;
-    }
-
-    public requestRematch(): Observable<string> {
-        return this._updateRequestRematch;
     }
 
     public userScoreCount(): number {
@@ -170,45 +134,9 @@ export class SocketService {
     }
 
     public resetScore(): void {
-        this._opponentScore.next(this._opponentScoreCount = 0);
-        this._userScore.next(this._userScoreCount = 0);
+        this._observableMessage.next({ type: MessageType.opponentScore, data: this._opponentScoreCount = 0 });
+        this._observableMessage.next({ type: MessageType.userScore, data: this._userScoreCount = 0 });
         this._userScoreCount = 1;
-    }
-
-    public get gridValidated(): Observable<boolean> {
-        return this._updateGridValidated;
-    }
-
-    public get opponentScore(): Observable<number> {
-        return this._updateOpponentScore;
-    }
-
-    public get userScore(): Observable<number> {
-        return this._updateUserScore;
-    }
-
-    public get gridValidation(): Observable<number> {
-        return this._updateGridValidation;
-    }
-
-    public get opponentName(): Observable<string> {
-        return this._updateOpponentName;
-    }
-
-    public get isOpponentDisconnected(): Observable<boolean> {
-        return this._updateOpponentDisconnected;
-    }
-
-    public get isUserConnected(): Observable<boolean> {
-        return this._updateUserConnected;
-    }
-
-    public get cellToHighligh(): Observable<string> {
-        return this._updateHighligthCell;
-    }
-
-    public get wordIsValidated(): Observable<string> {
-        return this._updateWordValidated;
     }
 
     public onEnter(value: string): void {
@@ -268,13 +196,13 @@ export class SocketService {
 
     public sendValidation(word: Word): void {
         this._socket.emit(SocketMessage.sendValidation, JSON.stringify({word}));
-        this._userScore.next(this._userScoreCount++);
+        this._observableMessage.next({ type: MessageType.userScore, data: this._userScoreCount++ });
     }
 
     public setWordCount(wordCount: number): void {
         this._wordCount = wordCount;
         if (this._wordCount === 0) {
-            this._gridValidated.next(true);
+            this._observableMessage.next({ type: MessageType.gridValidated, data: true });
         }
     }
 
@@ -290,10 +218,10 @@ export class SocketService {
     public acceptRequestRematch(gameID: string): void {
         this.joinGame(gameID);
         this._socket.emit(SocketMessage.acceptRematch, gameID);
-        this._gridValidated.next(true);
+        this._observableMessage.next({ type: MessageType.gridValidated, data: true });
     }
 
     public sendRequestModeMenu(): void {
-        this._requestModeMenu.next(true);
+        this._observableMessage.next({ type: MessageType.requestModeMenu, data: true });
     }
 }

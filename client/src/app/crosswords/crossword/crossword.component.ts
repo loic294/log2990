@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 
 import { WordService } from "../word.service/word.service";
 import { SocketService } from "../socket.service/socket.service";
+import { IOString, MessageType, IONumber } from "../socket.service/observableMessages";
 
 @Component({
   selector: "app-crossword",
@@ -18,16 +19,18 @@ export class CrosswordComponent {
       public _wordService: WordService,
       public _socketService: SocketService
     ) {
-        this._socketService.opponentName.subscribe((data) => {
-            this._opponentName = data;
+        this._socketService.socketObservale.subscribe((data: IOString) => {
+            if (data.type === MessageType.opponentName) {
+                this._opponentName = data.data;
+            }
         });
 
-        this._socketService.opponentScore.subscribe((data) => {
-            this._opponentScore = data;
-        });
-
-        this._socketService.userScore.subscribe((data) => {
-            this._userScore = data;
+        this._socketService.socketObservale.subscribe((data: IONumber) => {
+            if (data.type === MessageType.opponentScore) {
+                this._opponentScore = data.data;
+            } else if (data.type === MessageType.userScore) {
+                this._userScore = data.data;
+            }
         });
 
      }

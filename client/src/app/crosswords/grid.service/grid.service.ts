@@ -8,6 +8,7 @@ import { WordService } from "../word.service/word.service";
 import { SocketService } from "../socket.service/socket.service";
 import { BACK_SPACE_KEY_CODE } from "../../constants";
 import { GridLoadingService } from "../../grid-loading.service/grid-loading.service";
+import { IOString, MessageType } from "../socket.service/observableMessages";
 
 @Injectable()
 export class GridService {
@@ -50,20 +51,20 @@ export class GridService {
                 }
             });
 
-        this.socketService.cellToHighligh.subscribe(
-            (data: string) => {
-                const { word }: { word: Word } = JSON.parse(data);
+        this.socketService.socketObservale.subscribe((data: IOString) => {
+
+            if (data.type === MessageType.highligthCell) {
+                const { word }: { word: Word } = JSON.parse(data.data);
                 const selectedWord: Word = this._clues.find((w: Word) => word !== null && w.index === word.index);
                 this.selectOtherPlayerWord(selectedWord || null);
-            });
 
-        this.socketService.wordIsValidated.subscribe(
-            (data: string) => {
-                const { word }: { word: Word } = JSON.parse(data);
+            } else if (data.type === MessageType.wordToValidate) {
+                const { word }: { word: Word } = JSON.parse(data.data);
                 const selectedWord: Word = this._clues.find((w: Word) => word !== null && w.index === word.index);
                 selectedWord.isValidated = true;
                 this.applyValidation(selectedWord, true);
-            });
+            }
+        });
 
     }
 

@@ -6,6 +6,7 @@ import { Mode } from "../../../../../common/grid/player";
 import { GridLoadingService } from "../../grid-loading.service/grid-loading.service";
 import { DifficultyService } from "./../difficulty.service/difficulty.service";
 import { Difficulty } from "./../../../../../common/grid/difficulties";
+import { MessageType, IOBoolean } from "../socket.service/observableMessages";
 
 @Component({
     selector: "app-mode-component-mode",
@@ -64,11 +65,13 @@ import { Difficulty } from "./../../../../../common/grid/difficulties";
     }
 
     private waitingConnection(): void {
-        this.socketService.isUserConnected.subscribe( (userConnected: boolean) => {
-            if (userConnected) {
-                this.closeDialog();
+        this.socketService.socketObservale.subscribe((data: IOBoolean) => {
+            if (data.type === MessageType.userConnected) {
+                if (data.data) {
+                    this.closeDialog();
+                }
             }
-       });
+        });
     }
 
     public isWaitingForPlayer(): boolean {
@@ -162,11 +165,13 @@ import { Difficulty } from "./../../../../../common/grid/difficulties";
       }
 
     private receiveRequestForModeMenu(): void {
-        this._socketService.requestModeMenu.subscribe( (requestModeMenu: boolean) => {
-            if (requestModeMenu) {
-        this.openDialog();
+        this._socketService.socketObservale.subscribe((data: IOBoolean) => {
+            if (data.type === MessageType.requestModeMenu) {
+                if (data.data) {
+                    this.openDialog();
+                }
             }
-       });
+        });
     }
 
     private openDialog(): void {
