@@ -52,6 +52,7 @@ export class CluesComponent implements OnInit {
 
     public set clues(clues: Array<Word>) {
         this._clues = clues;
+        this._wordService.words = clues;
     }
     private foundWord(item: Word, position: Word): boolean {
         return (item.col === position.col &&

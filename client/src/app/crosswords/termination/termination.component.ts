@@ -6,6 +6,7 @@ import { Mode } from "../../../../../common/grid/player";
 import { GridLoadingService } from "../../grid-loading.service/grid-loading.service";
 import { DifficultyService } from "./../difficulty.service/difficulty.service";
 import { Difficulty } from "./../../../../../common/grid/difficulties";
+import { MessageType, IOBoolean, IOString } from "../socket.service/observableMessages";
 
 @Component({
     selector: "app-termination-component-termination",
@@ -45,6 +46,7 @@ import { Difficulty } from "./../../../../../common/grid/difficulties";
 
     public async loadNewGrid(): Promise<void> {
         this._loadingGrid = true;
+        this.socketService.resetScore();
         await this.gridLoadingService.loadNewGrid(this._level);
         this._loadingGrid = false;
     }
@@ -74,10 +76,12 @@ import { Difficulty } from "./../../../../../common/grid/difficulties";
     }
 
     public rematchOffer(): void {
-        this.socketService.requestRematch().subscribe( (gameID: string) => {
-            this.showRematchOffer = true;
-            this.opponentID = gameID;
-       });
+        this.socketService.socketObservable.subscribe((data: IOString) => {
+            if (data.type === MessageType.requestRematch) {
+                this.showRematchOffer = true;
+                this.opponentID = data.data;
+            }
+        });
     }
 
     public async acceptRematchOffer(): Promise<void> {
@@ -87,14 +91,18 @@ import { Difficulty } from "./../../../../../common/grid/difficulties";
     }
 
     public openModeDialog(): void {
+        this.socketService.resetScore();
         this.closeDialog();
         this.socketService.sendRequestModeMenu();
     }
 
     private receiveAcceptRematch(): void {
-        this.socketService.acceptRematch().subscribe( (accepted: boolean) => {
-            if (accepted) {
-                this.closeDialog();
+        this.socketService.socketObservable.subscribe((data: IOString) => {
+            if (data.type === MessageType.acceptRematch) {
+                if (data.data) {
+                    this.showRematchOffer = true;
+                    this.opponentID = data.data;
+                }
             }
         });
     }
@@ -130,9 +138,11 @@ export class TerminationComponent {
     }
 
     private isUserDisconnected(): void {
-        this.socketService.isOpponentDisconnected.subscribe( (opponentDisconnected: boolean) => {
-            if (opponentDisconnected) {
-                this.openDialog(Type.disconnected);
+        this.socketService.socketObservable.subscribe((data: IOBoolean) => {
+            if (data.type === MessageType.opponentDisconnected) {
+                if (data.data) {
+                    this.openDialog(Type.disconnected);
+                }
             }
         });
     }
@@ -146,8 +156,9 @@ export class TerminationComponent {
     }
 
     private waitingGridValidation(): void {
-            this.socketService.gridValidated.subscribe((gridValidated: boolean) => {
-                if (gridValidated) {
+        this.socketService.socketObservable.subscribe((data: IOBoolean) => {
+            if (data.type === MessageType.gridValidated) {
+                if (data.data) {
                     switch (this.socketService.selectedMode) {
                         case Mode.SinglePlayer:
                             this.openDialog(Type.soloGridValidated);
@@ -159,7 +170,8 @@ export class TerminationComponent {
                             break;
                     }
                 }
-            });
+            }
+        });
     }
 
 }
