@@ -95,6 +95,7 @@ import { Difficulty } from "./../../../../../common/grid/difficulties";
     private receiveAcceptRematch(): void {
         this.socketService.acceptRematch().subscribe( (accepted: boolean) => {
             if (accepted) {
+                this.socketService.resetScore();
                 this.closeDialog();
             }
         });
