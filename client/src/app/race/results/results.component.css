@@ -66,12 +66,15 @@ h3 {
 }
 
 .player {
-    background-color: #50b0da;
+    animation: color_change 1s infinite alternate;
+}
+@keyframes color_change {
+	from { background-color: #50b0da; }
+	to { background-color: none; }
 }
 
-#options {
+button {
     margin-top: 2%;
-    vertical-align: middle;
 }
 
 #options > button:last-child {

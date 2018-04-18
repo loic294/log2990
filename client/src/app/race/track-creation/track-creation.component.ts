@@ -2,6 +2,7 @@ import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from "@
 import { OrthographicCamera, WebGLRenderer, Scene, Vector3, Color } from "three";
 import { TrackCreationRenderer } from "../trackCreationRenderer";
 import { TrackInformation } from "../trackInformation";
+import { ActivatedRoute } from "@angular/router";
 
 const FAR_CLIPPING_PLANE: number = 100000;
 const NEAR_CLIPPING_PLANE: number = 1;
@@ -12,6 +13,10 @@ const COLOR_LINE_ERROR: number = 0xEF1F1F;
 
 const LEFT_CLICK: number = 1;
 const RIGHT_CLICK: number = 3;
+
+interface Params {
+    id: string;
+}
 
 @Component({
     selector: "app-track-creation",
@@ -26,17 +31,26 @@ export class TrackCreationComponent implements AfterViewInit {
     private _trackCreationRenderer: TrackCreationRenderer;
     private _trackInformation: TrackInformation;
     private _isSaved: boolean;
+    private _id: string;
 
     @ViewChild("container")
     private container: ElementRef;
 
-    public constructor() {
+    public constructor(private route: ActivatedRoute) {
         this._scene = new Scene();
         this._renderer = new WebGLRenderer();
         this._isSaved = false;
         this._trackInformation = new TrackInformation();
-        this._trackInformation.getTracksList();
+        this._trackInformation.getTracksList().then(async () => {
+            await this.getTrackInfo(this.route.snapshot.params.id);
+        })
+        .catch((err) => console.error(err));
         this._trackInformation.resetTrack();
+
+        this.route.params.subscribe(async (params: Params) => {
+            this._id = params.id;
+            await this.getTrackInfo(this._id);
+        });
     }
 
     public startNewTrack(): void {
@@ -107,6 +121,11 @@ export class TrackCreationComponent implements AfterViewInit {
             this.separateVertice();
             this.sendToDb();
         }
+
+        const duration: number = 1000;
+        setTimeout(
+            () => { this._isSaved = false; },
+            duration);
     }
 
     @HostListener("window:resize", ["$event"])
