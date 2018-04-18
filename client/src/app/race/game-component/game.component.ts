@@ -81,7 +81,7 @@ export class GameComponent implements AfterViewInit, OnInit {
         this._trackProgressionService.game
             .subscribe((_game) => this.actOnProgress(_game));
         this.resultsService.restart
-            .subscribe((_shouldRestart) => this.restart(_shouldRestart));
+            .subscribe(async(_shouldRestart) => this.restart(_shouldRestart));
     }
 
     public async start(): Promise<void> {
@@ -113,8 +113,9 @@ export class GameComponent implements AfterViewInit, OnInit {
 
             await this.restartPlayerCar();
             await this.restartBots();
-            this.reinitializeServices();
+            await this.reinitializeServices();
             this.repositionCars();
+            this.checkBotDirections();
             this.restartRaceProgress();
         }
     }
@@ -147,6 +148,14 @@ export class GameComponent implements AfterViewInit, OnInit {
         this._trackBuilder.positionRacers();
     }
 
+    private checkBotDirections(): void {
+        for (const bot of this.renderService.bots) {
+            if (bot.direction.angleTo(this._trackBuilder.vertices[1].position) >= Math.PI / 2) {
+                bot.mesh.rotateY(Math.PI / 2);
+            }
+        }
+    }
+
     private restartRaceProgress(): void {
         this.renderService.trackProgression = undefined;
         this.renderService.start(this._trackBuilder, this._trackProgressionService);
@@ -175,8 +184,8 @@ export class GameComponent implements AfterViewInit, OnInit {
         }
     }
 
-    private reinitializeServices(): void {
-        this.renderService.audioService.initializeSounds(this.renderService.car, this._trackBuilder.bots);
+    private async reinitializeServices(): Promise<void> {
+        await this.renderService.audioService.initializeSounds(this.renderService.car, this._trackBuilder.bots);
         this.inputManager.init(this.renderService);
     }
 
