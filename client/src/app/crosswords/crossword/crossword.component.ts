@@ -19,13 +19,13 @@ export class CrosswordComponent {
       public _wordService: WordService,
       public _socketService: SocketService
     ) {
-        this._socketService.socketObservale.subscribe((data: IOString) => {
+        this._socketService.socketObservable.subscribe((data: IOString) => {
             if (data.type === MessageType.opponentName) {
                 this._opponentName = data.data;
             }
         });
 
-        this._socketService.socketObservale.subscribe((data: IONumber) => {
+        this._socketService.socketObservable.subscribe((data: IONumber) => {
             if (data.type === MessageType.opponentScore) {
                 this._opponentScore = data.data;
             } else if (data.type === MessageType.userScore) {

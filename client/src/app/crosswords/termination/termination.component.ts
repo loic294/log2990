@@ -76,7 +76,7 @@ import { MessageType, IOBoolean, IOString } from "../socket.service/observableMe
     }
 
     public rematchOffer(): void {
-        this.socketService.socketObservale.subscribe((data: IOString) => {
+        this.socketService.socketObservable.subscribe((data: IOString) => {
             if (data.type === MessageType.requestRematch) {
                 this.showRematchOffer = true;
                 this.opponentID = data.data;
@@ -96,7 +96,7 @@ import { MessageType, IOBoolean, IOString } from "../socket.service/observableMe
     }
 
     private receiveAcceptRematch(): void {
-        this.socketService.socketObservale.subscribe((data: IOString) => {
+        this.socketService.socketObservable.subscribe((data: IOString) => {
             if (data.type === MessageType.acceptRematch) {
                 if (data.data) {
                     this.showRematchOffer = true;
@@ -137,7 +137,7 @@ export class TerminationComponent {
     }
 
     private isUserDisconnected(): void {
-        this.socketService.socketObservale.subscribe((data: IOBoolean) => {
+        this.socketService.socketObservable.subscribe((data: IOBoolean) => {
             if (data.type === MessageType.opponentDisconnected) {
                 if (data.data) {
                     this.openDialog(Type.disconnected);
@@ -155,7 +155,7 @@ export class TerminationComponent {
     }
 
     private waitingGridValidation(): void {
-        this.socketService.socketObservale.subscribe((data: IOBoolean) => {
+        this.socketService.socketObservable.subscribe((data: IOBoolean) => {
             if (data.type === MessageType.gridValidated) {
                 if (data.data) {
                     switch (this.socketService.selectedMode) {

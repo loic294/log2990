@@ -65,7 +65,7 @@ import { MessageType, IOBoolean } from "../socket.service/observableMessages";
     }
 
     private waitingConnection(): void {
-        this.socketService.socketObservale.subscribe((data: IOBoolean) => {
+        this.socketService.socketObservable.subscribe((data: IOBoolean) => {
             if (data.type === MessageType.userConnected) {
                 if (data.data) {
                     this.closeDialog();
@@ -165,7 +165,7 @@ import { MessageType, IOBoolean } from "../socket.service/observableMessages";
       }
 
     private receiveRequestForModeMenu(): void {
-        this._socketService.socketObservale.subscribe((data: IOBoolean) => {
+        this._socketService.socketObservable.subscribe((data: IOBoolean) => {
             if (data.type === MessageType.requestModeMenu) {
                 if (data.data) {
                     this.openDialog();
