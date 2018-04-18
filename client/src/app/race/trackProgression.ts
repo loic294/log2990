@@ -1,9 +1,8 @@
 import { Vector3, Clock, Object3D } from "three";
 import { Car } from "./car/car";
 import { IGameInformation, TrackProgressionService } from "./trackProgressionService";
+import { WIDTH, MAX_LAPS } from "../constants";
 
-const WIDTH: number = 10;
-const MAX_LAPS: number = 3;
 const TIME_FACTOR: number = 0.1;
 
 export class TrackProgression {
