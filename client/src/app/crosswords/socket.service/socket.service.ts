@@ -28,7 +28,8 @@ export class SocketService {
     private _socketObservale: Observable<IOMessage>;
     private _observableMessage: Subject<IOMessage> = new Subject<IOMessage>();
 
-    private _userScoreCount: number; private _opponentScoreCount: number;
+    private _userScoreCount: number;
+    private _opponentScoreCount: number;
 
     public constructor(
         private _socket: Socket,
