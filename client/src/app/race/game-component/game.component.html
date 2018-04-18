@@ -1,24 +1,49 @@
-<div class="canvas-container" #container>
-  <ul class="stats">
-    <li>Speed: {{this.renderService.car.speed.length() * 3.6 | number :'2.2-2'}} km/h</li>
-    <li>Gear: {{this.renderService.car.currentGear + 1}}</li>
-    <li>RPM: {{this.renderService.car.rpm | number:'2.0-0'}}</li>
-  </ul>
+<div class="game-container">
+  <div class="canvas-container" #container>
+    <div class="stats">
+      <li>Gear: {{this.renderService.car.currentGear + 1}}</li>
+      <li>RPM: {{this.renderService.car.rpm | number:'2.0-0'}}</li>
+    </div>
+  
+    <p class="lap">{{_currentGame.currentLap}}/3</p>
 
-  <p class="lap">Lap: {{_currentGame.currentLap}} / 3</p>
-  <p class="time"> Time: {{_currentGame.gameTime}} seconds</p>
-  <p class="lap-time"> Lap Time: {{_currentGame.lapTime}} seconds</p>
-  <p *ngIf="renderService.raceStarter" class="countdown">{{renderService.raceStarter.visual}}</p>
+    <div class="time-container">
+      <li> Time: {{_currentGame.gameTime}} seconds</li>
+      <li> Lap Time: {{_currentGame.lapTime}} seconds</li>
+    </div>
+    
+  
+    <p *ngIf="renderService.raceStarter" class="countdown">{{renderService.raceStarter.visual}}</p>
 
+    <div class="speedometer">
+      <div id="loader-wrapper">
+        <div class="loader">
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="subline"></div>
+          <div class="subline"></div>
+          <div class="subline"></div>
+          <div class="subline"></div>
+          <div class="subline"></div>
+          <div class="loader-circle-1"><div class="loader-circle-2"></div></div>
+          <div class="needle" [style.transform]="'rotate(' + this.renderService.car.speed.length() * 3.6 + 'deg)'">
+            <div class="moving-needle"></div>
+          </div>
+          <div class="loading">{{this.renderService.car.speed.length() * 3.6 | number :'2.2-2'}} km/h</div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
 </div>
 
-<br>
-<br>
-<br>
-<br>
 
 <app-results></app-results>
-<div *ngIf="!_raceStarted">
+<div class="game-choice" *ngIf="!_raceStarted">
 
   <button (click)="start()">start race</button>
 

@@ -8,8 +8,8 @@ export class TrackInformation {
 
     public constructor(private _trackService: TrackInformationService = new TrackInformationService()) {}
 
-    public getTracksList(): void {
-        this._trackService.getTracks("all").then((data) => {
+    public getTracksList(): Promise<void> {
+        return this._trackService.getTracks("all").then((data) => {
             const tempArray: Array<ITrack> = JSON.parse(data.toString());
             this._trackNames = new Array();
             for (const track of tempArray) {
