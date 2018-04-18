@@ -4,12 +4,13 @@
 // tslint:disable: no-floating-promises
 
 
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { async, ComponentFixture, TestBed, tick } from "@angular/core/testing";
+import { Observable } from 'rxjs/Observable'
 import { FormsModule } from "@angular/forms";
+import { RouterModule, ActivatedRoute } from "@angular/router";
 import { TrackCreationComponent } from "./track-creation.component";
 import { Object3D, Line } from "three";
 import { TrackInformationService } from "../../../../../server/app/services/trackInformation/trackInformationService";
-import { TrackInformation } from "../trackInformation";
 
 describe("TrackCreationComponent", () => {
     let component: TrackCreationComponent;
@@ -17,13 +18,11 @@ describe("TrackCreationComponent", () => {
     let scene: THREE.Scene;
     let vertices: Array<Object3D>;
     let edges: Array<Line>;
-    let trackService: TrackInformationService;
-    let trackInfo: TrackInformation;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            providers: [TrackInformationService],
-            imports: [FormsModule],
+            providers: [TrackInformationService, {provide: ActivatedRoute, useValue: { params: Observable.of({ id: 'test' })}}],
+            imports: [FormsModule, RouterModule],
             declarations: [TrackCreationComponent]
         })
             .compileComponents().catch((error) => {
@@ -33,13 +32,11 @@ describe("TrackCreationComponent", () => {
 
     beforeEach(() => {
         fixture = TestBed.createComponent(TrackCreationComponent);
-        component = fixture.componentInstance;
+        component = fixture.componentInstance;         
         fixture.detectChanges();
         scene = component.scene;
         vertices = component.trackCreationRenderer.getVertices();
         edges = component.trackCreationRenderer.getEdges();
-        trackService = new TrackInformationService();
-        trackInfo = new TrackInformation();
     });
 
     it("should create", () => {
