@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import { EnvironmentService } from "../environment-service/environment.service";
 import {
-    WebGLRenderer, Scene, Vector3
+    WebGLRenderer, Scene, Vector3, Mesh, ArrowHelper
 } from "three";
 import { Car } from "../car/car";
 import { CameraService } from "../camera-service/camera.service";
@@ -30,11 +30,14 @@ export class RenderService {
     private _aiService: AiService;
     private _raceStarter: RaceStarter;
     private _trackProgression: TrackProgression;
+    private _track: Array<Mesh>;
+    private _results: ArrowHelper[];
 
     public constructor(private _cameraService: CameraService, private _audioService: AudioService,
                        private _environmentService: EnvironmentService) {
         this._car = new Car();
         this._bots = [];
+        this._results = [];
 
         for (let i: number = 0; i < AMOUNT_OF_NPCS; i++) {
             this._bots[i] = new Car();
@@ -64,7 +67,6 @@ export class RenderService {
         if (this._aiService !== undefined) {
             this._aiService.update(timeSinceLastFrame);
         }
-
         this._bots.forEach((bot) => {
             if (Collision.detectCollision(this._car, bot)) {
                 this._audioService.playCarCollision();
@@ -72,10 +74,11 @@ export class RenderService {
                 bot.speed = resultSpeeds[1];
                 this._car.speed = resultSpeeds[0];
             }
-            if (Collision.detectOutOfBounds(this._car, this._raceStarter.trackBuilder.trackSegments)) {
-
-            }
         });
+        this._results = Collision.detectOutOfBounds(this._car, this._track);
+        for (const result of this._results) {
+            this._scene.add(result);
+        }
         for (let i: number = 0; i < this._bots.length; i++) {
             for (let j: number = i + 1; j < this._bots.length; j++) {
                 if (Collision.detectCollision(this._bots[i], this._bots[j])) {
@@ -86,7 +89,6 @@ export class RenderService {
                 }
             }
         }
-
         this._cameraService.followCar();
         this._lastDate = Date.now();
     }
@@ -140,6 +142,7 @@ export class RenderService {
                                                           this._car, this._bots,
                                                           this._raceStarter.trackProgressionService,
                                                           this._raceStarter.trackBuilder.vertices);
+            this._track = this._raceStarter.trackBuilder.trackSegments;
             this._raceStarter = undefined;
         }
         if (this._trackProgression !== undefined) {
