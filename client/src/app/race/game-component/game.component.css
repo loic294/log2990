@@ -6,6 +6,10 @@
   align-items: center;
 }
 
+.game-container.hide {
+  display: none;
+}
+
 .canvas-container {
   width: 100%;
   height: 100%;
@@ -22,19 +26,19 @@
   color: #fff;
   font-family: 'Share Tech Mono', monospace;
   list-style: none;
-  font-size: 24px;
+  font-size: 36px;
   text-shadow: 0 1px 2px #000;
 }
 
 .time-container {
-    position: absolute;
-    top: 40px;
-    left: 40px;
-    color: #fff;
-    font-family: 'Share Tech Mono', monospace;
-    list-style: none;
-    font-size: 18px;
-    text-shadow: 0 1px 2px #000;
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  color: #fff;
+  font-family: 'Share Tech Mono', monospace;
+  list-style: none;
+  font-size: 24wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwweepx;
+  text-shadow: 0 1px 2px #000;
 }
 
 .lap {
@@ -50,27 +54,27 @@
 }
 
 .countdown {
-  color: blue;
-  font-size: 100px;
+  text-shadow: 0 4px 10px #000;
+  color: white;
+  font-weight: 900;
+  font-size: 400px;
   z-index: 1;
   position: absolute;
   left: 50%;
-  top: 20%;
-}
-
-.game-choice {
-  position: absolute;
-  top: 200px;
-  z-index: 2;
+  top: 50%;
+  margin: 0;
+  margin-top: -200px;
+  margin-left: -100px;
 }
 
 .speedometer {
   position: absolute;
   height: 200px;
   width: 200px;
-  bottom: 20px;
+  bottom: 40px;
   right: 40px;
   z-index: 2;
+  transform: scale(1.4);
 }
 
 /* Inspired by https://codepen.io/Creativity/pen/myMNdR?page=3 */
@@ -83,7 +87,7 @@
   bottom: 0;
   z-index: 15;
   overflow: hidden;
-  transform: scale(1.2);
+  
 }
 
 .loader {
@@ -102,13 +106,14 @@
   position: absolute;
   width: 100%;
   text-align: center;
-  line-height: 14px;
+  line-height: 24px;
+  font-size: 16px;
   font-family: 'Century Gothic', sans-serif;
   text-shadow: 0 1px 2px #000;
   font-style: italic;
   left: 0;
   top: 50%;
-  margin-top: 20px;
+  margin-top: 10px;
   color: #fff;
   font-weight: bold;
   text-transform: uppercase;
@@ -271,7 +276,6 @@
   border-radius: 0 50% 50% 0;
 }
 
-
 @-webkit-keyframes spin {
   0% {
     -webkit-transform: rotate(0deg);
@@ -288,4 +292,56 @@
   100% {
     transform: rotate(360deg);
   }
+}
+
+.game-choice {
+  position: relative;
+  background-color: rgb(25, 25, 27);
+  min-height: 100vh;
+  color: #fff;
+}
+
+.game-choice h1 {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 72px;
+  margin: 20px 0;
+}
+
+.tracks-container {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 720px;
+  padding: 90px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.traks-list {
+    width: 380px;
+}
+
+.info {
+    width: 280px;
+    margin-top: 121px;
+}
+
+.track {
+  background-color: rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding: 20px 30px;
+  border-radius: 8px;
+}
+
+.track h2 {
+  color: #fff;
+  margin: 0;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.green-button {
+  margin-top: 20px;
+  background-color: rgb(50, 168, 56);
+  color: #fff;
+  font-size: 14px;
 }

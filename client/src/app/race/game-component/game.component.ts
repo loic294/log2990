@@ -10,8 +10,12 @@ import { EnvironmentService } from "../environment-service/environment.service";
 import { IGameInformation, TrackProgressionService } from "../trackProgressionService";
 import { AudioService } from "../audio-service/audio.service";
 import { ResultsService } from "../results-service/results.service";
+import { ActivatedRoute } from "@angular/router";
 
 const SCALE_FACTOR: number = -10;
+interface Params {
+    id: string;
+}
 
 @Component({
     moduleId: module.id,
@@ -37,17 +41,24 @@ export class GameComponent implements AfterViewInit, OnInit {
     private _trackInformation: TrackInformation;
     private _trackCreationRenderer: TrackCreationRenderer;
     public _currentGame: IGameInformation;
+    private _id: string;
 
     public constructor(private renderService: RenderService, private inputManager: InputManagerService,
                        private _trackProgressionService: TrackProgressionService,
-                       private resultsService: ResultsService) {
+                       private resultsService: ResultsService,
+                       private route: ActivatedRoute) {
         this._raceStarted = false;
         this._trackLoaded = false;
         this._trackInformation = new TrackInformation();
         this._trackInformation.getTracksList();
+        this._id = this.route.snapshot.params.id;
 
         this._currentGame = {gameTime: "0.00", lapTime: "0.00",
                              lapTimes: new Array(), gameIsFinished: true, currentLap: 0, botTimes: new Array()};
+
+        this.route.params.subscribe((params: Params) => {
+            this._id = params.id;
+        });
     }
 
     @HostListener("window:resize", ["$event"])
@@ -72,6 +83,12 @@ export class GameComponent implements AfterViewInit, OnInit {
     public async ngAfterViewInit(): Promise<void> {
         await this.renderService
             .initialize(this.containerRef.nativeElement);
+
+        if (this._id) {
+            await this.getTrackInfo(this._id);
+            await this.loadTrack();
+            this.start();
+        }
 
     }
 

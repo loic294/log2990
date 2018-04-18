@@ -1,4 +1,5 @@
-<div class="game-container">
+
+<div class="game-container" [class.hide]="!this._id">
   <div class="canvas-container" #container>
     <div class="stats">
       <li>Gear: {{this.renderService.car.currentGear + 1}}</li>
@@ -41,25 +42,37 @@
   </div>
 </div>
 
-
 <app-results></app-results>
-<div class="game-choice" *ngIf="!_raceStarted">
 
-  <button (click)="start()">start race</button>
+<div class="game-choice" *ngIf="!this._id">
 
+  <div class="tracks-container">
 
-    <li *ngFor="let track of _trackInformation.tracks">
-      <button (click)="getTrackInfo(track)">{{track}}</button>
-    </li>
-    <br><br><br>
-  
-  <div *ngIf="_trackInformation.track">
-      <span>name: </span>{{_trackInformation.track.name}}<br>
-      <span>type: </span>{{_trackInformation.track.type}}<br>
-      <span>description: </span>{{_trackInformation.track.description}}<br>
-      <span>times played: </span>{{_trackInformation.track.timesPlayed}}<br>
-      <li *ngFor="let time of _trackInformation.track.completedTimes">
-        {{time.player}}: {{time.gameTime}} seconds
-      </li>
+      
+      <div class="traks-list">
+        <h1>Games</h1>
+        <div class="track" *ngFor="let track of _trackInformation.tracks">
+          <h2>{{track}}</h2>
+          <button (click)="getTrackInfo(track)">View info</button>
+          <a routerLink="/race/{{track}}">
+            <button class="green-button">Start game</button>
+          </a>
+        </div>
+      </div>
+      
+      <div class="track info" *ngIf="_trackInformation.track">
+        <b>Name:</b> {{_trackInformation.track.name}}<br/>
+        <b>Type:</b> {{_trackInformation.track.type}}<br/>
+        <b>Times played:</b> {{_trackInformation.track.timesPlayed}}<br/>
+        <b>Description:</b><br/>
+        {{_trackInformation.track.description}}<br/>
+        
+        <b>Completed times</b>
+        <li *ngFor="let time of _trackInformation.track.completedTimes">
+          {{time.player}}: {{time.gameTime}} seconds
+        </li>
+      </div>
+
   </div>
+
 </div>
