@@ -13,6 +13,7 @@ export class RaceStarter {
                        private _audioService: AudioService) {
         this._countdownClock = new Clock();
         this._countdownClock.start();
+        this._audioService.start();
     }
 
     public getCountdown(): number {
@@ -22,8 +23,6 @@ export class RaceStarter {
     }
 
     private showCountdown(): void {
-        this._audioService.start();
-
         if (this._countdownClock.getElapsedTime() < 1) {
             this._visual = "3";
         } else if (this._countdownClock.getElapsedTime() < 2) {
