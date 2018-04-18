@@ -6,6 +6,15 @@ import { TrackProgressionService } from "../trackProgressionService";
 import { Raycaster, Vector3, Intersection } from "three";
 import { ResultsComponent } from "../results/results.component";
 import { ResultsService } from "../results-service/results.service";
+import { RouterTestingModule } from "@angular/router/testing";
+import { ActivatedRoute } from "@angular/router";
+import { Observable } from "rxjs/Observable";
+
+// tslint:disable-next-line:typedef
+const fakeActivatedRoute = {
+    snapshot: { params: {} },
+    params: Observable.of()
+  } as ActivatedRoute;
 
 describe("GameComponent", () => {
     let component: GameComponent;
@@ -13,20 +22,18 @@ describe("GameComponent", () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [FormsModule],
+            imports: [FormsModule, RouterTestingModule ],
             declarations: [GameComponent, ResultsComponent],
-            providers: [TrackProgressionService, ResultsService]
+            providers: [TrackProgressionService, ResultsService, {provide: ActivatedRoute, useValue: fakeActivatedRoute}]
         })
             .compileComponents().catch((error) => {
                 throw error;
             });
-    }));
 
-    beforeEach(() => {
         fixture = TestBed.createComponent(GameComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-    });
+    }));
 
     it("should create", () => {
         expect(component).toBeTruthy();
