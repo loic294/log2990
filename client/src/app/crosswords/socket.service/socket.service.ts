@@ -8,7 +8,7 @@ import { SocketMessage } from "../../../../../common/communication/message";
 import Word from "../../../../../common/lexical/word";
 import { DifficultyService } from "./../difficulty.service/difficulty.service";
 import { Mode } from "../../../../../common/grid/player";
-import { GridLoadingService } from "../../grid-loading.service/grid-loading.service";
+import { GridLoadingService } from "../../crosswords/grid-loading.service/grid-loading.service";
 import { Cell } from "../../../../../common/grid/cell";
 import { IOMessage, MessageType } from "./observableMessages";
 

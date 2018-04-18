@@ -3,7 +3,7 @@ import { SocketService } from "../socket.service/socket.service";
 import { IGameModel } from "./../../../../../server/app/models/game";
 import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material";
 import { Mode } from "../../../../../common/grid/player";
-import { GridLoadingService } from "../../grid-loading.service/grid-loading.service";
+import { GridLoadingService } from "../../crosswords/grid-loading.service/grid-loading.service";
 import { DifficultyService } from "./../difficulty.service/difficulty.service";
 import { Difficulty } from "./../../../../../common/grid/difficulties";
 import { MessageType, IOBoolean } from "../socket.service/observableMessages";

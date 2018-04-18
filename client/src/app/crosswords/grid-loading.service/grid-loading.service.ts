@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/Observable";
 import { Subject } from "rxjs/Subject";
-import Word from "../../../../common/lexical/word";
+import Word from "../../../../../common/lexical/word";
 import axios from "axios";
-import { Cell } from "../../../../common/grid/cell";
-import { Difficulty, difficultyName } from "../../../../common/grid/difficulties";
+import { Cell } from "../../../../../common/grid/cell";
+import { Difficulty, difficultyName } from "../../../../../common/grid/difficulties";
 
 @Injectable()
 export class GridLoadingService {

@@ -1,5 +1,5 @@
 
-<div class="game-container" [class.hide]="!this._id">
+<div class="game-container" *ngIf="this._id">
   <div class="canvas-container" #container>
     <div class="stats">
       <li>Gear: {{this.renderService.car.currentGear + 1}}</li>
@@ -12,7 +12,6 @@
       <li> Time: {{_currentGame.gameTime}} seconds</li>
       <li> Lap Time: {{_currentGame.lapTime}} seconds</li>
     </div>
-    
   
     <p *ngIf="renderService.raceStarter" class="countdown">{{renderService.raceStarter.visual}}</p>
 
@@ -48,7 +47,6 @@
 
   <div class="tracks-container">
 
-      
       <div class="traks-list">
         <h1>Games</h1>
         <div class="track" *ngFor="let track of _trackInformation.tracks">
@@ -60,17 +58,22 @@
         </div>
       </div>
       
-      <div class="track info" *ngIf="_trackInformation.track">
-        <b>Name:</b> {{_trackInformation.track.name}}<br/>
-        <b>Type:</b> {{_trackInformation.track.type}}<br/>
-        <b>Times played:</b> {{_trackInformation.track.timesPlayed}}<br/>
-        <b>Description:</b><br/>
-        {{_trackInformation.track.description}}<br/>
-        
-        <b>Completed times</b>
-        <li *ngFor="let time of _trackInformation.track.completedTimes">
-          {{time.player}}: {{time.gameTime}} seconds
-        </li>
+      <div class="track info">
+
+          <div class="canvas-temp" #container></div>
+
+        <div *ngIf="_trackInformation.track">
+          <b>Name:</b> {{_trackInformation.track.name}}<br/>
+          <b>Type:</b> {{_trackInformation.track.type}}<br/>
+          <b>Times played:</b> {{_trackInformation.track.timesPlayed}}<br/>
+          <b>Description:</b><br/>
+          {{_trackInformation.track.description}}<br/>
+          
+          <b>Completed times</b>
+          <li *ngFor="let time of _trackInformation.track.completedTimes">
+            {{time.player}}: {{time.gameTime}} seconds
+          </li>
+        </div>
       </div>
 
   </div>
