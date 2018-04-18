@@ -88,8 +88,8 @@ export class RenderService {
                 this._car.speed = resultSpeeds[0];
             }
         }
-        if (Collision.detectOutOfBounds(this._car, this._track) !== null) {
-            this._car.meshPosition = Collision.detectOutOfBounds(this._car, this._track);
+        for (const arrow of Collision.detectOutOfBounds(this._car, this._track)) {
+            this._scene.add(arrow);
         }
     }
 

@@ -1,9 +1,12 @@
-import { Vector3, Matrix4, Mesh, Raycaster, Intersection } from "three";
+import { Vector3, Matrix4, Mesh, Raycaster, Intersection, ArrowHelper } from "three";
 import { Car } from "./car";
 
 const ABSOLUTE_CAR_LENGTH_X: number = -0.7128778274977209;
 const ABSOLUTE_CAR_LENGTH_Y: number = -0.007726105637907718;
 const ABSOLUTE_CAR_LENGTH_Z: number = -1.8093634648776054;
+const COLOUR: number = 0xFFFF00;
+const OTHER_COLOUR: number = 0xFF0000;
+const LENGTH: number = 10;
 
 export default class Collision {
     private static corners: Vector3[];
@@ -12,8 +15,9 @@ export default class Collision {
         return firstCar.boundingBox.intersectsBox(secondCar.boundingBox);
     }
 
-    public static detectOutOfBounds(car: Car, track: Mesh[]): Vector3 {
+    public static detectOutOfBounds(car: Car, track: Mesh[]): ArrowHelper[] {
         Collision.initializeCorners();
+        const arrows: ArrowHelper[] = [];
         const intersectionResults: Intersection[] = [];
         let outOfBounds: boolean = false;
 
@@ -24,38 +28,33 @@ export default class Collision {
             const collisionResults: Intersection[] = ray.intersectObjects(track);
             if (collisionResults.length <= 0) {
                 outOfBounds = true;
+                arrows.push(new ArrowHelper( directionVector.normalize(), car.boundingBox.getCenter(), LENGTH, OTHER_COLOUR));
             } else {
                 intersectionResults.concat(collisionResults);
+                arrows.push(new ArrowHelper( directionVector.normalize(), car.boundingBox.getCenter(), LENGTH, COLOUR));
             }
         }
         if (outOfBounds) {
-            return Collision.collideOutOfBounds(car, intersectionResults, track);
+            return arrows;
         } else {
-            return null;
+            return arrows;
         }
     }
 
-    public static detectOutOfBoundsAI(ai: Car[], track: Mesh[]): Vector3[] {
-        const results: Vector3[] = [];
+    public static detectOutOfBoundsAI(ai: Car[], track: Mesh[]): ArrowHelper[] {
+        const results: ArrowHelper[] = [];
         for (const car of ai) {
-            results.push(Collision.detectOutOfBounds(car, track));
+            results.concat(Collision.detectOutOfBounds(car, track));
         }
 
         return results;
     }
 
     public static collideOutOfBounds(car: Car, intersections: Intersection[], track: Mesh[]): Vector3 {
-        for (const intersection of intersections) {
-            for (const trackSegment of track) {
-                if (intersection.object == trackSegment) {
-                    return trackSegment.position;
-                }
-            }
-        }
 
         return null;
     }
-
+// perpendiuclar vector to both the direction vectors, find the angle
     private static initializeCorners(): void {
         Collision.corners = [];
         Collision.corners.push(new Vector3(ABSOLUTE_CAR_LENGTH_X, ABSOLUTE_CAR_LENGTH_Y, ABSOLUTE_CAR_LENGTH_Z));
