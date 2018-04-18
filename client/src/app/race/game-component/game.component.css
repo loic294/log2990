@@ -19,6 +19,12 @@
   position: relative;
 }
 
+.canvas-temp {
+    width: 360px;
+    height: 240px;
+    margin-bottom: 30px;
+}
+
 .stats {
   position: absolute;
   bottom: 40px;
@@ -37,7 +43,7 @@
   color: #fff;
   font-family: 'Share Tech Mono', monospace;
   list-style: none;
-  font-size: 24wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwweepx;
+  font-size: 24px;
   text-shadow: 0 1px 2px #000;
 }
 
@@ -310,7 +316,7 @@
 .tracks-container {
   margin: 0 auto;
   width: 100%;
-  max-width: 720px;
+  max-width: 880px;
   padding: 90px 20px;
   display: flex;
   justify-content: space-between;
@@ -322,7 +328,7 @@
 }
 
 .info {
-    width: 280px;
+    width: 420px;
     margin-top: 121px;
 }
 

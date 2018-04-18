@@ -2,8 +2,7 @@ import { Clock } from "three";
 import { TrackBuilder } from "./trackBuilder";
 import { TrackProgressionService } from "./trackProgressionService";
 import { AudioService } from "./audio-service/audio.service";
-
-const MAX_COUNTDOWN: number = 3;
+import { MAX_COUNTDOWN } from "../constants";
 
 export class RaceStarter {
     private _countdownClock: Clock;
@@ -43,6 +42,10 @@ export class RaceStarter {
 
     public get visual(): String {
         return this._visual;
+    }
+
+    public get audioService(): AudioService {
+        return this._audioService;
     }
 
 }

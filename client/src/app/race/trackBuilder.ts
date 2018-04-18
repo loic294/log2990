@@ -2,14 +2,13 @@ import {
     Vector3, Mesh, Object3D,
     PlaneGeometry, DoubleSide, CircleGeometry, TextureLoader, Texture, RepeatWrapping, MeshPhongMaterial} from "three";
 import { LineSegment } from "./trackCreationRenderer";
-import { PI_OVER_2 } from "../constants";
+import { PI_OVER_2, WIDTH } from "../constants";
 import { Car } from "./car/car";
 
-const WIDTH: number = 10;
 const CIRCLE_SEGMENTS: number = 32;
 const OFFSET_FACTOR: number = -0.1;
 const DISTANCE_FACTOR: number = 1.3;
-const NUMBER_OF_LINE: number = 2;
+const NUMBER_OF_CAR_LINE: number = 2;
 const LINE_POSITION_FACTOR: number = 3;
 const OFFTRACK_OFFSET: number = 0.03;
 const PLANE_OFFSET: number = 0.01;
@@ -69,14 +68,14 @@ export class TrackBuilder {
         return texture;
     }
     private generateTrackSegment(firstVertex: Vector3, secondVertex: Vector3): void {
-        // create length
+
         const length: number = firstVertex.distanceTo(secondVertex);
-        // create Material
+
         const material: MeshPhongMaterial = new MeshPhongMaterial({
             map: this.generateTexture(WIDTH, length, TRACK_TEXTURE_PATH),
             side: DoubleSide
         });
-        // initial position of track
+
         const planeGeometry: PlaneGeometry = new PlaneGeometry(WIDTH, length);
         const track: Mesh = new Mesh(planeGeometry, material);
         track.position.set(firstVertex.x, firstVertex.y, firstVertex.z);
@@ -146,13 +145,18 @@ export class TrackBuilder {
         const lineMaterial: MeshPhongMaterial = new MeshPhongMaterial({ map: texture, side: DoubleSide });
         lineMaterial.polygonOffset = true;
         lineMaterial.polygonOffsetFactor = OFFSET_FACTOR;
-        const firstLine: Mesh = new Mesh(lineGeometry, lineMaterial);
-        const secondLine: Mesh = new Mesh(lineGeometry, lineMaterial);
+        const startingLine: Mesh = new Mesh(lineGeometry, lineMaterial);
+        const firstCarLine: Mesh = new Mesh(lineGeometry, lineMaterial);
+        const secondCarLine: Mesh = new Mesh(lineGeometry, lineMaterial);
 
-        this.positionMesh(firstLine, WIDTH / DISTANCE_FACTOR);
-        this.initiateLineStats(firstLine);
-        this.positionMesh(secondLine, WIDTH * DISTANCE_FACTOR);
-        this.initiateLineStats(secondLine);
+        this.positionMesh(startingLine, WIDTH * DISTANCE_FACTOR * DISTANCE_FACTOR);
+        this.initiateCarLineStats(startingLine);
+        this._scene.add(this._startingLines[0]);
+
+        this.positionMesh(firstCarLine, WIDTH * DISTANCE_FACTOR);
+        this.initiateCarLineStats(firstCarLine);
+        this.positionMesh(secondCarLine, WIDTH / DISTANCE_FACTOR);
+        this.initiateCarLineStats(secondCarLine);
     }
 
     private positionMesh(mesh: Mesh, distance: number): void {
@@ -160,11 +164,11 @@ export class TrackBuilder {
         dir.subVectors(this._vertice[1].position, this._vertice[0].position);
         dir.normalize();
         mesh.translateOnAxis(dir, distance);
-        const xAxis: Vector3 = new Vector3(0, 0, 1);
-        const angle: number = xAxis.angleTo(dir);
+        const zAxis: Vector3 = new Vector3(0, 0, 1);
+        const angle: number = zAxis.angleTo(dir);
         mesh.rotateX(PI_OVER_2);
 
-        if (xAxis.cross(dir).y > 0) {
+        if (zAxis.cross(dir).y > 0) {
             mesh.rotateZ(-angle);
         } else {
             mesh.rotateZ(angle);
@@ -172,14 +176,13 @@ export class TrackBuilder {
         mesh.rotateZ(Math.PI / 2);
     }
 
-    private initiateLineStats(line: Mesh): void {
+    private initiateCarLineStats(line: Mesh): void {
         line.userData.leftPositionTaken = false;
         line.userData.rightPositionTaken = false;
         this._startingLines.push(line);
-        this._scene.add(line);
     }
 
-    private positionRacers(): void {
+    public positionRacers(): void {
 
         this.chooseLine(this._playerCar);
 
@@ -193,18 +196,18 @@ export class TrackBuilder {
     }
 
     private chooseLine(car: Car): void {
-        if (Math.random() * NUMBER_OF_LINE <= 1 && this.lineAsFreePosition(this._startingLines[0])) {
-            this.chooseLineSide(car, this._startingLines[0]);
-        } else if (this.lineAsFreePosition(this._startingLines[1])) {
+        if (Math.random() * NUMBER_OF_CAR_LINE <= 1 && this.lineAsFreePosition(this._startingLines[1])) {
             this.chooseLineSide(car, this._startingLines[1]);
+        } else if (this.lineAsFreePosition(this._startingLines[2])) {
+            this.chooseLineSide(car, this._startingLines[2]);
         } else {
-            this.chooseLineSide(car, this._startingLines[0]);
+            this.chooseLineSide(car, this._startingLines[1]);
         }
     }
 
     private chooseLineSide(car: Car, line: Mesh): void {
         const perpendiculars: Array<Vector3> = this.findPerpendicularVectors(line.position);
-        if (Math.random() * NUMBER_OF_LINE <= 1 && !line.userData.leftPositionTaken) {
+        if (Math.random() * NUMBER_OF_CAR_LINE <= 1 && !line.userData.leftPositionTaken) {
             this.placeOnLine(car, line, perpendiculars[0]);
             line.userData.leftPositionTaken = true;
         } else if (!line.userData.rightPositionTaken) {
@@ -218,9 +221,19 @@ export class TrackBuilder {
 
     private placeOnLine(car: Car, line: Mesh, perpendicular: Vector3): void {
         car.meshPosition = line.position;
-        const direction: Vector3 = car.direction;
-        car.mesh.rotateY(direction.angleTo(this._vertice[1].position));
+        const angle: number = this.findAngle(car.direction, this._vertice[1].position);
+        car.mesh.rotateY(angle);
         car.meshPosition = new Vector3(perpendicular.x * LINE_POSITION_FACTOR, 0, perpendicular.z * LINE_POSITION_FACTOR);
+    }
+
+    private findAngle(firstVector: Vector3, secondVector: Vector3): number {
+        let angle: number = firstVector.angleTo(secondVector);
+
+        if (firstVector.cross(secondVector).y < 0) {
+            angle = -angle;
+        }
+
+        return angle;
     }
 
     private findPerpendicularVectors(vector: Vector3): Array<Vector3> {
@@ -244,5 +257,21 @@ export class TrackBuilder {
 
     public get startingLines(): Array<Mesh> {
         return this._startingLines;
+    }
+
+    public get playerCar(): Car {
+        return this._playerCar;
+    }
+
+    public set playerCar(car: Car) {
+        this._playerCar = car;
+    }
+
+    public get bots(): Array<Car> {
+        return this._botCars;
+    }
+
+    public set bots(bots: Array<Car>) {
+        this._botCars = bots;
     }
 }

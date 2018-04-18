@@ -10,7 +10,7 @@ import { SocketService } from "../socket.service/socket.service";
 import { GridService } from "../grid.service/grid.service";
 import { DifficultyService } from "../difficulty.service/difficulty.service";
 import Word, { Orientation } from "../../../../../common/lexical/word";
-import { GridLoadingService } from "../../grid-loading.service/grid-loading.service";
+import { GridLoadingService } from "../../crosswords/grid-loading.service/grid-loading.service";
 import { Cell } from "../../../../../common/grid/cell";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };

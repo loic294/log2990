@@ -76,11 +76,7 @@ export class AiService {
             this.releaseSteering();
         }
     }
-/*
-    private isOnLine(): boolean {
-        return this.distanceCarToPoint().normalize().equals(this._currentCar.direction.normalize());
-    }
-*/
+
     private isToTheRightOfLine(): boolean {
         return this.distanceCarToPoint().normalize().cross(this._currentCar.direction.normalize()).y < 0;
     }

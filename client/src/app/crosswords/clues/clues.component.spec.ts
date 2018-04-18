@@ -8,7 +8,7 @@ import { WordService } from "../word.service/word.service";
 import { SocketService } from "../socket.service/socket.service";
 import { DifficultyService } from "../difficulty.service/difficulty.service";
 import Word, { Orientation } from "../../../../../common/lexical/word";
-import { GridLoadingService } from "../../grid-loading.service/grid-loading.service";
+import { GridLoadingService } from "../../crosswords/grid-loading.service/grid-loading.service";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 

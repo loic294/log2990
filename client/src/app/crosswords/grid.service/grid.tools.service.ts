@@ -46,10 +46,10 @@ export class GridToolsService {
         this._grid = grid;
     }
 
-    public findWordStart(): Word {
+    public findWordStart(forceVertical: boolean): Word {
         let tempOrientation: Orientation;
         if (!this.isBlack(this._grid[this._row][this._col].char)) {
-            if (this.previousHorizontalIsNotBlack() || this.nextHorizontalIsNotBlack()) {
+            if ((this.previousHorizontalIsNotBlack() || this.nextHorizontalIsNotBlack()) && !forceVertical) {
 
                 this.findHorizontalWordStart();
                 tempOrientation = Orientation.horizontal;

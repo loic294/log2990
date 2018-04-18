@@ -4,6 +4,7 @@ import { ResultsService } from "../results-service/results.service";
 import { PlayerStats } from "../../../../../common/race/playerStats";
 import { TrackInformation } from "../trackInformation";
 const ENTER_KEYCODE: number = 13;
+const MAX_TIMES: number = 5;
 
 @Component({
     selector: "app-results",
@@ -21,10 +22,8 @@ export class ResultsComponent implements OnInit {
     private _trackInfo: TrackInformation;
     private _showGameResults: boolean;
     private _positionedRaceStats: Array<PlayerStats>;
-    private _showModal: boolean;
 
     public constructor( private resultsService: ResultsService) {
-        this._showModal = true;
         this._game =  {
             gameTime: "0.00",
             lapTime: "0.00" ,
@@ -33,10 +32,6 @@ export class ResultsComponent implements OnInit {
             currentLap: 1,
             botTimes: new Array()};
         this._updatedName = false;
-    }
-
-    public get showModal(): boolean {
-        return this._showModal;
     }
 
     public get updatedName(): boolean {
@@ -113,6 +108,14 @@ export class ResultsComponent implements OnInit {
         parseFloat(n1.gameTime.toString()) - parseFloat(n2.gameTime.toString()));
     }
 
+    private clipNumberOfBestTimes(): void {
+        const fiveBestTimes: Array<PlayerStats> = new Array();
+        for (let i: number = 0; i < MAX_TIMES; i++) {
+            fiveBestTimes.push(this._trackInfo.track.completedTimes[i]);
+        }
+        this._trackInfo.track.completedTimes = fiveBestTimes;
+    }
+
     public isFirst(): boolean {
         for (const bot of this._game.botTimes) {
             let completeTimeBot: number = 0;
@@ -149,6 +152,9 @@ export class ResultsComponent implements OnInit {
                     stat.player = this.bestTimeName;
                 }
             }
+            if (this._trackInfo.track.completedTimes.length > MAX_TIMES) {
+                this.clipNumberOfBestTimes();
+            }
             await this._trackInfo.patchTrack();
         }
     }
@@ -157,8 +163,17 @@ export class ResultsComponent implements OnInit {
         return this._game.gameTime === time.gameTime && time.player === "";
     }
 
-    public playAgain(): void {
-        this._showModal = false;
+    public restart(): void {
+        this.resultsService.restartRace(true);
+        this._game =  {
+            gameTime: "0.00",
+            lapTime: "0.00" ,
+            lapTimes: new Array(),
+            gameIsFinished: false,
+            currentLap: 1,
+            botTimes: new Array()};
+        this._updatedName = false;
+        this._bestTimeName = "";
     }
 
     public ngOnInit(): void {

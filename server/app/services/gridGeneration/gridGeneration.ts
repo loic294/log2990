@@ -191,8 +191,10 @@ export default class GridGeneration {
             this._gridCache[wordIndex] = immutableGird;
             const gridFreeze: List<List<Cell>> = await this.findWordAndDefinition(words, wordIndex, immutableGird);
 
-            if (wordRepeats(words, wordIndex)) {
+            if (wordRepeats(words)) {
                 this.initializeGrid(this._gridSize, this._level);
+                await this.findAllWordsSpaces();
+                await this.startRecursion();
             }
 
             const nextGrid: List<List<Cell>> = gridFreeze.size > 0 ? gridFreeze : this._gridCache[wordIndex];

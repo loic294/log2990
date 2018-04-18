@@ -6,7 +6,7 @@ import { SocketService } from "../socket.service/socket.service";
 import { GridService } from "./grid.service";
 import Word, { Orientation } from "../../../../../common/lexical/word";
 import { DifficultyService } from "./../difficulty.service/difficulty.service";
-import { GridLoadingService } from "../../grid-loading.service/grid-loading.service";
+import { GridLoadingService } from "../../crosswords/grid-loading.service/grid-loading.service";
 import { Cell } from "../../../../../common/grid/cell";
 
 const GRID: Array<Array<Cell>> = [
@@ -41,19 +41,19 @@ describe("GridService", () => {
     });
 
     it("'b' should be a letter", () => {
-        expect(gridService.GridToolsService.isLetter("b")).toBe(true);
+        expect(gridService.gridToolsService.isLetter("b")).toBe(true);
     });
 
     it("'B' should be a letter", () => {
-        expect(gridService.GridToolsService.isLetter("B")).toBe(true);
+        expect(gridService.gridToolsService.isLetter("B")).toBe(true);
     });
 
     it("'4' shouldn't be a letter", () => {
-        expect(gridService.GridToolsService.isLetter("4")).toBe(false);
+        expect(gridService.gridToolsService.isLetter("4")).toBe(false);
     });
 
     it("'{' shouldn't be a letter", () => {
-        expect(gridService.GridToolsService.isLetter("{")).toBe(false);
+        expect(gridService.gridToolsService.isLetter("{")).toBe(false);
     });
 
     it("Word 'hey' should be validated after entering 'hey'", () => {

@@ -1,9 +1,9 @@
 import { Vector3, Clock, Object3D } from "three";
 import { Car } from "./car/car";
 import { IGameInformation, TrackProgressionService } from "./trackProgressionService";
+import { WIDTH, MAX_LAPS } from "../constants";
 
-const WIDTH: number = 10;
-const MAX_LAPS: number = 3;
+const TIME_FACTOR: number = 0.1;
 
 export class TrackProgression {
     private _game: IGameInformation;
@@ -53,38 +53,44 @@ export class TrackProgression {
 
     }
 
-    private isLapCompleted(carDistance: number): boolean {
-        return this._playerCar.userData.isNewLap && this._playerCar.userData.verticeIndex === this._vertice.length - 1 &&
-               carDistance < WIDTH / 2 && !this._game.gameIsFinished;
+    private isLapCompleted(car: Car): boolean {
+        return this.isAtStartingLine(car) && this._playerCar.userData.verticeIndex === this._vertice.length - 1 &&
+               !this._game.gameIsFinished;
     }
 
-    private isPassedStartingLine(carDistance: number): boolean {
-        return !this._playerCar.userData.isNewLap && carDistance > WIDTH;
+    private isAtStartingLine(car: Car): boolean {
+        const carDistance: number = this.getCarDistance(this._startingLine, car);
+
+        return car.userData.isNewLap && carDistance < WIDTH / 2;
     }
 
-    private asJustCompleted3Laps(): boolean {
+    private isPassedStartingLine(car: Car): boolean {
+        const carDistance: number = this.getCarDistance(this._startingLine, car);
+
+        return !car.userData.isNewLap && carDistance > WIDTH;
+    }
+
+    private hasJustCompleted3Laps(): boolean {
         return this._playerCar.userData.lapsCompleted >= MAX_LAPS && !this._game.gameIsFinished;
     }
 
     private checkForNextVertex(): void {
-        const carDistance: number = this.getCarDistance(this._vertice[this._playerCar.userData.verticeIndex].position);
+        const carDistance: number = this.getCarDistance(this._vertice[this._playerCar.userData.verticeIndex].position, this._playerCar);
 
         if (carDistance <= WIDTH * 2 && this._playerCar.userData.verticeIndex < this._vertice.length - 1) {
             this._playerCar.userData.verticeIndex++;
         }
     }
 
-    private getCarDistance(destination: Vector3): number {
+    private getCarDistance(destination: Vector3, car: Car): number {
         const carPosition: Vector3 = new Vector3;
-        carPosition.subVectors(destination, this._playerCar.meshPosition);
+        carPosition.subVectors(destination, car.meshPosition);
 
         return carPosition.length();
     }
 
     private updatePlayerInformation(): void {
-        const carDistance: number = this.getCarDistance(this._startingLine);
-
-        if (this.isLapCompleted(carDistance)) {
+        if (this.isLapCompleted(this._playerCar)) {
             this._playerCar.userData.lapsCompleted++;
             this._playerCar.userData.isNewLap = false;
             this._playerCar.userData.verticeIndex = 1;
@@ -92,65 +98,64 @@ export class TrackProgression {
             this._game.currentLap++;
             this._game.lapTimes.push(this._playerCar.userData.clock.getElapsedTime().toFixed(2));
             this._playerCar.userData.clock.start();
-        } else if (this.isPassedStartingLine(carDistance)) {
+        } else if (this.isPassedStartingLine(this._playerCar)) {
             this._playerCar.userData.isNewLap = true;
         }
 
-        if (this.asJustCompleted3Laps()) {
+        if (this.hasJustCompleted3Laps()) {
             this.stopGame();
         } else if (!this._game.gameIsFinished) {
             this._game.gameTime = this._gameClock.getElapsedTime().toFixed(2);
             this._game.lapTime = this._playerCar.userData.clock.getElapsedTime().toFixed(2);
+        } else {
+            this._playerCar.speed = new Vector3(0, 0, 0);
         }
 
         this.checkForNextVertex();
     }
 
     private stopGame(): void {
-        this._game.gameIsFinished = true;
         this._playerCar.userData.clock.stop();
         this._gameClock.stop();
         this.estimateBotTimes();
 
-        this._playerCar.brake();
-
         for (const bot of this._botCars) {
             bot.userData.allLapsCompleted = true;
         }
+
+        this._game.gameIsFinished = true;
     }
 
     private updateBotInformation(bot: Car, botIndex: number): void {
-        const carPosition: Vector3 = new Vector3;
-        carPosition.subVectors(this._startingLine, bot.meshPosition);
-        const carDistance: number = carPosition.length();
-
-        if (bot.userData.isNewLap && carDistance < WIDTH / 2 && bot.userData.lapsCompleted < MAX_LAPS) {
+        if (this.isAtStartingLine(bot) && bot.userData.lapsCompleted < MAX_LAPS) {
             bot.userData.lapsCompleted++;
             bot.userData.isNewLap = false;
 
             this._game.botTimes[botIndex].push(bot.userData.clock.getElapsedTime().toFixed(2));
             bot.userData.clock.start();
-        } else if (!bot.userData.isNewLap && carDistance > WIDTH && bot.userData.lapsCompleted >= MAX_LAPS) {
+        } else if (this.isPassedStartingLine(bot) && bot.userData.lapsCompleted >= MAX_LAPS) {
             bot.userData.allLapsCompleted = true;
-        } else if (!bot.userData.isNewLap && carDistance > WIDTH) {
+        } else if (this.isPassedStartingLine(bot)) {
             bot.userData.isNewLap = true;
         }
     }
 
     private estimateBotTimes(): void {
         let botIndex: number = 0;
+        let timeFactor: number = 1.05;
         for (const bot of this._botCars) {
-
             if (this._game.botTimes[botIndex].length === 0) {
                 this._game.botTimes[botIndex].push(this.calculateFirstRoundTime(bot).toFixed(2));
                 bot.userData.lapsCompleted++;
             }
 
             while (bot.userData.lapsCompleted < MAX_LAPS) {
-                this._game.botTimes[botIndex].push(this.calculateSubsequentRoundTime(bot, botIndex).toFixed(2));
+                this._game.botTimes[botIndex].push(this.calculateSubsequentRoundTime(bot, botIndex, timeFactor).toFixed(2));
                 bot.userData.lapsCompleted++;
+                timeFactor += TIME_FACTOR;
             }
             botIndex++;
+
         }
     }
 
@@ -158,7 +163,23 @@ export class TrackProgression {
         return (bot.userData.maxIndex * bot.userData.clock.getElapsedTime()) / bot.userData.pointIndex;
     }
 
-    private calculateSubsequentRoundTime(bot: Car, botIndex: number): number {
-        return (bot.userData.maxIndex * Number(this._game.botTimes[botIndex][0])) / bot.userData.pointIndex;
+    private calculateSubsequentRoundTime(bot: Car, botIndex: number, timeFactor: number): number {
+        return Number(this._game.botTimes[botIndex][0]) * timeFactor;
+    }
+
+    public get player(): Car {
+        return this._playerCar;
+    }
+
+    public get bots(): Array<Car> {
+        return this._botCars;
+    }
+
+    public get game(): IGameInformation {
+        return this._game;
+    }
+
+    public get vertice(): Array<Object3D> {
+        return this._vertice;
     }
 }

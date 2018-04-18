@@ -37,27 +37,7 @@ describe("Car", () => {
         car.update(MS_BETWEEN_FRAMES);
         expect(car.speed.length()).toBeGreaterThan(initialSpeed);
     });
-/*
-    it("should decelerate when brake is pressed", () => {
-        // Remove rolling resistance and drag force so the only force slowing down the car is the brakes.
-        car["getRollingResistance"] = () => {
-            return new Vector3(0, 0, 0);
-        };
 
-        car["getDragForce"] = () => {
-            return new Vector3(0, 0, 0);
-        };
-
-        car.isAcceleratorPressed = true;
-        car.update(MS_BETWEEN_FRAMES);
-        car.isAcceleratorPressed = false;
-
-        const initialSpeed: number = car.speed.length();
-        car.brake();
-        car.update(MS_BETWEEN_FRAMES);
-        expect(car.speed.length()).toBeLessThan(initialSpeed);
-    });
-*/
     it("should decelerate without brakes", () => {
         const initialSpeed: number = car.speed.length();
 
@@ -102,12 +82,7 @@ describe("Car", () => {
         car = new Car(new MockEngine(), undefined);
         expect(car["rearWheel"]).toBeDefined();
     });
-/*
-    it("should check validity of wheelbase parameter", () => {
-        car = new Car(new MockEngine(), new Wheel(), 0);
-        expect(car["wheelbase"]).toBe(DEFAULT_WHEELBASE);
-    });
-*/
+
     it("should check validity of mass parameter", () => {
         car = new Car(new MockEngine(), new Wheel(), DEFAULT_WHEELBASE, 0);
         expect(car["mass"]).toBe(DEFAULT_MASS);
