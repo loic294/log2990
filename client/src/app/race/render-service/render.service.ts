@@ -94,6 +94,11 @@ export class RenderService {
         if (Collision.detectOutOfBounds(this._car, this._track) !== null) {
             this._car.speed = Collision.detectOutOfBounds(this._car, this._track);
         }
+        for (const bot of this._bots) {
+            if (Collision.detectOutOfBounds(bot, this._track) !== null) {
+                bot.speed = Collision.detectOutOfBounds(bot, this._track);
+            }
+        }
     }
 
     private async createScene(): Promise<void> {
