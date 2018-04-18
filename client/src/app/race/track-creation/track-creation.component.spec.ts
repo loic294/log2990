@@ -4,7 +4,7 @@
 // tslint:disable: no-floating-promises
 
 
-import { async, ComponentFixture, TestBed, tick } from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { Observable } from 'rxjs/Observable'
 import { FormsModule } from "@angular/forms";
 import { RouterModule, ActivatedRoute } from "@angular/router";

@@ -11,12 +11,9 @@ enum Stage {
 
 @Injectable()
 export class AiService {
-
-    private _pointIndex: number;
     private _currentCar: Car;
 
     public constructor(private _track: TrackBuilder, private _npcs: Array<Car>) {
-        this._pointIndex = 0;
         for (const npc of this._npcs) {
             npc.userData.pointIndex = 0;
             npc.userData.maxIndex = this._track.vertices.length;
@@ -55,7 +52,7 @@ export class AiService {
     }
 
     private switchLines(): void {
-        this._pointIndex = this.nextPointIndex();
+        this._currentCar.userData.pointIndex = this.nextPointIndex();
     }
 
     private lengthOfDistanceCarToPoint(): number {
@@ -89,7 +86,7 @@ export class AiService {
     }
 
     private currentPointPosition(): Vector3 {
-        return this._track.vertices[this._pointIndex].position;
+        return this._track.vertices[this.currentPointIndex()].position;
     }
 
     private nextPointPosition(): Vector3 {
@@ -97,9 +94,12 @@ export class AiService {
     }
 
     private nextPointIndex(): number {
-        this._currentCar.userData.pointIndex = (this._pointIndex >= this._track.vertices.length - 1 ? 0 : this._pointIndex + 1);
 
-        return (this._pointIndex >= this._track.vertices.length - 1 ? 0 : this._pointIndex + 1);
+        return (this.currentPointIndex() >= this._track.vertices.length - 1 ? 0 : this.currentPointIndex() + 1);
+    }
+
+    private currentPointIndex(): number {
+        return this._currentCar.userData.pointIndex;
     }
 
     private releaseAccelerator(): void {
