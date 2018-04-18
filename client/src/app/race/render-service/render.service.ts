@@ -65,15 +65,12 @@ export class RenderService {
         if (this._aiService !== undefined) {
             this._aiService.update(timeSinceLastFrame);
         }
-        this._bots.forEach((bot) => {
-            if (Collision.detectCollision(this._car, bot)) {
-                this._audioService.playCarCollision();
-                const resultSpeeds: Array<Vector3> = Collision.collide(this._car, bot);
-                bot.speed = resultSpeeds[1];
-                this._car.speed = resultSpeeds[0];
-            }
-        });
-        Collision.detectOutOfBounds(this._car, this._track);
+        this.collisions();
+        this._cameraService.followCar();
+        this._lastDate = Date.now();
+    }
+
+    private collisions(): void {
         for (let i: number = 0; i < this._bots.length; i++) {
             for (let j: number = i + 1; j < this._bots.length; j++) {
                 if (Collision.detectCollision(this._bots[i], this._bots[j])) {
@@ -83,9 +80,16 @@ export class RenderService {
                     this._bots[i].speed = resultSpeeds[0];
                 }
             }
+            if (Collision.detectCollision(this._car, this._bots[i])) {
+                this._audioService.playCarCollision();
+                const resultSpeeds: Array<Vector3> = Collision.collide(this._car, this._bots[i]);
+                this._bots[i].speed = resultSpeeds[1];
+                this._car.speed = resultSpeeds[0];
+            }
         }
-        this._cameraService.followCar();
-        this._lastDate = Date.now();
+        if (Collision.detectOutOfBounds(this._car, this._track) !== null) {
+            this._car.meshPosition = Collision.detectOutOfBounds(this._car, this._track);
+        }
     }
 
     private async createScene(): Promise<void> {

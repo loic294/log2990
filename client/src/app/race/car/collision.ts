@@ -12,7 +12,7 @@ export default class Collision {
         return firstCar.boundingBox.intersectsBox(secondCar.boundingBox);
     }
 
-    public static detectOutOfBounds(car: Car, track: Mesh[]): void {
+    public static detectOutOfBounds(car: Car, track: Mesh[]): Vector3 {
         Collision.initializeCorners();
         const intersectionResults: Intersection[] = [];
         let outOfBounds: boolean = false;
@@ -29,24 +29,31 @@ export default class Collision {
             }
         }
         if (outOfBounds) {
-            Collision.collideOutOfBounds(car, intersectionResults, track);
+            return Collision.collideOutOfBounds(car, intersectionResults, track);
+        } else {
+            return null;
         }
     }
 
-    public static detectOutOfBoundsAI(ai: Array<Car>, track: Mesh[]): void {
+    public static detectOutOfBoundsAI(ai: Car[], track: Mesh[]): Vector3[] {
+        const results: Vector3[] = [];
         for (const car of ai) {
-            Collision.detectOutOfBounds(car, track);
+            results.push(Collision.detectOutOfBounds(car, track));
         }
+
+        return results;
     }
 
-    public static collideOutOfBounds(car: Car, intersections: Intersection[], track: Mesh[]): void {
+    public static collideOutOfBounds(car: Car, intersections: Intersection[], track: Mesh[]): Vector3 {
         for (const intersection of intersections) {
             for (const trackSegment of track) {
                 if (intersection.object == trackSegment) {
-                    car.meshPosition = trackSegment.position;
+                    return trackSegment.position;
                 }
             }
         }
+
+        return null;
     }
 
     private static initializeCorners(): void {
