@@ -7,7 +7,7 @@
       </div>
 
       <div *ngIf="isBestTime() && isFirst()">
-        <h1>CONGRATULATIONS YOU WON</h1>
+        <h1>CONGRATULATIONS YOU WON IN A TIME OF {{_game.gameTime}} SECONDS</h1>
         <div class="input-row">Please enter your name
           <input 
           (input)="enterName($event.target.value)"
@@ -23,22 +23,22 @@
           <th>Name</th>
           <th>Time</th>
         </tr>
-        <tr *ngFor="let time of bestTimes(); let index = index">
+        <tr *ngFor="let time of bestTimes(); let index = index" [ngClass] = "{'player': isPlayerTime(time)}">
           <td>{{index+1}}</td>
-          <td *ngIf = "_game.gameTime === time.gameTime; else other">{{bestTimeName}}</td>
+          <td *ngIf = "isPlayerTime(time); else other">{{bestTimeName}}</td>
           <ng-template #other><td>{{time.player}}</td></ng-template>
           <td>{{time.gameTime}} seconds</td>
         </tr>
       </table>
   
-      <div *ngIf = "updatedName || !isBestTime()">
+      <div id = "options">
         <a routerLink="">
-            <button >Main menu</button>
+            <button [disabled] = "!updatedName && isBestTime()">Main menu</button>
         </a>
         
-        <button (click)="playAgain()">Play Again</button>
+        <button [disabled] = "!updatedName && isBestTime()" (click)="playAgain()">Play Again</button>
         
-        <button (click)="findGameResults()">Game results</button>
+        <button [disabled] = "!updatedName && isBestTime()" (click)="findGameResults()">Game results</button>
       </div>
       
     </div>

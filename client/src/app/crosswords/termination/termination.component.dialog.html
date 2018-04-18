@@ -1,44 +1,55 @@
-<div class="waiting-connection">
-  <div *ngIf="dialogType() === 0">
-    <h2 class="dialog">Your opponent left the game</h2>
-  </div>
-
-  <div *ngIf="dialogType() === 1">
-    <h2 class="dialog">Congratulations!</h2>
-    <h1>You completed the grid</h1>
-    <button (click)="createSoloGame()">Play again</button>    
-  </div>
-
-  <div *ngIf="dialogType() === 2">
-    <h2 class="dialog">WIN!</h2>
-    <div *ngIf="!showRematchOffer && !showWaitingRematchOffer">
-    <h1>You won the game!</h1>      
-    <button (click)="requestRematch()">Ask opponent to play again</button>
+<div *ngIf="!isLoadingGrid()">
+  <div class="waiting-connection">
+    <div *ngIf="dialogType() === 0">
+      <h2 class="dialog">Your opponent left the game</h2>
     </div>
-  </div>
 
-  <div *ngIf="dialogType() === 3">
-    <h2 class="dialog">You lost...</h2>
-    <div *ngIf="!showRematchOffer && !showWaitingRematchOffer">
-        <h1>Try again?</h1>        
-        <button (click)="requestRematch()">Ask opponent to play again</button>
+    <div *ngIf="dialogType() === 1">
+      <h2 class="dialog">Congratulations!</h2>
+      <h1>You completed the grid</h1>
+      <button (click)="createSoloGame()">Play again</button>    
     </div>
-  </div>
 
-  <div *ngIf="showRematchOffer">
-      <h1> {{opponentID}} wants to play again</h1>
-      <button (click)="acceptRematchOffer()">Accept</button>
-  </div>
-  <div *ngIf="showWaitingRematchOffer">
-      <h2>Waiting for {{opponentID}} response</h2>
-      <div class="spinner">
-          <mat-spinner color="warn"></mat-spinner>
+    <div *ngIf="dialogType() === 2">
+      <h2 class="dialog">WIN!</h2>
+      <div *ngIf="!showRematchOffer && !showWaitingRematchOffer">
+      <h1>You won the game!</h1>      
+      <button (click)="requestRematch()">Ask opponent to play again</button>
       </div>
+    </div>
+
+    <div *ngIf="dialogType() === 3">
+      <h2 class="dialog">You lost...</h2>
+      <div *ngIf="!showRematchOffer && !showWaitingRematchOffer">
+          <h1>Try again?</h1>        
+          <button (click)="requestRematch()">Ask opponent to play again</button>
+      </div>
+    </div>
+
+    <div *ngIf="showRematchOffer">
+        <h1> {{opponentID}} wants to play again</h1>
+        <button (click)="acceptRematchOffer()">Accept</button>
+    </div>
+    <div *ngIf="showWaitingRematchOffer">
+        <h2>Waiting for {{opponentID}} response</h2>
+        <div class="spinner">
+            <mat-spinner color="warn"></mat-spinner>
+        </div>
+    </div>
+
+    <button (click)="openModeDialog()">Play new game</button>
+
+    <a routerLink="">
+      <button (click)="closeDialog()">Main menu</button>
+    </a>
   </div>
+</div>
 
-  <button (click)="openModeDialog()">Play new game</button>
-
-  <a routerLink="">
-    <button (click)="closeDialog()">Main menu</button>
-  </a>
+<div *ngIf="isLoadingGrid()">
+  <div class="waiting-connection">
+    <h2>Loading the grid</h2>
+    <div class="spinner">
+        <mat-spinner color="warn"></mat-spinner>
+    </div>
+  </div>
 </div>

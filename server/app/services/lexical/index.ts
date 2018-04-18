@@ -4,7 +4,7 @@
 import axios, { AxiosResponse } from "axios";
 import KEYS from "./../../config/index";
 import { Level } from "./../../../../common/lexical/level";
-
+import { NO_DEFINITION } from "../gridGeneration/gridGeneration";
 interface AxiosWords {
     word: string;
     tags: Array<string>;
@@ -14,23 +14,15 @@ export default class LexicalService {
 
     private async baseDefinition(word: string): Promise<AxiosResponse> {
         const WORDNIK_URL: string = `http://api.wordnik.com:80/v4/word.json/${word}/definitions?limit=200&${KEYS.WORDNIK_KEY}`;
-        try {
-            const response: AxiosResponse = await axios.get(WORDNIK_URL);
+        const response: AxiosResponse = await axios.get(WORDNIK_URL);
 
-            return response.data;
-        } catch (err) {
-            throw err;
-        }
+        return response.data;
     }
 
     private async baseWordSearch(requirements: string): Promise<AxiosResponse> {
         const DATAMUSE_URL: string = `https://api.datamuse.com/words?sp=${requirements}&md=f&max=1500`;
 
-        try {
-            return axios.get(DATAMUSE_URL);
-        } catch (err) {
-            throw err;
-        }
+        return axios.get(DATAMUSE_URL);
     }
     private removeExamplesDefinitions(definitions: string []): void {
         for (const def in definitions) {
@@ -49,58 +41,50 @@ export default class LexicalService {
 
     private async filterDefinitions(word: string): Promise<Array<string>> {
         const definitions: string [] = [];
-        try {
-            const data: AxiosResponse = await this.baseDefinition(word);
-
-            for (const def in data) {
-                if (!(data[def].text).toLowerCase().includes(word.toLowerCase())) {
-                    definitions.push(data[def].text);
-                }
+        const data: AxiosResponse = await this.baseDefinition(word);
+        for (const def in data) {
+            if (!(data[def].text).toLowerCase().includes(word.toLowerCase())) {
+                definitions.push(data[def].text);
             }
-
-            this.removeExamplesDefinitions(definitions);
-            this.removeDetailsDefinitions(definitions);
-
-        } catch (err) {
-            throw err;
         }
+
+        this.removeExamplesDefinitions(definitions);
+        this.removeDetailsDefinitions(definitions);
 
         return definitions;
     }
 
     public async wordDefinition(level: string, word: string): Promise<string> {
+
         const filteredDefinitions: string[] = await this.filterDefinitions(word);
-        try {
-            if (filteredDefinitions.length === 0) {
-                return "No definitions";
-            }
-            switch (level) {
-                case Level.Easy:
-                    {
-                        return filteredDefinitions[0];
-                    }
-                case Level.Hard:
-                    {
-                        if (filteredDefinitions.length > 1) {
-                            return filteredDefinitions[Math.floor((Math.random() * (filteredDefinitions.length - 1) + 1))];
-                        } else {
-                            return filteredDefinitions[0];
-                        }
-                    }
-                default: {
+
+        if (filteredDefinitions.length === 0) {
+            return NO_DEFINITION;
+        }
+        switch (level) {
+            case Level.Easy:
+                {
                     return filteredDefinitions[0];
                 }
+            case Level.Hard:
+                {
+                    if (filteredDefinitions.length > 1) {
+                        return filteredDefinitions[Math.floor((Math.random() * (filteredDefinitions.length - 1) + 1))];
+                    } else {
+                        return filteredDefinitions[0];
+                    }
+                }
+            default: {
+                return filteredDefinitions[0];
             }
-        } catch (err) {
-            throw err;
         }
+
     }
 
     public async wordSearch(researchCriteria: string, common: string): Promise<string> {
-        let request: string;
+        let request: string = "";
         let previousChar: string = "";
         const tenWordLetterRepeat: number = 9;
-        request = "";
 
         for (const item of researchCriteria) {
 
@@ -115,30 +99,26 @@ export default class LexicalService {
             previousChar = item;
         }
 
-        const { data }: { data: Array<AxiosWords> } = await this.baseWordSearch(request);
+        try {
+            const maxTries: number = 5;
+            let count: number = 0;
+            let rawResponse: { data: Array<AxiosWords> };
+            do {
+                rawResponse = await this.baseWordSearch(request);
+            } while (rawResponse.data.length === 0 && count++ < maxTries);
 
-        if (data === undefined || data.length === 0) {
-            // tslint:disable-next-line:no-floating-promises
-            this.wordSearch(researchCriteria, common);
+            return this.commonFinder(common, rawResponse.data, request);
+        } catch (err) {
+            return NO_DEFINITION;
         }
-
-        return this.commonFinder(common, data, request);
     }
 
     public async wordAndDefinition(researchCriteria: string, common: string, level: string): Promise<string[]> {
         const data: string[] = [];
         let word: string;
         let definition: string;
-        let timeOut: number = 5;
-        do {
-            word = await this.wordSearch(researchCriteria, common);
-            definition = await this.wordDefinition(level, word);
-            timeOut--;
-        } while (definition === "No definitions" && timeOut > 0);
-
-        if (definition === "No definitions") {
-            return data[0] = undefined, data[1] = undefined;
-        }
+        word = await this.wordSearch(researchCriteria, common);
+        definition = await this.wordDefinition(level, word);
 
         data[0] = word;
         data[1] = definition;
@@ -149,7 +129,6 @@ export default class LexicalService {
     private commonFinder(common: string, rawResponse: Array<AxiosWords>, requestString: string): string {
 
         let responseLength: number = rawResponse.length;
-        // tslint:disable-next-line:no-inferrable-types
         const NON_NUMBERS_INDEX: number = 2;
         const FREQ_CUTOFF: Number = 8;
 

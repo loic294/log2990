@@ -13,6 +13,7 @@ const CRASH_PATH: Array<string> = [
 const WALL_CRASH_PATH: string = "assets/audio/wallCrash.wav";
 
 const VOLUME: number = 0.5;
+const RANDOM_FACTOR: number = 10;
 
 @Injectable()
 export class AudioService {
@@ -20,12 +21,12 @@ export class AudioService {
     private _listener: AudioListener;
     private _audioLoader: AudioLoader;
     private _countdown: Audio;
-    private _carCollision: Array<PositionalAudio>;
-    private _wallCollision: PositionalAudio;
+    private _carCollision: Array<Audio>;
+    private _wallCollision: Audio;
 
     public constructor() {
         this._audioLoader = new AudioLoader();
-        this._carCollision = new Array<PositionalAudio>();
+        this._carCollision = new Array<Audio>();
     }
 
     private async loadSound(sound: Audio, path: string, isLooping: boolean): Promise<void> {
@@ -70,7 +71,7 @@ export class AudioService {
 
     private async initializeCarCollisionSound(): Promise<void>  {
         for (const path of CRASH_PATH) {
-            const sound: PositionalAudio = new PositionalAudio(this._listener);
+            const sound: Audio = new Audio(this._listener);
             await this.loadSound(sound, path, false);
             this._carCollision.push(sound);
         }
@@ -94,11 +95,17 @@ export class AudioService {
     }
 
     public playCarCollision(): void {
-        const randomIndex: number = Math.floor((Math.random()) % this._carCollision.length);
+        const randomIndex: number = Math.floor((Math.random()) * RANDOM_FACTOR % this._carCollision.length);
+        if (this._carCollision[randomIndex].isPlaying) {
+            this._carCollision[randomIndex].stop();
+        }
         this._carCollision[randomIndex].play();
     }
 
     public playWallCollision(): void {
+        if (this._wallCollision.isPlaying) {
+            this._wallCollision.stop();
+        }
         this._wallCollision.play();
     }
 

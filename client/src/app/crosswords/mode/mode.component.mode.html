@@ -1,4 +1,4 @@
-<div *ngIf="!isWaitingForPlayer()">
+<div *ngIf="!isWaitingForPlayer() && !isLoadingGrid()">
     <h1>Welcome {{player}}!</h1>
   
     <div class="input-row">
@@ -12,7 +12,7 @@
     </div>
   
     <div class="input-row" [hidden]="!startSoloGame()">
-      <button (click)="closeDialog()">Start Game</button>
+      <button (click)="newGame()">Start Game</button>
     </div>
   
     <div [hidden]="!isMultiPlayer()">
@@ -35,7 +35,7 @@
               <b>Difficulty: </b>: {{game.difficulty}}
           </div>
           <div class="players-right">
-              <button (click)="joinGame(game.name); closeDialog()">Join</button>
+              <button (click)="joinGame(game.name);">Join</button>
           </div>
         </div>
       </div>
@@ -43,9 +43,10 @@
     </div>
   </div>
   
-  <div *ngIf="isWaitingForPlayer()">
+  <div *ngIf="isWaitingForPlayer() || isLoadingGrid()">
     <div class="waiting-connection">
-      <h2>Waiting for another player to join</h2>
+      <h2 *ngIf="isWaitingForPlayer()">Waiting for another player to join</h2>
+      <h2 *ngIf="isLoadingGrid()">Loading the grid</h2>
       <div class="spinner">
           <mat-spinner color="warn"></mat-spinner>
       </div>
