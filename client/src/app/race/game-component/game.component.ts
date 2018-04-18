@@ -28,7 +28,6 @@ interface Params {
         CameraService,
         AudioService,
         EnvironmentService
-
     ]
 })
 
