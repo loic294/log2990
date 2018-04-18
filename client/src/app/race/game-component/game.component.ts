@@ -163,6 +163,7 @@ export class GameComponent implements AfterViewInit, OnInit {
     private restartRaceProgress(): void {
         this.renderService.trackProgression = undefined;
         this.renderService.start(this._trackBuilder, this._trackProgressionService);
+        this._raceStarted = true;
     }
 
     private clearScene(): void {
