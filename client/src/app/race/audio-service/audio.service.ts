@@ -109,4 +109,8 @@ export class AudioService {
         this._wallCollision.play();
     }
 
+    public get countdown(): Audio {
+        return this.countdown;
+    }
+
 }

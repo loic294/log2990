@@ -1,4 +1,4 @@
-<div *ngIf="_game.gameIsFinished && showModal">
+<div *ngIf="_game.gameIsFinished">
   <div id="resultsModal" class="modal">
     <div *ngIf="!showGameResults"  class="modal-content">
 
@@ -36,7 +36,7 @@
             <button [disabled] = "!updatedName && isBestTime()">Main menu</button>
         </a>
         
-        <button [disabled] = "!updatedName && isBestTime()" (click)="playAgain()">Play Again</button>
+        <button [disabled] = "!updatedName && isBestTime()" (click)="restart()">Play Again</button>
         
         <button [disabled] = "!updatedName && isBestTime()" (click)="findGameResults()">Game results</button>
       </div>

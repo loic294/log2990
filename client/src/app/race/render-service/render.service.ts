@@ -30,6 +30,7 @@ export class RenderService {
     private _aiService: AiService;
     private _raceStarter: RaceStarter;
     private _trackProgression: TrackProgression;
+    private _isRestarting: boolean;
 
     public constructor(private _cameraService: CameraService, private _audioService: AudioService,
                        private _environmentService: EnvironmentService) {
@@ -39,7 +40,7 @@ export class RenderService {
         for (let i: number = 0; i < AMOUNT_OF_NPCS; i++) {
             this._bots[i] = new Car();
         }
-
+        this._isRestarting = false;
     }
 
     public async initialize(container: HTMLDivElement): Promise<void> {
@@ -59,33 +60,35 @@ export class RenderService {
     }
 
     private update(): void {
-        const timeSinceLastFrame: number = Date.now() - this._lastDate;
-        this._car.update(timeSinceLastFrame);
-        if (this._aiService !== undefined) {
-            this._aiService.update(timeSinceLastFrame);
-        }
-
-        this._bots.forEach((bot) => {
-            if (Collision.detectCollision(this._car, bot)) {
-                this._audioService.playCarCollision();
-                const resultSpeeds: Array<Vector3> = Collision.collide(this._car, bot);
-                bot.speed = resultSpeeds[1];
-                this._car.speed = resultSpeeds[0];
+        if (!this._isRestarting) {
+            const timeSinceLastFrame: number = Date.now() - this._lastDate;
+            this._car.update(timeSinceLastFrame);
+            if (this._aiService !== undefined) {
+                this._aiService.update(timeSinceLastFrame);
             }
-        });
-        for (let i: number = 0; i < this._bots.length; i++) {
-            for (let j: number = i + 1; j < this._bots.length; j++) {
-                if (Collision.detectCollision(this._bots[i], this._bots[j])) {
+
+            this._bots.forEach((bot) => {
+                if (Collision.detectCollision(this._car, bot)) {
                     this._audioService.playCarCollision();
-                    const resultSpeeds: Array<Vector3> = Collision.collide(this._bots[i], this._bots[j]);
-                    this._bots[j].speed = resultSpeeds[1];
-                    this._bots[i].speed = resultSpeeds[0];
+                    const resultSpeeds: Array<Vector3> = Collision.collide(this._car, bot);
+                    bot.speed = resultSpeeds[1];
+                    this._car.speed = resultSpeeds[0];
+                }
+            });
+            for (let i: number = 0; i < this._bots.length; i++) {
+                for (let j: number = i + 1; j < this._bots.length; j++) {
+                    if (Collision.detectCollision(this._bots[i], this._bots[j])) {
+                        this._audioService.playCarCollision();
+                        const resultSpeeds: Array<Vector3> = Collision.collide(this._bots[i], this._bots[j]);
+                        this._bots[j].speed = resultSpeeds[1];
+                        this._bots[i].speed = resultSpeeds[0];
+                    }
                 }
             }
-        }
 
-        this._cameraService.followCar();
-        this._lastDate = Date.now();
+            this._cameraService.followCar();
+            this._lastDate = Date.now();
+        }
     }
 
     private async createScene(): Promise<void> {
@@ -181,6 +184,10 @@ export class RenderService {
         return this._car;
     }
 
+    public set car(car: Car) {
+        this._car = car;
+    }
+
     public get cameraService(): CameraService {
         return this._cameraService;
     }
@@ -193,12 +200,28 @@ export class RenderService {
         return this._bots;
     }
 
+    public set bots(bots: Array<Car>) {
+        this._bots = bots;
+    }
+
     public set aiService(aiService: AiService) {
         this._aiService = aiService;
     }
 
     public get raceStarter(): RaceStarter {
         return this._raceStarter;
+    }
+
+    public set trackProgression(trackProgression: TrackProgression) {
+        this._trackProgression = trackProgression;
+    }
+
+    public get audioService(): AudioService {
+        return this._audioService;
+    }
+
+    public set isRestarting(restart: boolean) {
+        this._isRestarting = restart;
     }
 
 }
