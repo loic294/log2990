@@ -153,10 +153,10 @@ export class GameComponent implements AfterViewInit, OnInit {
         if (game.gameIsFinished && this._raceStarted) {
             this._raceStarted = false;
             this._trackLoaded = false;
-            this.saveTime().catch();
             this.resultsService.selectTrackInformation(this._trackInformation);
             this.resultsService.selectGame(game);
             this.resultsService.selectTrackTimes(this._trackInformation.track.completedTimes);
+            this.saveTime().catch();
         }
     }
 
