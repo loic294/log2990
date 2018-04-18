@@ -36,7 +36,7 @@ export default class Collision {
 
     public static detectOutOfBounds(car: Car, track: Mesh[]): Vector3 {
         Collision.initializeCorners();
-        const intersectionResults: Intersection[] = [];
+        let intersectionResults: Intersection[] = [];
         let outOfBounds: boolean = false;
 
         for (const corner of Collision.corners) {
@@ -47,7 +47,7 @@ export default class Collision {
             if (collisionResults.length <= 0) {
                 outOfBounds = true;
             } else {
-                intersectionResults.concat(collisionResults);
+                intersectionResults = [...intersectionResults, ...collisionResults];
             }
         }
         if (outOfBounds) {
