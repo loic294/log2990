@@ -65,8 +65,8 @@ export class RenderService {
         this._car.update(timeSinceLastFrame);
         if (this._aiService !== undefined) {
             this._aiService.update(timeSinceLastFrame);
+            this.collisions();
         }
-        this.collisions();
         this._cameraService.followCar();
         this._lastDate = Date.now();
     }

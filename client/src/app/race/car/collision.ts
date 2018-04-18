@@ -51,31 +51,27 @@ export default class Collision {
             }
         }
         if (outOfBounds) {
-            return new Vector3();
+            return Collision.collideOutOfBounds(car, intersectionResults);
         } else {
             return null;
         }
     }
 
-    public static collideOutOfBounds(car: Car, intersections: Intersection[]): Vector3 {
-        const angle: number = car.direction.angleTo(Collision.trackPerpendicular(intersections[0].object));
-        const incidenceVector: Vector3 = Collision.trackPerpendicular(intersections[0].object);
-        incidenceVector.applyAxisAngle(incidenceVector, angle);
-        incidenceVector.multiplyScalar(car.speed.length());
+    private static collideOutOfBounds(car: Car, intersections: Intersection[]): Vector3 {
+        for (const intersection of intersections) {
+            if (intersection !== null) {
+                const angle: number = car.direction.angleTo(Collision.trackPerpendicular(intersection.object));
+                const incidenceVector: Vector3 = Collision.trackPerpendicular(intersection.object);
+                incidenceVector.applyAxisAngle(incidenceVector, angle);
+                incidenceVector.multiplyScalar(car.speed.length());
 
-        return incidenceVector;
+                return incidenceVector;
+            }
+        }
+
+        return new Vector3();
     }
     // perpendiuclar vector to both the direction vectors, find the angle
-
-    public static trackDirection(track: Object3D): Vector3 {
-        const rotationMatrix: Matrix4 = new Matrix4();
-        const trackDirection: Vector3 = new Vector3(0, 1, 0); // Initial direction for the track
-
-        rotationMatrix.extractRotation(track.matrix);
-        trackDirection.applyMatrix4(rotationMatrix);
-
-        return trackDirection;
-    }
 
     public static trackPerpendicular(track: Object3D): Vector3 {
         const rotationMatrix: Matrix4 = new Matrix4();
