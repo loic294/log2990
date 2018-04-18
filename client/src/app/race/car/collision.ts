@@ -1,4 +1,4 @@
-import { Vector3, Matrix4, Mesh, Raycaster, Intersection, ArrowHelper } from "three";
+import { Vector3, Matrix4, Mesh, Raycaster, Intersection, ArrowHelper, Object3D } from "three";
 import { Car } from "./car";
 
 const ABSOLUTE_CAR_LENGTH_X: number = -0.7128778274977209;
@@ -25,9 +25,9 @@ export default class Collision {
             const ray: Raycaster = new Raycaster(car.boundingBox.getCenter(), directionVector.normalize());
             const collisionResults: Intersection[] = ray.intersectObjects(track);
             if (collisionResults.length <= 0) {
-                arrows.push(new ArrowHelper( directionVector.normalize(), car.boundingBox.getCenter(), LENGTH, OTHER_COLOUR));
+                arrows.push(new ArrowHelper(directionVector.normalize(), car.boundingBox.getCenter(), LENGTH, OTHER_COLOUR));
             } else {
-                arrows.push(new ArrowHelper( directionVector.normalize(), car.boundingBox.getCenter(), LENGTH, COLOUR));
+                arrows.push(new ArrowHelper(directionVector.normalize(), car.boundingBox.getCenter(), LENGTH, COLOUR));
             }
         }
 
@@ -57,11 +57,35 @@ export default class Collision {
         }
     }
 
-    public static collideOutOfBounds(car: Car, intersections: Intersection[], track: Mesh[]): Vector3 {
+    public static collideOutOfBounds(car: Car, intersections: Intersection[]): Vector3 {
+        const angle: number = car.direction.angleTo(Collision.trackPerpendicular(intersections[0].object));
+        const incidenceVector: Vector3 = Collision.trackPerpendicular(intersections[0].object);
+        incidenceVector.applyAxisAngle(incidenceVector, angle);
+        incidenceVector.multiplyScalar(car.speed.length());
 
-        return null;
+        return incidenceVector;
     }
-// perpendiuclar vector to both the direction vectors, find the angle
+    // perpendiuclar vector to both the direction vectors, find the angle
+
+    public static trackDirection(track: Object3D): Vector3 {
+        const rotationMatrix: Matrix4 = new Matrix4();
+        const trackDirection: Vector3 = new Vector3(0, 1, 0); // Initial direction for the track
+
+        rotationMatrix.extractRotation(track.matrix);
+        trackDirection.applyMatrix4(rotationMatrix);
+
+        return trackDirection;
+    }
+
+    public static trackPerpendicular(track: Object3D): Vector3 {
+        const rotationMatrix: Matrix4 = new Matrix4();
+        const trackDirection: Vector3 = new Vector3(0, 0, 1); // Initial perpendicular for the track
+
+        rotationMatrix.extractRotation(track.matrix);
+        trackDirection.applyMatrix4(rotationMatrix);
+
+        return trackDirection;
+    }
     private static initializeCorners(): void {
         Collision.corners = [];
         Collision.corners.push(new Vector3(ABSOLUTE_CAR_LENGTH_X, ABSOLUTE_CAR_LENGTH_Y, ABSOLUTE_CAR_LENGTH_Z));
