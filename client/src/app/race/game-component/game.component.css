@@ -1,61 +1,347 @@
-div {
-    width: 100%;
-    height: 800px;
+.game-container {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
 }
 
-/* ul, li {
-    position: relative;
-    margin: 0;
-    top: 40px;
-    color: red;
-} */
+.game-container.hide {
+  display: none;
+}
 
 .canvas-container {
-    position: relative;
+  width: 100%;
+  height: 100%;
 }
 
-.stats{
-    position: absolute;
-    margin: 0;
-    top: 40px;
-    left: 20px;
-    color: red;
+.canvas-container {
+  position: relative;
 }
 
-.time{
-    z-index: 1;
-    position: absolute;
-    right: 50%;
-    top: 40px;
-    align-content: center;
-    color: white;
+.stats {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  color: #fff;
+  font-family: 'Share Tech Mono', monospace;
+  list-style: none;
+  font-size: 36px;
+  text-shadow: 0 1px 2px #000;
 }
 
-.lap-time{
-    z-index: 1;
-    position: absolute;
-    right: 50%;
-    top: 60px;
-    align-content: center;
-    color: white;
+.time-container {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  color: #fff;
+  font-family: 'Share Tech Mono', monospace;
+  list-style: none;
+  font-size: 24wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwweepx;
+  text-shadow: 0 1px 2px #000;
 }
 
-.lap{
-    background-color: rgba(211,211,211,0.5);
-    padding: 5px 5px;
-    color: white;
-    z-index: 1;
-    position: absolute;
-    right: 20px;
-    top: 40px;
-    align-content: center;
+.lap {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 48px;
+  text-shadow: 0 1px 2px #000;
+  color: white;
+  position: absolute;
+  right: 40px;
+  top: 40px;
+  z-index: 1;
+  margin: 0;
 }
 
-.countdown{
-    color: blue;
-    font-size: 100px;
-    z-index: 1;
-    position: absolute;
-    left: 50%;
-    top: 20%;
+.countdown {
+  text-shadow: 0 4px 10px #000;
+  color: white;
+  font-weight: 900;
+  font-size: 400px;
+  z-index: 1;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: 0;
+  margin-top: -200px;
+  margin-left: -100px;
+}
+
+.speedometer {
+  position: absolute;
+  height: 200px;
+  width: 200px;
+  bottom: 40px;
+  right: 40px;
+  z-index: 2;
+  transform: scale(1.4);
+}
+
+/* Inspired by https://codepen.io/Creativity/pen/myMNdR?page=3 */
+
+#loader-wrapper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 15;
+  overflow: hidden;
+  
+}
+
+.loader {
+  width: 150px;
+  height: 150px;
+  border: 1px #fff solid;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: -75px 0 0 -75px;
+  border-radius: 50%;
+}
+
+.loader .loading {
+  font-size: 10px;
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  line-height: 24px;
+  font-size: 16px;
+  font-family: 'Century Gothic', sans-serif;
+  text-shadow: 0 1px 2px #000;
+  font-style: italic;
+  left: 0;
+  top: 50%;
+  margin-top: 10px;
+  color: #fff;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.loader-circle-1 {
+  width: 138px;
+  height: 138px;
+  left: 5px;
+  top: 5px;
+  border: 1px #fff solid;
+  border-radius: 50%;
+  position: absolute;
+  border-right-color: transparent;
+  animation: spin 3s linear infinite;
+}
+
+.loader-circle-2 {
+  width: 126px;
+  height: 126px;
+  left: 5px;
+  top: 5px;
+  border: 1px transparent solid;
+  border-radius: 50%;
+  position: absolute;
+  border-right-color: #e81512;
+  animation: spin 5s linear infinite;
+}
+
+.loader .line {
+  width: 10px;
+  height: 2px;
+  background: #fff;
+  position: absolute;
+}
+
+.loader .line:nth-child(1) {
+  left: 16px;
+  top: 50%;
+  margin-top: -1px;
+}
+
+.loader .line:nth-child(2) {
+  transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  left: 33px;
+  top: 33px;
+}
+
+.loader .line:nth-child(3) {
+  top: 16px;
+  left: 50%;
+  width: 2px;
+  height: 10px;
+}
+
+.loader .line:nth-child(4) {
+  transform: rotate(135deg);
+  -moz-transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+  -ms-transform: rotate(135deg);
+  right: 33px;
+  top: 33px;
+}
+
+.loader .line:nth-child(5) {
+  right: 16px;
+  top: 50%;
+  margin-top: -1px;
+}
+
+.loader .line:nth-child(6) {
+  transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  right: 33px;
+  bottom: 33px;
+  background: #e81512;
+}
+
+.loader .subline {
+  position: absolute;
+  width: 3px;
+  height: 2px;
+  background: #fff;
+}
+
+.loader .subline:nth-child(7) {
+  transform: rotate(22.5deg);
+  -moz-transform: rotate(22.5deg);
+  -webkit-transform: rotate(22.5deg);
+  -ms-transform: rotate(22.5deg);
+  left: 21px;
+  top: 50px;
+}
+
+.loader .subline:nth-child(8) {
+  transform: rotate(67.5deg);
+  -moz-transform: rotate(67.5deg);
+  -webkit-transform: rotate(67.5deg);
+  -ms-transform: rotate(67.5deg);
+  left: 50px;
+  top: 21px;
+}
+
+.loader .subline:nth-child(9) {
+  transform: rotate(112.5deg);
+  -moz-transform: rotate(112.5deg);
+  -webkit-transform: rotate(112.5deg);
+  -ms-transform: rotate(112.5deg);
+  right: 50px;
+  top: 21px;
+}
+
+.loader .subline:nth-child(10) {
+  transform: rotate(157.5deg);
+  -moz-transform: rotate(157.5deg);
+  -webkit-transform: rotate(157.5deg);
+  -ms-transform: rotate(157.5deg);
+  right: 21px;
+  top: 50px;
+}
+
+.loader .subline:nth-child(11) {
+  transform: rotate(22.5deg);
+  -moz-transform: rotate(22.5deg);
+  -webkit-transform: rotate(22.5deg);
+  -ms-transform: rotate(22.5deg);
+  right: 20px;
+  bottom: 49px;
+  background: #e81512;
+}
+
+.loader .needle {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px #fff solid;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: -8px 0 0 -8px;
+  z-index: 1;
+}
+
+.loader .needle .moving-needle {
+  content: "";
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 3.5px 50px 3.5px 0;
+  border-color: transparent #e81512 transparent transparent;
+  position: absolute;
+  right: 50%;
+  top: 50%;
+  margin: -3.5px 0 0 0;
+  border-radius: 0 50% 50% 0;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.game-choice {
+  position: relative;
+  background-color: rgb(25, 25, 27);
+  min-height: 100vh;
+  color: #fff;
+}
+
+.game-choice h1 {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 72px;
+  margin: 20px 0;
+}
+
+.tracks-container {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 720px;
+  padding: 90px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.traks-list {
+    width: 380px;
+}
+
+.info {
+    width: 280px;
+    margin-top: 121px;
+}
+
+.track {
+  background-color: rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding: 20px 30px;
+  border-radius: 8px;
+}
+
+.track h2 {
+  color: #fff;
+  margin: 0;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.green-button {
+  margin-top: 20px;
+  background-color: rgb(50, 168, 56);
+  color: #fff;
+  font-size: 14px;
 }

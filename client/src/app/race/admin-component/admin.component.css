@@ -1,5 +1,5 @@
 .admin-header {
-    background-color: #247BA0;
+    background-color: rgb(19, 20, 20);
     color: #fff;
     padding: 18px 24px;
 }
@@ -9,47 +9,6 @@
     font-size: 20px;
     line-height: 20px;
     margin: 0;
+    font-family: 'Share Tech Mono', monospace;
 }
 
-#nav {
-    background-color: #23292F;
-    position: absolute;
-    top: 55px;
-    bottom: 0;
-    left: 0;
-    width: 280px;
-    color: #fff;
-    padding: 20px 30px;
-}
-
-#nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-#nav a {
-    color: rgba(255,255,255,0.8);
-    text-decoration: none;
-    font-weight: 200;
-}
-
-#nav a li {
-    padding: 8px 12px;
-    border-radius: 4px;
-    margin: 2px -12px;
-}
-
-#nav a li:hover, #nav a.active li {
-    background-color: rgba(0,0,0,0.2);
-}
-
-#content {
-    position: absolute;
-    top: 55px;
-    left: 280px;
-    bottom: 0;
-    right: 0;
-    overflow: auto;
-    padding: 20px 40px;
-}

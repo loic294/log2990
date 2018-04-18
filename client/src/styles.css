@@ -46,10 +46,16 @@ button:disabled {
     cursor: not-allowed;
 }
 
--button:hover, button.active {
+button:hover, button.active {
     background-color: #0099dd;
     box-shadow: 0 2px 12px rgba(0,0,0,0.6);
     color: #fff;
+}
+
+button .center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .container {
