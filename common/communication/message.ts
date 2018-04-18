@@ -20,5 +20,8 @@ export enum SocketMessage {
     rematchAccepted = "rematch_accepted",
     sendValidation = "send_validation",
     syncWord = "sync_word",
-    disconnect = "disconnect"
+    disconnect = "disconnect",
+    syncGridSend = "sync_grid_send",
+    readyToSync = "ready_to_sync",
+    syncGrid = "sync_grid",
 }

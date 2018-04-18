@@ -30,7 +30,7 @@ export const isNextNotBlack: (positions: Array<number>, gridSize: number, grid: 
 
 export const isNextBlack: (positions: Array<number>, gridSize: number, grid: Array<Array<Cell>>) => boolean
     = (positions: Array<number>, gridSize: number, grid: Array<Array<Cell>>) => {
-    return positions[1] <= gridSize && positions[0] <= gridSize && !grid[positions[0]][positions[1]].isBlack();
+    return positions[1] <= gridSize && positions[0] <= gridSize && grid[positions[0]][positions[1]].isBlack();
 };
 
 export const isValidWord: (word: Constraint) => boolean = (word: Constraint) => {
@@ -111,7 +111,7 @@ export const traverseGrid: (grid: Array<Array<Cell>>, fct: Function) => void = (
 export const wordRepeats: (words: Array<Constraint>, index: number) => boolean = (words: Array<Constraint>, index: number) => {
     const wordCount: HashNumber = {};
     for (const word of words) {
-        if (wordCount[word.name]++) {
+        if (wordCount[word.name]++ > 0) {
             return true;
         }
     }

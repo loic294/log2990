@@ -2,8 +2,6 @@ import { Injectable } from "@angular/core";
 import { Cell } from "../../../../../common/grid/cell";
 import Word, { Orientation } from "../../../../../common/lexical/word";
 
-import CLUES from "../mock-words";
-
 @Injectable()
 export class GridToolsService {
 
@@ -30,8 +28,8 @@ export class GridToolsService {
         }
     }
 
-    public wordsStartAtPosition(row: number, col: number): Array<number> {
-        return CLUES.filter((word: Word): boolean => word.position[0] === row && word.position[1] === col)
+    public wordsStartAtPosition(row: number, col: number, clues: Array<Word>): Array<number> {
+        return clues.filter((word: Word): boolean => word.position[0] === row && word.position[1] === col)
             .map((word: Word): number => word.index + 1);
     }
 
