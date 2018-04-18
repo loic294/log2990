@@ -59,7 +59,7 @@ describe("GridService", () => {
     it("Word 'hey' should be validated after entering 'hey'", () => {
         gridService.word = new Word("hey", "", [0, 0], Orientation.horizontal, 0);
         const elem: HTMLElement = document.createElement("div");
-        gridService.validateWord("hey", elem);
+        gridService["validateWord"]("hey", elem);
         expect(gridService.word.isValidated).toBe(true);
 
         expect(gridService.grid[0][0].validated).toBe(true);
@@ -71,7 +71,7 @@ describe("GridService", () => {
         gridService.word = new Word("hey", "", [0, 0], Orientation.vertical, 0);
         const elem: HTMLElement = document.createElement("div");
 
-        gridService.validateWord("oop", elem);
+        gridService["validateWord"]("oop", elem);
         expect(gridService.word.isValidated).toBe(false);
         expect(gridService.grid[0][0].validated).toBe(false);
         expect(gridService.grid[1][0].validated).toBe(false);
@@ -98,7 +98,7 @@ describe("GridService", () => {
             gridService.word = new Word("test", "", [0, 0], Orientation.horizontal, 0);
             const elem: HTMLElement = document.createElement("div");
 
-            gridService.validateWord("test", elem);
+            gridService["validateWord"]("test", elem);
 
             expect(socketService.userScoreCount()).toEqual(userScore++);
 
@@ -110,7 +110,7 @@ describe("GridService", () => {
             gridService.word = new Word("other", "", [0, 0], Orientation.horizontal, 0);
             const elem: HTMLElement = document.createElement("div");
 
-            gridService.validateWord("other", elem);
+            gridService["validateWord"]("other", elem);
 
             expect(socketService.opponentScoreCount()).toEqual(opponentScore++);
 
@@ -120,7 +120,7 @@ describe("GridService", () => {
             const isOther: boolean = true;
             const wordFromOther: Word =  gridService.word = new Word("test", "", [0, 0], Orientation.horizontal, 0);
 
-            gridService.applyValidation(wordFromOther, isOther);
+            gridService["applyValidation"](wordFromOther, isOther);
 
             expect(gridService.grid[0][0].isValidatedByOther).toBe(true);
             expect(gridService.grid[0][1].isValidatedByOther).toBe(true);

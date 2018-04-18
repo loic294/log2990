@@ -36,8 +36,8 @@ describe("TrackCreationComponent", () => {
         component = fixture.componentInstance;
         fixture.detectChanges();
         scene = component.scene;
-        vertices = component.dotCommand.getVertices();
-        edges = component.dotCommand.getEdges();
+        vertices = component.trackCreationRenderer.getVertices();
+        edges = component.trackCreationRenderer.getEdges();
         trackService = new TrackInformationService();
         trackInfo = new TrackInformation();
     });
@@ -92,7 +92,7 @@ describe("TrackCreationComponent", () => {
         expect(scene.children.length).toBe(7);
         expect(vertices.length).toBe(3);
         expect(edges.length).toBe(3);
-        expect(component.dotCommand.getTrackIsCompleted()).toBe(true);
+        expect(component.trackCreationRenderer.getTrackIsCompleted()).toBe(true);
     });
 
     it("should place a single dot, no line and track should not be completed", () => {
@@ -106,7 +106,7 @@ describe("TrackCreationComponent", () => {
         expect(scene.children.length).toBe(2);
         expect(vertices.length).toBe(1);
         expect(edges.length).toBe(0);
-        expect(component.dotCommand.getTrackIsCompleted()).toBe(false);
+        expect(component.trackCreationRenderer.getTrackIsCompleted()).toBe(false);
     });
 
     it("constraints not respected so should not save.", () => {
@@ -159,7 +159,7 @@ describe("TrackCreationComponent", () => {
         component.trackInformation.track = {name: "test", vertice: [[1, 0, 1], [-1, 0, 1], [1, 0, -1], [-1, 0, -1]]};
         component.loadTrack();
         const nbSceneChildren: number = component.scene.children.length;
-        component.dotCommand.remove();
+        component.trackCreationRenderer.remove();
         const eventDown1: MouseEvent = new MouseEvent("mousedown", { clientX: 100, clientY: 50 });
         const eventUp: MouseEvent = new MouseEvent("mouseup");
         component.onKeyDown(eventDown1);

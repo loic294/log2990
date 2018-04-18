@@ -148,3 +148,9 @@ La majorité des formules ont étés obtenues à partir de [Engineering Toolbox]
 ## Général
 
 Un service de base effectuant une requête http vers le serveur vous est fourni.
+
+## Liens pour les sons
+
+Countdown: https://www.youtube.com/watch?v=wMQzC9dNY1I
+Engine: https://www.youtube.com/watch?v=N_5MMzx5rOs
+Crash [1-5]: https://www.youtube.com/watch?v=C9TURulzXqQ
