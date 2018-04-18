@@ -6,6 +6,16 @@ import { SocketService } from "../socket.service/socket.service";
 import { GridService } from "./grid.service";
 import Word, { Orientation } from "../../../../../common/lexical/word";
 import { DifficultyService } from "./../difficulty.service/difficulty.service";
+import { GridLoadingService } from "../../grid-loading.service/grid-loading.service";
+import { Cell } from "../../../../../common/grid/cell";
+
+const GRID: Array<Array<Cell>> = [
+    [new Cell("t"), new Cell("e"), new Cell("s"), new Cell("t"), new Cell()],
+    [new Cell(), new Cell(), new Cell(), new Cell(), new Cell()],
+    [new Cell(), new Cell(), new Cell(), new Cell(), new Cell()],
+    [new Cell(), new Cell(), new Cell(), new Cell(), new Cell()],
+    [new Cell(), new Cell(), new Cell(), new Cell(), new Cell()],
+];
 
 describe("GridService", () => {
 
@@ -15,14 +25,19 @@ describe("GridService", () => {
 
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        providers: [ SocketService, DifficultyService ]
+        providers: [ SocketService, DifficultyService, GridLoadingService ]
       })
       .compileComponents();
     }));
 
     beforeEach(() => {
-        socketService = new SocketService(new Socket(config), new DifficultyService());
-        gridService = new GridService(new WordService(), new SocketService(new Socket(config), new DifficultyService()));
+        socketService = new SocketService(new Socket(config), new DifficultyService(), new GridLoadingService());
+        gridService = new GridService(
+            new WordService(),
+            new SocketService(new Socket(config), new DifficultyService(), new GridLoadingService()),
+            new GridLoadingService()
+        );
+        gridService["initGrid"](GRID);
     });
 
     it("'b' should be a letter", () => {
@@ -46,6 +61,7 @@ describe("GridService", () => {
         const elem: HTMLElement = document.createElement("div");
         gridService["validateWord"]("hey", elem);
         expect(gridService.word.isValidated).toBe(true);
+
         expect(gridService.grid[0][0].validated).toBe(true);
         expect(gridService.grid[0][1].validated).toBe(true);
         expect(gridService.grid[0][2].validated).toBe(true);
@@ -106,15 +122,12 @@ describe("GridService", () => {
 
             gridService["applyValidation"](wordFromOther, isOther);
 
-            expect(gridService.grid[0][0].validatedByOther).toBe(true);
-            expect(gridService.grid[0][1].validatedByOther).toBe(true);
-            expect(gridService.grid[0][2].validatedByOther).toBe(true);
-            expect(gridService.grid[0][3].validatedByOther).toBe(true);
+            expect(gridService.grid[0][0].isValidatedByOther).toBe(true);
+            expect(gridService.grid[0][1].isValidatedByOther).toBe(true);
+            expect(gridService.grid[0][2].isValidatedByOther).toBe(true);
+            expect(gridService.grid[0][3].isValidatedByOther).toBe(true);
         });
 
-        it("should highlight other player's current selection in a different color", () => {
-
-        });
     });
 
 });

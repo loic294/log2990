@@ -10,8 +10,18 @@ import { SocketService } from "../socket.service/socket.service";
 import { GridService } from "../grid.service/grid.service";
 import { DifficultyService } from "../difficulty.service/difficulty.service";
 import Word, { Orientation } from "../../../../../common/lexical/word";
+import { GridLoadingService } from "../../grid-loading.service/grid-loading.service";
+import { Cell } from "../../../../../common/grid/cell";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
+
+const GRID: Array<Array<Cell>> = [
+    [new Cell("C"), new Cell("l"), new Cell("u"), new Cell("e"), new Cell()],
+    [new Cell(), new Cell(), new Cell(), new Cell(), new Cell()],
+    [new Cell(), new Cell(), new Cell(), new Cell(), new Cell()],
+    [new Cell(), new Cell(), new Cell(), new Cell(), new Cell()],
+    [new Cell(), new Cell(), new Cell(), new Cell(), new Cell()],
+];
 
 describe("GridComponent", () => {
   let fixture: ComponentFixture<GridComponent>;
@@ -22,13 +32,18 @@ describe("GridComponent", () => {
     TestBed.configureTestingModule({
       imports: [ FormsModule, SocketIoModule.forRoot(config) ],
       declarations: [ GridComponent ],
-      providers: [ WordService, SocketService, GridService, DifficultyService ]
+      providers: [ WordService, SocketService, GridService, DifficultyService, GridLoadingService ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    gridService = new GridService(new WordService(), new SocketService(new Socket(config), new DifficultyService()));
+    gridService = new GridService(
+        new WordService(),
+        new SocketService(new Socket(config), new DifficultyService(), new GridLoadingService()),
+        new GridLoadingService()
+    );
+    gridService["initGrid"](GRID);
     fixture = TestBed.createComponent(GridComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -60,7 +75,7 @@ describe("GridComponent", () => {
 
   it("should highlight current selection in red", () => {
     const isOther: boolean = false;
-    const word: Word = new Word("Clue", "Definition of word clue", [1, 6], Orientation.horizontal, 0);
+    const word: Word = new Word("Clue", "Definition of word clue", [0, 0], Orientation.horizontal, 0);
     gridService.word = word;
     const expectedReturn: {} = {"height": "50px",
                                 "width": "200px"};
@@ -73,7 +88,7 @@ describe("GridComponent", () => {
 
   it("should highlight other player's current selection in blue", () => {
     const isOther: boolean = true;
-    const word: Word = new Word("Clue", "Definition of word clue", [2, 6], Orientation.horizontal, 1);
+    const word: Word = new Word("Clue", "Definition of word clue", [0, 0], Orientation.horizontal, 1);
     gridService.selectOtherPlayerWord(word);
 
     const expectedReturn: {} = {"height": "50px",
@@ -85,7 +100,7 @@ describe("GridComponent", () => {
 
   it("should highlight other player's selection vertically if it's a vertical word ", () => {
     const isOther: boolean = true;
-    const word: Word = new Word("Clues", "Definition of word clue", [2, 6], Orientation.vertical, 1);
+    const word: Word = new Word("Clues", "Definition of word clue", [0, 0], Orientation.vertical, 1);
     gridService.selectOtherPlayerWord(word);
 
     const expectedReturn: {} = {"height": "250px",
