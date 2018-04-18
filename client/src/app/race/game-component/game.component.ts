@@ -82,6 +82,7 @@ export class GameComponent implements AfterViewInit, OnInit {
     }
 
     public async ngAfterViewInit(): Promise<void> {
+        console.log('ELEMENT', this.containerRef);
         await this.renderService
             .initialize(this.containerRef.nativeElement);
 
@@ -97,7 +98,7 @@ export class GameComponent implements AfterViewInit, OnInit {
         this._trackProgressionService.game
             .subscribe((_game) => this.actOnProgress(_game));
         this.resultsService.restart
-            .subscribe(async(_shouldRestart) => this.restart(_shouldRestart));
+            .subscribe(async (_shouldRestart) => this.restart(_shouldRestart));
     }
 
     public async start(): Promise<void> {
