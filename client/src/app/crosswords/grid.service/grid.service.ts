@@ -8,6 +8,7 @@ import { WordService } from "../word.service/word.service";
 import { SocketService } from "../socket.service/socket.service";
 import { BACK_SPACE_KEY_CODE } from "../../constants";
 import { GridLoadingService } from "../../grid-loading.service/grid-loading.service";
+import { IOString, MessageType } from "../socket.service/observableMessages";
 
 @Injectable()
 export class GridService {
@@ -50,20 +51,20 @@ export class GridService {
                 }
             });
 
-        this.socketService.cellToHighligh.subscribe(
-            (data: string) => {
-                const { word }: { word: Word } = JSON.parse(data);
+        this.socketService.socketObservable.subscribe((data: IOString) => {
+
+            if (data.type === MessageType.highligthCell) {
+                const { word }: { word: Word } = JSON.parse(data.data);
                 const selectedWord: Word = this._clues.find((w: Word) => word !== null && w.index === word.index);
                 this.selectOtherPlayerWord(selectedWord || null);
-            });
 
-        this.socketService.wordIsValidated.subscribe(
-            (data: string) => {
-                const { word }: { word: Word } = JSON.parse(data);
+            } else if (data.type === MessageType.wordToValidate) {
+                const { word }: { word: Word } = JSON.parse(data.data);
                 const selectedWord: Word = this._clues.find((w: Word) => word !== null && w.index === word.index);
                 selectedWord.isValidated = true;
                 this.applyValidation(selectedWord, true);
-            });
+            }
+        });
 
     }
 
@@ -73,9 +74,7 @@ export class GridService {
     }
 
     public selectOtherPlayerWord(word: Word): void {
-
         this._gridTools.setGrid(this._grid);
-
         if (this._otherWord) {
              this._gridTools.iterateWord(this._otherWord, (row: number, col: number) => {
                 this._grid[row][col].isOtherPlayer = false;
@@ -126,9 +125,7 @@ export class GridService {
     }
 
     private selectCells(word: Word, isMe: boolean = true): void {
-
         this._gridTools.setGrid(this._grid);
-
         if (this._selectedWord != null) {
             this._gridTools.iterateGrid(this._grid, (row: number, col: number) => {
                 if (this._grid[row][col].selected) {
@@ -146,8 +143,10 @@ export class GridService {
     }
 
     public selectCellFromGrid(cell: Cell): void {
-
-        const tempWord: Word = this.findWordStart(cell.x, cell.y);
+        let tempWord: Word = this.findWordStart(cell.x, cell.y, false);
+        if (!this._wordService.isWordStart(tempWord)) {
+            tempWord = this.findWordStart(cell.x, cell.y, true);
+        }
         this._wordService.selectWordFromGrid(tempWord);
         this.selectCells(tempWord);
 
@@ -157,11 +156,11 @@ export class GridService {
         }
     }
 
-    private findWordStart(row: number, col: number): Word {
+    private findWordStart(row: number, col: number, forceVerticalSearch: boolean): Word {
         this._gridTools.setPosition(row, col);
         this._gridTools.setGrid(this._grid);
 
-        return this._gridTools.findWordStart();
+        return this._gridTools.findWordStart(forceVerticalSearch);
     }
 
     private wordHighlight(): void {
@@ -174,7 +173,6 @@ export class GridService {
     }
 
     public updateGrid(event: KeyboardEvent, cell: Cell): Observable<Array<Array<Cell>>> {
-
         if (event.keyCode === BACK_SPACE_KEY_CODE) {
             if (cell.char === "") {
                 this.erasePrevious(cell);
@@ -182,7 +180,6 @@ export class GridService {
             cell.char = "";
             this.findEndWrittenWord();
         }
-
         if (!this._gridTools.isLetter(String.fromCharCode(event.charCode))) {
             event.preventDefault();
         } else {
@@ -194,7 +191,6 @@ export class GridService {
     }
 
     private erasePrevious(cell: Cell): void {
-
         if (this.isHorizontal(false) && (cell.y !== this._word.col)) {
             if (this._grid[cell.x][cell.y - 1].validated) {
                 this.erasePrevious(this._grid[cell.x][cell.y - 1]);
@@ -258,7 +254,6 @@ export class GridService {
                 return newCell;
             })
         );
-
         this._gridTools.iterateGrid(this._grid, (row: number, col: number) => {
             this._grid[row][col].x = row;
             this._grid[row][col].y = col;
@@ -277,8 +272,8 @@ export class GridService {
 
     public isHorizontal(isOther: boolean): boolean {
         return isOther ?
-                this._otherWord.orientation === Orientation.horizontal
-                : this._word.orientation === Orientation.horizontal;
+               this._otherWord.orientation === Orientation.horizontal
+               : this._word.orientation === Orientation.horizontal;
     }
 
     public get grid(): Array<Array<Cell>> {
@@ -293,7 +288,7 @@ export class GridService {
         this._word = word;
     }
 
-    public get GridToolsService(): GridToolsService {
+    public get gridToolsService(): GridToolsService {
         return this._gridTools;
     }
 }
