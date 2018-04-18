@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import { EnvironmentService } from "../environment-service/environment.service";
 import {
-    WebGLRenderer, Scene, Vector3, Mesh, ArrowHelper
+    WebGLRenderer, Scene, Vector3, Mesh
 } from "three";
 import { Car } from "../car/car";
 import { CameraService } from "../camera-service/camera.service";
@@ -31,13 +31,11 @@ export class RenderService {
     private _raceStarter: RaceStarter;
     private _trackProgression: TrackProgression;
     private _track: Array<Mesh>;
-    private _results: ArrowHelper[];
 
     public constructor(private _cameraService: CameraService, private _audioService: AudioService,
                        private _environmentService: EnvironmentService) {
         this._car = new Car();
         this._bots = [];
-        this._results = [];
 
         for (let i: number = 0; i < AMOUNT_OF_NPCS; i++) {
             this._bots[i] = new Car();
@@ -75,10 +73,7 @@ export class RenderService {
                 this._car.speed = resultSpeeds[0];
             }
         });
-        this._results = Collision.detectOutOfBounds(this._car, this._track);
-        for (const result of this._results) {
-            this._scene.add(result);
-        }
+        Collision.detectOutOfBounds(this._car, this._track);
         for (let i: number = 0; i < this._bots.length; i++) {
             for (let j: number = i + 1; j < this._bots.length; j++) {
                 if (Collision.detectCollision(this._bots[i], this._bots[j])) {

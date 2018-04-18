@@ -1,4 +1,4 @@
-import { Vector3, Matrix4, Mesh, Raycaster, Intersection, ArrowHelper } from "three";
+import { Vector3, Matrix4, Mesh, Raycaster, Intersection } from "three";
 import { Car } from "./car";
 
 const SPECIAL_COLOR: number = 0xFFFF00;
@@ -14,9 +14,8 @@ export default class Collision {
         return firstCar.boundingBox.intersectsBox(secondCar.boundingBox);
     }
 
-    public static detectOutOfBounds(car: Car, track: Mesh[]): ArrowHelper[] {
+    public static detectOutOfBounds(car: Car, track: Mesh[]): boolean {
         const corners: Vector3[] = [];
-        const results: ArrowHelper[] = [];
         corners.push(new Vector3(ABSOLUTE_CAR_LENGTH_X, ABSOLUTE_CAR_LENGTH_Y, ABSOLUTE_CAR_LENGTH_Z));
         corners.push(new Vector3(-ABSOLUTE_CAR_LENGTH_X, ABSOLUTE_CAR_LENGTH_Y, ABSOLUTE_CAR_LENGTH_Z));
         corners.push(new Vector3(-ABSOLUTE_CAR_LENGTH_X, ABSOLUTE_CAR_LENGTH_Y, -ABSOLUTE_CAR_LENGTH_Z));
@@ -29,15 +28,12 @@ export default class Collision {
             const directionVector: Vector3 = globalVertex.sub(car.boundingBox.getCenter());
             const ray: Raycaster = new Raycaster(car.boundingBox.getCenter(), directionVector.normalize());
             const collisionResults: Intersection[] = ray.intersectObjects(track);
-
-            results.push(new ArrowHelper(directionVector.normalize(), car.boundingBox.getCenter(), LENGTH, SPECIAL_COLOR));
-
             if (collisionResults.length <= 0) {
-                results.push(new ArrowHelper(directionVector.multiplyScalar(-1).normalize(), car.boundingBox.getCenter(), LENGTH, SPECIAL_COLOR_2))
+                return true;
             }
         }
 
-        return results;
+        return false;
     }
     /*
         MIN BOX: -1.8093634648776054, -0.007726105637907718, -0.7128778274977209
