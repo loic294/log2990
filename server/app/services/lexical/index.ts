@@ -1,6 +1,3 @@
-/*
-    This service will be responsible of requesting and creating lexical content.
-*/
 import axios, { AxiosResponse } from "axios";
 import KEYS from "./../../config/index";
 import { Level } from "./../../../../common/lexical/level";

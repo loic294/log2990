@@ -262,8 +262,9 @@ export class Car extends Object3D {
     }
 
     public isGoingForward(): boolean {
-        // tslint:disable-next-line:no-magic-numbers
-        return this.speed.normalize().dot(this.direction) > 0.05;
+        const fowardCoefficient: number = 0.05;
+
+        return this.speed.normalize().dot(this.direction) > fowardCoefficient;
     }
 
     private updateSound(): void {
@@ -284,7 +285,8 @@ export class Car extends Object3D {
     }
 
     public isGoingBackward(): boolean {
-        // tslint:disable-next-line:no-magic-numbers
-        return this.speed.normalize().dot(this.direction) < -0.05;
+        const backWardCoefficient: number = -0.05;
+
+        return this.speed.normalize().dot(this.direction) < backWardCoefficient;
     }
 }

@@ -68,14 +68,14 @@ export class TrackBuilder {
         return texture;
     }
     private generateTrackSegment(firstVertex: Vector3, secondVertex: Vector3): void {
-        // create length
+
         const length: number = firstVertex.distanceTo(secondVertex);
-        // create Material
+
         const material: MeshPhongMaterial = new MeshPhongMaterial({
             map: this.generateTexture(WIDTH, length, TRACK_TEXTURE_PATH),
             side: DoubleSide
         });
-        // initial position of track
+
         const planeGeometry: PlaneGeometry = new PlaneGeometry(WIDTH, length);
         const track: Mesh = new Mesh(planeGeometry, material);
         track.position.set(firstVertex.x, firstVertex.y, firstVertex.z);

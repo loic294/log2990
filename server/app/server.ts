@@ -9,7 +9,6 @@ import { Http2Server } from "http2";
 const PORT: number = 3000;
 let app: express.Application = express();
 
-// Config
 app.use(logger("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
