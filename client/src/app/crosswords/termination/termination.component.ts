@@ -91,6 +91,7 @@ import { MessageType, IOBoolean, IOString } from "../socket.service/observableMe
     }
 
     public openModeDialog(): void {
+        this.socketService.resetScore();
         this.closeDialog();
         this.socketService.sendRequestModeMenu();
     }
