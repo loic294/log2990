@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import Track, { ITrackInfo } from "../../models/trackInfo";
 
+const MAX_TIMES: number = 5;
+
 export const obtainTracks: (req: Request, res: Response, next: NextFunction) => Promise<void> =
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
@@ -17,7 +19,7 @@ export const obtainTracks: (req: Request, res: Response, next: NextFunction) => 
             }
             res.json(tracks);
         } catch (error) {
-            throw error;
+            res.status(error).send(error.message);
         }
 
     };
@@ -37,7 +39,7 @@ export const saveTrack: (req: Request, res: Response, next: NextFunction) => Pro
             await track.save();
             res.send("POST success.");
         } catch (error) {
-            throw error;
+            res.status(error).send(error.message);
         }
 
     };
@@ -54,7 +56,7 @@ export const deleteTrack: (req: Request, res: Response, next: NextFunction) => P
             }
             res.send("DELETE success.");
         } catch (error) {
-            throw error;
+            res.status(error).send(error.message);
         }
 
     };
@@ -72,6 +74,9 @@ export const patchTrack: (req: Request, res: Response, next: NextFunction) => Pr
                 vertice: req.body["vertice"],
                 completedTimes: req.body["completedTimes"]
             });
+            if (trackAttributes.completedTimes.length > MAX_TIMES) {
+                trackAttributes.completedTimes.splice(0, MAX_TIMES);
+            }
 
             await Track.update({ name: requestedTrack }, {
                 $set: {
@@ -84,7 +89,7 @@ export const patchTrack: (req: Request, res: Response, next: NextFunction) => Pr
             }).exec();
             res.send("PATCH success.");
         } catch (error) {
-            throw error;
+            res.status(error).send(error.message);
         }
 
     };
