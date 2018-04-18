@@ -50,7 +50,7 @@ export class GameComponent implements AfterViewInit, OnInit {
         this._raceStarted = false;
         this._trackLoaded = false;
         this._trackInformation = new TrackInformation();
-        this._trackInformation.getTracksList();
+        this._trackInformation.getTracksList().catch((err: Error) => console.error(err));
         this._id = this.route.snapshot.params.id;
 
         this._currentGame = {gameTime: "0.00", lapTime: "0.00",
@@ -86,8 +86,8 @@ export class GameComponent implements AfterViewInit, OnInit {
 
         if (this._id) {
             await this.getTrackInfo(this._id);
-            await this.loadTrack();
-            this.start();
+            this.loadTrack();
+            await this.start();
         }
 
     }

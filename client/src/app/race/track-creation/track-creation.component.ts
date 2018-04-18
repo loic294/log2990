@@ -41,15 +41,15 @@ export class TrackCreationComponent implements AfterViewInit {
         this._renderer = new WebGLRenderer();
         this._isSaved = false;
         this._trackInformation = new TrackInformation();
-        this._trackInformation.getTracksList().then(() => {
-            this.getTrackInfo(this.route.snapshot.params.id);
+        this._trackInformation.getTracksList().then(async () => {
+            await this.getTrackInfo(this.route.snapshot.params.id);
         })
         .catch((err) => console.error(err));
         this._trackInformation.resetTrack();
 
-        this.route.params.subscribe((params: Params) => {
+        this.route.params.subscribe(async (params: Params) => {
             this._id = params.id;
-            this.getTrackInfo(this._id);
+            await this.getTrackInfo(this._id);
         });
     }
 
