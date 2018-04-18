@@ -6,6 +6,8 @@ const ABSOLUTE_CAR_LENGTH_Y: number = -0.007726105637907718;
 const ABSOLUTE_CAR_LENGTH_Z: number = -1.8093634648776054;
 const COLOUR: number = 0xFFFF00;
 const OTHER_COLOUR: number = 0xFF0000;
+const OTHER_OTHER_COLOUR: number = 0x0FF000;
+const OTER_COLOUR: number = 0x00FF00;
 const LENGTH: number = 10;
 
 export default class Collision {
@@ -17,7 +19,9 @@ export default class Collision {
 
     public static visualizeOutOfBoundsBadly(car: Car, track: Mesh[]): ArrowHelper[] {
         Collision.initializeCorners();
-        const arrows: ArrowHelper[] = [];
+        let arrows: ArrowHelper[] = [];
+        let intersectionResults: Intersection[] = [];
+        let outOfBounds: boolean = false;
 
         for (const corner of Collision.corners) {
             const globalVertex: Vector3 = corner.applyMatrix4(car.mesh.matrix);
@@ -25,10 +29,15 @@ export default class Collision {
             const ray: Raycaster = new Raycaster(car.boundingBox.getCenter(), directionVector.normalize());
             const collisionResults: Intersection[] = ray.intersectObjects(track);
             if (collisionResults.length <= 0) {
+                outOfBounds = true;
                 arrows.push(new ArrowHelper(directionVector.normalize(), car.boundingBox.getCenter(), LENGTH, OTHER_COLOUR));
             } else {
+                intersectionResults = [...intersectionResults, ...collisionResults];
                 arrows.push(new ArrowHelper(directionVector.normalize(), car.boundingBox.getCenter(), LENGTH, COLOUR));
             }
+        }
+        if (outOfBounds) {
+            arrows = [...arrows, ...Collision.visualizeCollision(car, intersectionResults)];
         }
 
         return arrows;
@@ -70,6 +79,26 @@ export default class Collision {
         }
 
         return new Vector3();
+    }
+
+    private static visualizeCollision(car: Car, intersections: Intersection[]): ArrowHelper[] {
+        const arrows: ArrowHelper[] = [];
+        for (const intersection of intersections) {
+            if (intersection !== null) {
+                const angle: number = car.direction.angleTo(Collision.trackPerpendicular(intersection.object));
+                const incidenceVector: Vector3 = Collision.trackPerpendicular(intersection.object);
+                incidenceVector.applyAxisAngle(incidenceVector, angle);
+                incidenceVector.multiplyScalar(car.speed.length());
+
+                arrows.push(new ArrowHelper(incidenceVector.normalize(), car.boundingBox.getCenter(), LENGTH, OTHER_OTHER_COLOUR));
+                arrows.push(new ArrowHelper(Collision.trackPerpendicular(intersection.object).normalize(), 
+                                            car.boundingBox.getCenter(), LENGTH, OTER_COLOUR));
+
+                return arrows;
+            }
+        }
+
+        return [];
     }
     // perpendiuclar vector to both the direction vectors, find the angle
 
