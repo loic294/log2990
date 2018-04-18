@@ -272,4 +272,8 @@ export class GameComponent implements AfterViewInit, OnInit {
         return this._raceStarted;
     }
 
+    public get currentGame(): IGameInformation {
+        return this._currentGame;
+    }
+
 }
