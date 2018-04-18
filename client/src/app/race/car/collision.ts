@@ -6,39 +6,55 @@ const ABSOLUTE_CAR_LENGTH_Y: number = -0.007726105637907718;
 const ABSOLUTE_CAR_LENGTH_Z: number = -1.8093634648776054;
 
 export default class Collision {
+    private static corners: Vector3[];
 
     public static detectCollision(firstCar: Car, secondCar: Car): boolean {
         return firstCar.boundingBox.intersectsBox(secondCar.boundingBox);
     }
 
-    public static detectOutOfBounds(car: Car, track: Mesh[]): boolean {
-        const corners: Vector3[] = [];
-        corners.push(new Vector3(ABSOLUTE_CAR_LENGTH_X, ABSOLUTE_CAR_LENGTH_Y, ABSOLUTE_CAR_LENGTH_Z));
-        corners.push(new Vector3(-ABSOLUTE_CAR_LENGTH_X, ABSOLUTE_CAR_LENGTH_Y, ABSOLUTE_CAR_LENGTH_Z));
-        corners.push(new Vector3(-ABSOLUTE_CAR_LENGTH_X, ABSOLUTE_CAR_LENGTH_Y, -ABSOLUTE_CAR_LENGTH_Z));
-        corners.push(new Vector3(ABSOLUTE_CAR_LENGTH_X, ABSOLUTE_CAR_LENGTH_Y, -ABSOLUTE_CAR_LENGTH_Z));
+    public static detectOutOfBounds(car: Car, track: Mesh[]): void {
+        Collision.initializeCorners();
+        const intersectionResults: Intersection[] = [];
+        let outOfBounds: boolean = false;
 
-        for (const corner of corners) {
+        for (const corner of Collision.corners) {
             const globalVertex: Vector3 = corner.applyMatrix4(car.mesh.matrix);
             const directionVector: Vector3 = globalVertex.sub(car.boundingBox.getCenter());
             const ray: Raycaster = new Raycaster(car.boundingBox.getCenter(), directionVector.normalize());
             const collisionResults: Intersection[] = ray.intersectObjects(track);
             if (collisionResults.length <= 0) {
-                return true;
+                outOfBounds = true;
+            } else {
+                intersectionResults.concat(collisionResults);
             }
         }
-
-        return false;
-    }
-
-    public static detectOutOfBoundsAI(ai: Array<Car>, track: Mesh[]): boolean {
-        for (const car of ai) {
-            return Collision.detectOutOfBounds(car, track);
+        if (outOfBounds) {
+            Collision.collideOutOfBounds(car, intersectionResults, track);
         }
     }
 
-    public static collideOutOfBounds(car: Car, trackSegment: Mesh): void {
+    public static detectOutOfBoundsAI(ai: Array<Car>, track: Mesh[]): void {
+        for (const car of ai) {
+            Collision.detectOutOfBounds(car, track);
+        }
+    }
 
+    public static collideOutOfBounds(car: Car, intersections: Intersection[], track: Mesh[]): void {
+        for (const intersection of intersections) {
+            for (const trackSegment of track) {
+                if (intersection.object == trackSegment) {
+                    car.meshPosition = trackSegment.position;
+                }
+            }
+        }
+    }
+
+    private static initializeCorners(): void {
+        Collision.corners = [];
+        Collision.corners.push(new Vector3(ABSOLUTE_CAR_LENGTH_X, ABSOLUTE_CAR_LENGTH_Y, ABSOLUTE_CAR_LENGTH_Z));
+        Collision.corners.push(new Vector3(-ABSOLUTE_CAR_LENGTH_X, ABSOLUTE_CAR_LENGTH_Y, ABSOLUTE_CAR_LENGTH_Z));
+        Collision.corners.push(new Vector3(-ABSOLUTE_CAR_LENGTH_X, ABSOLUTE_CAR_LENGTH_Y, -ABSOLUTE_CAR_LENGTH_Z));
+        Collision.corners.push(new Vector3(ABSOLUTE_CAR_LENGTH_X, ABSOLUTE_CAR_LENGTH_Y, -ABSOLUTE_CAR_LENGTH_Z));
     }
 
     public static collide(carA: Car, carB: Car): Array<Vector3> {
