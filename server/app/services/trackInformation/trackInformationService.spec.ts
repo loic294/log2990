@@ -1,5 +1,5 @@
 /* tslint:disable */
-/*
+
 import { TrackInformationService } from "./trackInformationService";
 import { assert } from "chai";
 import { ITrack } from "../../models/trackInfo";
@@ -69,4 +69,3 @@ describe("trackInformationService", () => {
     });
 
 });
-*/
