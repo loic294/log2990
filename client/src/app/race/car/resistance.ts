@@ -29,13 +29,15 @@ export class Resistance {
             const rollingResistance: Vector3 = this.getRollingResistance(parameters);
             const latitudinalResistance: Vector3 = this.getLatitudinalResistance(parameters);
             resultingForce.add(latitudinalResistance);
-            const direction: number = parameters.speed.dot(dir) / Math.abs(parameters.speed.dot(dir));
+            const direction: number = parameters.speed.dot(parameters.direction) / Math.abs(parameters.speed.dot(parameters.direction));
             resultingForce.add(dragForce.multiplyScalar(direction))
                 .add(rollingResistance.multiplyScalar(direction));
         }
         if (parameters.isAcceleratorPressed) {
             const tractionForce: number = this.getTractionForce(parameters);
-            const accelerationForce: Vector3 = dir;
+            const accelerationForce: Vector3 = new Vector3(parameters.direction.x,
+                                                           parameters.direction.y,
+                                                           parameters.direction.z);
             accelerationForce.multiplyScalar(tractionForce);
             resultingForce.add(accelerationForce);
         } else if (parameters.isBraking && parameters.isGoingForward) {
