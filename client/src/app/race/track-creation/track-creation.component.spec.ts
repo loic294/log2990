@@ -39,7 +39,7 @@ describe("TrackCreationComponent", () => {
         edges = component.trackCreationRenderer.getEdges();
     });
 
-    /*it("should create", () => {
+    it("should create", () => {
         expect(component).toBeTruthy();
     });
 
@@ -173,6 +173,6 @@ describe("TrackCreationComponent", () => {
         const eventDown: MouseEvent = new MouseEvent("mousedown", { clientX: 200, clientY: 100 });
         component.onKeyDown(eventDown);
         expect(component.scene.children.length).toBe(nbSceneChildren);
-    });*/
+    });
 
 });
