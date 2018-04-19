@@ -1,8 +1,8 @@
 import { Vector3, Matrix4, Object3D, ObjectLoader, Euler, Quaternion, Box3, PositionalAudio } from "three";
 import { Engine, DEFAULT_SHIFT_RPM } from "./engine";
-import { MS_TO_SECONDS, GRAVITY, PI_OVER_2, RAD_TO_DEG } from "../../constants";
+import { MS_TO_SECONDS, GRAVITY, PI_OVER_2, RAD_TO_DEG, MINIMUM_SPEED, NUMBER_REAR_WHEELS } from "../../constants";
 import { Wheel } from "./wheel";
-import { Resistance } from "./resistance";
+import { Resistance, IResistanceParameters } from "./resistance";
 import HeadlightsManager from "./headlights";
 
 export const DEFAULT_WHEELBASE: number = 2.78;
@@ -12,9 +12,6 @@ export const DEFAULT_DRAG_COEFFICIENT: number = 0.35;
 const MAXIMUM_STEERING_ANGLE: number = 0.25;
 const INITIAL_MODEL_ROTATION: Euler = new Euler(0, PI_OVER_2, 0);
 const INITIAL_WEIGHT_DISTRIBUTION: number = 0.5;
-export const MINIMUM_SPEED: number = 0.05;
-export const NUMBER_REAR_WHEELS: number = 2;
-export const NUMBER_WHEELS: number = 4;
 
 export class Car extends Object3D {
     public isAcceleratorPressed: boolean;
@@ -60,7 +57,6 @@ export class Car extends Object3D {
         this._wheelbase = wheelbase;
         this._mass = mass;
         this._dragCoefficient = dragCoefficient;
-
         this._isBraking = false;
         this.steeringWheelDirection = 0;
         this._weightRear = INITIAL_WEIGHT_DISTRIBUTION;
@@ -178,20 +174,16 @@ export class Car extends Object3D {
 
     public update(deltaTime: number): void {
         deltaTime = deltaTime / MS_TO_SECONDS;
-
         // Move to car coordinates
         const rotationMatrix: Matrix4 = new Matrix4();
         rotationMatrix.extractRotation(this._mesh.matrix);
         const rotationQuaternion: Quaternion = new Quaternion();
         rotationQuaternion.setFromRotationMatrix(rotationMatrix);
         this._speed.applyMatrix4(rotationMatrix);
-
         // Physics calculations
         this.physicsUpdate(deltaTime);
-
         // Move back to world coordinates
         this._speed = this.speed.applyQuaternion(rotationQuaternion.inverse());
-
         // Angular rotation of the car
         const R: number = DEFAULT_WHEELBASE / Math.sin(this.steeringWheelDirection * deltaTime);
         const omega: number = this._speed.length() / R;
@@ -237,8 +229,18 @@ export class Car extends Object3D {
         return this.getBrakeForce().length() * this._rearWheel.radius;
     }
 
+    private getResistanceParameters(): IResistanceParameters {
+        return {speed: this.speed, direction: this.direction, isGoingForward: this.isGoingForward(),
+                isGoingBackward: this.isGoingBackward(), isBraking: this.isBraking, isAcceleratorPressed: this.isAcceleratorPressed,
+                brakeForce: this.getBrakeForce(), up: this.up, mass: this.mass, weightRear: this.weightRear,
+                frictionCoefficient: this.rearWheel.frictionCoefficient, engineForce: this.getEngineForce(),
+                dragCoefficient: this.dragCoefficient};
+    }
+
     private getTractionTorque(): number {
-        return Resistance.getTractionForce(this) * this._rearWheel.radius;
+        const parameters: IResistanceParameters = this.getResistanceParameters();
+
+        return Resistance.getTractionForce(parameters) * this._rearWheel.radius;
     }
 
     private getTotalTorque(): number {
@@ -250,7 +252,9 @@ export class Car extends Object3D {
     }
 
     private getAcceleration(): Vector3 {
-        return Resistance.getResultingForce(this).divideScalar(this._mass);
+        const parameters: IResistanceParameters = this.getResistanceParameters();
+
+        return Resistance.getResultingForce(parameters, this.direction).divideScalar(this._mass);
     }
 
     private getDeltaSpeed(deltaTime: number): Vector3 {

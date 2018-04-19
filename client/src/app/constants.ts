@@ -14,3 +14,6 @@ export enum TIME_OF_DAY {
 export const MAX_COUNTDOWN: number = 3;
 export const WIDTH: number = 10;
 export const MAX_LAPS: number = 3;
+export const MINIMUM_SPEED: number = 0.05;
+export const NUMBER_REAR_WHEELS: number = 2;
+export const NUMBER_WHEELS: number = 4;
