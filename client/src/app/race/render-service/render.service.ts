@@ -69,7 +69,8 @@ export class RenderService {
 
             this._bots.forEach((bot) => {
                 if (Collision.detectCollision(this._car, bot)) {
-                    this._audioService.playCarCollision();
+                    // Son pour collision mais collision incomplète (voir Michel)
+                    // this._audioService.playCarCollision();
                     const resultSpeeds: Array<Vector3> = Collision.collide(this._car, bot);
                     bot.speed = resultSpeeds[1];
                     this._car.speed = resultSpeeds[0];
@@ -78,7 +79,7 @@ export class RenderService {
             for (let i: number = 0; i < this._bots.length; i++) {
                 for (let j: number = i + 1; j < this._bots.length; j++) {
                     if (Collision.detectCollision(this._bots[i], this._bots[j])) {
-                        this._audioService.playCarCollision();
+                        // this._audioService.playCarCollision();
                         const resultSpeeds: Array<Vector3> = Collision.collide(this._bots[i], this._bots[j]);
                         this._bots[j].speed = resultSpeeds[1];
                         this._bots[i].speed = resultSpeeds[0];
