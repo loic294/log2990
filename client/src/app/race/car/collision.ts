@@ -43,7 +43,7 @@ export default class Collision {
                                         Collision.trackPerpendicular(intersection.object, -1));
                 const angle: number = car.direction.angleTo(perpendicular);
                 const incidenceVector: Vector3 = perpendicular;
-                incidenceVector.applyAxisAngle(incidenceVector.normalize(), angle);
+                incidenceVector.applyAxisAngle(incidenceVector.normalize(), -angle);
                 incidenceVector.multiplyScalar(car.speed.length());
 
                 return incidenceVector;

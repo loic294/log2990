@@ -2,7 +2,7 @@ import { Vector3, Matrix4, Object3D, ObjectLoader, Euler, Quaternion, Box3, Posi
 import { Engine, DEFAULT_SHIFT_RPM } from "./engine";
 import { MS_TO_SECONDS, GRAVITY, PI_OVER_2, RAD_TO_DEG, MINIMUM_SPEED, NUMBER_REAR_WHEELS } from "../../constants";
 import { Wheel } from "./wheel";
-import { Resistance, IResistanceParameters } from "./resistance";
+import { Resistance } from "./resistance";
 import HeadlightsManager from "./headlights";
 
 export const DEFAULT_WHEELBASE: number = 2.78;
@@ -229,18 +229,8 @@ export class Car extends Object3D {
         return this.getBrakeForce().length() * this._rearWheel.radius;
     }
 
-    private getResistanceParameters(): IResistanceParameters {
-        return {speed: this.speed, direction: this.direction, isGoingForward: this.isGoingForward(),
-                isGoingBackward: this.isGoingBackward(), isBraking: this.isBraking, isAcceleratorPressed: this.isAcceleratorPressed,
-                brakeForce: this.getBrakeForce(), up: this.up, mass: this.mass, weightRear: this.weightRear,
-                frictionCoefficient: this.rearWheel.frictionCoefficient, engineForce: this.getEngineForce(),
-                dragCoefficient: this.dragCoefficient};
-    }
-
     private getTractionTorque(): number {
-        const parameters: IResistanceParameters = this.getResistanceParameters();
-
-        return Resistance.getTractionForce(parameters) * this._rearWheel.radius;
+        return Resistance.getTractionForce(this) * this._rearWheel.radius;
     }
 
     private getTotalTorque(): number {
@@ -252,9 +242,7 @@ export class Car extends Object3D {
     }
 
     private getAcceleration(): Vector3 {
-        const parameters: IResistanceParameters = this.getResistanceParameters();
-
-        return Resistance.getResultingForce(parameters, this.direction).divideScalar(this._mass);
+        return Resistance.getResultingForce(this).divideScalar(this._mass);
     }
 
     private getDeltaSpeed(deltaTime: number): Vector3 {

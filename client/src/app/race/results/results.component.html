@@ -8,7 +8,7 @@
 
       <div *ngIf="isBestTime() && isFirst()">
         <h1>CONGRATULATIONS YOU WON IN A TIME OF {{_game.gameTime}} SECONDS</h1>
-        <div class="input-row">Please enter your name
+        <div class="input-row">Please enter your name and press enter
           <input 
           (input)="enterName($event.target.value)"
           (keyup)="updateName($event)"
