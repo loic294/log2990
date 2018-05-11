@@ -30,6 +30,7 @@ export class Car extends Object3D {
     private _boundingBox: Box3;
     private _sound: PositionalAudio;
     private _headlightsManager: HeadlightsManager;
+    private _beingReplaced: boolean;
 
     public constructor(
         engine: Engine = new Engine(),
@@ -75,6 +76,14 @@ export class Car extends Object3D {
 
     public set speed(speed: Vector3) {
         this._speed = speed;
+    }
+
+    public get beingReplaced(): boolean {
+        return this._beingReplaced;
+    }
+
+    public set beingReplaced(gettingReplaced: boolean) {
+        this._beingReplaced = gettingReplaced;
     }
 
     public get currentGear(): number {

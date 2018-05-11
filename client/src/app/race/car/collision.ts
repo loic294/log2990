@@ -1,9 +1,10 @@
-import { Vector3, Matrix4, Mesh, Raycaster, Intersection, Object3D } from "three";
+import { Vector3, Matrix4, Mesh, Raycaster, Intersection} from "three";
 import { Car } from "./car";
 
 const ABSOLUTE_CAR_LENGTH_X: number = -0.7128778274977209;
 const ABSOLUTE_CAR_LENGTH_Y: number = -0.007726105637907718;
 const ABSOLUTE_CAR_LENGTH_Z: number = -1.8093634648776054;
+const COLLISION_MULTIPLIER: number = 12;
 
 export default class Collision {
     private static corners: Vector3[];
@@ -36,45 +37,7 @@ export default class Collision {
     }
 
     private static collideOutOfBounds(car: Car, intersections: Intersection[]): Vector3 {
-        for (const intersection of intersections) {
-            if (intersection !== null) {
-                const perpendicular: Vector3 = (Collision.isToTheRightOfLine(car, intersection.object) ?
-                                        Collision.trackPerpendicular(intersection.object, 1) :
-                                        Collision.trackPerpendicular(intersection.object, -1));
-                const angle: number = car.direction.angleTo(perpendicular);
-                const incidenceVector: Vector3 = perpendicular;
-                incidenceVector.applyAxisAngle(incidenceVector.normalize(), -angle);
-                incidenceVector.multiplyScalar(car.speed.length());
-
-                return incidenceVector;
-            }
-        }
-
-        return new Vector3();
-    }
-
-    private static isToTheRightOfLine(car: Car, track: Object3D): boolean {
-        return Collision.trackDirection(track).normalize().cross(car.direction.normalize()).y < 0;
-    }
-
-    private static trackPerpendicular(track: Object3D, positive: number): Vector3 {
-        const rotationMatrix: Matrix4 = new Matrix4();
-        const trackDirection: Vector3 = new Vector3(positive * -1, 0, 0);
-
-        rotationMatrix.extractRotation(track.matrix);
-        trackDirection.applyMatrix4(rotationMatrix);
-
-        return trackDirection;
-    }
-
-    private static trackDirection(track: Object3D): Vector3 {
-        const rotationMatrix: Matrix4 = new Matrix4();
-        const trackDirection: Vector3 = new Vector3(0, 1, 0);
-
-        rotationMatrix.extractRotation(track.matrix);
-        trackDirection.applyMatrix4(rotationMatrix);
-
-        return trackDirection;
+        return car.speed.negate().normalize().multiplyScalar(COLLISION_MULTIPLIER);
     }
 
     private static initializeCorners(): void {
