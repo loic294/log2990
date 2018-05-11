@@ -1,4 +1,4 @@
-import { Vector3, Matrix4, Mesh, Raycaster, Intersection} from "three";
+import { Vector3, Matrix4, Mesh, Raycaster, Intersection } from "three";
 import { Car } from "./car";
 
 const ABSOLUTE_CAR_LENGTH_X: number = -0.7128778274977209;
@@ -15,8 +15,6 @@ export default class Collision {
 
     public static detectOutOfBounds(car: Car, track: Mesh[]): Vector3 {
         Collision.initializeCorners();
-        let intersectionResults: Intersection[] = [];
-        let outOfBounds: boolean = false;
 
         for (const corner of Collision.corners) {
             const globalVertex: Vector3 = corner.applyMatrix4(car.mesh.matrix);
@@ -24,19 +22,15 @@ export default class Collision {
             const ray: Raycaster = new Raycaster(car.boundingBox.getCenter(), directionVector.normalize());
             const collisionResults: Intersection[] = ray.intersectObjects(track);
             if (collisionResults.length <= 0) {
-                outOfBounds = true;
-            } else {
-                intersectionResults = [...intersectionResults, ...collisionResults];
+                return Collision.collideOutOfBounds(car);
             }
         }
-        if (outOfBounds) {
-            return Collision.collideOutOfBounds(car, intersectionResults);
-        } else {
-            return null;
-        }
+
+        return null;
+
     }
 
-    private static collideOutOfBounds(car: Car, intersections: Intersection[]): Vector3 {
+    private static collideOutOfBounds(car: Car): Vector3 {
         return car.speed.negate().normalize().multiplyScalar(COLLISION_MULTIPLIER);
     }
 
