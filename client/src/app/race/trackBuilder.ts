@@ -259,6 +259,10 @@ export class TrackBuilder {
         return this._startingLines;
     }
 
+    public get trackSegments(): Array<Mesh> {
+        return this._trackSegments;
+    }
+
     public get playerCar(): Car {
         return this._playerCar;
     }

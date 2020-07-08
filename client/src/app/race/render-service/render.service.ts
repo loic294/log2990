@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import { EnvironmentService } from "../environment-service/environment.service";
 import {
-    WebGLRenderer, Scene, Vector3
+    WebGLRenderer, Scene, Vector3, Mesh
 } from "three";
 import { Car } from "../car/car";
 import { CameraService } from "../camera-service/camera.service";
@@ -30,6 +30,7 @@ export class RenderService {
     private _aiService: AiService;
     private _raceStarter: RaceStarter;
     private _trackProgression: TrackProgression;
+    private _track: Array<Mesh>;
     private _isRestarting: boolean;
 
     public constructor(private _cameraService: CameraService, private _audioService: AudioService,
@@ -60,35 +61,41 @@ export class RenderService {
     }
 
     private update(): void {
-        if (!this._isRestarting) {
-            const timeSinceLastFrame: number = Date.now() - this._lastDate;
-            this._car.update(timeSinceLastFrame);
-            if (this._aiService !== undefined) {
-                this._aiService.update(timeSinceLastFrame);
-            }
+        const timeSinceLastFrame: number = Date.now() - this._lastDate;
+        this._car.update(timeSinceLastFrame);
+        if (this._aiService !== undefined) {
+            this._aiService.update(timeSinceLastFrame);
+            this.collisions();
+        }
+        this._cameraService.followCar();
+        this._lastDate = Date.now();
+    }
 
-            this._bots.forEach((bot) => {
-                if (Collision.detectCollision(this._car, bot)) {
-                    // Bug dans le son à cause que la collision est incomplète (voir Michel)
+    private collisions(): void {
+        for (let i: number = 0; i < this._bots.length; i++) {
+            for (let j: number = i + 1; j < this._bots.length; j++) {
+                if (Collision.detectCollision(this._bots[i], this._bots[j])) {
                     this._audioService.playCarCollision();
-                    const resultSpeeds: Array<Vector3> = Collision.collide(this._car, bot);
-                    bot.speed = resultSpeeds[1];
-                    this._car.speed = resultSpeeds[0];
-                }
-            });
-            for (let i: number = 0; i < this._bots.length; i++) {
-                for (let j: number = i + 1; j < this._bots.length; j++) {
-                    if (Collision.detectCollision(this._bots[i], this._bots[j])) {
-                        this._audioService.playCarCollision();
-                        const resultSpeeds: Array<Vector3> = Collision.collide(this._bots[i], this._bots[j]);
-                        this._bots[j].speed = resultSpeeds[1];
-                        this._bots[i].speed = resultSpeeds[0];
-                    }
+                    const resultSpeeds: Array<Vector3> = Collision.collide(this._bots[i], this._bots[j]);
+                    this._bots[j].speed = resultSpeeds[1];
+                    this._bots[i].speed = resultSpeeds[0];
                 }
             }
+            if (Collision.detectCollision(this._car, this._bots[i])) {
+                this._audioService.playCarCollision();
+                const resultSpeeds: Array<Vector3> = Collision.collide(this._car, this._bots[i]);
+                this._bots[i].speed = resultSpeeds[1];
+                this._car.speed = resultSpeeds[0];
+            }
+        }
 
-            this._cameraService.followCar();
-            this._lastDate = Date.now();
+        if (Collision.detectOutOfBounds(this._car, this._track) !== null) {
+            this._car.speed = Collision.detectOutOfBounds(this._car, this._track);
+        }
+        for (const bot of this._bots) {
+            if (Collision.detectOutOfBounds(bot, this._track) !== null) {
+                bot.speed = Collision.detectOutOfBounds(bot, this._track);
+            }
         }
     }
 
@@ -141,6 +148,7 @@ export class RenderService {
                                                           this._car, this._bots,
                                                           this._raceStarter.trackProgressionService,
                                                           this._raceStarter.trackBuilder.vertices);
+            this._track = this._raceStarter.trackBuilder.trackSegments;
             this._raceStarter = undefined;
         }
         if (this._trackProgression !== undefined) {
